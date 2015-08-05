@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<!-- saved from url=(0075)http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html -->
+<html>
+<head>
+	<link rel="stylesheet" href="css/bootstrap.min.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.css">
+	<link rel="stylesheet" href="leaflet/leaflet.css" />
+	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script src="leaflet/leaflet.js"></script>
+	<script src="leaflet/leaflet.label.js"></script>
+	<script type="text/javascript" src="js/tile.stamen.js"></script>
+	<script type="text/javascript" src="js/neighborhoods.js"></script>
+</head>
+<body>
+	<style type="text/css">
+		#map { position: absolute; top: 50px; bottom: 0px; left: 0px; right: 0px; }
+		#map { z-index: 35;}
+		.text-labels {
+			font-size: 10pt;
+			font-weight: bold;
+		}
+		.sidebar { z-index: 45; }
+	</style>
+	 <nav class="navbar navbar-fixed-top navbar-default" role="navigation">
+      <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#">Map Viewer (2-column layout)</a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#">Link</a></li>
+              <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#">Link</a></li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+	  </nav>
+		<div id="map"></div>
+		<div class="row">
+			<div class="col-md-4">
+				<div class="col-md-12 sidebar sidebar-left pull-left">
+				<div class="panel-group sidebar-body" id="accordion-left">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#layers">
+									<i class="fa fa-list-alt"></i>
+									Layers
+								</a>
+								<span class="pull-right slide-submenu">
+									<i class="fa fa-chevron-left"></i>
+								</span>
+							</h4>
+						</div>
+						<div id="layers" class="panel-collapse collapse in">
+							<div class="panel-body list-group">
+								<a href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#" class="list-group-item">
+									<i class="fa fa-globe"></i> Open Street Map
+								</a>
+								<a href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#" class="list-group-item">
+									<i class="fa fa-globe"></i> Bing
+								</a>
+								<a href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#" class="list-group-item">
+									<i class="fa fa-globe"></i> WMS
+								</a>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse" href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#properties">
+									<i class="fa fa-list-alt"></i>
+									Properties
+								</a>
+							</h4>
+						</div>
+						<div id="properties" class="panel-collapse collapse in">
+							<div class="panel-body">
+								<p>
+								Lorem ipsum dolor sit amet, vel an wisi propriae. Sea ut graece gloriatur. Per ei quando dicant vivendum. An insolens appellantur eos, doctus convenire vis et, at solet aeterno intellegebat qui.
+								</p>
+								<p>
+								Elitr minimum inciderint qui no. Ne mea quaerendum scriptorem consequuntur. Mel ea nobis discere dignissim, aperiam patrioque ei ius. Stet laboramus eos te, his recteque mnesarchum an, quo id adipisci salutatus. Quas solet inimicus eu per. Sonet conclusionemque id vis.
+								</p>
+								<p>
+								Eam vivendo repudiandae in, ei pri sint probatus. Pri et lorem praesent periculis, dicam singulis ut sed. Omnis patrioque sit ei, vis illud impetus molestiae id. Ex viderer assentior mel, inani liber officiis pro et. Qui ut perfecto repudiandae, per no hinc tation labores.
+								</p>
+								<p>
+								Pro cu scaevola antiopam, cum id inermis salutatus. No duo liber gloriatur. Duo id vitae decore, justo consequat vix et. Sea id tale quot vitae.
+								</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8">
+
+		</div>
+		</div>
+		<script type="text/javascript">
+      var map = new L.Map("map", {
+          center: new L.LatLng(39.941300, -75.193566),
+          zoom: 13,
+          scrollWheelZoom: false,
+          touchZoom: false,
+          doubleClickZoom: false,
+          zoomControl: false,
+          dragging: false
+      });
+      map.addLayer(new L.StamenTileLayer("terrain", {
+          detectRetina: true
+      }));
+
+			$("#map").data("map", map);
+
+			var neighborhoodsData = getNeighborhoodsBoundries();
+			var features = new Array();
+			for (var index = 0, len = neighborhoodsData.length; index < len; ++index) {
+			    var neighborhood = neighborhoodsData[index];
+
+					var feature = L.geoJson(neighborhood);
+					features.push(feature);
+					feature.addTo(map);
+
+					$("#map").data("features", features);
+
+					var layerText = L.marker(feature.getBounds().getCenter(), {
+						icon: L.divIcon({
+							className: 'text-labels',   // Set class for CSS styling
+							html: neighborhood.properties.name,
+							clickable: false
+						})
+					});
+
+					layerText.addTo(map);
+
+					feature.on('click', function(e) {
+						$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
+						//map.removeLayer(polygon);
+						//map.removeLayer(myTextLabel);
+						var features = $("#map").data("features");
+						var map = $("#map").data("map");
+
+						for(var removeIndex = 0; removeIndex < features.length; removeIndex++){
+						//if(e.layer.feature.properties.name != features[removeIndex].properties.name)
+								map.removeLayer(features[removeIndex]);
+						}
+
+						map.panTo(e.layer.getBounds().getCenter())
+						map.zoomIn(2);
+					});
+			}
+
+		</script>
+</body>
+</html>
