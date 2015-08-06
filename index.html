@@ -6,11 +6,12 @@
 	<link rel="stylesheet" href="css/bootstrap-theme.css">
 	<link rel="stylesheet" href="leaflet/leaflet.css" />
 	<script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
-  <script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
 	<script src="leaflet/leaflet.js"></script>
 	<script src="leaflet/leaflet.label.js"></script>
 	<script type="text/javascript" src="js/tile.stamen.js"></script>
 	<script type="text/javascript" src="js/neighborhoods.js"></script>
+	<script type="text/javascript" src="js/streets.js"></script>
 </head>
 <body>
 	<style type="text/css">
@@ -105,58 +106,69 @@
 		</div>
 		</div>
 		<script type="text/javascript">
-      var map = new L.Map("map", {
-          center: new L.LatLng(39.941300, -75.193566),
-          zoom: 13,
-          scrollWheelZoom: false,
-          touchZoom: false,
-          doubleClickZoom: false,
-          zoomControl: false,
-          dragging: false
-      });
-      map.addLayer(new L.StamenTileLayer("terrain", {
-          detectRetina: true
-      }));
+		 $(document).ready(function() {
+			 var map = new L.Map("map", {
+           center: new L.LatLng(39.941300, -75.193566),
+           zoom: 13,
+           touchZoom: false,
+           zoomControl: false,
+           dragging: false
+       });
+       map.addLayer(new L.StamenTileLayer("terrain", {
+           detectRetina: true
+       }));
 
-			$("#map").data("map", map);
+ 			$("#map").data("map", map);
 
-			var neighborhoodsData = getNeighborhoodsBoundries();
-			var features = new Array();
-			for (var index = 0, len = neighborhoodsData.length; index < len; ++index) {
-			    var neighborhood = neighborhoodsData[index];
+ 			var neighborhoodsData = getNeighborhoodsBoundries();
+ 			var features = new Array();
+ 			for (var index = 0, len = neighborhoodsData.features.length; index < len; ++index) {
+ 			    var neighborhood = neighborhoodsData.features[index];
 
-					var feature = L.geoJson(neighborhood);
-					features.push(feature);
-					feature.addTo(map);
+ 					var feature = L.geoJson(neighborhood);
+ 					features.push(feature);
+ 					feature.addTo(map);
 
-					$("#map").data("features", features);
+ 					/*var layerText = L.marker(feature.getBounds().getCenter(), {
+ 						icon: L.divIcon({
+ 							className: 'text-labels',   // Set class for CSS styling
+ 							html: neighborhood.properties.name,
+ 							clickable: false
+ 						})
+ 					});
 
-					var layerText = L.marker(feature.getBounds().getCenter(), {
-						icon: L.divIcon({
-							className: 'text-labels',   // Set class for CSS styling
-							html: neighborhood.properties.name,
-							clickable: false
-						})
-					});
+ 					layerText.addTo(map);*/
 
-					layerText.addTo(map);
+ 					feature.on('click', function(e) {
+ 						/*$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
+ 						//map.removeLayer(polygon);
+ 						//map.removeLayer(myTextLabel);
+ 						var features = $("#map").data("features");
+ 						var map = $("#map").data("map");
 
-					feature.on('click', function(e) {
-						$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
-						//map.removeLayer(polygon);
-						//map.removeLayer(myTextLabel);
-						var features = $("#map").data("features");
-						var map = $("#map").data("map");
+ 						for(var removeIndex = 0; removeIndex < features.length; removeIndex++){
+ 						//if(e.layer.feature.properties.name != features[removeIndex].properties.name)
+ 								map.removeLayer(features[removeIndex]);
+ 						}
 
-						for(var removeIndex = 0; removeIndex < features.length; removeIndex++){
-						//if(e.layer.feature.properties.name != features[removeIndex].properties.name)
-								map.removeLayer(features[removeIndex]);
-						}
+ 						map.panTo(e.layer.getBounds().getCenter());
 
-						map.panTo(e.layer.getBounds().getCenter())
-						map.zoomIn(2);
-					});
-			}
+ 						var layerBounds = e.layer.getBounds();
+ 						var streets = getStreets();
+ 						var streetLayer = L.geoJson(streets,  {
+ 																			    filter: function(feature, layer) {
+ 																			        //return layerBounds.contains( L.latLng(feature.geometry.coordinates[0][1], feature.geometry.coordinates[0][0])) || layerBounds.contains( L.latLng(feature.geometry.coordinates[1][1], feature.geometry.coordinates[1][0]));
+ 																							return true;
+ 																			    }
+ 																			});
+ 						streetLayer.addTo(map);*/
+ 						map.zoomIn(4);
+ 					});
+ 			}
+
+				$("#map").data("features", features);
+		 });
+
 
 		</script>
 </body>
