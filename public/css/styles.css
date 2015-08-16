@@ -1,0 +1,18 @@
+#map
+{
+  position: absolute;
+  top: 50px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+#map { z-index: 35; }
+
+.text-labels
+{
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+.sidebar { z-index: 45; }
