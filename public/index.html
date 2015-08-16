@@ -8,28 +8,10 @@
 	<title>Not in Philly</title>
 
 	<!-- CSS -->
-	<link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.min.css">
-	<link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap-theme.css">
-	<link rel="stylesheet" href="leaflet/leaflet.css" />
-	<link rel="stylesheet" href="css/styles.css">
-
-	<!-- JS -->
-  <script src="libs/angular/angular.min.js"></script>
-  <script src="libs/angular-route/angular-route.min.js"></script>
-	<script src="libs/jquery/dist/jquery.min.js"></script>
-	<script src="libs/bootstrap/dist/js/bootstrap.min.js"></script>
-	<script src="leaflet/leaflet.js"></script>
-	<script src="leaflet/leaflet.label.js"></script>
-	<script src="js/tile.stamen.js"></script>
-	<script src="js/neighborhoods.js"></script>
-	<script src="js/streets.js"></script>
-
-  <!-- ANGULAR CUSTOM -->
-  <script src="js/controllers/MainCtrl.js"></script>
-  <script src="js/controllers/UserCtrl.js"></script>
-  <script src="js/services/UserService.js"></script>
-  <script src="js/appRoutes.js"></script>
-  <script src="js/app.js"></script>
+	<link rel="stylesheet" href="css/bootstrap.css">
+	<link rel="stylesheet" href="css/bootstrap-theme.css">
+	<link rel="stylesheet" href="css/leaflet.css" />
+	<link rel="stylesheet" href="css/styles.css" />
 
 </head>
 <body>
@@ -115,66 +97,83 @@
 
 		</div>
 		</div>
+
+		<!-- JS -->
+		<script src="js/jquery.js"></script>
+		<script src="js/angular.js"></script>
+		<script src="js/angular-route.js"></script>
+		<script src="js/bootstrap.js"></script>
+
+		<script src="js/leaflet.js"></script>
+		<script src="js/leaflet-providers.js"></script>
+		<script src="js/neighborhoods.js"></script>
+		<script src="js/streets.js"></script>
+
+		<!-- ANGULAR CUSTOM -->
+		<script src="js/controllers/MainCtrl.js"></script>
+		<script src="js/controllers/UserCtrl.js"></script>
+		<script src="js/services/UserService.js"></script>
+		<script src="js/appRoutes.js"></script>
+		<script src="js/app.js"></script>
+
 		<script type="text/javascript">
 		 $(document).ready(function() {
 			 var map = new L.Map("map", {
-           center: new L.LatLng(39.941300, -75.193566),
-           zoom: 13,
-           touchZoom: false,
-           zoomControl: false,
-           dragging: false
-       });
-       map.addLayer(new L.StamenTileLayer("terrain", {
-           detectRetina: true
-       }));
+					 center: new L.LatLng(39.941300, -75.193566),
+					 zoom: 13,
+					 touchZoom: false,
+					 zoomControl: false,
+					 dragging: false
+			 });
+			 L.tileLayer.provider("OpenStreetMap.HOT").addTo(map);
 
- 			$("#map").data("map", map);
+			$("#map").data("map", map);
 
- 			var neighborhoodsData = getNeighborhoodsBoundries();
- 			var features = new Array();
- 			for (var index = 0, len = neighborhoodsData.features.length; index < len; ++index) {
- 			    var neighborhood = neighborhoodsData.features[index];
+			var neighborhoodsData = getNeighborhoodsBoundries();
+			var features = new Array();
+			for (var index = 0, len = neighborhoodsData.features.length; index < len; ++index) {
+					var neighborhood = neighborhoodsData.features[index];
 
- 					var feature = L.geoJson(neighborhood);
- 					features.push(feature);
- 					feature.addTo(map);
+					var feature = L.geoJson(neighborhood);
+					features.push(feature);
+					feature.addTo(map);
 
- 					/*var layerText = L.marker(feature.getBounds().getCenter(), {
- 						icon: L.divIcon({
- 							className: 'text-labels',   // Set class for CSS styling
- 							html: neighborhood.properties.name,
- 							clickable: false
- 						})
- 					});
+					/*var layerText = L.marker(feature.getBounds().getCenter(), {
+						icon: L.divIcon({
+							className: 'text-labels',   // Set class for CSS styling
+							html: neighborhood.properties.name,
+							clickable: false
+						})
+					});
 
- 					layerText.addTo(map);*/
+					layerText.addTo(map);*/
 
- 					feature.on('click', function(e) {
- 						/*$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
- 						//map.removeLayer(polygon);
- 						//map.removeLayer(myTextLabel);
- 						var features = $("#map").data("features");
- 						var map = $("#map").data("map");
+					feature.on('click', function(e) {
+						/*$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
+						//map.removeLayer(polygon);
+						//map.removeLayer(myTextLabel);
+						var features = $("#map").data("features");
+						var map = $("#map").data("map");
 
- 						for(var removeIndex = 0; removeIndex < features.length; removeIndex++){
- 						//if(e.layer.feature.properties.name != features[removeIndex].properties.name)
- 								map.removeLayer(features[removeIndex]);
- 						}
+						for(var removeIndex = 0; removeIndex < features.length; removeIndex++){
+						//if(e.layer.feature.properties.name != features[removeIndex].properties.name)
+								map.removeLayer(features[removeIndex]);
+						}
 
- 						map.panTo(e.layer.getBounds().getCenter());
+						map.panTo(e.layer.getBounds().getCenter());
 
- 						var layerBounds = e.layer.getBounds();
- 						var streets = getStreets();
- 						var streetLayer = L.geoJson(streets,  {
- 																			    filter: function(feature, layer) {
- 																			        //return layerBounds.contains( L.latLng(feature.geometry.coordinates[0][1], feature.geometry.coordinates[0][0])) || layerBounds.contains( L.latLng(feature.geometry.coordinates[1][1], feature.geometry.coordinates[1][0]));
- 																							return true;
- 																			    }
- 																			});
- 						streetLayer.addTo(map);*/
- 						map.zoomIn(4);
- 					});
- 			}
+						var layerBounds = e.layer.getBounds();
+						var streets = getStreets();
+						var streetLayer = L.geoJson(streets,  {
+																					filter: function(feature, layer) {
+																							//return layerBounds.contains( L.latLng(feature.geometry.coordinates[0][1], feature.geometry.coordinates[0][0])) || layerBounds.contains( L.latLng(feature.geometry.coordinates[1][1], feature.geometry.coordinates[1][0]));
+																							return true;
+																					}
+																			});
+						streetLayer.addTo(map);*/
+						map.zoomIn(4);
+					});
+			}
 
 				$("#map").data("features", features);
 		 });
