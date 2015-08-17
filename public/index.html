@@ -143,14 +143,14 @@
 									map.removeLayer(features[removeIndex]);
 							}
 
-							map.panTo(e.layer.getBounds().getCenter());
+							//map.panTo(e.latlng);
 
 							var layerBounds = e.layer.getBounds();
 							for (var streetIndex = 0, streetLen = streetsData.length; streetIndex < streetLen; ++streetIndex) {
 								var streetLayer = L.geoJson(streetsData[streetIndex]);
 								streetLayer.addTo(map);
 							}
-							map.zoomIn(4);
+							//map.zoomIn(10);
 						}
 					});
 			}
