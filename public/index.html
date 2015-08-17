@@ -19,13 +19,13 @@
       <div class="container-fluid">
           <!-- Brand and toggle get grouped for better mobile display -->
           <div class="navbar-header">
-            <a class="navbar-brand" href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#">Let's make Philly awesome!</a>
+            <a class="navbar-brand" href="#">Let's make Philly awesome!</a>
           </div>
           <!-- Collect the nav links, forms, and other content for toggling -->
           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-              <li class="active"><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#">Link</a></li>
-              <li><a href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#">Link</a></li>
+              <li class="active"><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
             </ul>
           </div><!-- /.navbar-collapse -->
       </div><!-- /.container-fluid -->
@@ -38,10 +38,6 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
-								<a data-toggle="collapse" href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#layers">
-									<i class="fa fa-list-alt"></i>
-									Layers
-								</a>
 								<span class="pull-right slide-submenu">
 									<i class="fa fa-chevron-left"></i>
 								</span>
@@ -67,7 +63,7 @@
 					<div class="panel panel-default">
 						<div class="panel-heading">
 							<h4 class="panel-title">
-								<a data-toggle="collapse" href="http://jumpinjackie.github.io/bootstrap-viewer-template/2-column/index.html#properties">
+								<a data-toggle="collapse">
 									<i class="fa fa-list-alt"></i>
 									Properties
 								</a>
@@ -120,10 +116,7 @@
 		 $(document).ready(function() {
 			 var map = new L.Map("map", {
 					 center: new L.LatLng(39.941300, -75.193566),
-					 zoom: 13,
-					 touchZoom: false,
-					 zoomControl: false,
-					 dragging: false
+					 zoom: 13
 			 });
 			 L.tileLayer.provider("OpenStreetMap.HOT").addTo(map);
 
@@ -138,42 +131,30 @@
 					features.push(feature);
 					feature.addTo(map);
 
-					/*var layerText = L.marker(feature.getBounds().getCenter(), {
-						icon: L.divIcon({
-							className: 'text-labels',   // Set class for CSS styling
-							html: neighborhood.properties.name,
-							clickable: false
-						})
-					});
-
-					layerText.addTo(map);*/
-
 					feature.on('click', function(e) {
-						/*$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
-						//map.removeLayer(polygon);
-						//map.removeLayer(myTextLabel);
-						var features = $("#map").data("features");
-						var map = $("#map").data("map");
+						$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
+						var streetsData = getStreets(e.layer.feature.properties.name)
+						if(streetsData)
+						{
+							var features = $("#map").data("features");
+							var map = $("#map").data("map");
 
-						for(var removeIndex = 0; removeIndex < features.length; removeIndex++){
-						//if(e.layer.feature.properties.name != features[removeIndex].properties.name)
-								map.removeLayer(features[removeIndex]);
+							for(var removeIndex = 0; removeIndex < features.length; removeIndex++){
+									map.removeLayer(features[removeIndex]);
+							}
+
+							map.panTo(e.layer.getBounds().getCenter());
+
+							var layerBounds = e.layer.getBounds();
+							for (var streetIndex = 0, streetLen = streetsData.length; streetIndex < streetLen; ++streetIndex) {
+								var streetLayer = L.geoJson(streetsData[streetIndex]);
+								streetLayer.addTo(map);
+							}
+							map.zoomIn(4);
 						}
-
-						map.panTo(e.layer.getBounds().getCenter());
-
-						var layerBounds = e.layer.getBounds();
-						var streets = getStreets();
-						var streetLayer = L.geoJson(streets,  {
-																					filter: function(feature, layer) {
-																							//return layerBounds.contains( L.latLng(feature.geometry.coordinates[0][1], feature.geometry.coordinates[0][0])) || layerBounds.contains( L.latLng(feature.geometry.coordinates[1][1], feature.geometry.coordinates[1][0]));
-																							return true;
-																					}
-																			});
-						streetLayer.addTo(map);*/
-						map.zoomIn(4);
 					});
 			}
+			
 
 				$("#map").data("features", features);
 		 });
