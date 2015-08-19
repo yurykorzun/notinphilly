@@ -2,10 +2,12 @@
   "name": "starter-node-angular",
   "version": "1.0.0",
   "dependencies": {
-      "bootstrap": "latest",
-      "font-awesome": "latest",
-      "animate.css": "latest",
-      "angular": "latest",
-      "angular-route": "latest"
+    "bootstrap": "latest",
+    "font-awesome": "latest",
+    "animate.css": "latest",
+    "angular": "latest",
+    "angular-route": "latest",
+    "leaflet": "~0.7.3",
+    "leaflet-providers": "~1.1.1"
   }
 }
