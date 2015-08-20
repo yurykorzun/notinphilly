@@ -132,8 +132,10 @@
 					feature.addTo(map);
 
 					feature.on('click', function(e) {
-						$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
-						var streetsData = getStreets(e.layer.feature.properties.name)
+						//if(!e.layer.feature) return;
+
+						//$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
+						var streetsData = getStreets("LOGAN_SQUARE");
 						if(streetsData)
 						{
 							var features = $("#map").data("features");
