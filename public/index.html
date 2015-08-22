@@ -123,44 +123,205 @@
 			$("#map").data("map", map);
 
 			var neighborhoodsData = getNeighborhoodsBoundries();
-			var features = new Array();
-			for (var index = 0, len = neighborhoodsData.features.length; index < len; ++index) {
-					var neighborhood = neighborhoodsData.features[index];
 
-					var feature = L.geoJson(neighborhood);
-					features.push(feature);
-					feature.addTo(map);
+			var geoJsonLayer = L.geoJson(neighborhoodsData,
+			{
+				onEachFeature: attachEventsToLayers,
+				style: {
+					color: '#486CFA',
+					weight: 2,
+					fillOpacity: 0.4,
+          fillColor: '#78D2FF'
+				}
+			});
+			var features = neighborhoodsData.features;
 
-					feature.on('click', function(e) {
-						//if(!e.layer.feature) return;
+			geoJsonLayer.addTo(map);
 
-						//$("#properties .panel-body").text("clicked -" + e.layer.feature.properties.name);
-						var streetsData = getStreets("LOGAN_SQUARE");
-						if(streetsData)
-						{
-							var features = $("#map").data("features");
-							var map = $("#map").data("map");
-
-							for(var removeIndex = 0; removeIndex < features.length; removeIndex++){
-									map.removeLayer(features[removeIndex]);
-							}
-
-							//map.panTo(e.latlng);
-
-							var layerBounds = e.layer.getBounds();
-							for (var streetIndex = 0, streetLen = streetsData.length; streetIndex < streetLen; ++streetIndex) {
-								var streetLayer = L.geoJson(streetsData[streetIndex]);
-								streetLayer.addTo(map);
-							}
-							//map.zoomIn(10);
-						}
-					});
-			}
-
-
-				$("#map").data("features", features);
+			$("#map").data("features", features);
+			$("#map").data("geoJsonLayer", geoJsonLayer);
 		 });
 
+		function attachEventsToLayers(feature, layer){
+				layer.setStyle(getRandomColor());
+				layer.on({
+				 mouseover: highlightNeighborhood,
+				 mouseout: resetHighlightNeighborhood,
+				 click: onLayerClick
+		 		});
+	 }
+
+		function onLayerClick(e)
+		{
+			if(e.target.feature)
+			{
+				var geoJsonLayer = $("#map").data("geoJsonLayer");
+				var map = $("#map").data("map");
+
+				var triggeredFeature = e.target.feature;
+				var layerBounds = e.layer.getBounds();
+
+				$("#properties .panel-body").text("clicked -" + triggeredFeature.properties.name);
+
+				map.removeLayer(geoJsonLayer);
+				map.fitBounds(layerBounds);
+
+				var streetsData = getStreets(triggeredFeature.properties.name);
+				var streetsJson = { "type": "FeatureCollection",
+														"features": streetsData
+													};
+				var geoJsonLayer = L.geoJson(streetsJson,
+				{
+					onEachFeature: attachEventsToStreets,
+				});
+
+				geoJsonLayer.addTo(map);
+			}
+		}
+
+		function attachEventsToStreets(feature, layer){
+				layer.setStyle(getRandomStreetColor());
+				layer.on({
+				 mouseover: highlightStreet,
+ 				 mouseout: resetHighlightStreet,
+ 				 click: onStreetClick
+				});
+	 	}
+
+		function onStreetClick(e)
+		{
+			if(e.target.feature)
+			{
+				var map = $("#map").data("map");
+				var properties = e.target.feature.properties;
+
+				var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=190x190&location=" +  e.latlng.lat + "," + e.latlng.lng  + "&fov=90&heading=235&pitch=10"
+
+				var popup = L.popup({
+					keepInView: true
+				})
+		    .setLatLng(e.latlng)
+		    .setContent("<p>Let's adopt a street!<br /> Street: " + properties.ST_NAME + " " + properties.L_HUNDRED + ", zipcode: " + properties.ZIP_LEFT + "</p><br/> <img src='" + imageSrc + "' />");
+
+				popup.openOn(map);
+
+				map.panTo(e.latlng);
+			}
+		}
+
+		function getRandomColor()
+		{
+			var colorValue = Math.floor(Math.random() * 3) + 1;
+			var style= {};
+
+			switch (colorValue) {
+				case 1:
+					style = {
+						color: 'Blue',
+						weight: 2,
+						fillColor: 'Red',
+						fillOpacity: 0.2
+					};
+					break;
+				case 2:
+					style = {
+						color: 'Blue',
+						weight: 2,
+						fillColor: 'Green',
+						fillOpacity: 0.2
+					};
+					break;
+				case 3:
+					style = {
+							color: 'Blue',
+							weight: 2,
+							fillColor: 'Yellow',
+							fillOpacity: 0.2
+						};
+					break;
+			}
+
+			return style;
+		}
+
+
+		function getRandomStreetColor()
+		{
+			var colorValue = Math.floor(Math.random() * 3) + 1;
+			var style= {};
+
+			switch (colorValue) {
+				case 1:
+					style = {
+						color: '#E897AA',
+						opacity: 0.5,
+						weight: 5
+					};
+					break;
+				case 2:
+					style = {
+						color: '#98EBA2',
+						opacity: 0.5,
+						weight: 5
+					};
+					break;
+				case 3:
+					style = {
+							color: '#E6EB98',
+							opacity: 0.5,
+							weight: 5
+						};
+					break;
+			}
+
+			return style;
+		}
+
+		function highlightNeighborhood(e) {
+		    var layer = e.target;
+
+		    layer.setStyle({
+		        weight: 7,
+						fillOpacity: 0.9,
+		        color: '#666'
+		    });
+
+		    if (!L.Browser.ie && !L.Browser.opera) {
+		        layer.bringToFront();
+		    }
+		}
+
+		function resetHighlightNeighborhood(e) {
+		    var layer = e.target;
+
+				layer.setStyle({
+					color: 'Blue',
+					fillOpacity: 0.2,
+					weight: 2
+				});
+		}
+
+		function highlightStreet(e) {
+				var layer = e.target;
+
+				layer.setStyle({
+						opacity: 0.8,
+						weight: 15
+				});
+
+				if (!L.Browser.ie && !L.Browser.opera) {
+						layer.bringToFront();
+				}
+		}
+
+		function resetHighlightStreet(e) {
+				var layer = e.target;
+
+				layer.setStyle({
+					opacity: 0.5,
+					weight: 5
+				});
+		}
 
 		</script>
 </body>
