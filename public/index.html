@@ -32,8 +32,8 @@
 	  </nav>
 		<div id="map"></div>
 		<div class="row">
-			<div class="col-md-3">
-				<div class="col-md-12 sidebar sidebar-left pull-left">
+			<div class="col-md-3 sidebar">
+				<div class="col-md-12 sidebar-left pull-left">
 				<div class="panel-group sidebar-body" id="accordion-left">
 					<div class="panel panel-default">
 						<div class="panel-heading">
@@ -46,17 +46,13 @@
 						<div id="layers" class="panel-collapse collapse in">
 							<div class="panel-body list-group">
 								<a href="/" class="list-group-item">
-									<img src="img/notinphilly_logo.png" />
+									<img src="img/notinphilly_logo.png" class="logo"/>
 								</a>
-								<a href="#" class="list-group-item">
-									<i class="fa fa-globe"></i> Open Street Map
-								</a>
-								<a href="#" class="list-group-item">
-									<i class="fa fa-globe"></i> Bing
-								</a>
-								<a href="#" class="list-group-item">
-									<i class="fa fa-globe"></i> WMS
-								</a>
+								<div class="start">
+									<button id="start" type="button" class="btn-primary btn-start">
+									<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;Let's get started
+									</button>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -65,24 +61,25 @@
 							<h4 class="panel-title">
 								<a data-toggle="collapse">
 									<i class="fa fa-list-alt"></i>
-									Properties
+									How it works
 								</a>
 							</h4>
 						</div>
-						<div id="properties" class="panel-collapse collapse in">
+						<div>
 							<div class="panel-body">
 								<p>
-								Lorem ipsum dolor sit amet, vel an wisi propriae. Sea ut graece gloriatur. Per ei quando dicant vivendum. An insolens appellantur eos, doctus convenire vis et, at solet aeterno intellegebat qui.
+								Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. In return for a 6 month commitment to going out once a week to pick up litter, we will give you a trash grabber.
 								</p>
 								<p>
-								Elitr minimum inciderint qui no. Ne mea quaerendum scriptorem consequuntur. Mel ea nobis discere dignissim, aperiam patrioque ei ius. Stet laboramus eos te, his recteque mnesarchum an, quo id adipisci salutatus. Quas solet inimicus eu per. Sonet conclusionemque id vis.
+									No more touching litter or killing your back! You will be amazed at how much we can get done together!
 								</p>
-								<p>
-								Eam vivendo repudiandae in, ei pri sint probatus. Pri et lorem praesent periculis, dicam singulis ut sed. Omnis patrioque sit ei, vis illud impetus molestiae id. Ex viderer assentior mel, inani liber officiis pro et. Qui ut perfecto repudiandae, per no hinc tation labores.
-								</p>
-								<p>
-								Pro cu scaevola antiopam, cum id inermis salutatus. No duo liber gloriatur. Duo id vitae decore, justo consequat vix et. Sea id tale quot vitae.
-								</p>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div>
+							<div class="panel-body">
+								<img src="img/codeforphilly.png" class="sponsor-logo"/>
 							</div>
 						</div>
 					</div>
@@ -90,7 +87,11 @@
 			</div>
 		</div>
 		<div class="col-md-8">
-
+			<div class="goback col">
+				<button id="goback" type="button" class="btn-primary btn-goback" style="display:none;">
+						<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>&nbsp;Go back
+				</button>
+			</div>
 		</div>
 		</div>
 
@@ -115,32 +116,40 @@
 		<script type="text/javascript">
 		 $(document).ready(function() {
 			 var map = new L.Map("map", {
-					 center: new L.LatLng(39.941300, -75.193566),
+					 center: new L.LatLng(39.952604, -75.163368),
 					 zoom: 13
 			 });
 			 L.tileLayer.provider("Stamen.Terrain").addTo(map);
 
 			$("#map").data("map", map);
 
-			var neighborhoodsData = getNeighborhoodsBoundries();
-
-			var geoJsonLayer = L.geoJson(neighborhoodsData,
-			{
-				onEachFeature: attachEventsToLayers,
-				style: {
-					color: '#486CFA',
-					weight: 2,
-					fillOpacity: 0.4,
-          fillColor: '#78D2FF'
-				}
-			});
-			var features = neighborhoodsData.features;
-
-			geoJsonLayer.addTo(map);
-
-			$("#map").data("features", features);
-			$("#map").data("geoJsonLayer", geoJsonLayer);
+			initalizeNeighborhoods();
 		 });
+
+		 function initalizeNeighborhoods()
+		 {
+			 var map = $("#map").data("map");
+			 var neighborhoodsData = getNeighborhoodsBoundries();
+
+			 var geoJsonLayer = L.geoJson(neighborhoodsData,
+			 {
+				 onEachFeature: attachEventsToLayers,
+				 style: {
+					 color: '#486CFA',
+					 weight: 2,
+					 fillOpacity: 0.4,
+						fillColor: '#78D2FF'
+				 }
+			 });
+			 var features = neighborhoodsData.features;
+
+			 geoJsonLayer.addTo(map);
+			 map.setView(L.latLng(39.952604, -75.163368));
+			 map.setZoom(13);
+
+			 $("#map").data("features", features);
+			 $("#map").data("geoJsonLayer", geoJsonLayer);
+		 }
 
 		function attachEventsToLayers(feature, layer){
 				layer.setStyle(getRandomColor());
@@ -167,17 +176,33 @@
 				map.fitBounds(layerBounds);
 
 				var streetsData = getStreets(triggeredFeature.properties.name);
-				var streetsJson = { "type": "FeatureCollection",
-														"features": streetsData
-													};
-				var geoJsonLayer = L.geoJson(streetsJson,
+				if(streetsData)
 				{
-					onEachFeature: attachEventsToStreets,
-				});
+					var streetsJson = { "type": "FeatureCollection",
+															"features": streetsData
+														};
+					geoJsonLayer = L.geoJson(streetsJson,
+					{
+						onEachFeature: attachEventsToStreets,
+					});
 
-				geoJsonLayer.addTo(map);
+					geoJsonLayer.addTo(map);
+				}
+
+				$("#map").data("geoJsonLayer", geoJsonLayer);
+				$("#goback").show();
 			}
 		}
+
+		$("#goback").on("click", function() {
+			var map = $("#map").data("map");
+			var geoJsonLayer = $("#map").data("geoJsonLayer");
+
+			map.removeLayer(geoJsonLayer);
+			initalizeNeighborhoods();
+
+			$("#goback").hide();
+		});
 
 		function attachEventsToStreets(feature, layer){
 				layer.setStyle(getRandomStreetColor());
@@ -195,13 +220,13 @@
 				var map = $("#map").data("map");
 				var properties = e.target.feature.properties;
 
-				var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=190x190&location=" +  e.latlng.lat + "," + e.latlng.lng  + "&fov=90&heading=235&pitch=10"
+				var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=190x190&location=" +  e.latlng.lat + "," + e.latlng.lng  + "&fov=70&heading=170&pitch=10"
 
 				var popup = L.popup({
 					keepInView: true
 				})
 		    .setLatLng(e.latlng)
-		    .setContent("<p>Let's adopt a street!<br /> Street: " + properties.ST_NAME + " " + properties.L_HUNDRED + ", zipcode: " + properties.ZIP_LEFT + "</p><br/> <img src='" + imageSrc + "' />");
+		    .setContent("<p>Let's adopt a street!<br /> Street: " + properties.ST_NAME + " " + properties.L_HUNDRED + ", zipcode: " + properties.ZIP_LEFT + "</p><p><button type='button' class='btn btn-success'>I am in!</button></p><p> <img src='" + imageSrc + "' /></p>");
 
 				popup.openOn(map);
 
