@@ -28,6 +28,7 @@ a:hover{
 /*side*/
 .container{
     padding: 10px;
+    border-bottom: 1px solid #fff;
 }
 img[src*='logo']{
     display: block;
