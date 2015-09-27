@@ -4,6 +4,7 @@
   "type": "git",
   "url": "https://github.com/yurykorzun/notinphilly.git",
   "dependencies": {
+    "array-find": "^1.0.0",
     "body-parser": "~1.4.2",
     "bower": "^1.5.1",
     "express": "~4.5.1",
