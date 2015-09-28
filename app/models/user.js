@@ -10,7 +10,7 @@ var userSchema = new Schema({
   phoneNumber: { type : String, default: '' },
   email: { type : String, default: '' },
   role: {
-    type: Schema.Types.ObjectId,
+    type: Number,
     ref: 'Role'
   },
   businesName: { type : String, default: '' },
