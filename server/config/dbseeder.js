@@ -1,4 +1,3 @@
-
 var mongoose       = require('mongoose');
 var fs             = require('fs');
 var path           = require('path');
@@ -10,11 +9,11 @@ var neigborhoodJson = fs.readFileSync(path.resolve(__dirname, "../../client/publ
 var neighborhoodsObj = JSON.parse(neigborhoodJson);
 var streetsObj = JSON.parse(streetsJson);
 
-var StreetSegmentModel = require('../models/streetSegment');
-var NeighborhoodModel = require('../models/neighborhood');
-var StateModel = require('../models/state');
-var RoleModel = require('../models/state');
-var UserModel = require('../models/user');
+var StreetSegmentModel = require('../api/street/streetSegment.model');
+var NeighborhoodModel = require('../api/neighborhood/neighborhood.model');
+var StateModel = require('../api/state/state.model');
+var RoleModel = require('../api/role/role.model');
+var UserModel = require('../api/user/user.model');
 
 console.log('starting to seed the database');
 
