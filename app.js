@@ -15,7 +15,8 @@ mongoose.connection.on('error', console.log);
 mongoose.connect("mongodb://localhost/notinphilly");
 
 //seed the database
-var dbseeder = require('./server/config/dbseeder');
+//uncomment to seed
+//var dbseeder = require('./server/config/dbseeder');
 
 var server = require('http').createServer(app);
 require('./server/config/express')(app);

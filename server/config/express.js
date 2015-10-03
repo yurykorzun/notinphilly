@@ -2,7 +2,8 @@ var express        = require('express');
 var mongoose       = require('mongoose');
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
-var cookieParser = require('cookie-parser');
+var cookieParser   = require('cookie-parser');
+var path           = require('path');
 
 module.exports = function(app) {
   app.use(bodyParser.urlencoded({
@@ -12,5 +13,7 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
 
-  app.use(express.static(__dirname + '/public'));
+  var assetsPath = path.normalize(__dirname + '/../../client/public');
+  app.use(express.static(assetsPath));
+  app.set('clientPath', assetsPath);
 };
