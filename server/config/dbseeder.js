@@ -68,6 +68,31 @@ StreetSegmentModel.find({}).remove({}, function(err) {
   });
 });
 
+UserModel.find({}).remove(function() {
+    console.log('Seeding Users');
+    UserModel.create({
+      firstName: 'Yury',
+      middleName: undefined,
+      lastName: 'Korzun',
+      birthDate: Date('1987-05-01'),
+      phoneNumber: '123456789',
+      email: 'test@test.me',
+      role: 1,
+      businesName: 'Not in Philly',
+      addressLine1: 'Main st. 1',
+      addressLine2: undefined,
+      city: 'Philadelphia',
+      state: 1,
+      zip: '19103',
+      username: 'test@test.me',
+      password: '1234test'
+    }, function(err, thor) {
+      if (err) return console.error(err);
+
+      console.log('Finished seeding Users');
+    });
+});
+
 StateModel.find({}).remove(function() {
     console.log('Seeding States');
     StateModel.create(
@@ -85,7 +110,9 @@ StateModel.find({}).remove(function() {
             "name": 'New York',
             "abbrev": 'NY'
         }
-    , function(e) {
+    , function(err, thor) {
+      if (err) return console.error(err);
+
       console.log('Finished seeding States');
     });
 });
@@ -95,40 +122,23 @@ RoleModel.find({}).remove(function() {
     RoleModel.create({
             "_id": 1,
             "name": 'Admin'
-        }, {
+        },
+        {
             "_id": 2,
-            "name": 'Leader'
+            "name": 'Champion'
         }, {
             "_id": 3,
-            "name": 'User'
+            "name": 'Leader'
         }, {
             "_id": 4,
+            "name": 'User'
+        }, {
+            "_id": 5,
             "name": 'Visitor'
         }
-    , function(e) {
-      console.log('Finished seeding Roles');
-    });
-});
+    , function(err, thor) {
+      if (err) return console.error(err);
 
-UserModel.find({}).remove(function() {
-    console.log('Seeding Users');
-    UserModel.create({
-      firstName: 'Yury',
-      middleName: undefined,
-      lastName: 'Korzun',
-      birthDate: Date('1987-05-01'),
-      phoneNumber: '123456789',
-      email: 'test@test.me',
-      role: 1,
-      businesName: 'Not in Philly',
-      addressLine1: 'Main st. 1',
-      addressLine2: undefined,
-      city: 'Philadelphia',
-      state: 'PA',
-      zip: '19103',
-      username: 'test@test.me',
-      password: '1234test'
-    }, function(e) {
-      console.log('Finished seeding Users');
+      console.log('Finished seeding Roles');
     });
 });

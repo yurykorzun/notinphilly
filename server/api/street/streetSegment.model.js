@@ -18,6 +18,7 @@ var StreetSchema = new Schema({
   oneWay: String,
   class: Number,
   geodata:{}
-});
+},
+{ collection: 'streetSegments' });
 
 module.exports = mongoose.model('StreetSegment', StreetSchema);

@@ -6,6 +6,7 @@ var NeighborhoodSchema = new Schema({
   code: String,
   description: String,
   geodata:{}
-});
+},
+{ collection: 'neighborhoods' });
 
 module.exports = mongoose.model('Neighborhood', NeighborhoodSchema);

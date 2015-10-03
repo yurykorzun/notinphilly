@@ -30,8 +30,12 @@ var userSchema = new Schema({
   facebook: {},
   twitter: {},
   google: {},
+  adoptedStreets: [{
+    type: Schema.Types.ObjectId,
+    ref: 'StreetSegment'}],
   createDate: { type : Date, default: Date.now }
-});
+},
+{ collection: 'userProfiles' });
 
 // define our user model
 // module.exports allows us to pass this to other files when it is called

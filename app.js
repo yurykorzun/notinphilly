@@ -6,8 +6,7 @@ var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
 
 // configuration ===========================================
-// config files
-var db = require('./config/db');
+var db = require('./server/config/db');
 
 // set our port
 var port = process.env.PORT || 8080;
@@ -16,13 +15,13 @@ mongoose.connection.on('error', console.log);
 mongoose.connect("mongodb://localhost/notinphilly");
 
 //seed the database
-var dbseeder = require('./config/dbseeder');
+var dbseeder = require('./server/config/dbseeder');
 
 var server = require('http').createServer(app);
-require('./config/express')(app);
+require('./server/config/express')(app);
 
 // routes ==================================================
-require('./routes')(app);
+require('./server/routes')(app);
 
 // start app ===============================================
 // startup our app at http://localhost:8080

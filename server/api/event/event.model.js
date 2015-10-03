@@ -39,6 +39,7 @@ var EventSchema = new Schema({
     zip: {
         type: String,
     }
-});
+},
+{ collection: 'events' });
 
 module.exports = mongoose.model('Event', EventSchema);
