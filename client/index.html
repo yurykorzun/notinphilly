@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- required for HTML5 pushstate links -->
+    <base href="/">
+    <title>#NotInPhilly</title>
+    <meta name="description" content="Not in Philly">
+    <meta name="author" content="Yury Korzun">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="favicon.ico">
+    <link rel="stylesheet" href="public/libs/bootstrap/dist/css/bootstrap.css">
+    <link rel="stylesheet" href="public/libs/bootstrap/dist/css/bootstrap-theme.css">
+    <link rel="stylesheet" href="public/libs/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="public/css/styles.css" />
+</head>
+<body ng-app="notinphillyServerApp">
+  <nav class="navbar navbar-fixed-top navbar-default" role="navigation">
+     <div class="container-fluid">
+         <!-- Brand and toggle get grouped for better mobile display -->
+         <div class="navbar-header">
+           <a class="navbar-brand" href="#">Let's make Philly awesome!</a>
+         </div>
+         <!-- Collect the nav links, forms, and other content for toggling -->
+         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+           <ul class="nav navbar-nav">
+             <li class="active"><a href="#">Link</a></li>
+             <li><a href="#">Link</a></li>
+           </ul>
+         </div><!-- /.navbar-collapse -->
+     </div><!-- /.container-fluid -->
+   </nav>
+  <div ui-view=""></div>
+
+  <!-- JS -->
+  <script src="public/libs/jquery/dist/jquery.js"></script>
+  <script src="public/libs/angular/angular.js"></script>
+  <script src="public/libs/angular-route/angular-route.js"></script>
+  <script src="public/libs/restangular/dist/restangular.js"></script>
+  <script src="public/libs/bootstrap/dist/js/bootstrap.js"></script>
+
+  <script src="public/libs/leaflet/dist/leaflet.js"></script>
+  <script src="public/libs/leaflet-providers/leaflet-providers.js"></script>
+  <script src="public/js/neighborhoods.js"></script>
+  <script src="public/js/streets.js"></script>
+
+  <!-- ANGULAR CUSTOM -->
+    <script src="app/app.js"></script>
+</body>
+</html>

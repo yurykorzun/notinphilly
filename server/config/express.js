@@ -13,7 +13,8 @@ module.exports = function(app) {
   app.use(methodOverride());
   app.use(cookieParser());
 
-  var assetsPath = path.normalize(__dirname + '/../../client/public');
-  app.use(express.static(assetsPath));
+  var assetsPath = path.normalize(__dirname + '/../../client/');
+  app.use(express.static(assetsPath));;
+
   app.set('clientPath', assetsPath);
 };
