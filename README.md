@@ -2,6 +2,12 @@
 
 Concept: In return for a 6 month commitment to go out once a week to pick up the litter on a block, we supply citizens of Philadelphia with a trash grabber.
 
-The google doc with all the notes up to now: https://docs.google.com/document/d/1xVudHHwClOE9vSwBWR8xQi-rRIZb5KZYQ91YS8ueEVk/edit?usp=sharing
+The google doc with all the notes up to now: <a src="https://docs.google.com/document/d/1xVudHHwClOE9vSwBWR8xQi-rRIZb5KZYQ91YS8ueEVk/edit?usp=sharing">Here</a>
 
-Run 'node server.js' to start the server, which you can now access at http://localhost:8080.
+To run the app, please try:
+  Git clone the solution
+  Install nodejs, npm, bower, mongodb
+  Run npm install in the folder
+  Run bower install
+  Uncomment db seeder in the app.js
+  Run 'node app.js' to start the server, which you can access at http://localhost:8080.
