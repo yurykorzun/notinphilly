@@ -9,6 +9,8 @@
     "angular-route": "latest",
     "leaflet": "~0.7.3",
     "leaflet-providers": "~1.1.1",
-    "restangular": "~1.5.1"
+    "restangular": "~1.5.1",
+    "underscore": "~1.8.3",
+    "angular-leaflet-directive": "~0.8.8"
   }
 }

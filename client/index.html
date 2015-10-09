@@ -31,21 +31,26 @@
          </div><!-- /.navbar-collapse -->
      </div><!-- /.container-fluid -->
    </nav>
-  <div ui-view=""></div>
+  <div ng-view></div>
 
   <!-- JS -->
   <script src="public/libs/jquery/dist/jquery.js"></script>
   <script src="public/libs/angular/angular.js"></script>
   <script src="public/libs/angular-route/angular-route.js"></script>
+  <script src="public/libs/angular-leaflet-directive/dist/angular-leaflet-directive.js"></script>
   <script src="public/libs/restangular/dist/restangular.js"></script>
+  <script src="public/libs/angular-simple-logger/dist/angular-simple-logger.js"></script>
   <script src="public/libs/bootstrap/dist/js/bootstrap.js"></script>
 
   <script src="public/libs/leaflet/dist/leaflet.js"></script>
+  <script src="public/libs/underscore/underscore.js"></script>
   <script src="public/libs/leaflet-providers/leaflet-providers.js"></script>
   <script src="public/js/neighborhoods.js"></script>
   <script src="public/js/streets.js"></script>
 
   <!-- ANGULAR CUSTOM -->
-    <script src="app/app.js"></script>
+  <script src="app/app.js"></script>
+  <script src="app/main/main.controller.js"></script>
+
 </body>
 </html>

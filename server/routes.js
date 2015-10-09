@@ -7,9 +7,9 @@ module.exports = function(app) {
     app.use('/api/streets', require('./api/street'));
 
     // All other routes should redirect to the index.html
-    app.route('/*')
+    /*app.route('/*')
         .get(function(req, res) {
             var pathToIndex = path.resolve(app.get('clientPath') + '/index.html');
             res.sendfile(pathToIndex);
-        });
+        });*/
 };

@@ -1,15 +1,23 @@
-angular
-  .module('notinphillyServerApp', [
+var  app = angular.module('notinphillyServerApp', [
     'ngRoute',
-    'restangular'
-  ])
-  .config(function ($routeProvider, RestangularProvider) {
+    'restangular',
+    'leaflet-directive'
+  ]);
+
+app.config(function ($routeProvider, RestangularProvider) {
     $routeProvider
       .when('/', {
-        templateUrl: 'main/main.html',
+        templateUrl: 'app/main/main.html',
         controller: 'MainCtrl'
       })
       .otherwise({
         redirectTo: '/'
       });
   });
+
+app.run([
+  '$rootScope',
+  function($rootScope) {
+  
+  }
+]);
