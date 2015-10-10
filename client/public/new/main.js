@@ -35,8 +35,9 @@ $(document).ready(function(){
 
 
     /*accordion*/
-    $('.accordion').click(function(){
-        $(this).siblings('p').slideToggle();
+    $('.accordion').click(function(e){
+        $(this).next().slideToggle();
+        e.preventDefault();
     });
 
     /*fancybox*/
@@ -105,8 +106,6 @@ $(document).ready(function(){
         signinFields.slideToggle();
         forgotPasswordFields.css('display','none');
     });
-
-
 
 });
 
