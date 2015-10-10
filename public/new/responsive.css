@@ -1,0 +1,35 @@
+/* Styles for screen less than 800px*/
+@media screen and (max-width: 799px){
+    body{
+        overflow: auto;
+    }
+    #side{
+        padding: 0;
+        overflow-y: auto;
+        position: relative;
+    }
+    #side, #info-container{
+        display: block;
+        width: 100%;
+        margin:0;
+    }
+    .p-mobile{
+        display: block;
+    }
+    .p-desktop{
+        display: none;
+    }
+    #map{
+        display: none;
+    }
+    #slider{
+        width: 100%;
+        position: relative;
+    }
+    .hide-slider-btn{
+        display: none;
+    }
+    #owl-example{
+        background: #272829;
+    }
+}
