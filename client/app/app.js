@@ -18,6 +18,6 @@ app.config(function ($routeProvider, RestangularProvider) {
 app.run([
   '$rootScope',
   function($rootScope) {
-  
+
   }
 ]);

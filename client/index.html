@@ -6,6 +6,7 @@
     <!-- required for HTML5 pushstate links -->
     <base href="/">
     <title>#NotInPhilly</title>
+    <link rel="icon" type="image/png" href="favicon.png">
     <meta name="description" content="Not in Philly">
     <meta name="author" content="Yury Korzun">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,22 +17,25 @@
     <link rel="stylesheet" href="public/css/styles.css" />
 </head>
 <body ng-app="notinphillyServerApp">
-  <nav class="navbar navbar-fixed-top navbar-default" role="navigation">
-     <div class="container-fluid">
-         <!-- Brand and toggle get grouped for better mobile display -->
-         <div class="navbar-header">
-           <a class="navbar-brand" href="#">Let's make Philly awesome!</a>
-         </div>
-         <!-- Collect the nav links, forms, and other content for toggling -->
-         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-           <ul class="nav navbar-nav">
-             <li class="active"><a href="#">Link</a></li>
-             <li><a href="#">Link</a></li>
-           </ul>
-         </div><!-- /.navbar-collapse -->
-     </div><!-- /.container-fluid -->
-   </nav>
-  <div ng-view></div>
+  <div class="container-fluid">
+    <nav class="navbar navbar-fixed-top navbar-default" role="navigation">
+       <div class="container-fluid">
+           <!-- Brand and toggle get grouped for better mobile display -->
+           <div class="navbar-header">
+             <a class="navbar-brand" href="#">Let's make Philly awesome!</a>
+           </div>
+           <!-- Collect the nav links, forms, and other content for toggling -->
+           <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+             <ul class="nav navbar-nav">
+               <li class="active"><a href="#">Link</a></li>
+               <li><a href="#">Link</a></li>
+             </ul>
+           </div><!-- /.navbar-collapse -->
+       </div><!-- /.container-fluid -->
+     </nav>
+    <div class="navbar-offset"></div>
+    <div ng-view></div>
+  </div>
 
   <!-- JS -->
   <script src="public/libs/jquery/dist/jquery.js"></script>
@@ -45,12 +49,11 @@
   <script src="public/libs/leaflet/dist/leaflet.js"></script>
   <script src="public/libs/underscore/underscore.js"></script>
   <script src="public/libs/leaflet-providers/leaflet-providers.js"></script>
-  <script src="public/js/neighborhoods.js"></script>
-  <script src="public/js/streets.js"></script>
 
   <!-- ANGULAR CUSTOM -->
   <script src="app/app.js"></script>
   <script src="app/main/main.controller.js"></script>
+  <script src="app/resizeLeaflet/resizeLeaflet.directive.js"></script>
 
 </body>
 </html>
