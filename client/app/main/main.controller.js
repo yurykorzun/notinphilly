@@ -28,6 +28,7 @@ angular.module('notinphillyServerApp')
           {
             var geoJsonLayer = L.geoJson(data[nIndex].geodata,
             {
+              //onEachFeature: $scope.setNeigborhoodLayerSettings,
               style: {
                 color: '#486CFA',
                 weight: 2,
@@ -40,4 +41,6 @@ angular.module('notinphillyServerApp')
           }
      });
    });
+
+
   }]);

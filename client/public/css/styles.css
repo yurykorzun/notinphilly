@@ -10,15 +10,11 @@
 }
 
 .side {
-    padding-left: 5px;
-    background-color: white;
-    height: 100%;
-    box-sizing: border-box;
     border-right: 1px solid #BDB9BB;
     box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.2);
     z-index: 10;
+    margin-left: -24px;
 }
-
 .navbar-offset {
     margin-top: 40px;
 }
@@ -29,25 +25,31 @@
     display: block;
     width: 100%;
 }
-.tag-line{
+.menu-tag-line{
     background: #fad308;
+    padding: 10px 10px 10px 20px;
+    margin: 0 10px 0 10px;
 }
-.tag-line h2, .get-started h2, li h2{
-    font-size: 16px;
-}
-.tag-line,.get-started h2, li h2{
-    padding: 12px 10px;
-}
-.get-started{
+.menu-get-started{
     background: #1fa2dc;
     color: white;
     cursor: pointer;
     transition: all 0.3s ease;
+    padding: 10px 10px 10px 20px;
+    margin: 0 10px 0 10px;
 }
-.get-started:hover{
+.menu-get-started:hover{
     background: #0691CF;
 }
-.get-started img{
+.menu-info{
+    background: #7ECFF2;
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 10px 10px 10px 20px;
+    margin: 1px 10px 0 10px;
+}
+.menu-get-started img{
     float: right;
     margin-top: 3px;
     width: 8px;
@@ -57,6 +59,9 @@
 }
 .get-started-btn:hover{
     text-decoration: none;
+}
+.accordion-text {
+  display: none;
 }
 #user-auth{
     display:none;
@@ -81,7 +86,7 @@
     transform: translateY(0.5em);
 }
 .partners, .social{
-    margin: 10px 0 0 0;
+    margin: 10px 0 15px 0;
 }
 .partners a:last-child,.social a:last-child{
     margin: 0;
@@ -97,51 +102,12 @@
     width: 60%;
     margin-right: 9%;
 }
-ul{
-    padding: 0;
-}
-li{
-    color: white;
-    cursor: pointer;
-    border-bottom: 1px solid white;
-    box-sizing: border-box;
-}
-li h2{
-    background: #7ECFF2;
-    transition: all 0.3s ease;
-}
-li h2:hover{
-    background: #61C6F2;
-}
-li p{
-    background: white;
-    padding: 10px;
-    display: none;
-    border-radius: 5px;
-}
-.faq ul{
-    display: none;
-}
-.faq li{
-    color: #44444A;
-    padding: 10px;
-}
-.faq li p{
-    padding: 10px 0;
-}
 .arrow {
 	width: 0;
 	height: 0;
 	border-left: 5px solid transparent;
 	border-right: 5px solid transparent;
 	border-top: 8px solid #999999;
-    border-bottom: none;
-    margin-left: 5px;
-}
-.up{
-    border-bottom: 8px solid #999999;
-    border-top: none;
-}
-.hide-slider-btn:hover{
-    transform: translateY(2px);
+  border-bottom: none;
+  margin-left: 5px;
 }
