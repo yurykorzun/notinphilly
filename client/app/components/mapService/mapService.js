@@ -1,15 +1,7 @@
 angular.module('notinphillyServerApp')
-  .factory('mapService', ['$window', function(win) {
-   function setNeigborhoodLayerSettings(feature, layer){
-        layer.setStyle($scope.getRandomColor());
-        layer.on({
-         mouseover: highlightNeighborhood,
-         mouseout: resetHighlightNeighborhood,
-         click: onLayerClick
-        });
-    }
+  .service('mapService', function() {
 
-    function getRandomColor()
+    var getRandomColor = function ()
     {
        var colorValue = Math.floor(Math.random() * 3) + 1;
        var style= {};
@@ -42,7 +34,68 @@ angular.module('notinphillyServerApp')
        }
 
        return style;
-    }
+    };
 
-     };
-   }]);
+    var highlightNeighborhood = function(e) {
+        var layer = e.target;
+
+        layer.setStyle({
+            weight: 7,
+            fillOpacity: 0.9,
+            color: '#666'
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+            layer.bringToFront();
+        }
+    };
+
+    var resetHighlightNeighborhood = function(e) {
+        var layer = e.target;
+
+        layer.setStyle({
+          color: 'Blue',
+          fillOpacity: 0.2,
+          weight: 2
+        });
+    };
+
+   var highlightStreet = function(e) {
+        var layer = e.target;
+
+        layer.setStyle({
+            opacity: 0.8,
+            weight: 15
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+            layer.bringToFront();
+        }
+    };
+
+    var resetHighlightStreet = function(e) {
+        var layer = e.target;
+
+        layer.setStyle({
+          opacity: 0.5,
+          weight: 5
+        });
+    };
+
+    var onLayerClick = function(e)
+		{
+			if(e.target.feature)
+			{
+
+      }
+		}
+
+    this.setNeigborhoodLayerSettings = function (feature, layer){
+           layer.setStyle(getRandomColor());
+           layer.on({
+            mouseover: highlightNeighborhood,
+            mouseout: resetHighlightNeighborhood,
+            click: onLayerClick
+           });
+     }
+});
