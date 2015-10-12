@@ -5,6 +5,6 @@ var router = express.Router();
 
 router.get('/', controller.index);
 router.get('/:sid', controller.get);
-router.get('/filter/:nid', controller.getByNeighborhood);
+router.get('/byparent/:nid', controller.getByNeighborhood);
 
 module.exports = router;

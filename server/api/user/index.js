@@ -6,6 +6,7 @@ var router = express.Router();
 //router.get('/', auth.hasRole('admin'), controller.index);
 router.get('/', controller.index);
 router.get('/:id', controller.get);
+router.get('/:id/setstreet/:sid', controller.setStreet);
 router.delete('/:id', controller.destroy);
 router.get('/me', controller.me);
 router.post('/', controller.create);

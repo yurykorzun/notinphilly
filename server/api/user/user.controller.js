@@ -37,6 +37,20 @@ exports.get = function(req, res, next) {
 };
 
 /**
+ * Connects a street to a user
+ */
+exports.setStreet = function(req, res, next) {
+    var userId = req.params.id;
+    var streetId = req.params.sid;
+
+    UserModel.findById(userId, function(err, user) {
+        if (err) return next(err);
+        if (!user) return res.status(401).send('Unauthorized');
+        res.json(user);
+    });
+};
+
+/**
  * Deletes a user
  * restriction: 'admin'
  */

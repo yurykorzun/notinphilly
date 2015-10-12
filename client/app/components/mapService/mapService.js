@@ -1,9 +1,72 @@
 angular.module('notinphillyServerApp')
-  .service('mapService', function() {
+  .service('mapService', ['$http', 'leafletData', function($http, leafletData) {
+    var mapLayerGroup = L.layerGroup();
+
+    this.setNeighborhoodLayers = function()
+    {
+      $http.get("api/neighborhoods").success(function(data, status) {
+        mapLayerGroup.clearLayers();
+
+        leafletData.getMap().then(function (map) {
+          for(var nIndex = 0, length = data.length; nIndex < length; nIndex++)
+          {
+            var neighborhood = data[nIndex];
+            var geoData = neighborhood.geodata;
+            geoData.properties = { id : neighborhood._id };
+
+            var geoJsonLayer = L.geoJson(geoData,
+            {
+              onEachFeature: setNeigborhoodLayerSettings,
+              style: {
+                color: '#486CFA',
+                weight: 2,
+                fillOpacity: 0.4,
+                 fillColor: '#484848'
+              }
+            });
+            mapLayerGroup.addLayer(geoJsonLayer);
+          }
+
+          mapLayerGroup.addTo(map);
+        });
+       });
+    }
+
+    var setNeigborhoodLayerSettings = function (feature, layer){
+           layer.setStyle(getRandomColor());
+           layer.on({
+            mouseover: highlightNeighborhood,
+            mouseout: resetHighlightNeighborhood,
+            click: onLayerClick
+           });
+     }
+
+    var onLayerClick = function(e)
+    {
+      if(e.target.feature)
+      {
+        leafletData.getMap().then(function (map) {
+          var triggeredFeature = e.target.feature;
+          var layerBounds = e.layer.getBounds();
+
+          mapLayerGroup.clearLayers();
+          map.fitBounds(layerBounds);
+
+          $http.get("api/streets/byparent/" + triggeredFeature.properties.id).success(function(data, status) {
+            for(var sIndex = 0, length = data.length; sIndex < length; sIndex++)
+            {
+              var street = data[sIndex];
+              
+            }
+          });
+        });
+      }
+    }
+
 
     var getRandomColor = function ()
     {
-       var colorValue = Math.floor(Math.random() * 3) + 1;
+       var colorValue = Math.floor(Math.random() * 4) + 1;
        var style= {};
 
        switch (colorValue) {
@@ -11,7 +74,7 @@ angular.module('notinphillyServerApp')
            style = {
              color: 'Blue',
              weight: 2,
-             fillColor: 'Red',
+             fillColor: '#484848',
              fillOpacity: 0.2
            };
            break;
@@ -19,7 +82,7 @@ angular.module('notinphillyServerApp')
            style = {
              color: 'Blue',
              weight: 2,
-             fillColor: 'Green',
+             fillColor: '#49586B',
              fillOpacity: 0.2
            };
            break;
@@ -27,10 +90,18 @@ angular.module('notinphillyServerApp')
            style = {
                color: 'Blue',
                weight: 2,
-               fillColor: 'Yellow',
+               fillColor: '#6AC48E',
                fillOpacity: 0.2
              };
            break;
+         case 4:
+             style = {
+                 color: 'Blue',
+                 weight: 2,
+                 fillColor: '#26A053',
+                 fillOpacity: 0.2
+               };
+             break;
        }
 
        return style;
@@ -81,21 +152,4 @@ angular.module('notinphillyServerApp')
           weight: 5
         });
     };
-
-    var onLayerClick = function(e)
-		{
-			if(e.target.feature)
-			{
-
-      }
-		}
-
-    this.setNeigborhoodLayerSettings = function (feature, layer){
-           layer.setStyle(getRandomColor());
-           layer.on({
-            mouseover: highlightNeighborhood,
-            mouseout: resetHighlightNeighborhood,
-            click: onLayerClick
-           });
-     }
-});
+}]);

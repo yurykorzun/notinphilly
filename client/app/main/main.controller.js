@@ -1,5 +1,5 @@
 angular.module('notinphillyServerApp')
-  .controller('MainCtrl', [ '$scope', '$http', 'leafletData', 'mapService', function($scope, $http, leafletData, mapService) {
+  .controller('MainCtrl', [ '$scope', '$http', 'mapService', function($scope, $http, mapService) {
     angular.extend($scope, {
                 center: {
                     lat: 39.952604,
@@ -22,23 +22,5 @@ angular.module('notinphillyServerApp')
                 }
             });
 
-    $http.get("api/neighborhoods").success(function(data, status) {
-        leafletData.getMap().then(function(map) {
-          for(var nIndex = 0; nIndex < data.length; nIndex++)
-          {
-            var geoJsonLayer = L.geoJson(data[nIndex].geodata,
-            {
-              onEachFeature: mapService.setNeigborhoodLayerSettings,
-              style: {
-                color: '#486CFA',
-                weight: 2,
-                fillOpacity: 0.4,
-                 fillColor: '#78D2FF'
-              }
-            });
-
-            geoJsonLayer.addTo(map);
-          }
-     });
-   });
+    mapService.setNeighborhoodLayers();
   }]);
