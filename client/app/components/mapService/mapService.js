@@ -4,29 +4,21 @@ angular.module('notinphillyServerApp')
 
     this.setNeighborhoodLayers = function()
     {
-      $http.get("api/neighborhoods").success(function(data, status) {
+      $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
         mapLayerGroup.clearLayers();
 
         leafletData.getMap().then(function (map) {
-          for(var nIndex = 0, length = data.length; nIndex < length; nIndex++)
+          var geoJsonLayer = L.geoJson(data,
           {
-            var neighborhood = data[nIndex];
-            var geoData = neighborhood.geodata;
-            geoData.properties = { id : neighborhood._id };
-
-            var geoJsonLayer = L.geoJson(geoData,
-            {
-              onEachFeature: setNeigborhoodLayerSettings,
-              style: {
-                color: '#486CFA',
-                weight: 2,
-                fillOpacity: 0.4,
-                 fillColor: '#484848'
-              }
-            });
-            mapLayerGroup.addLayer(geoJsonLayer);
-          }
-
+            onEachFeature: setNeigborhoodLayerSettings,
+            style: {
+              color: '#486CFA',
+              weight: 2,
+              fillOpacity: 0.4,
+               fillColor: '#484848'
+            }
+          });
+          mapLayerGroup.addLayer(geoJsonLayer);
           mapLayerGroup.addTo(map);
         });
        });
@@ -52,12 +44,19 @@ angular.module('notinphillyServerApp')
           mapLayerGroup.clearLayers();
           map.fitBounds(layerBounds);
 
-          $http.get("api/streets/byparent/" + triggeredFeature.properties.id).success(function(data, status) {
-            for(var sIndex = 0, length = data.length; sIndex < length; sIndex++)
+          $http.get("api/streets/byparentgeo/" + triggeredFeature.properties.id).success(function(data, status) {
+            var geoJsonLayer = L.geoJson(data,
             {
-              var street = data[sIndex];
-              
-            }
+              //onEachFeature: setNeigborhoodLayerSettings,
+              style: {
+                color: '#486CFA',
+                weight: 2,
+                fillOpacity: 0.4,
+                 fillColor: '#484848'
+              }
+            });
+            mapLayerGroup.addLayer(geoJsonLayer);
+            mapLayerGroup.addTo(map);
           });
         });
       }

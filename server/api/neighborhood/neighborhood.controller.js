@@ -7,6 +7,24 @@ exports.index = function(req, res) {
   });
 };
 
+exports.getAllGeojson = function(req, res) {
+  NeighborhoodModel.find({}, function(err, neighborhoods) {
+      if (err) return res.status(500).send(err);
+
+      var geoList = new Array();
+      for(var nIndex = 0, length = neighborhoods.length; nIndex < length; nIndex++)
+      {
+        var neighborhood = neighborhoods[nIndex];
+        var geoItem = neighborhood.geodata;
+        geoItem.properties = { id : neighborhood._id };
+        geoList.push(geoItem);
+      }
+
+      res.status(200).json(geoList);
+  });
+};
+
+
 exports.get = function(req, res) {
   var neighborhoodId = req.params.id;
 
