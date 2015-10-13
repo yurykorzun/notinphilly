@@ -3,8 +3,8 @@ var fs             = require('fs');
 var path           = require('path');
 var arrayFind = require('array-find');
 
-var streetsJson = fs.readFileSync(path.resolve(__dirname, "../../client/public/js/streetsData.json"), 'utf8');
-var neigborhoodJson = fs.readFileSync(path.resolve(__dirname, "../../client/public/js/neighborhoodData.json"), 'utf8');
+var streetsJson = fs.readFileSync(path.resolve(__dirname, "../misc/streetsData.json"), 'utf8');
+var neigborhoodJson = fs.readFileSync(path.resolve(__dirname, "../misc/neighborhoodData.json"), 'utf8');
 
 var neighborhoodsObj = JSON.parse(neigborhoodJson);
 var streetsObj = JSON.parse(streetsJson);
@@ -41,7 +41,7 @@ StreetSegmentModel.find({}).remove({}, function(err) {
         {
           var street = streetsData[streetIndex].properties;
 
-          var streetGeoData = {"type":"Feature", "geometry": street.geometry };
+          var streetGeoData = {"type":"Feature", "geometry": streetsData[streetIndex].geometry };
           var newStreetSegment = new StreetSegmentModel({
             streetName: street.ST_NAME,
             neighborhood: thor._id,

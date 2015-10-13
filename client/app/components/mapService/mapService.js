@@ -56,7 +56,7 @@ angular.module('notinphillyServerApp')
               }
             });
             mapLayerGroup.addLayer(geoJsonLayer);
-            mapLayerGroup.addTo(map);
+            geoJsonLayer.addTo(map);
           });
         });
       }

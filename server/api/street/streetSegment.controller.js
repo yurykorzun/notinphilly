@@ -9,7 +9,7 @@ exports.get = function(req, res, next) {
 
     StreetModel.findById(streetId, function(err, street) {
         if (err) return next(err);
-        res.json(street);
+        res.status(200).json(street);
     });
 };
 
@@ -18,7 +18,7 @@ exports.getByNeighborhood = function(req, res, next) {
 
     StreetModel.find({neighborhood: neighborhoodId}, function(err, streets) {
         if (err) return next(err);
-        res.json(streets);
+        res.status(200).json(streets);
     });
 };
 
@@ -33,10 +33,10 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
         {
           var street = streets[nIndex];
           var geoItem = street.geodata;
-          geoItem.properties = { id : street._id, parentId : street.neighborhood };
+          geoItem.properties = { id : street._id, parentId : street.neighborhood, name: street.streetName };
           geoList.push(geoItem);
         }
 
-        res.json(streets);
+        res.status(200).json(geoList);
     });
 };
