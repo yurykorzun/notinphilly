@@ -21,27 +21,32 @@ StreetSegmentModel.find({}).remove({}, function(err) {
   console.log('Seeding Streets');
   NeighborhoodModel.find({}).remove({}, function(err) {
     console.log('Seeding Neighborhoods');
-    for(var streetDataIndex = 0; streetDataIndex< streetsObj.length; streetDataIndex++)
+    for(var neighborhoodDataIndex = 0; neighborhoodDataIndex < neighborhoodsObj.length; neighborhoodDataIndex++)
     {
-      var streetsRecord = streetsObj[streetDataIndex];
-      var neighborhoodName = streetsRecord.name;
+      var neighborhoodRecord = neighborhoodsObj[neighborhoodDataIndex];
+      var neighborhoodProperties = neighborhoodRecord.properties;
 
-      var streetsData = streetsRecord.data;
-      var neighborhoodData = arrayFind(neighborhoodsObj, function (element, index, array) {
-        return element.properties.name == neighborhoodName;
+      var neighborhoodGeoData = {"type":"Feature", "geometry": neighborhoodRecord.geometry };
+      var newNeighborhood = new NeighborhoodModel({
+        name: neighborhoodProperties.listname,
+        code: neighborhoodProperties.name,
+        geodata: neighborhoodGeoData
       });
-      var neighborhoodProperties = neighborhoodData.properties;
 
-      var neighborhoodGeoData = {"type":"Feature", "geometry": neighborhoodData.geometry };
-      var newNeighborhood = new NeighborhoodModel({ name: neighborhoodProperties.listname, code: neighborhoodProperties.name, geodata: neighborhoodGeoData  });
       newNeighborhood.save(function(err, thor) {
         if (err) return console.error(err);
 
-        for(var streetIndex = 0; streetIndex <  streetsData.length; streetIndex++)
-        {
-          var street = streetsData[streetIndex].properties;
+        var streetsData = arrayFind(streetsObj, function (element, index, array) {
+          return element.name == thor.code;
+        });
 
-          var streetGeoData = {"type":"Feature", "geometry": streetsData[streetIndex].geometry };
+        var streets = streetsData.data;
+
+        for(var streetIndex = 0; streetIndex <  streets.length; streetIndex++)
+        {
+          var street = streets[streetIndex].properties;
+          var streetGeoData = {"type":"Feature", "geometry": streets[streetIndex].geometry };
+
           var newStreetSegment = new StreetSegmentModel({
             streetName: street.ST_NAME,
             neighborhood: thor._id,

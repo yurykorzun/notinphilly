@@ -16,7 +16,7 @@ exports.getAllGeojson = function(req, res) {
       {
         var neighborhood = neighborhoods[nIndex];
         var geoItem = neighborhood.geodata;
-        geoItem.properties = { id : neighborhood._id };
+        geoItem.properties = { id : neighborhood._id, name: neighborhood.name };
         geoList.push(geoItem);
       }
 
