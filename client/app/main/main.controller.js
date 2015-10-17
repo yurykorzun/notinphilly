@@ -22,5 +22,45 @@ angular.module('notinphillyServerApp')
                 }
             });
 
+    mapService.mapCallbacks.neighborhoodMouseOverCallback == function(e)
+    {
+        var x = e.originalEvent.pageX;
+        var y = e.originalEvent.pageY;
+        if ( typeof x !== 'undefined' ){
+          $scope.tooltipStyle = {
+            top: (y - 120 ) + 'px',
+            left: (x + 20) + 'px'
+          };
+          $scope.isNhoodTooltipVisible = true;
+        }
+        else
+        {
+          $scope.isNhoodTooltipVisiblee = false;
+        }
+    };
+    mapService.mapCallbacks.neighborhoodMouseOutCallback = function(e)
+    {
+        $scope.isNhoodTooltipVisible  = false;
+    };
+    mapService.mapCallbacks.streetMouseOverCallback = function(e)
+    {
+      var x = e.originalEvent.pageX;
+      var y = e.originalEvent.pageY;
+      if ( typeof x !== 'undefined' ){
+        $scope.tooltipStyle = {
+          top: (y - 120 ) + 'px',
+          left: (x + 20) + 'px'
+        };
+        $scope.isStreetTooltipVisible = true;
+      }
+      else
+      {
+        $scope.isStreetTooltipVisiblee = false;
+      }
+    };
+    mapService.mapCallbacks.streetMouseOutCallback = function(e){
+        $scope.isStreetTooltipVisible = false;
+    };
+
     mapService.setNeighborhoodLayers();
   }]);

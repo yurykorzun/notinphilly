@@ -80,7 +80,20 @@
     </div>
   </div>
   <!--Leaflet map of Philadelphia with layers-->
-  <div class="col-sm-1 col-md-9 pull-right" resizeleaflet="true">
+  <div class="col-sm-1 col-md-9 pull-right" resizeleaflet>
     <leaflet id="cityMap" center="center" geojson="geojson" tiles="tiles" width="100%"></leaflet>
   </div>
+</div>
+
+<div class="tooltip-layer" ng-show="isNhoodTooltipVisible" ng-style="nhoodTooltipStyle" ng-init="isNhoodTooltipVisible = false">
+  <div>Neighborhood: {{hoverOverNhoodName}}</div>
+  <div>Logo:</div>
+  <div>Abopted streets: 0/1000</div>
+  <div>Status: {{hoverOverNhoodColor}}</div>
+</div>
+
+<div class="tooltip-layer" ng-show="isStreetTooltipVisible" ng-style="streetTooltipStyle" ng-init="isStreetTooltipVisible = false">
+  <div>Street: {{hoverOverStreetName}}</div>
+  <div>Adopters: 0</div>
+  <div><img ng-src="http://www.gravatar.com/avatar/{{image}}" alt="Description" /></div>
 </div>

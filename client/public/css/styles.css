@@ -67,6 +67,15 @@
     display:none;
     padding: 10px;
 }
+.tooltip-layer{
+    position: fixed;
+    border-radius: 25px;
+    border: 1px solid #BDB9BB;
+    background-color: white;
+    padding: 20px;
+    box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.2);
+    z-index: 10;
+}
 .partners-social{
     display: inline-block;
     vertical-align: bottom;

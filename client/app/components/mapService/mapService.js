@@ -2,6 +2,13 @@ angular.module('notinphillyServerApp')
   .service('mapService', ['$http', 'leafletData', function($http, leafletData) {
     var mapLayerGroup = L.layerGroup();
 
+    this.mapCallbacks = {
+      neighborhoodMouseOverCallback : undefined,
+      neighborhoodMouseOutCallback : undefined,
+      streetMouseOverCallback : undefined,
+      streetMouseOutCallback: undefined
+    };
+
     this.setNeighborhoodLayers = function()
     {
       $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
@@ -10,7 +17,15 @@ angular.module('notinphillyServerApp')
         leafletData.getMap().then(function (map) {
           var geoJsonLayer = L.geoJson(data,
           {
-            onEachFeature: setNeigborhoodLayerSettings,
+            onEachFeature: function (feature, layer){
+                   layer.setStyle(getRandomColor());
+                   layer.on({
+                    mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
+                    mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
+                    click: function(e) { onLayerClick(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
+                    layerremove: function(e) { mapCallbacks.neighborhoodMouseOutCallback(e); }
+                   });
+                 },
             style: {
               color: '#486CFA',
               weight: 2,
@@ -23,15 +38,6 @@ angular.module('notinphillyServerApp')
         });
        });
     }
-
-    var setNeigborhoodLayerSettings = function (feature, layer){
-           layer.setStyle(getRandomColor());
-           layer.on({
-            mouseover: highlightNeighborhood,
-            mouseout: resetHighlightNeighborhood,
-            click: onLayerClick
-           });
-     }
 
     var onLayerClick = function(e)
     {
@@ -47,12 +53,17 @@ angular.module('notinphillyServerApp')
           $http.get("api/streets/byparentgeo/" + triggeredFeature.properties.id).success(function(data, status) {
             var geoJsonLayer = L.geoJson(data,
             {
-              //onEachFeature: setNeigborhoodLayerSettings,
+              /*onEachFeature: : function (feature, layer){
+                 //layer.setStyle(getRandomColor());
+                 layer.on({
+                  mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
+                  mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
+                });
+               },*/
               style: {
-                color: '#486CFA',
-                weight: 2,
-                fillOpacity: 0.4,
-                 fillColor: '#484848'
+                color: '#484848',
+                weight: 5,
+                fillOpacity: 0.4
               }
             });
             mapLayerGroup.addLayer(geoJsonLayer);
