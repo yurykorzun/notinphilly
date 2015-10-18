@@ -1,4 +1,5 @@
-angular.module('notinphillyServerApp').directive('resizeleaflet',  ['$window', function ($window) {
+(function () {
+  angular.module('notinphillyServerApp').directive('resizeleaflet',  ['$window', function ($window) {
   return {
     restrict: 'A',
     scope: {},
@@ -12,3 +13,4 @@ angular.module('notinphillyServerApp').directive('resizeleaflet',  ['$window', f
     }
   }
  }]);
+})();
