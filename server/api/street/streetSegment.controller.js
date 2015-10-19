@@ -19,7 +19,7 @@ exports.get = function(req, res, next) {
 exports.getByNeighborhood = function(req, res, next) {
     var neighborhoodId = req.params.nid;
 
-    StreetModel.find({neighborhood: Schema.Types.ObjectId(neighborhoodId)}, function(err, streets) {
+    StreetModel.find({neighborhood: mongoose.Types.ObjectId(neighborhoodId)}, function(err, streets) {
         if (err) return next(err);
         res.status(200).json(streets);
     });
@@ -27,8 +27,6 @@ exports.getByNeighborhood = function(req, res, next) {
 
 exports.getByNeighborhoodGeojson = function(req, res, next) {
     var neighborhoodId = req.params.nid;
-    console.log(neighborhoodId);
-    console.log(JSON.stringify(Schema.Types.ObjectId(neighborhoodId)))
 
     StreetModel.find({neighborhood: mongoose.Types.ObjectId(neighborhoodId)}, function(err, streets) {
         if (err) return next(err);

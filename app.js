@@ -10,9 +10,10 @@ var db = require('./server/config/db');
 
 // set our port
 var port = process.env.PORT || 8080;
+var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || "mongodb://localhost/notinphilly"
 
 mongoose.connection.on('error', console.log);
-mongoose.connect("mongodb://localhost/notinphilly");
+mongoose.connect(connectionString);
 
 //seed the database
 //uncomment to seed
