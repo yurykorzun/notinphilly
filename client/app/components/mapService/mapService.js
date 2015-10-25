@@ -43,6 +43,22 @@
          });
       }
 
+      this.showStreetPopup = function(streetLongLat, properties)
+      {
+        leafletData.getMap().then(function (map) {
+          var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=190x190&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
+
+          var popup = L.popup({
+          })
+          .setLatLng(streetLongLat)
+          .setContent("<p>Let's adopt a street!<br /> Street: " + properties.name + " " + properties.hundred + ", zipcode: " + properties.zipCode + "</p><p><button type='button' class='btn btn-success'>I am in!</button></p><p> <img height='150px' width='190px' style='margin-left: 5px;' src='" + imageSrc + "' /></p>");
+
+          popup.openOn(map);
+
+          map.panTo({lat: streetLongLat.lat, lng: streetLongLat.lng});
+        });
+      }
+
       var onLayerClick = function(e)
       {
         if(e.target.feature)
@@ -65,13 +81,14 @@
                    //layer.setStyle(getRandomColor());
                    layer.on({
                     mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
-                    mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); }
+                    mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
+                    click: function(e) { mapCallbacks.streetClickCallback(e); }
                   });
                  },
                 style: {
                   color: '#484848',
                   weight: 5,
-                  fillOpacity: 0.4
+                  opacity: 0.4
                 }
               });
               mapLayerGroup.addLayer(geoJsonLayer);

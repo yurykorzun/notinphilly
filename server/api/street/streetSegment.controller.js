@@ -36,7 +36,13 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
         {
           var street = streets[nIndex];
           var geoItem = street.geodata;
-          geoItem.properties = { id : street._id, parentId : street.neighborhood, name: street.streetName };
+          geoItem.properties = {
+            id: street._id,
+            parentId: street.neighborhood,
+            name: street.streetName,
+            hundred: street.leftHundred,
+            zipCode: street.zipLeft
+          };
           geoList.push(geoItem);
         }
 

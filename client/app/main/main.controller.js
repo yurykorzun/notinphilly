@@ -58,9 +58,34 @@ angular.module('notinphillyServerApp')
         {
           $scope.isStreetTooltipVisiblee = false;
         }
+
+        var layer = e.target;
+
+        layer.setStyle({
+            opacity: 0.7,
+            weight: 15
+        });
+
+        if (!L.Browser.ie && !L.Browser.opera) {
+            layer.bringToFront();
+        }
       },
       streetMouseOutCallback: function(e){
           $scope.isStreetTooltipVisible = false;
+
+          var layer = e.target;
+
+          layer.setStyle({
+            weight: 5,
+            opacity: 0.4,
+          });
+      },
+      streetClickCallback: function(e){
+        if(e.target.feature)
+        {
+          mapService.showStreetPopup(e.latlng, e.target.feature.properties);
+        }
+        $scope.isStreetTooltipVisible = false;
       }
     };
 

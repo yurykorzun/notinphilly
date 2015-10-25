@@ -1,8 +1,8 @@
-var myApp = angular.module('notinphillyServerApp',[]);
-
-myApp.controller('LoginController', ['$scope', '$http', function($scope, $http) {
-
+(function () {
+  angular.module('notinphillyServerApp').controller('LoginController', ['$scope', '$http', function($scope, $http) {
 
 
 
-}]);
+
+  }]);
+})();
