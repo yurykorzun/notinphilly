@@ -19,11 +19,20 @@
         <div class="menu-tag-line">
             <div>Eliminating Litter Together!</div>
         </div>
-        <div class="menu-get-started">
-            <a href="#user-auth" class="get-started-btn">
+            <div class="menu-get-started">
+            <a href="" class="get-started-btn" ng-click="showLoginDialog = !showLoginDialog">
                 Let's get started (member login)<img src="public/img/arrow.png"/>
             </a>
-        </div>
+            </div>
+          <div class="menu-login" ng-show="showLoginDialog" ng-init="showLoginDialog=false">
+              <ng-form ng-controller="LoginController">
+                  <label>Username</label>
+                  <input type="text" class="form-control" name="uname" ng-model="user.username" required>
+                  <label>Password</label>
+                  <input type="password" class="form-control" name="pass" ng-model="user.password" required>
+                  <input type="submit" value="Login" />
+              </ng-form>
+          </div>
         <div class="menu-info">
             <div class="accordion">How it works</div>
             <div class="accordion-text">

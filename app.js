@@ -4,6 +4,13 @@ var mongoose       = require('mongoose');
 var app            = express();
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
+// Configuring Passport
+var passport       = require('passport');
+var expressSession = require('express-session');
+//make the app use the passport/express session
+app.use(expressSession({secret: 'mySecretKey'}));
+app.use(passport.initialize());
+app.use(passport.session());
 
 // configuration ===========================================
 var db = require('./server/config/db');
@@ -18,6 +25,7 @@ mongoose.connect(connectionString);
 //seed the database
 //uncomment to seed
 //var dbseeder = require('./server/config/dbseeder');
+var authentication = require('./server/config/passport/login');
 
 var server = require('http').createServer(app);
 require('./server/config/express')(app);

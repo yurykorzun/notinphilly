@@ -43,6 +43,11 @@
     padding: 10px 10px 10px 20px;
     margin: 0 10px 0 10px;
 }
+.menu-login {
+    transition: all 0.3s ease;
+    padding: 8px 8px 8px 16px;
+    margin: 0 10px 0 10px;
+}
 .menu-get-started:hover{
     background: #0691CF;
 }
