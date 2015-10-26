@@ -2,7 +2,8 @@
   var  app = angular.module('notinphillyServerApp', [
       'ngRoute',
       'restangular',
-      'leaflet-directive'
+      'leaflet-directive',
+      'ui.bootstrap'
     ]);
 
   app.config(function ($routeProvider, RestangularProvider) {
