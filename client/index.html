@@ -18,7 +18,19 @@
     <link rel="stylesheet" href="public/css/styles.css" />
 </head>
 <body ng-app="notinphillyServerApp">
-  <div class="container-fluid" >
+  <div class="container-fluid">
+    <nav class="navbar navbar-default navbar-static-top">
+        <div class="navbar-header">
+          <a href="" class="navbar-brand" ng-init="sideMenu.isVisible = true" ng-click="sideMenu.isVisible = !sideMenu.isVisible">
+            <i class="fa fa-lg fa-bars"></i>
+          </a>
+      </div>
+      <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li><a>#NotinPhilly</a></li>
+            <li><a href="#locate"><i class="fa fa-lg fa-map-marker"></i></a></li>
+        </div>
+    </nav>
     <div ng-view></div>
   </div>
 
@@ -32,7 +44,6 @@
   <script src="public/libs/bootstrap/dist/js/bootstrap.js"></script>
   <script src="public/libs/angular-bootstrap/ui-bootstrap-tpls.js"></script>
 
-
   <script src="public/libs/leaflet/dist/leaflet.js"></script>
   <script src="public/libs/underscore/underscore.js"></script>
   <script src="public/libs/leaflet-providers/leaflet-providers.js"></script>
@@ -42,6 +53,7 @@
   <script src="app/components/mapService/mapService.js"></script>
   <script src="app/components/resizeLeaflet/resizeLeaflet.directive.js"></script>
   <script src="app/main/main.controller.js"></script>
+  <script src="app/index/index.controller.js"></script>
   <script src="app/authentication/authentication.login.js"></script>
 </body>
 </html>

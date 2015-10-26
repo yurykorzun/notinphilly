@@ -1,6 +1,6 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MainCtrl', [ '$scope', '$http', 'mapService', function($scope, $http, mapService) {
+  .controller('mainController', [ '$scope', '$http', 'mapService', function($scope, $http, mapService) {
     angular.extend($scope, {
                 center: {
                     lat: 39.948920,
