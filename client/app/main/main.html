@@ -1,8 +1,8 @@
-
+<!--Side menu item template-->
 <script type="text/ng-template" id="group-template.html">
   <div>
-    <div class="{{panelClass || 'panel-default'}}">
-        <a href tabindex="0" class="accordion-toggle menu-link" ng-click="toggleOpen()" uib-accordion-transclude="heading"><span ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
+    <div class="{{panelClass || 'panel-default'}}" ng-click="toggleOpen()" >
+        <a href tabindex="0" class="accordion-toggle menu-link" uib-accordion-transclude="heading"><span ng-class="{'text-muted': isDisabled}">{{heading}}</span></a>
     </div>
     <div class="menu-body panel-collapse collapse" uib-collapse="!isOpen">
       <div ng-transclude></div>
@@ -18,18 +18,24 @@
         <img class="logo" src="public/img/logo.png"/>
         <uib-accordion>
           <uib-accordion-group heading="Eliminating Litter Together!" panel-class="menu-tag-line" template-url="group-template.html">
-            <h4>Let's do it!</h4>
+            <ng-form class="form-inline" ng-controller="SearchStreetController">
+              <div class="form-group menu-street-search">
+                <label>Find your street</label>
+                <input type="text" class="form-control" ng-model="search.streetName" required>
+                <input type="submit" value="Search" />
+              </div>
+            </ng-form>
           </uib-accordion-group>
           <uib-accordion-group heading="Let's get started (member login)" panel-class="menu-get-started" template-url="group-template.html">
-            <div class="menu-login">
-                <ng-form ng-controller="LoginController">
-                    <label>Username</label>
-                    <input type="text" class="form-control" name="uname" ng-model="user.username" required>
-                    <label>Password</label>
-                    <input type="password" class="form-control" name="pass" ng-model="user.password" required>
-                    <input type="submit" value="Login" />
-                </ng-form>
-            </div>
+            <ng-form ng-controller="LoginController">
+              <div class="form-group menu-login">
+                <label>Username</label>
+                <input type="text" class="form-control" name="uname" ng-model="user.username" required>
+                <label>Password</label>
+                <input type="password" class="form-control" name="pass" ng-model="user.password" required>
+                <input type="submit" class="btn btn-default" value="Login" /> Or <a href="">Sign up</a>
+                </div>
+            </ng-form>
             </uib-accordion-group>
             <uib-accordion-group heading="How it works" panel-class="menu-info" template-url="group-template.html">
               <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference.

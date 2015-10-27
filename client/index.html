@@ -19,6 +19,7 @@
 </head>
 <body ng-app="notinphillyServerApp">
   <div class="container-fluid">
+    <!--Top navigation bar-->
     <nav class="navbar navbar-default navbar-static-top">
         <div class="navbar-header">
           <a href="" class="navbar-brand" ng-init="sideMenu.isVisible = true" ng-click="sideMenu.isVisible = !sideMenu.isVisible">
@@ -31,6 +32,7 @@
             <li><a href="#locate"><i class="fa fa-lg fa-map-marker"></i></a></li>
         </div>
     </nav>
+    <!--View placeholder set by app.js-->
     <div ng-view></div>
   </div>
 
@@ -53,7 +55,7 @@
   <script src="app/components/mapService/mapService.js"></script>
   <script src="app/components/resizeLeaflet/resizeLeaflet.directive.js"></script>
   <script src="app/main/main.controller.js"></script>
-  <script src="app/index/index.controller.js"></script>
+  <script src="app/search/searchstreet.controller.js"></script>
   <script src="app/authentication/authentication.login.js"></script>
 </body>
 </html>
