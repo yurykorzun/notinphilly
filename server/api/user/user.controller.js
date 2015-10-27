@@ -1,3 +1,4 @@
+var mongoose = require('mongoose');
 var UserModel = require('./user.model');
 
 /**
@@ -45,7 +46,13 @@ exports.setStreet = function(req, res, next) {
 
     UserModel.findById(userId, function(err, user) {
         if (err) return next(err);
-        if (!user) return res.status(401).send('Unauthorized');
+
+        console.log(streetId);
+        user.adoptedStreets.push(mongoose.Types.ObjectId(streetId));
+        console.log(JSON.stringify(user.adoptedStreets));
+        user.save(function(err, user){
+
+        });
         res.json(user);
     });
 };

@@ -72,7 +72,8 @@
 
             var nhoodCenter = layerBounds.getCenter();
             map.panTo(nhoodCenter);
-            map.setZoom(18);
+            //map.setZoom(15);
+            map.fitBounds(layerBounds);
 
             $http.get("api/streets/byparentgeo/" + triggeredFeature.properties.id).success(function(data, status) {
               var geoJsonLayer = L.geoJson(data,
@@ -87,7 +88,7 @@
                  },
                 style: {
                   color: '#484848',
-                  weight: 5,
+                  weight: 10,
                   opacity: 0.4
                 }
               });
