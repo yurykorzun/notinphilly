@@ -4,13 +4,11 @@ var mongoose       = require('mongoose');
 var app            = express();
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
+var expressSession = require('express-session');
+var mongoStore     = require('connect-mongo')(expressSession);
 // Configuring Passport
 var passport       = require('passport');
-var expressSession = require('express-session');
-//make the app use the passport/express session
-app.use(expressSession({secret: 'mySecretKey'}));
-app.use(passport.initialize());
-app.use(passport.session());
+
 
 // configuration ===========================================
 var db = require('./server/config/db');
@@ -21,6 +19,17 @@ var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || "mongodb://localh
 
 mongoose.connection.on('error', console.log);
 mongoose.connect(connectionString);
+
+//make the app use the passport/express session
+app.use(passport.initialize());
+app.use(passport.session({
+  resave: true,
+  saveUninitialized: true,
+  store: new mongoStore({
+      mongooseConnection: mongoose.connection,
+      db: 'notinphilly'
+  })
+}))
 
 //seed the database
 //uncomment to seed

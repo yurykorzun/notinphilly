@@ -7,11 +7,13 @@
   right: 0px;
   width: 100%;
   height: 100%;
+  z-index: 1;
 }
 
 .side-container {
   z-index: 100;
   margin-top: -40px;
+  padding-right: 0;
 }
 
 .side {
@@ -32,6 +34,20 @@
     box-sizing: border-box;
     display: block;
     width: 100%;
+}
+
+.sideItemsColumn {
+  background-color: white;
+  border: 1px solid #BDB9BB;
+  z-index: 100;
+  padding: 0;
+  margin-top: -20px;
+  max-width: 60px;
+}
+
+.sideItem {
+  width: 70%;
+  margin: 0 auto;
 }
 
 .menu-link {
@@ -55,7 +71,7 @@
 
 .menu-get-started{
     background: #1fa2dc;
-    color: white;
+    color: black;
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 10px 10px 10px 20px;
@@ -149,7 +165,7 @@
   margin-left: 5px;
 }
 
-.col-xs-11, .col-sm-11-5
+.col-sm-11-5
 {
     position: relative;
     min-height: 1px;

@@ -71,9 +71,9 @@
             //map.fitBounds(layerBounds);
 
             var nhoodCenter = layerBounds.getCenter();
+            nhoodCenter.lng = nhoodCenter.lng - 0.001;
             map.panTo(nhoodCenter);
-            //map.setZoom(15);
-            map.fitBounds(layerBounds);
+            map.setZoom(16);
 
             $http.get("api/streets/byparentgeo/" + triggeredFeature.properties.id).success(function(data, status) {
               var geoJsonLayer = L.geoJson(data,
@@ -164,28 +164,6 @@
             color: 'Blue',
             fillOpacity: 0.2,
             weight: 2
-          });
-      };
-
-     var highlightStreet = function(e) {
-          var layer = e.target;
-
-          layer.setStyle({
-              opacity: 0.8,
-              weight: 15
-          });
-
-          if (!L.Browser.ie && !L.Browser.opera) {
-              layer.bringToFront();
-          }
-      };
-
-      var resetHighlightStreet = function(e) {
-          var layer = e.target;
-
-          layer.setStyle({
-            opacity: 0.5,
-            weight: 5
           });
       };
   }]);

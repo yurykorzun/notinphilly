@@ -12,12 +12,18 @@
 
 <div class="row-fluid">
   <!--Side menu-->
-  <div class="col-xs-11 col-sm-11 col-md-3 pull-left side-container">
-    <div class="side" ng-show="$parent.sideMenu.isVisible">
+  <div class="col-xs-10 col-sm-11 col-md-3 pull-left side-container" ng-show="sideMenu.isVisible" ng-init="sideMenu.isVisible = true">
+    <div class="side">
       <div class="row-fluid">
         <img class="logo" src="public/img/logo.png"/>
         <uib-accordion>
-          <uib-accordion-group heading="Eliminating Litter Together!" panel-class="menu-tag-line" template-url="group-template.html">
+          <uib-accordion-group heading="How it works" panel-class="menu-info" template-url="group-template.html">
+            <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference.
+                In return for a 6 month commitment to going out once a week to pick up litter, we will give you a trash grabber. No
+                more touching litter or killing your back! You will be amazed at how much we can get done together! Send any questions to us at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>.
+            </p>
+          </uib-accordion-group>
+          <uib-accordion-group heading="Let's start!" panel-class="menu-tag-line" template-url="group-template.html">
             <ng-form class="form-inline" ng-controller="SearchStreetController">
               <div class="form-group menu-street-search">
                 <label>Find your street</label>
@@ -26,7 +32,7 @@
               </div>
             </ng-form>
           </uib-accordion-group>
-          <uib-accordion-group heading="Let's get started (member login)" panel-class="menu-get-started" template-url="group-template.html">
+          <uib-accordion-group heading="Member login" panel-class="menu-get-started" template-url="group-template.html">
             <ng-form ng-controller="LoginController">
               <div class="form-group menu-login">
                 <label>Username</label>
@@ -36,12 +42,6 @@
                 <input type="submit" class="btn btn-default" value="Login" /> Or <a href="">Sign up</a>
                 </div>
             </ng-form>
-            </uib-accordion-group>
-            <uib-accordion-group heading="How it works" panel-class="menu-info" template-url="group-template.html">
-              <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference.
-                  In return for a 6 month commitment to going out once a week to pick up litter, we will give you a trash grabber. No
-                  more touching litter or killing your back! You will be amazed at how much we can get done together! Send any questions to us at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>.
-              </p>
             </uib-accordion-group>
             <uib-accordion-group heading="Spread the word" panel-class="menu-info" template-url="group-template.html">
               <p>Spread the word about this movement on social media or through our full page or ¼ page flyers.
@@ -77,13 +77,6 @@
 
       <div class="row-fluid">
             <div class="partners-social">
-              <p>SUPPORTED BY</p>
-              <div class="row partners">
-                <div class="col-xs-4 col-sm-4 col-md-4"><a href="http://www.codeforamerica.org/"><img src="public/img/partner-cfa.png"/></a></div>
-                <div class="col-xs-4 col-sm-4 col-md-4"><a href="https://codeforphilly.org/"><img src="public/img/partner-cfp.png"/></a></div>
-                <div class="col-xs-4 col-sm-4 col-md-4"><a href="https://www.google.org/"><img src="public/img/partner-google.png"/></a></div>
-              </div>
-
               <div class="row social">
                   <p>SOCIAL</p>
                   <div class="col-xs-3 col-sm-3 col-md-3"><a href="https://codeforphilly.org/" target="_blank"><img src="public/img/social-instagram.png"></a></div>
@@ -91,25 +84,37 @@
                   <div class="col-xs-3 col-sm-3 col-md-3"><a href="https://codeforphilly.org/" target="_blank"><img src="public/img/social-twitter.png"></a></div>
                   <div class="col-xs-3 col-sm-3 col-md-3"><a href="https://codeforphilly.org/" target="_blank"><img src="public/img/social-youtube.png"></a></div>
               </div>
+              <p>SUPPORTED BY</p>
+              <div class="row partners">
+                <div class="col-xs-4 col-sm-4 col-md-4"><a href="http://www.codeforamerica.org/"><img src="public/img/partner-cfa.png"/></a></div>
+                <div class="col-xs-4 col-sm-4 col-md-4"><a href="https://codeforphilly.org/"><img src="public/img/partner-cfp.png"/></a></div>
+                <div class="col-xs-4 col-sm-4 col-md-4"><a href="https://www.google.org/"><img src="public/img/partner-google.png"/></a></div>
+              </div>
+
+
             </div>
         </div>
     </div>
   </div>
 </div>
+<div class="col-xs-2 col-sm-1 col-md-1  sideItemsColumn">
+  <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="sideMenu.isVisible"><i class="fa fa-3x fa-angle-double-left"></i></div>
+  <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="!sideMenu.isVisible"><i class="fa fa-3x fa-angle-double-right"></i></div>
+  <div class="sideItem"><i class="fa fa-3x fa-search-plus"></i></div>
+  <div class="sideItem"><i class="fa fa-3x fa-search-minus"></i></div>
+</div>
+
 <!--Leaflet map of Philadelphia with layers-->
 <div resizeleaflet>
   <leaflet id="cityMap" center="center" geojson="geojson" tiles="tiles" width="100%"></leaflet>
 </div>
 
-<div class="tooltip-layer" ng-show="isNhoodTooltipVisible" ng-style="nhoodTooltipStyle" ng-init="isNhoodTooltipVisible = false">
-  <div>Neighborhood: {{hoverOverNhoodName}}</div>
-  <div>Logo:</div>
-  <div>Abopted streets: 0/1000</div>
-  <div>Status: {{hoverOverNhoodColor}}</div>
+<div class="tooltip-layer" ng-show="tooltip.isNhoodTooltipVisible" ng-style="tooltip.nhoodTooltipStyle" ng-init="tooltip.isNhoodTooltipVisible = false">
+  <div>Neighborhood: {{tooltip.hoverOverNhoodName}}</div>
+  <div>Abopted streets: {{tooltip.totalStreetsAdopted}}/{{tooltip.totalStreets}}</div>
 </div>
 
-<div class="tooltip-layer" ng-show="isStreetTooltipVisible" ng-style="streetTooltipStyle" ng-init="isStreetTooltipVisible = false">
-  <div>Street: {{hoverOverStreetName}}</div>
-  <div>Adopters: 0</div>
-  <div><img ng-src="http://www.gravatar.com/avatar/{{image}}" alt="Description" /></div>
+<div class="tooltip-layer" ng-show="tooltip.isStreetTooltipVisible" ng-style="tooltip.streetTooltipStyle" ng-init="tooltip.isStreetTooltipVisible = false">
+  <div>Street: {{tooltip.hoverOverStreetName}}</div>
+  <div>Adopters: {{tooltip.totalStreetAdopters}}</div>
 </div>
