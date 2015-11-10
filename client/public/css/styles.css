@@ -148,8 +148,8 @@
     width: 60%;
     margin-right: 10%;
 }
-.partners a:nth-child(3){
-    width: 20%;
+.partners img[src*='brownstone']{
+    width: 100%;
 }
 .social a img{
     width: 60%;
