@@ -36,7 +36,9 @@ app.use(passport.session());
 //seed the database
 //uncomment to seed
 //var dbseeder = require('./server/config/dbseeder');
-var authentication = require('./server/config/passport/login');
+
+//Setup configuration
+require('./server/config/passport/init');
 
 var server = require('http').createServer(app);
 require('./server/config/express')(app);

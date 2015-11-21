@@ -1,6 +1,6 @@
 var LocalStrategy   = require('passport-local').Strategy;
-var User            = require('../../api/user.model');
-var bCrypt = require('bcrypt-nodejs');
+var User            = require('../../api/user/user.model');
+var crypto          = require('bcrypt-nodejs');
 
 module.exports = function(passport){
 
@@ -8,7 +8,6 @@ module.exports = function(passport){
                 passReqToCallback : true // allows us to pass back the entire request to the callback
             },
             function(req, username, password, done) {
-
                 findOrCreateUser = function(){
                     // find a user in Mongo with provided username
                     User.findOne({ 'username' :  username }, function(err, user) {
@@ -53,7 +52,7 @@ module.exports = function(passport){
 
     // Generates hash using bCrypt
     var createHash = function(password){
-        return bCrypt.hashSync(password, bCrypt.genSaltSync(10), null);
+        return crypto.hashSync(password, crypto.genSaltSync(10), null);
     }
 
 };
