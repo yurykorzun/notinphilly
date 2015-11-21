@@ -23,13 +23,15 @@ mongoose.connect(connectionString);
 //make the app use the passport/express session
 app.use(passport.initialize());
 app.use(passport.session({
+  secret: 'notinphillynotinphilly',
   resave: true,
   saveUninitialized: true,
   store: new mongoStore({
       mongooseConnection: mongoose.connection,
       db: 'notinphilly'
   })
-}))
+}));
+app.use(passport.session());
 
 //seed the database
 //uncomment to seed

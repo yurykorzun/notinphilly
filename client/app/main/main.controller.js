@@ -19,6 +19,11 @@ angular.module('notinphillyServerApp')
                }
             });
     $scope.tooltip = {};
+    $scope.sideMenu = {
+      onMapReturn : function() {
+        $scope.sideMenu.isStreetLevel = false;
+        mapService.setNeighborhoodLayers();
+    }};
 
     var mapCallbacks = {
       neighborhoodMouseOverCallback : function(e)
@@ -46,6 +51,9 @@ angular.module('notinphillyServerApp')
       neighborhoodMouseOutCallback : function(e)
       {
           $scope.tooltip.isNhoodTooltipVisible  = false;
+      },
+      neighborhoodMouseClickCallback : function(e) {
+          $scope.sideMenu.isStreetLevel = true;
       },
       streetMouseOverCallback : function(e)
       {

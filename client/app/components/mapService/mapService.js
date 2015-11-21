@@ -5,6 +5,7 @@
       var mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
         neighborhoodMouseOutCallback : undefined,
+        neighborhoodMouseClickCallback : undefined,
         streetMouseOverCallback : undefined,
         streetMouseOutCallback: undefined
       };
@@ -26,17 +27,18 @@
                      layer.on({
                       mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
                       mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
-                      click: function(e) { onLayerClick(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
+                      click: function(e) { onLayerClick(e); mapCallbacks.neighborhoodMouseOutCallback(e); mapCallbacks.neighborhoodMouseClickCallback(e); },
                       layerremove: function(e) { mapCallbacks.neighborhoodMouseOutCallback(e); }
                      });
                    },
               style: {
-                color: '#486CFA',
+                color: '#9A9B9C',
                 weight: 2,
                 fillOpacity: 0.4,
-                 fillColor: '#484848'
+                fillColor: '#484848'
               }
             });
+            map.setZoom(13);
             mapLayerGroup.addLayer(geoJsonLayer);
             mapLayerGroup.addTo(map);
           });
@@ -108,7 +110,7 @@
          switch (colorValue) {
            case 1:
              style = {
-               color: 'Blue',
+               color: '#9A9B9C',
                weight: 2,
                fillColor: '#484848',
                fillOpacity: 0.2
@@ -116,7 +118,7 @@
              break;
            case 2:
              style = {
-               color: 'Blue',
+               color: '#9A9B9C',
                weight: 2,
                fillColor: '#49586B',
                fillOpacity: 0.2
@@ -124,7 +126,7 @@
              break;
            case 3:
              style = {
-                 color: 'Blue',
+                 color: '#9A9B9C',
                  weight: 2,
                  fillColor: '#6AC48E',
                  fillOpacity: 0.2
@@ -132,7 +134,7 @@
              break;
            case 4:
                style = {
-                   color: 'Blue',
+                   color: '#9A9B9C',
                    weight: 2,
                    fillColor: '#26A053',
                    fillOpacity: 0.2
@@ -161,7 +163,7 @@
           var layer = e.target;
 
           layer.setStyle({
-            color: 'Blue',
+            color: '#9A9B9C',
             fillOpacity: 0.2,
             weight: 2
           });

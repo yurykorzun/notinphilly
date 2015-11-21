@@ -96,10 +96,16 @@
   </div>
 </div>
 <div class="col-xs-2 col-sm-1 col-md-1  sideItemsColumn">
-  <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="sideMenu.isVisible"><i class="fa fa-3x fa-angle-double-left"></i></div>
-  <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="!sideMenu.isVisible"><i class="fa fa-3x fa-angle-double-right"></i></div>
-  <div class="sideItem"><i class="fa fa-3x fa-search-plus"></i></div>
-  <div class="sideItem"><i class="fa fa-3x fa-search-minus"></i></div>
+  <div class="sideItemsColumnSection">
+    <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="sideMenu.isVisible"><i class="fa fa-3x fa-angle-double-left"></i></div>
+    <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="!sideMenu.isVisible"><i class="fa fa-3x fa-angle-double-right"></i></div>
+  </div>
+
+  <div class="sideItemsColumnSection offset">
+    <div class="sideItem" ng-show="sideMenu.isStreetLevel" ng-click="sideMenu.onMapReturn()"><i class="fa fa-3x fa-level-up"></i></div>
+    <div class="sideItem"><i class="fa fa-3x fa-search-plus"></i></div>
+    <div class="sideItem"><i class="fa fa-3x fa-search-minus"></i></div>
+  </div>
 </div>
 
 <!--Leaflet map of Philadelphia with layers-->
