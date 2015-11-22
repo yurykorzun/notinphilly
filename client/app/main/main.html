@@ -33,6 +33,11 @@
             </ng-form>
           </uib-accordion-group>
           <uib-accordion-group heading="Member login" panel-class="menu-get-started" template-url="group-template.html">
+            <div>{{LoginTest}}</div>
+            <div><a href ng-click="login()">Login</a></div>
+            <div><a href ng-click="session()">Session</a></div>
+            <div><a href ng-click="logout()">Logout</a></div>
+
             <ng-form ng-controller="LoginController">
               <div class="form-group menu-login">
                 <label>Username</label>

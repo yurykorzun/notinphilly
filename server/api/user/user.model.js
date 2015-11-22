@@ -28,6 +28,7 @@ var userSchema = new Schema({
   hashedPassword: { type: String, default: '' },
   activationHash: String,
   salt: { type: String, default: '' },
+  active: {  type: Boolean, default: false },
   authToken: { type: String, default: '' },
   facebook: {},
   twitter: {},
@@ -54,6 +55,21 @@ userSchema
     .get(function() {
         return this._password;
     });
+
+userSchema
+    .virtual('user_info')
+    .get(function () {
+      return { '_id': this._id, 'username': this.username, 'email': this.email };
+    });
+
+userSchema.path('username').validate(function(value, respond) {
+    mongoose.models["User"].findOne({username: value}, function(err, user) {
+      if(err) throw err;
+      if(user) return respond(false);
+      respond(true);
+    });
+  }, 'The specified username is already in use.');
+
 
 userSchema
   .virtual('token')

@@ -4,6 +4,8 @@ var mongoose       = require('mongoose');
 var app            = express();
 var bodyParser     = require('body-parser');
 var methodOverride = require('method-override');
+var cookieParser   = require('cookie-parser');
+var methodOverride = require('method-override');
 var expressSession = require('express-session');
 var mongoStore     = require('connect-mongo')(expressSession);
 // Configuring Passport
@@ -17,28 +19,39 @@ var db = require('./server/config/db');
 var port = process.env.PORT || 8080;
 var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || "mongodb://localhost/notinphilly"
 
+//app.use(cookieParser());
+app.use(bodyParser.urlencoded({
+    extended: false
+}));
+app.use(bodyParser.json());
+app.use(methodOverride());
+
 mongoose.connection.on('error', console.log);
 mongoose.connect(connectionString);
 
 //make the app use the passport/express session
-app.use(passport.initialize());
-app.use(passport.session({
+app.use(expressSession({
+  name: "notinphilly.sid",
+  resave: false,
+  saveUninitialized: false,
   secret: 'notinphillynotinphilly',
-  resave: true,
-  saveUninitialized: true,
+  cookie: {
+    maxAge: 3600000
+  },
   store: new mongoStore({
       mongooseConnection: mongoose.connection,
       db: 'notinphilly'
   })
 }));
-app.use(passport.session());
 
+app.use(passport.initialize());
+app.use(passport.session());
 //seed the database
 //uncomment to seed
 //var dbseeder = require('./server/config/dbseeder');
 
 //Setup configuration
-require('./server/config/passport/init');
+require('./server/config/passport');
 
 var server = require('http').createServer(app);
 require('./server/config/express')(app);
