@@ -19,6 +19,38 @@ angular.module('notinphillyServerApp')
                }
             });
     $scope.tooltip = {};
+    $scope.sideMenu = {
+      onMapReturn : function() {
+        $scope.sideMenu.isStreetLevel = false;
+        mapService.setNeighborhoodLayers();
+    }};
+
+    $scope.login = function() {
+        $http.post("/api/auth/login",
+        {
+          "username": "test@test.me",
+          "password": "1234test"
+        }).then(function(response)
+        {
+          $scope.LoginTest = "login";
+        });
+    };
+
+    $scope.session = function() {
+        $http.get("/api/auth/session")
+        .then(function(response)
+        {
+          $scope.LoginTest = "session";
+        });
+    };
+
+    $scope.logout = function() {
+        $http.post("/api/auth/logout")
+        .then(function(response)
+        {
+          $scope.LoginTest = "logout";
+        });
+    };
 
     var mapCallbacks = {
       neighborhoodMouseOverCallback : function(e)
@@ -46,6 +78,9 @@ angular.module('notinphillyServerApp')
       neighborhoodMouseOutCallback : function(e)
       {
           $scope.tooltip.isNhoodTooltipVisible  = false;
+      },
+      neighborhoodMouseClickCallback : function(e) {
+          $scope.sideMenu.isStreetLevel = true;
       },
       streetMouseOverCallback : function(e)
       {

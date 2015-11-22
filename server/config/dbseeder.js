@@ -2,6 +2,11 @@ var mongoose       = require('mongoose');
 var fs             = require('fs');
 var path           = require('path');
 var arrayFind      = require('array-find');
+var StreetSegmentModel = require('../api/street/streetSegment.model');
+var NeighborhoodModel = require('../api/neighborhood/neighborhood.model');
+var StateModel = require('../api/state/state.model');
+var RoleModel = require('../api/role/role.model');
+var UserModel = require('../api/user/user.model');
 
 module.exports = function() {
   var streetsJson     = fs.readFileSync(path.resolve(__dirname, "../misc/streetsData.json"), 'utf8');
@@ -10,11 +15,6 @@ module.exports = function() {
   var neighborhoodsObj = JSON.parse(neigborhoodJson);
   var streetsObj       = JSON.parse(streetsJson);
 
-  var StreetSegmentModel = require('../api/street/streetSegment.model');
-  var NeighborhoodModel = require('../api/neighborhood/neighborhood.model');
-  var StateModel = require('../api/state/state.model');
-  var RoleModel = require('../api/role/role.model');
-  var UserModel = require('../api/user/user.model');
   var neighborhoodInclude = ['COBBS_CREEK', 'WEST_PARK', 'EAST_PARK', 'FITLER_SQUARE', 'WALNUT_HILL', 'SOCIETY_HILL', 'OLD_CITY', 'CENTER_CITY', 'GARDEN_COURT', 'WOODLAND_TERRACE', 'UNIVERSITY_CITY', 'POWELTON', 'SPRUCE_HILL', 'CEDAR_PARK', 'LOGAN_SQUARE', 'FAIRMOUNT', 'SPRING_GARDEN', 'CALLOWHILL', 'CHINATOWN', 'RITTENHOUSE', 'WASHINGTON_SQUARE'];
 
   console.log('starting to seed the database');
@@ -96,6 +96,7 @@ module.exports = function() {
         businesName: 'Not in Philly',
         addressLine1: 'Main st. 1',
         addressLine2: undefined,
+        active: true,
         city: 'Philadelphia',
         state: 1,
         zip: '19103',
