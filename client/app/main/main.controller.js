@@ -1,6 +1,13 @@
 (function () {
 angular.module('notinphillyServerApp')
   .controller('mainController', [ '$scope', '$http', 'mapService', function($scope, $http, mapService) {
+    $scope.tooltip = {};
+    $scope.sideMenu = {
+      onMapReturn : function() {
+        $scope.sideMenu.isStreetLevel = false;
+        mapService.setNeighborhoodLayers();
+    }};
+    $scope.spinner = { active: false };
     angular.extend($scope, {
                zoomControl: false,
                 center: {
@@ -18,12 +25,7 @@ angular.module('notinphillyServerApp')
                    }
                }
             });
-    $scope.tooltip = {};
-    $scope.sideMenu = {
-      onMapReturn : function() {
-        $scope.sideMenu.isStreetLevel = false;
-        mapService.setNeighborhoodLayers();
-    }};
+
 
     $scope.login = function() {
         $http.post("/api/auth/login",

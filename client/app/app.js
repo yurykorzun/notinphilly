@@ -1,12 +1,13 @@
 (function () {
   var  app = angular.module('notinphillyServerApp', [
       'ngRoute',
-      'restangular',
       'leaflet-directive',
-      'ui.bootstrap'
+      'ui.bootstrap',
+      'ngAnimate',
+      'treasure-overlay-spinner'
     ]);
 
-  app.config(function ($routeProvider, RestangularProvider) {
+  app.config(function ($routeProvider, $logProvider) {
       $routeProvider
         .when('/', {
           templateUrl: 'app/main/main.html',
@@ -15,6 +16,8 @@
         .otherwise({
           redirectTo: '/'
         });
+
+        $logProvider.debugEnabled(false);
     });
 
   app.run([

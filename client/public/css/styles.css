@@ -86,7 +86,7 @@ input[type*=submit], .btn, .btn-default {
 .menu-body {
     background: white;
     width: 100%;
-    padding: 10px 15px;
+    padding-left: 15px;
 }
 
 .menu-tag-line{

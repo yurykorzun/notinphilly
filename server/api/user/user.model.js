@@ -11,10 +11,10 @@ var userSchema = new Schema({
   birthDate: { type : Date, default: '' },
   phoneNumber: { type : String, default: '' },
   email: { type : String, default: '' },
-  role: {
+  roles: [{
     type: Number,
     ref: 'Role'
-  },
+  }],
   businesName: { type : String, default: '' },
   addressLine1: { type : String, default: '' },
   addressLine2: { type : String, default: '' },
@@ -57,9 +57,9 @@ userSchema
     });
 
 userSchema
-    .virtual('user_info')
+    .virtual('userInfo')
     .get(function () {
-      return { '_id': this._id, 'username': this.username, 'email': this.email };
+      return { '_id': this._id, 'username': this.username, 'email': this.email, 'roles': this.roles };
     });
 
 userSchema.path('username').validate(function(value, respond) {

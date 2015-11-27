@@ -4,14 +4,15 @@
   "dependencies": {
     "bootstrap": "latest",
     "font-awesome": "latest",
-    "animate.css": "latest",
-    "angular": "latest",
-    "angular-route": "latest",
+    "angular": "~1.4.8",
+    "angular-route": "~1.4.8",
     "leaflet": "~0.7.3",
     "leaflet-providers": "~1.1.1",
-    "restangular": "~1.5.1",
     "underscore": "~1.8.3",
-    "angular-leaflet-directive": "~0.8.8",
-    "angular-bootstrap": "~0.14.1"
+    "angular-leaflet-directive": "angular-leaflet#~0.10.0",
+    "angular-bootstrap": "~0.14.3",
+    "angular-treasure-overlay-spinner": "~1.1.0",
+    "angular-animate": "~1.4.8",
+    "angular-simple-logger": "~0.1.5"
   }
 }

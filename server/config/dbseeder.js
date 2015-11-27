@@ -92,7 +92,7 @@ module.exports = function() {
         birthDate: Date('1987-05-01'),
         phoneNumber: '123456789',
         email: 'test@test.me',
-        role: 1,
+        role: [1],
         businesName: 'Not in Philly',
         addressLine1: 'Main st. 1',
         addressLine2: undefined,
