@@ -83,6 +83,10 @@ input[type*=submit], .btn, .btn-default {
     color: white;
 }
 
+.menu-userProfile {
+  padding-right: 15px;
+}
+
 .menu-body {
     background: white;
     width: 100%;
@@ -103,6 +107,17 @@ input[type*=submit], .btn, .btn-default {
     transition: all 0.3s ease;
     padding: 10px 10px 10px 20px;
     margin: 0 10px 0 10px;
+}
+.menu-profile {
+    background: #1fa2dc;
+    color: black;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 10px 10px 10px 20px;
+    margin: 0 10px 0 10px;
+}
+.menu-profile:hover{
+    background: #0691CF;
 }
 .menu-login {
     transition: all 0.3s ease;

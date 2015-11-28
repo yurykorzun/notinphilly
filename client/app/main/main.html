@@ -1,11 +1,19 @@
 <div class="row-fluid">
   <!--Side menu-->
   <div class="col-xs-10 col-sm-11 col-md-3 pull-left side-container" ng-show="sideMenu.isVisible" ng-init="sideMenu.isVisible = true">
-    <treasure-overlay-spinner active='spinner.active'>
+    <treasure-overlay-spinner active='sideMenu.spinnerActive'>
       <div class="side">
         <div class="row-fluid">
           <img class="logo" src="public/img/logo.png"/>
           <uib-accordion>
+            <uib-accordion-group heading="Your Profile" is-open="sideMenu.isUserProfileOpen" ng-show="sideMenu.isUserProfileVisible" panel-class="menu-profile" template-url="app/sidemenu/accordion-template.html">
+              <div class="menu-userProfile" ng-controller="UserProfileController">
+                <div class="row">
+                  <div class="pull-left"><h3>{{sideMenu.user.fullName}}</h3> <a href ng-click ><i class="fa fa-3x fa-sign-out"></i></a></div>
+                </div>
+                <p><strong>Email: </strong> {{sideMenu.user.email}} </p>
+              </div>
+            </uib-accordion-group>
             <uib-accordion-group heading="How it works" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
               <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference.
                   In return for a 6 month commitment to going out once a week to pick up litter, we will give you a trash grabber. No
@@ -13,10 +21,24 @@
               </p>
             </uib-accordion-group>
             <uib-accordion-group heading="Let's start!" panel-class="menu-tag-line" template-url="app/sidemenu/accordion-template.html">
-              <div ng-include="'app/sidemenu/search-template.html'"></div>
+              <ng-form class="form-inline" ng-controller="SearchStreetController">
+                <div class="form-group menu-street-search">
+                  <label>Find your street</label>
+                  <input type="text" class="form-control" ng-model="search.streetName" required>
+                  <input type="submit" value="Search" />
+                </div>
+              </ng-form>
             </uib-accordion-group>
-            <uib-accordion-group heading="Member login" panel-class="menu-get-started" template-url="app/sidemenu/accordion-template.html">
-              <div ng-include="'app/sidemenu/login-template.html'"></div>
+            <uib-accordion-group heading="Member login" is-open="sideMenu.isLoginOpen" ng-show="sideMenu.isLoginVisible" panel-class="menu-get-started" template-url="app/sidemenu/accordion-template.html">
+              <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
+                <div class="form-group menu-login">
+                  <label>Username</label>
+                  <input type="text" class="form-control" name="uname" ng-model="loginForm.username" required ng-init="loginForm.username = 'test@test.me'"></input>
+                  <label>Password</label>
+                  <input type="password" class="form-control" name="pass" ng-model="loginForm.password" required ng-init="loginForm.password = '1234test'"></input>
+                  <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)"/> Or <a href="">Sign up</a>
+                </div>
+              </ng-form>
             </uib-accordion-group>
             <uib-accordion-group heading="Spread the word" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
               <p>Spread the word about this movement on <a href="http://instagram.com/notinphilly">Instagram</a> and <a href="https://www.facebook.com/groups/1625723617652503/">Facebook</a>, using the #NotinPhilly or through our full page or ¼ page flyers.
@@ -75,6 +97,9 @@
     <div class="sideItem" ng-show="sideMenu.isStreetLevel" ng-click="sideMenu.onMapReturn()"><i class="fa fa-3x fa-level-up"></i></div>
     <div class="sideItem"><i class="fa fa-3x fa-search-plus"></i></div>
     <div class="sideItem"><i class="fa fa-3x fa-search-minus"></i></div>
+  </div>
+
+  <div class="sideItemsColumnSection offset">
     <a class="social" href="http://instagram.com/notinphilly" target="_blank">
         <div class="sideItem"><i class="fa fa-3x fa-instagram"></i></div>
     </a>
@@ -86,7 +111,7 @@
 
 <!--Leaflet map of Philadelphia with layers-->
 <div resizeleaflet>
-  <leaflet id="cityMap" center="center" geojson="geojson" tiles="tiles" width="100%"></leaflet>
+  <leaflet id="cityMap" center="center" geojson="geojson" tiles="tiles" zoomControl="false" width="100%"></leaflet>
 </div>
 
 <div class="tooltip-layer" ng-show="tooltip.isNhoodTooltipVisible" ng-style="tooltip.nhoodTooltipStyle" ng-init="tooltip.isNhoodTooltipVisible = false">

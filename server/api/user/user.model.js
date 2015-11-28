@@ -59,7 +59,13 @@ userSchema
 userSchema
     .virtual('userInfo')
     .get(function () {
-      return { '_id': this._id, 'username': this.username, 'email': this.email, 'roles': this.roles };
+      return {
+        '_id': this._id,
+        'username': this.username,
+        'fullname': this.firstName + ' ' + this.lastName,
+        'email': this.email,
+        'roles': this.roles
+      };
     });
 
 userSchema.path('username').validate(function(value, respond) {

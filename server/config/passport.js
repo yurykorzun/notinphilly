@@ -15,21 +15,18 @@ passport.use(new LocalStrategy({
             if (err) {
               console.log(err);
               return done(err);
-            };
-
-            if (!user) {
+            }
+            else if (!user) {
                 return done(null, false, {
                     message: 'This username is not registered.'
                 });
             }
-            if (!user.authenticate(password)) {
+            else if (!user.authenticate(password)) {
                 return done(null, false, {
                     message: 'This password is not correct.'
                 });
             }
-
-            console.log('Checking if user is activated');
-            if (!user.active) {
+            else if (!user.active) {
                 return done(null, false, {
                     message: 'Your account is not activated.  Check your email for an activation link.'
                 });

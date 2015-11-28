@@ -6,17 +6,15 @@ var passport = require('passport');
  * returns info on authenticated user
  */
 exports.session = function (req, res) {
-  console.log("Session - " + req.isAuthenticated());
-
-  if(req.user) {
-    res.json(req.user.userInfo);
+  if(req.isAuthenticated() && req.user) {
+    return res.json(req.user);
   }
   else {
-    res.send(400, "Not logged in");
+    return res.send(400, "Not logged in");
   }
 };
 
-exports.isAuthenticated = function (req, res) {
+exports.isAuthenticated = function (req, res, next) {
   if (req.isAuthenticated()) {
     if(req.user) {
       next();
@@ -26,6 +24,13 @@ exports.isAuthenticated = function (req, res) {
     }
   }
   res.send(401);
+};
+
+exports.checkAuthenticated = function (req, res) {
+  if(req.isAuthenticated() && req.user) {
+    return res.json({ "_id" : req.user._id, "authenticated" : true });
+  }
+  return res.json({ "authenticated" : false });
 };
 
 /**
@@ -48,7 +53,7 @@ exports.hasRole = function (role) {
  * returns nothing
  */
 exports.logout = function (req, res) {
-  res.clearCookie('connect.sid');
+  res.clearCookie('notinphilly.sid');
 
   if(req.user) {
     req.logout();

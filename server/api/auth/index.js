@@ -7,6 +7,7 @@ var router = express.Router();
 router.post('/login', passport.authenticate('local'), controller.login);
 router.post('/logout', controller.logout);
 router.get('/session', controller.session);
-router.get('/isauthenticated', controller.isAuthenticated);
+router.get('/isauth', controller.isAuthenticated);
+router.get('/checkauth', controller.checkAuthenticated);
 
 module.exports = router;

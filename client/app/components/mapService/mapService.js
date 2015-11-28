@@ -20,6 +20,11 @@
           mapLayerGroup.clearLayers();
 
           leafletData.getMap().then(function (map) {
+            if(map.zoomControl)
+            {
+              map.zoomControl.removeFrom(map);
+            }
+
             var geoJsonLayer = L.geoJson(data,
             {
               onEachFeature: function (feature, layer){

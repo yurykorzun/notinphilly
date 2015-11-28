@@ -1,15 +1,35 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('mainController', [ '$scope', '$http', 'mapService', function($scope, $http, mapService) {
+  .controller('mainController', [ '$scope', '$http', '$rootScope', 'mapService', 'sessionService', function($scope, $http, $rootScope, mapService, sessionService) {
+    var isLoggedIn = ($rootScope.currentUser === undefined);
+
     $scope.tooltip = {};
     $scope.sideMenu = {
+      isUserProfileVisible: false,
+      isUserProfileOpen: false,
+      isLoginVisible: true,
+      isLoginOpen: false,
+      spinnerActive: false,
       onMapReturn : function() {
         $scope.sideMenu.isStreetLevel = false;
         mapService.setNeighborhoodLayers();
     }};
-    $scope.spinner = { active: false };
+
+    $scope.$on('spinnerStart', function(event) {
+      $scope.sideMenu.spinnerActive = true;
+    });
+    $scope.$on('spinnerEnd', function(event) {
+      $scope.sideMenu.spinnerActive = false;
+    });
+    $scope.$on('loginSuccess', function(event) {
+      $scope.sideMenu.isUserProfileVisible = true;
+      $scope.sideMenu.isUserProfileOpen = true;
+      $scope.sideMenu.isLoginVisible = false;
+      $scope.sideMenu.isLoginOpen = false;
+    });
+
     angular.extend($scope, {
-               zoomControl: false,
+                zoomControl: false,
                 center: {
                     lat: 39.948920,
                     lng: -75.201825,
@@ -25,34 +45,6 @@ angular.module('notinphillyServerApp')
                    }
                }
             });
-
-
-    $scope.login = function() {
-        $http.post("/api/auth/login",
-        {
-          "username": "test@test.me",
-          "password": "1234test"
-        }).then(function(response)
-        {
-          $scope.LoginTest = "login";
-        });
-    };
-
-    $scope.session = function() {
-        $http.get("/api/auth/session")
-        .then(function(response)
-        {
-          $scope.LoginTest = "session";
-        });
-    };
-
-    $scope.logout = function() {
-        $http.post("/api/auth/logout")
-        .then(function(response)
-        {
-          $scope.LoginTest = "logout";
-        });
-    };
 
     var mapCallbacks = {
       neighborhoodMouseOverCallback : function(e)
