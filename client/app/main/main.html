@@ -8,10 +8,18 @@
           <uib-accordion>
             <uib-accordion-group heading="Your Profile" is-open="sideMenu.isUserProfileOpen" ng-show="sideMenu.isUserProfileVisible" panel-class="menu-profile" template-url="app/sidemenu/accordion-template.html">
               <div class="menu-userProfile" ng-controller="UserProfileController">
+                <a href ng-click="userProfile.logout()">Logout <i class="fa fa-sign-out"></i></a>
                 <div class="row">
-                  <div class="pull-left"><h3>{{sideMenu.user.fullName}}</h3> <a href ng-click ><i class="fa fa-3x fa-sign-out"></i></a></div>
+                  <div class="col-md-9">
+                    <div><img src="public/img/user-profile.png"/><h3>fullName</h3></div>
+                  </div>
                 </div>
-                <p><strong>Email: </strong> {{sideMenu.user.email}} </p>
+                <div class="row">
+                  <div class="col-md-10">
+                    <p><strong>Email: </strong> {{sideMenu.user.email}} </p>
+                    <p><strong>Adopted streets: </strong> {{sideMenu.user.email}} </p>
+                  </div>
+                </div>
               </div>
             </uib-accordion-group>
             <uib-accordion-group heading="How it works" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
@@ -32,8 +40,8 @@
             <uib-accordion-group heading="Member login" is-open="sideMenu.isLoginOpen" ng-show="sideMenu.isLoginVisible" panel-class="menu-get-started" template-url="app/sidemenu/accordion-template.html">
               <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
                 <div class="form-group menu-login">
-                  <label>Username</label>
-                  <input type="text" class="form-control" name="uname" ng-model="loginForm.username" required ng-init="loginForm.username = 'test@test.me'"></input>
+                  <label>Email</label>
+                  <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required ng-init="loginForm.email = 'test@test.me'"></input>
                   <label>Password</label>
                   <input type="password" class="form-control" name="pass" ng-model="loginForm.password" required ng-init="loginForm.password = '1234test'"></input>
                   <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)"/> Or <a href="">Sign up</a>
@@ -109,17 +117,4 @@
   </div>
 </div>
 
-<!--Leaflet map of Philadelphia with layers-->
-<div resizeleaflet>
-  <leaflet id="cityMap" center="center" geojson="geojson" tiles="tiles" zoomControl="false" width="100%"></leaflet>
-</div>
-
-<div class="tooltip-layer" ng-show="tooltip.isNhoodTooltipVisible" ng-style="tooltip.nhoodTooltipStyle" ng-init="tooltip.isNhoodTooltipVisible = false">
-  <div>Neighborhood: {{tooltip.hoverOverNhoodName}}</div>
-  <div>Abopted streets: {{tooltip.totalStreetsAdopted}}/{{tooltip.totalStreets}}</div>
-</div>
-
-<div class="tooltip-layer" ng-show="tooltip.isStreetTooltipVisible" ng-style="tooltip.streetTooltipStyle" ng-init="tooltip.isStreetTooltipVisible = false">
-  <div>Street: {{tooltip.hoverOverStreetName}}</div>
-  <div>Adopters: {{tooltip.totalStreetAdopters}}</div>
-</div>
+<div ng-include src="'app/map/map-template.html'"></div>

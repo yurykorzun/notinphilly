@@ -10,11 +10,6 @@ var userSchema = new Schema({
   lastName: { type : String, default: '' },
   birthDate: { type : Date, default: '' },
   phoneNumber: { type : String, default: '' },
-  email: { type : String, default: '' },
-  roles: [{
-    type: Number,
-    ref: 'Role'
-  }],
   businesName: { type : String, default: '' },
   addressLine1: { type : String, default: '' },
   addressLine2: { type : String, default: '' },
@@ -23,8 +18,12 @@ var userSchema = new Schema({
     type: Number,
     ref: 'State'
   },
+  email: { type : String, default: '' },
+  roles: [{
+    type: Number,
+    ref: 'Role'
+  }],
   zip: { type : String, default: '' },
-  username: { type: String, default: '' },
   hashedPassword: { type: String, default: '' },
   activationHash: String,
   salt: { type: String, default: '' },
@@ -61,20 +60,19 @@ userSchema
     .get(function () {
       return {
         '_id': this._id,
-        'username': this.username,
         'fullname': this.firstName + ' ' + this.lastName,
         'email': this.email,
         'roles': this.roles
       };
     });
 
-userSchema.path('username').validate(function(value, respond) {
-    mongoose.models["User"].findOne({username: value}, function(err, user) {
+userSchema.path('email').validate(function(value, respond) {
+    mongoose.models["User"].findOne({email: value}, function(err, user) {
       if(err) throw err;
       if(user) return respond(false);
       respond(true);
     });
-  }, 'The specified username is already in use.');
+  }, 'The specified email is already in use.');
 
 
 userSchema

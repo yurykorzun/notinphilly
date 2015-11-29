@@ -1,35 +1,41 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .service('sessionService', ['$http', '$rootScope', function($http, $rootScope) {
+    .service('sessionService', ['$http', '$rootScope', '$q', function($http, $rootScope, $q) {
 
-      this.login = function(username, password, successCallback, failCallback) {
+      this.login = function(email, password) {
+        var deferred = $q.defer();
+
         $http.post("/api/auth/login",
         {
-          "username": username,
+          "email": email,
           "password": password
         }).then(function(response)
         {
           $rootScope.currentUser = response.data;
-          if(successCallback)
-          {
-            successCallback(response.data);
-          }
+          deferred.resolve(response.data);
         },
         function(err)
         {
-          if(failCallback)
-          {
-            failCallback(err);
-          }
+          deferred.reject(err);
         });
+
+        return deferred.promise;
       };
 
       this.logout = function() {
+        var deferred = $q.defer();
+
         $http.post("/api/auth/logout")
         .then(function(response)
         {
           $rootScope.currentUser = null;
+          deferred.resolve(response);
+        },
+        function (err){
+          deferred.reject(err);
         });
+
+        return deferred.promise;
       };
 
       this.session = function() {
@@ -43,20 +49,27 @@
         });
       };
 
-      this.checkSession = function(successCallback) {
+      this.checkLoggedin = function() {
+        var deferred = $q.defer();
+
         $http.get("/api/auth/checkauth")
         .then(function(response)
         {
-          if(response.data.authenticated && successCallback)
+          if(response.data.authenticated)
           {
-            successCallback();
+            deferred.resolve(response.data);
+          }
+          else {
+            deferred.reject(response.data);
           }
         },
         function(err){
           $rootScope.currentUser = null;
+          deferred.reject(err);
         });
+
+        return deferred.promise;
       };
 
-      this.checkSession(this.session);
     }]);
   })();

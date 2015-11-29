@@ -100,7 +100,6 @@ module.exports = function() {
         city: 'Philadelphia',
         state: 1,
         zip: '19103',
-        username: 'test@test.me',
         password: '1234test'
       }, function(err, thor) {
         if (err) return console.error(err);

@@ -10,6 +10,14 @@
         streetMouseOutCallback: undefined
       };
 
+      //Remove builtin zoom control
+      leafletData.getMap().then(function (map) {
+        if(map.zoomControl)
+        {
+          map.zoomControl.removeFrom(map);
+        }
+      });
+
       this.setMapCallbacks = function(callbacks) {
         mapCallbacks = callbacks;
       };
@@ -20,11 +28,6 @@
           mapLayerGroup.clearLayers();
 
           leafletData.getMap().then(function (map) {
-            if(map.zoomControl)
-            {
-              map.zoomControl.removeFrom(map);
-            }
-
             var geoJsonLayer = L.geoJson(data,
             {
               onEachFeature: function (feature, layer){

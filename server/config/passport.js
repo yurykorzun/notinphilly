@@ -4,13 +4,13 @@ var LocalStrategy = require('passport-local').Strategy;
 var UserModel     = require('../api/user/user.model');
 
 passport.use(new LocalStrategy({
-        usernameField: 'username',
+        usernameField: 'email',
         passwordField: 'password' // this is the virtual field on the model
     },
-    function(username, password, done) {
-        console.log('Authenticating user ' + username);
+    function(email, password, done) {
+        console.log('Authenticating user ' + email);
         UserModel.findOne({
-            username: username.toLowerCase()
+            email: email.toLowerCase()
         }, function(err, user) {
             if (err) {
               console.log(err);
@@ -18,7 +18,7 @@ passport.use(new LocalStrategy({
             }
             else if (!user) {
                 return done(null, false, {
-                    message: 'This username is not registered.'
+                    message: 'This user is not registered.'
                 });
             }
             else if (!user.authenticate(password)) {

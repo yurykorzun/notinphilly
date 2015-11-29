@@ -5,9 +5,16 @@
       'ui.bootstrap',
       'ngAnimate',
       'treasure-overlay-spinner'
-    ]);
+    ])
 
-  app.config(function ($routeProvider, $logProvider) {
+    app.constant("APP_EVENTS", {
+        "SPINNER_START": "spinnerStart",
+        "SPINNER_END": "spinnerEnd",
+        "LOGIN_SUCCESS": "loginSuccess",
+        "LOGOUT": "logout"
+    });
+
+    app.config(function ($routeProvider, $logProvider) {
       $routeProvider
         .when('/', {
           templateUrl: 'app/main/main.html',
