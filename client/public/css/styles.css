@@ -21,20 +21,20 @@ input[type*=submit], .btn, .btn-default {
 
 #cityMap
 {
-  position: absolute;
-  top: 50px;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
+    position: absolute;
+    top: 50px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
 }
 
 .side-container {
-  z-index: 100;
-  margin-top: -40px;
-  padding-right: 0;
+    z-index: 100;
+    margin-top: -40px;
+    padding-right: 0;
 }
 
 .side {
@@ -62,35 +62,31 @@ input[type*=submit], .btn, .btn-default {
 }
 
 .sideItemsColumn {
-  z-index: 100;
-  padding: 0;
-  margin-top: -20px;
-  max-width: 60px;
+    z-index: 100;
+    padding: 0;
+    margin-top: -20px;
+    max-width: 60px;
 }
 
 .sideItemsColumnSection {
-  border: 1px solid #BDB9BB;
-  background-color: #FFFFFF;
+    border: 1px solid #BDB9BB;
+    background-color: #FFFFFF;
 }
 
 .sideItem {
-  width: 70%;
-  margin: 5px auto;
-  cursor: pointer;
+    width: 70%;
+    margin: 5px auto;
+    cursor: pointer;
 }
 
 .menu-link {
     color: white;
 }
 
-.menu-userProfile {
-  padding-right: 15px;
-}
-
 .menu-body {
     background: white;
     width: 100%;
-    padding-left: 15px;
+    padding: 10px 15px;
 }
 
 .menu-tag-line{
@@ -107,17 +103,6 @@ input[type*=submit], .btn, .btn-default {
     transition: all 0.3s ease;
     padding: 10px 10px 10px 20px;
     margin: 0 10px 0 10px;
-}
-.menu-profile {
-    background: #1fa2dc;
-    color: black;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 10px 10px 10px 20px;
-    margin: 0 10px 0 10px;
-}
-.menu-profile:hover{
-    background: #0691CF;
 }
 .menu-login {
     transition: all 0.3s ease;
@@ -147,7 +132,7 @@ input[type*=submit], .btn, .btn-default {
     text-decoration: none;
 }
 .accordion-text {
-  display: none;
+    display: none;
 }
 #user-auth{
     display:none;
@@ -203,7 +188,24 @@ input[type*=submit], .btn, .btn-default {
     border-bottom: none;
     margin-left: 5px;
 }
-
+#instafeed{
+    padding: 0 10px;
+}
+.slick-slide{
+    margin: 0 5px;
+    outline: none;
+}
+.slick-slide img{
+    width: 100%;
+    height: 100%;
+}
+.slick-prev{
+    position: absolute;
+    bottom: 0;
+}
+.slick-next{
+    margin: 10px 0 0 50px;
+}
 /*styles for index.html page*/
 .navbar-header{
     display: inline-block;
@@ -223,43 +225,6 @@ input[type*=submit], .btn, .btn-default {
 .navbar-launching-btn > p:hover{
     color: #333;
 }
-.navbar-launching-btn > p:hover + .tooltip{
-    display: block;
-}
-.tooltip{
-    position: absolute;
-    display: none;
-    border: 2px solid #7ECFF2;
-    opacity: 1;
-    color: #777;
-    background-color: white;
-    padding: 10px;
-    top: 56px;
-}
-.tooltip p{
-    margin: 0;
-}
-.tooltip::after{
-    content: "";
-    position: absolute;
-    z-index: 1071;
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
-    border-bottom: 10px solid white;
-    top: -10px;
-    right: 66px;
-}
-.tooltip::before {
-    content: "";
-    position: absolute;
-    z-index: 1070;
-    border-right: 10px solid transparent;
-    border-left: 10px solid transparent;
-    border-bottom: 10px solid #7ECFF2;
-    top: -12px;
-    right: 66px;
-}
-
 .col-sm-11-5
 {
     position: relative;
