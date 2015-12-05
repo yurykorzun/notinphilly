@@ -45,7 +45,7 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
             zipCode: street.zipLeft,
             type: street.type,
             totalAdopters: street.totalAdopters,
-            isAdopt: street.totalAdopters > 0,
+            isAdopted: street.totalAdopters > 0,
             active: street.active
           };
           geoList.push(geoItem);

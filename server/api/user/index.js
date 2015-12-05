@@ -1,15 +1,14 @@
 var express = require('express');
 var controller = require('./user.controller');
+var authService = require('../../auth/authService');
 
 var router = express.Router();
 
-//router.get('/', auth.hasRole('admin'), controller.index);
 router.get('/', controller.index);
 router.get('/:id', controller.get);
-router.get('/:id/setstreet/:sid', controller.setStreet);
-router.delete('/:id', controller.destroy);
-router.get('/me', controller.me);
+router.delete('/:id', authService.isAuthenticated, controller.destroy);
+router.get('/me', authService.isAuthenticated, controller.me);
 router.post('/', controller.create);
-router.post('/:id', controller.update);
+router.post('/:id', authService.isAuthenticated, controller.update);
 
 module.exports = router;

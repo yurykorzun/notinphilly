@@ -17,6 +17,9 @@ var StreetSchema = new Schema({
   segmentId: Number,
   oneWay: String,
   class: Number,
+  totalAdopters: { type : Number, default: 0 },
+  isAdopted: { type : Boolean, default: false },
+  active: { type : Boolean, default: false },
   geodata:{}
 },
 { collection: 'streetSegments' });

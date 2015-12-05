@@ -7,7 +7,9 @@ exports.isAuthenticated = function (req, res, next) {
       res.send(400, "Not logged in");
     }
   }
-  res.send(401);
+  else {
+    res.send(401);
+  }
 };
 
 /**
@@ -21,5 +23,7 @@ exports.hasRole = function (role) {
       next();
     }
   }
-  res.send(401);
+  else {
+    res.send(401);
+  }
 }

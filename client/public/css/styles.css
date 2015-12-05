@@ -83,6 +83,15 @@ input[type*=submit], .btn, .btn-default {
     color: white;
 }
 
+.menu-profile {
+  background: #1fa2dc;
+  color: black;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 10px 10px 10px 20px;
+  margin: 0 10px 0 10px;
+}
+
 .menu-body {
     background: white;
     width: 100%;
@@ -188,24 +197,6 @@ input[type*=submit], .btn, .btn-default {
     border-bottom: none;
     margin-left: 5px;
 }
-#instafeed{
-    padding: 0 10px;
-}
-.slick-slide{
-    margin: 0 5px;
-    outline: none;
-}
-.slick-slide img{
-    width: 100%;
-    height: 100%;
-}
-.slick-prev{
-    position: absolute;
-    bottom: 0;
-}
-.slick-next{
-    margin: 10px 0 0 50px;
-}
 /*styles for index.html page*/
 .navbar-header{
     display: inline-block;
@@ -225,50 +216,9 @@ input[type*=submit], .btn, .btn-default {
 .navbar-launching-btn > p:hover{
     color: #333;
 }
-.col-sm-11-5
-{
-    position: relative;
-    min-height: 1px;
-    padding-right: 15px;
-    padding-left: 15px;
+.street-popup {
+  text-align: center;
 }
-
-.col-xs-11-5, {
-    float: left;
-}
-
-.col-xs-11-5 {
-    width: 96%;
-}
-
-@media (min-width: 768px) {
-    .col-sm-11-5{
-        float: left;
-    }
-    .col-sm-11-5 {
-        width: 96%;
-    }
-    /*styles for index.html page*/
-    .navbar-collapse.collapse{
-        display: inline-block !important;
-    }
-}
-
-@media (min-width: 992px) {
-    .col-md-11-5 {
-        float: left;
-    }
-
-    .col-md-11-5 {
-        width: 96%;
-    }
-}
-
-@media (min-width: 1200px) {
-    .col-lg-11-5 {
-        float: left;
-    }
-    .col-lg-11-5 {
-        width: 96%;
-    }
+.street-popup-address {
+  padding: 2px;
 }

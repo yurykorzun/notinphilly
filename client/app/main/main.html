@@ -4,32 +4,6 @@
         $('[data-toggle="tooltip"]').tooltip()
     })
 </script>
-<!--instagram feed and slider-->
-<script>
-    var userFeed = new Instafeed({
-        get: 'user',
-        userId: 2241873445,
-        accessToken: '2241873445.3f58e21.737195cc588e4c43a05c3588a3bb3001',
-        template: '<div><a href="{{link}}"><img src="{{image}}" /></a></div>',
-        after: function () {
-            $('#instafeed').slick({
-                slidesToShow: 3,
-                prevArrow: '<button type="button" class="slick-prev">prev</button>',
-                nextArrow: '<button type="button" class="slick-next">next</button>',
-                responsive: [
-                    {
-                        breakpoint: 768,
-                        settings: {
-                            arrows: false,
-                            slidesToShow: 2
-                        }
-                    }
-                ]
-            });
-        }
-    });
-    userFeed.run();
-</script>
 
 <div class="row-fluid">
   <!--Side menu-->
@@ -114,9 +88,6 @@
         </div>
 
         <div class="row-fluid">
-          <!--instafeed slider-->
-          <div id="instafeed">
-          </div>
           <div class="partners">
             <p>SUPPORTED BY</p>
             <div class="row">
