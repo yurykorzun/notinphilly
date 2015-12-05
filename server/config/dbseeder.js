@@ -8,7 +8,7 @@ var StateModel = require('../api/state/state.model');
 var RoleModel = require('../api/role/role.model');
 var UserModel = require('../api/user/user.model');
 
-module.exports = function() {
+module.exports = function(res) {
   var streetsJson     = fs.readFileSync(path.resolve(__dirname, "../misc/streetsData.json"), 'utf8');
   var neigborhoodJson = fs.readFileSync(path.resolve(__dirname, "../misc/neighborhoodData.json"), 'utf8');
 
@@ -17,8 +17,8 @@ module.exports = function() {
 
   var neighborhoodInclude = ['COBBS_CREEK', 'WEST_PARK', 'EAST_PARK', 'FITLER_SQUARE', 'WALNUT_HILL', 'SOCIETY_HILL', 'OLD_CITY', 'CENTER_CITY', 'GARDEN_COURT', 'WOODLAND_TERRACE', 'UNIVERSITY_CITY', 'POWELTON', 'SPRUCE_HILL', 'CEDAR_PARK', 'LOGAN_SQUARE', 'FAIRMOUNT', 'SPRING_GARDEN', 'CALLOWHILL', 'CHINATOWN', 'RITTENHOUSE', 'WASHINGTON_SQUARE'];
 
+  res.send('starting to seed the database');
   console.log('starting to seed the database');
-
   StreetSegmentModel.find({}).remove({}, function(err) {
     console.log('Seeding Streets');
     NeighborhoodModel.find({}).remove({}, function(err) {
@@ -29,24 +29,29 @@ module.exports = function() {
         var neighborhoodRecord = neighborhoodsObj[neighborhoodDataIndex];
         var neighborhoodProperties = neighborhoodRecord.properties;
 
+        var streetsFound = arrayFind(streetsObj, function (element, index, array) {
+          return element.name == neighborhoodProperties.name;
+        });
+
         var neighborhoodGeoData = {"type":"Feature", "geometry": neighborhoodRecord.geometry };
         var newNeighborhood = new NeighborhoodModel({
           name: neighborhoodProperties.listname,
           code: neighborhoodProperties.name,
+          active: neighborhoodInclude.indexOf(neighborhoodProperties.name) > -1,
+          totalStreets: streetsFound.data.length,
           geodata: neighborhoodGeoData
         });
 
-        newNeighborhood.save(function(err, thor) {
-          if(neighborhoodInclude.indexOf(thor.code) > -1)
+        newNeighborhood.save(function(err, newNeighborhood) {
+          if(neighborhoodInclude.indexOf(newNeighborhood.code) > -1)
           {
             if (err) return console.error(err);
 
             var streetsData = arrayFind(streetsObj, function (element, index, array) {
-              return element.name == thor.code;
+              return element.name == newNeighborhood.code;
             });
 
-            console.log("Saved neighborhood " + thor.name);
-
+            console.log("Saved neighborhood " + newNeighborhood.name);
             var streets = streetsData.data;
 
             console.log("Streets " + streets.length);
@@ -57,7 +62,7 @@ module.exports = function() {
 
               var newStreetSegment = new StreetSegmentModel({
                 streetName: street.ST_NAME,
-                neighborhood: thor._id,
+                neighborhood: newNeighborhood._id,
                 type: street.ST_TYPE,
                 length: street.LENGTH,
                 zipLeft: street.ZIP_LEFT,
@@ -68,10 +73,11 @@ module.exports = function() {
                 segmentId: street.SEG_ID,
                 oneWay: street.ONEWAY,
                 class: street.CLASS,
+                active: true,
                 geodata: streetGeoData
              });
 
-             newStreetSegment.save(function(err, thor) {
+             newStreetSegment.save(function(err, newStreet) {
                if (err) return console.error(err);
              });
             }

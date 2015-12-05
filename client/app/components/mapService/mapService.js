@@ -56,16 +56,52 @@
       this.showStreetPopup = function(streetLongLat, properties)
       {
         leafletData.getMap().then(function (map) {
-          var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=190x190&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
+          var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
 
+          properties.imageSrc = imageSrc;
           var popup = L.popup({
+            keepInView: true,
+            minWidth: 240,
+            properties: properties
           })
           .setLatLng(streetLongLat)
-          .setContent("<p>Let's adopt a street!<br /> Street: " + properties.name + " " + properties.hundred + ", zipcode: " + properties.zipCode + "</p><p><button type='button' class='btn btn-success'>I am in!</button></p><p> <img height='150px' width='190px' style='margin-left: 5px;' src='" + imageSrc + "' /></p>");
+          .setContent('<div ng-include="\'app/map/street-popup-template.html\'"></div>');
 
           popup.openOn(map);
-
           map.panTo({lat: streetLongLat.lat, lng: streetLongLat.lng});
+        });
+      }
+
+      this.addNeigborhoodStreets = function(neighborhoodId)
+      {
+        setupStreets(neighborhoodId);
+      }
+
+      var setupStreets = function(neighborhoodId)
+      {
+        leafletData.getMap().then(function (map) {
+          mapLayerGroup.clearLayers();
+
+          $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
+            var geoJsonLayer = L.geoJson(data,
+            {
+              onEachFeature : function (feature, layer){
+                 layer.setStyle(getStreetStyle(feature));
+                 layer.on({
+                  mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
+                  mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
+                  click: function(e) { mapCallbacks.streetClickCallback(e); }
+                });
+               },
+              style: {
+                color: '#484848',
+                weight: 10,
+                opacity: 0.4
+              }
+            });
+            mapLayerGroup.addLayer(geoJsonLayer);
+            geoJsonLayer.addTo(map);
+          });
         });
       }
 
@@ -75,9 +111,9 @@
         {
           leafletData.getMap().then(function (map) {
             var triggeredFeature = e.target.feature;
+            var properties = triggeredFeature.properties;
             var layerBounds = e.layer.getBounds();
 
-            mapLayerGroup.clearLayers();
             //map.fitBounds(layerBounds);
 
             var nhoodCenter = layerBounds.getCenter();
@@ -85,30 +121,21 @@
             map.panTo(nhoodCenter);
             map.setZoom(16);
 
-            $http.get("api/streets/byparentgeo/" + triggeredFeature.properties.id).success(function(data, status) {
-              var geoJsonLayer = L.geoJson(data,
-              {
-                onEachFeature : function (feature, layer){
-                   //layer.setStyle(getRandomColor());
-                   layer.on({
-                    mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
-                    mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
-                    click: function(e) { mapCallbacks.streetClickCallback(e); }
-                  });
-                 },
-                style: {
-                  color: '#484848',
-                  weight: 10,
-                  opacity: 0.4
-                }
-              });
-              mapLayerGroup.addLayer(geoJsonLayer);
-              geoJsonLayer.addTo(map);
-            });
+            setupStreets(properties.id);
           });
         }
       }
 
+      var getStreetStyle = function(feature){
+        if(feature.properties.isAdopted)
+        {
+          return {
+            color: '#26A053',
+            weight: 10,
+            opacity: 0.4
+          };
+        }
+      }
 
       var getRandomColor = function ()
       {

@@ -1,0 +1,35 @@
+<div ng-controller="StreetPopupController" class="street-popup">
+  <div class="street-popup-image">
+    <img src='{{imageSrc}}' />
+  </div>
+  <div class="street-popup-address">
+    <h4><i class="fa fa-map-marker"></i> {{address}} </h4>
+  </div>
+  <div ng-show="isStart">
+    <div ng-show="!isAdoptedSuccessfully">
+      <div class="street-popup-buttons">
+        <button type='button' class='btn btn-success' ng-click='adoptStreet()'>I want to particpate!</button>
+        <button type='button' class='btn btn-danger' ng-click='close()'>Not this time</button>
+      </div>
+    </div>
+    <div ng-show="isAdoptedSuccessfully">
+        <h3>Thank you!</h3>
+        <div class="street-popup-buttons">
+          <button type='button' class='btn btn-success' ng-click='close()'>No problem!</button>
+        </div>
+    </div>
+  </div>
+  <div ng-show="isError">
+    <h4>Sorry, something went wrong. Please try again later or contact us.</h4>
+    <div class="street-popup-buttons">
+      <button type='button' class='btn btn-success' ng-click='close()'>Close</button>
+    </div>
+  </div>
+  <div ng-show="isAdopted">
+    <h4>You are participating in taking care of this street.</h4>
+    <div class="street-popup-buttons">
+      <button type='button' class='btn btn-success' ng-click='close()'>Great, thanks!</button>
+      <button type='button' class='btn btn-danger' ng-click='leave()'>Leave</button>
+    </div>
+  </div>
+</div>

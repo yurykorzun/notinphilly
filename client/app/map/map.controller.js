@@ -1,6 +1,6 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', 'mapService', function($scope, mapService) {
+  .controller('MapController', [ '$scope', 'mapService', '$compile', '$http', function($scope, mapService, $compile, $http) {
     $scope.tooltip = {};
 
     angular.extend($scope, {
@@ -20,6 +20,45 @@ angular.module('notinphillyServerApp')
                    }
                }
             });
+
+    $scope.$on('leafletDirectiveMap.cityMap.popupopen', function(event, leafletEvent){
+      // Create the popup view when is opened
+      var properties = leafletEvent.leafletEvent.popup.options.properties;
+      var targetPopup = leafletEvent.leafletEvent.popup;
+
+      $scope.isStart = !properties.isAdopted;
+      $scope.isAdopted = properties.isAdopted;
+
+      $scope.isAdoptedSuccessfully = false;
+      $scope.isError = false;
+
+      var newScope = $scope.$new();
+      newScope.address = properties.hundred + ' ' + properties.name + ' ' + properties.zipCode;
+      newScope.streetId = properties.id;
+      newScope.imageSrc = properties.imageSrc;
+
+      newScope.adoptStreet = function() {
+        $http.get("api/streets/adopt/" + properties.id).success(function(data, status) {
+          $scope.isAdoptedSuccessfully = true;
+          mapService.addNeigborhoodStreets(properties.parentId);
+        },
+        function(err) {
+          $scope.isStart = false;
+          $scope.isError = true;
+        });
+      };
+      newScope.leave = function() {
+        $http.get("api/streets/leave/" + properties.id).success(function(data, status) {
+          mapService.addNeigborhoodStreets(properties.parentId);
+          targetPopup._close();
+        });
+      };
+      newScope.close = function(){
+        targetPopup._close();
+      }
+
+      $compile(leafletEvent.leafletEvent.popup._contentNode)(newScope);
+    });
 
     var mapCallbacks = {
       neighborhoodMouseOverCallback : function(e)
