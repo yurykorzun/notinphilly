@@ -21,6 +21,15 @@ angular.module('notinphillyServerApp')
                }
             });
 
+    $scope.$on('leafletDirectiveMap.cityMap.mouseout', function(event, leafletEvent){
+      $scope.tooltip.isNhoodTooltipVisible = false;
+      $scope.tooltip.isStreetTooltipVisible = false;
+    });
+    $scope.$on('leafletDirectiveMap.cityMap.blur', function(event, leafletEvent){
+      $scope.tooltip.isNhoodTooltipVisible = false;
+      $scope.tooltip.isStreetTooltipVisible = false;
+    });
+
     $scope.$on('leafletDirectiveMap.cityMap.popupopen', function(event, leafletEvent){
       // Create the popup view when is opened
       var properties = leafletEvent.leafletEvent.popup.options.properties;
@@ -63,29 +72,41 @@ angular.module('notinphillyServerApp')
     var mapCallbacks = {
       neighborhoodMouseOverCallback : function(e)
       {
-          var x = e.originalEvent.pageX;
-          var y = e.originalEvent.pageY;
-          var layer = e.target;
+        var layer = e.target;
+        var properties = layer.feature.properties;
 
-          if ( typeof x !== 'undefined' ){
-            $scope.tooltip.nhoodTooltipStyle = {
-              top: (y - 120 ) + 'px',
-              left: (x + 20) + 'px'
-            };
-            $scope.tooltip.isNhoodTooltipVisible = true;
-          }
-          else
-          {
-            $scope.tooltip.isNhoodTooltipVisiblee = false;
-          }
+        var x = e.originalEvent.pageX;
+        var y = e.originalEvent.pageY;
 
-          $scope.tooltip.hoverOverNhoodName = layer.feature.properties.name;
-          $scope.tooltip.totalStreetsAdopted = 0;
-          $scope.tooltip.totalStreets = 100;
+        if ( typeof x !== 'undefined' ){
+          $scope.tooltip.nhoodTooltipStyle = {
+            top: (y - 120 ) + 'px',
+            left: (x + 40) + 'px'
+          };
+          $scope.tooltip.isNhoodTooltipVisible = true;
+        }
+        else
+        {
+          $scope.tooltip.isNhoodTooltipVisiblee = false;
+        }
+
+        $scope.tooltip.hoverOverNhoodName = properties.name;
+        $scope.tooltip.totalAdoptedStreets = properties.totalAdoptedStreets;
+        $scope.tooltip.percentageAdoptedStreets = properties.percentageAdoptedStreets;
+        $scope.tooltip.totalStreets = properties.totalStreets;
       },
       neighborhoodMouseOutCallback : function(e)
       {
-          $scope.tooltip.isNhoodTooltipVisible  = false;
+          var layer = e.target;
+          var properties = layer.feature.properties;
+
+          if(properties.active)
+          {
+            $scope.tooltip.isNhoodTooltipVisible = false;
+
+            var layer = e.target;
+            var properties = layer.feature.properties;
+          }
       },
       neighborhoodMouseClickCallback : function(e) {
           $scope.sideMenu.isStreetLevel = true;
@@ -96,7 +117,7 @@ angular.module('notinphillyServerApp')
         var y = e.originalEvent.pageY;
         if ( typeof x !== 'undefined' ){
           $scope.tooltip.streetTooltipStyle = {
-            top: (y - 120 ) + 'px',
+            top: (y - 100 ) + 'px',
             left: (x + 20) + 'px'
           };
           $scope.tooltip.isStreetTooltipVisible = true;
@@ -107,9 +128,10 @@ angular.module('notinphillyServerApp')
         }
 
         var layer = e.target;
+        var properties = layer.feature.properties;
 
-        $scope.tooltip.hoverOverStreetName = layer.feature.properties.name;
-        $scope.tooltip.totalStreetAdopters = 0;
+        $scope.tooltip.hoverOverStreetName = properties.type + ' ' + properties.hundred + ' ' + properties.name + ' ' + properties.zipCode;
+        $scope.tooltip.totalStreetAdopters = properties.totalAdopters;
 
         layer.setStyle({
             opacity: 0.7,
@@ -124,6 +146,7 @@ angular.module('notinphillyServerApp')
           $scope.tooltip.isStreetTooltipVisible = false;
 
           var layer = e.target;
+          var properties = layer.feature.properties;
 
           layer.setStyle({
             weight: 10,

@@ -10,14 +10,6 @@
         streetMouseOutCallback: undefined
       };
 
-      //Remove builtin zoom control
-      leafletData.getMap().then(function (map) {
-        if(map.zoomControl)
-        {
-          map.zoomControl.removeFrom(map);
-        }
-      });
-
       this.setMapCallbacks = function(callbacks) {
         mapCallbacks = callbacks;
       };
@@ -28,10 +20,18 @@
           mapLayerGroup.clearLayers();
 
           leafletData.getMap().then(function (map) {
+            /* //Remove builtin zoom control
+            leafletData.getMap().then(function (map) {
+              if(map.zoomControl)
+              {
+                map.zoomControl.removeFrom(map);
+              }
+            });*/
+
             var geoJsonLayer = L.geoJson(data,
             {
               onEachFeature: function (feature, layer){
-                     layer.setStyle(getRandomColor());
+                     layer.setStyle(setNeighborhoodColor(feature));
                      layer.on({
                       mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
                       mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
@@ -56,6 +56,7 @@
       this.showStreetPopup = function(streetLongLat, properties)
       {
         leafletData.getMap().then(function (map) {
+          map.panTo({lat: streetLongLat.lat, lng: streetLongLat.lng});
           var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
 
           properties.imageSrc = imageSrc;
@@ -68,7 +69,6 @@
           .setContent('<div ng-include="\'app/map/street-popup-template.html\'"></div>');
 
           popup.openOn(map);
-          map.panTo({lat: streetLongLat.lat, lng: streetLongLat.lng});
         });
       }
 
@@ -137,71 +137,92 @@
         }
       }
 
-      var getRandomColor = function ()
+      var setNeighborhoodColor = function (feature)
       {
          var colorValue = Math.floor(Math.random() * 4) + 1;
          var style= {};
+         var properties = feature.properties;
 
-         switch (colorValue) {
-           case 1:
-             style = {
-               color: '#9A9B9C',
-               weight: 2,
-               fillColor: '#484848',
-               fillOpacity: 0.2
-             };
-             break;
-           case 2:
-             style = {
+         if(!properties.active)
+         {
+           return {
+             color: '#9A9B9C',
+             weight: 2,
+             fillColor: '#484848',
+             fillOpacity: 0.4
+           };
+         }
+         else {
+           if(properties.percentageAdoptedStreets == 0)
+           {
+             return {
                color: '#9A9B9C',
                weight: 2,
                fillColor: '#49586B',
                fillOpacity: 0.2
              };
-             break;
-           case 3:
-             style = {
-                 color: '#9A9B9C',
-                 weight: 2,
-                 fillColor: '#6AC48E',
-                 fillOpacity: 0.2
-               };
-             break;
-           case 4:
-               style = {
-                   color: '#9A9B9C',
-                   weight: 2,
-                   fillColor: '#26A053',
-                   fillOpacity: 0.2
-                 };
-               break;
+           }
+           else if(properties.percentageAdoptedStreets > 0 && properties.percentageAdoptedStreets < 25)
+           {
+              return {
+                color: '#9A9B9C',
+                weight: 2,
+                fillColor: '#6AC48E',
+                fillOpacity: 0.2
+              };
+            }
+            else if(properties.percentageAdoptedStreets > 25 && properties.percentageAdoptedStreets < 60)
+            {
+              return {
+                  color: '#9A9B9C',
+                  weight: 2,
+                  fillColor: '#26A053',
+                  fillOpacity: 0.2
+                };
+             }
+             else
+             {
+                return {
+                    color: '#9A9B9C',
+                    weight: 2,
+                    fillColor: '#2E8E52',
+                    fillOpacity: 0.2
+                  };
+             }
          }
 
-         return style;
       };
 
       var highlightNeighborhood = function(e) {
           var layer = e.target;
+          var properties = layer.feature.properties;
 
-          layer.setStyle({
-              weight: 7,
-              fillOpacity: 0.9,
-              color: '#666'
-          });
+          if(properties.active)
+          {
+            layer.setStyle({
+                weight: 7,
+                fillOpacity: 0.5,
+                color: '#666'
+            });
 
-          if (!L.Browser.ie && !L.Browser.opera) {
-              layer.bringToFront();
+            if (!L.Browser.ie && !L.Browser.opera) {
+                layer.bringToFront();
+            }
           }
       };
 
       var resetHighlightNeighborhood = function(e) {
           var layer = e.target;
+          var properties = layer.feature.properties;
 
-          layer.setStyle({
-            color: '#9A9B9C',
-            fillOpacity: 0.2,
-            weight: 2
-          });
+          if(properties.active)
+          {
+            layer.setStyle({
+              color: '#9A9B9C',
+              fillOpacity: 0.2,
+              weight: 2
+            });
+          }
       };
   }]);
 })();

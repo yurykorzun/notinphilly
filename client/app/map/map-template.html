@@ -5,12 +5,13 @@
   </div>
 
   <div class="tooltip-layer" ng-show="tooltip.isNhoodTooltipVisible" ng-style="tooltip.nhoodTooltipStyle" ng-init="tooltip.isNhoodTooltipVisible = false">
-    <div>Neighborhood: {{tooltip.hoverOverNhoodName}}</div>
-    <div>Abopted streets: {{tooltip.totalStreetsAdopted}}/{{tooltip.totalStreets}}</div>
+    <h4>{{tooltip.hoverOverNhoodName}}</h4>
+    <div>Total streets: {{tooltip.totalStreets}}</div>
+    <div>Participarting streets: {{tooltip.totalAdoptedStreets}} ({{tooltip.percentageAdoptedStreets}}%)</div>
   </div>
 
   <div class="tooltip-layer" ng-show="tooltip.isStreetTooltipVisible" ng-style="tooltip.streetTooltipStyle" ng-init="tooltip.isStreetTooltipVisible = false">
     <div>Street: {{tooltip.hoverOverStreetName}}</div>
-    <div>Adopters: {{tooltip.totalStreetAdopters}}</div>
+    <div>Participants: {{tooltip.totalStreetAdopters}}</div>
   </div>
 </div>

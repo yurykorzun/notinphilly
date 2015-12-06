@@ -66,13 +66,13 @@ userSchema
       };
     });
 
-userSchema.path('email').validate(function(value, respond) {
+/*userSchema.path('email').validate(function(value, respond) {
     mongoose.models["User"].findOne({email: value}, function(err, user) {
       if(err) throw err;
       if(user) return respond(false);
       respond(true);
     });
-  }, 'The specified email is already in use.');
+  }, 'The specified email is already in use.');*/
 
 
 userSchema

@@ -113,15 +113,17 @@ exports.leave = function(req, res, next) {
     console.log(user._id);
     UserModel.findById(user._id, function(err, user) {
         if (err) return next(err);
-        if(user.adoptedStreets.indexOf(streetId) > -1)
+        var adoptedStreetIndex = user.adoptedStreets.indexOf(streetId);
+        if(adoptedStreetIndex > -1)
         {
           console.log(streetId);
-          user.adoptedStreets.id(mongoose.Types.ObjectId(streetId)).remove();
-          user.save(function(err, user){
-            if (err) res.status(500).json(err);
+
+          user.adoptedStreets.splice(adoptedStreetIndex, 1);
+          user.save(function(err, savedUser){
+            if (err) return next(err);
 
             StreetModel.findById(streetId, function(err, street) {
-              if (err) res.status(500).json(err);
+              if (err) return next(err);
 
               if(street.totalAdopters > 0)
               {
@@ -143,7 +145,7 @@ exports.leave = function(req, res, next) {
               });
             });
 
-            res.json({ "_id": user._id, "adoptedStreets" : user.adoptedStreets });
+            res.json({ "_id": savedUser._id, "adoptedStreets" : savedUser.adoptedStreets });
           });
         }
         else {
