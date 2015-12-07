@@ -18,9 +18,7 @@ input[type*=submit], .btn, .btn-default {
     padding: 5px;
     border-radius: 0;
 }
-
-#cityMap
-{
+#cityMap {
     position: absolute;
     top: 50px;
     bottom: 0;
@@ -30,13 +28,11 @@ input[type*=submit], .btn, .btn-default {
     height: 100%;
     z-index: 1;
 }
-
 .side-container {
     z-index: 100;
     margin-top: -40px;
     padding-right: 0;
 }
-
 .side {
     border-right: 1px solid #BDB9BB;
     background-color: white;
@@ -44,15 +40,12 @@ input[type*=submit], .btn, .btn-default {
     margin-left: -24px;
     z-index: 100;
 }
-
 .offset {
     margin-top: 20px;
 }
-
 .navbar-offset {
     margin-top: 40px;
 }
-
 .logo{
     margin: 20px 0 10px 0;
     padding: 20px 10px 10px 10px;
@@ -60,29 +53,24 @@ input[type*=submit], .btn, .btn-default {
     display: block;
     width: 100%;
 }
-
 .sideItemsColumn {
     z-index: 100;
     padding: 0;
     margin-top: -20px;
     max-width: 60px;
 }
-
 .sideItemsColumnSection {
     border: 1px solid #BDB9BB;
     background-color: #FFFFFF;
 }
-
 .sideItem {
     width: 70%;
     margin: 5px auto;
     cursor: pointer;
 }
-
 .menu-link {
     color: white;
 }
-
 .menu-profile {
   background: #1fa2dc;
   color: black;
@@ -91,48 +79,20 @@ input[type*=submit], .btn, .btn-default {
   padding: 10px 10px 10px 20px;
   margin: 0 10px 0 10px;
 }
-
 .menu-userProfile {
   margin-left: 15px;
 }
-
 .menu-userProfile-logout {
   margin-top: 10px;
   margin-left: 5px;
 }
-
 .menu-well {
   margin-bottom: -1px;
 }
-
 .menu-body {
     background: white;
     width: 100%;
     padding: 5px 15px;
-}
-
-.menu-tag-line{
-    background: #fad308;
-    padding: 10px 10px 10px 20px;
-    margin: 0 10px 0 10px;
-    cursor: pointer;
-}
-
-.menu-get-started{
-    background: #1fa2dc;
-    color: black;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 10px 10px 10px 20px;
-    margin: 0 10px 0 10px;
-}
-.menu-login {
-    transition: all 0.3s ease;
-    padding: 8px 8px 8px 16px;
-    margin: 0 10px 0 10px;
-}
-.menu-get-started:hover{
-    background: #0691CF;
 }
 .menu-info{
     background: #7ECFF2;
@@ -140,7 +100,23 @@ input[type*=submit], .btn, .btn-default {
     cursor: pointer;
     transition: all 0.3s ease;
     padding: 10px 10px 10px 20px;
-    margin: 1px 10px 0 10px;
+    margin: 0 10px;
+    border-bottom: 1px solid white;
+}
+.how-it-works{
+    background-color: #1fa2dc;
+}
+.menu-tag-line{
+    background: #fad308;
+    padding: 10px 10px 10px 20px;
+    margin: 0 10px;
+    cursor: pointer;
+    border-bottom: 1px solid white;
+}
+.menu-login {
+    transition: all 0.3s ease;
+    padding: 8px 8px 8px 16px;
+    margin: 0 10px;
 }
 .menu-get-started img{
     float: right;
