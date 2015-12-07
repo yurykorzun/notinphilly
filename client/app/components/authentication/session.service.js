@@ -57,9 +57,11 @@
         {
           if(response.data.authenticated)
           {
+            $rootScope.currentUser = response.data.user;
             deferred.resolve(response.data);
           }
           else {
+            $rootScope.currentUser = null;
             deferred.reject(response.data);
           }
         },

@@ -92,10 +92,23 @@ input[type*=submit], .btn, .btn-default {
   margin: 0 10px 0 10px;
 }
 
+.menu-userProfile {
+  margin-left: 15px;
+}
+
+.menu-userProfile-logout {
+  margin-top: 10px;
+  margin-left: 5px;
+}
+
+.menu-well {
+  margin-bottom: -1px;
+}
+
 .menu-body {
     background: white;
     width: 100%;
-    padding: 10px 15px;
+    padding: 5px 15px;
 }
 
 .menu-tag-line{

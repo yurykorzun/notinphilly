@@ -17,7 +17,7 @@ exports.session = function (req, res) {
 
 exports.checkAuthenticated = function (req, res) {
   if(req.isAuthenticated() && req.user) {
-    return res.json({ "_id" : req.user._id, "authenticated" : true });
+    return res.json({ "user" : req.user, "authenticated" : true });
   }
   return res.json({ "authenticated" : false });
 };

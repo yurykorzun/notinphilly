@@ -29,17 +29,6 @@ angular.module('notinphillyServerApp')
     }
 
     $scope.sideMenu.spinnerActive = true;
-    
-    sessionService.checkLoggedin()
-                  .then(function() {
-                    ShowUserProfile();
-                    $scope.sideMenu.spinnerActive = false;
-                  },
-                  function() {
-                    ShowLoginForm();
-                    $scope.sideMenu.spinnerActive = false;
-                  });
-
     $scope.$on(APP_EVENTS.SPINNER_START, function(event) {
       $scope.sideMenu.spinnerActive = true;
     });
@@ -52,5 +41,18 @@ angular.module('notinphillyServerApp')
     $scope.$on(APP_EVENTS.LOGOUT, function(event) {
       ShowLoginForm();
     });
+
+    sessionService.checkLoggedin()
+                  .then(function() {
+                    ShowUserProfile();
+                    $scope.sideMenu.spinnerActive = false;
+                    $rootScope.$broadcast(APP_EVENTS.LOGIN_SUCCESS);
+                  },
+                  function() {
+                    ShowLoginForm();
+                    $scope.sideMenu.spinnerActive = false;
+                    $rootScope.$broadcast(APP_EVENTS.LOGOUT);
+                  });
+
   }]);
 })();

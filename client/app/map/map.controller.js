@@ -156,7 +156,7 @@ angular.module('notinphillyServerApp')
       streetClickCallback: function(e){
         if(e.target.feature)
         {
-          mapService.showStreetPopup(e.latlng, e.target.feature.properties);
+          mapService.showStreetPopup(e.latlng, e.target, e.target.feature.properties);
         }
         $scope.tooltip.isStreetTooltipVisible = false;
       }

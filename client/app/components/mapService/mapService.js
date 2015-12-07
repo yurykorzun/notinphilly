@@ -53,10 +53,13 @@
          });
       }
 
-      this.showStreetPopup = function(streetLongLat, properties)
+      this.showStreetPopup = function(latLang, target, properties)
       {
         leafletData.getMap().then(function (map) {
-          map.panTo({lat: streetLongLat.lat, lng: streetLongLat.lng});
+          var streetLongLat = latLang;
+          var pantToLongLat = target.feature.geometry.coordinates[0];
+
+          map.panTo({lat: pantToLongLat[1], lng: pantToLongLat[0]});
           var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
 
           properties.imageSrc = imageSrc;
@@ -64,11 +67,11 @@
             keepInView: true,
             minWidth: 240,
             properties: properties
-          })
-          .setLatLng(streetLongLat)
-          .setContent('<div ng-include="\'app/map/street-popup-template.html\'"></div>');
+          });
+          target.bindPopup(popup);
 
-          popup.openOn(map);
+          popup.setContent('<div ng-include="\'app/map/street-popup-template.html\'"></div>');
+          target.openPopup();
         });
       }
 
@@ -139,8 +142,6 @@
 
       var setNeighborhoodColor = function (feature)
       {
-         var colorValue = Math.floor(Math.random() * 4) + 1;
-         var style= {};
          var properties = feature.properties;
 
          if(!properties.active)
@@ -149,7 +150,7 @@
              color: '#9A9B9C',
              weight: 2,
              fillColor: '#484848',
-             fillOpacity: 0.4
+             fillOpacity: 0.3
            };
          }
          else {

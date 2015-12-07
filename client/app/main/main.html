@@ -14,20 +14,31 @@
           <img class="logo" src="public/img/logo.png"/>
           <uib-accordion>
             <uib-accordion-group heading="Your Profile" is-open="sideMenu.isUserProfileOpen" ng-show="sideMenu.isUserProfileVisible" panel-class="menu-profile" template-url="app/sidemenu/accordion-template.html">
-              <div class="menu-userProfile" ng-controller="UserProfileController">
-                <a href ng-click="userProfile.logout()">Logout <i class="fa fa-sign-out"></i></a>
-                <div class="row">
-                  <div class="col-md-9">
-                    <div><img src="public/img/user-profile.png"/><h3>fullName</h3></div>
-                  </div>
-                </div>
-                <div class="row">
-                  <div class="col-md-10">
-                    <p><strong>Email: </strong> {{sideMenu.user.email}} </p>
-                    <p><strong>Adopted streets: </strong> {{sideMenu.user.email}} </p>
-                  </div>
-                </div>
-              </div>
+              <div ng-controller="UserProfileController">
+               <div class="well well-sm menu-well">
+                 <div class="row menu-userProfile">
+                     <div class="col-sm-10 col-md-10">
+                        <div class="row">
+                          <div class="pull-left">
+                            <h4>{{userProfile.fullName}}</h4>
+                          </div>
+                          <div class="pull-left menu-userProfile-logout">
+                            <a href ng-click="userProfile.logout()">Logout <i class="fa fa-sign-out"></i></a>
+                          </div>
+                        </div>
+                        <div class="row">
+                         <small>{{userProfile.address}} <i class="fa fa-map-marker"/></small>
+                        </div>
+                        <div class="row">
+                            <i class="fa fa-envelope"></i> {{userProfile.email}}
+                        </div>
+                        <div class="row offset">
+                            <i class="fa fa-check-circle-o"></i> Participating in streets:
+                        </div>
+                     </div>
+                 </div>
+               </div>
+             </div>
             </uib-accordion-group>
             <uib-accordion-group heading="How it works" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
               <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference.
@@ -51,7 +62,7 @@
                   <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required ng-init="loginForm.email = 'test@test.me'"></input>
                   <label>Password</label>
                   <input type="password" class="form-control" name="pass" ng-model="loginForm.password" required ng-init="loginForm.password = '1234test'"></input>
-                  <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)"/> Or <a href="">Sign up</a>
+                  <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)" value="Login"/> Or <a href="">Sign up</a>
                 </div>
               </ng-form>
             </uib-accordion-group>
