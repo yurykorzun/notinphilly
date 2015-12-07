@@ -15,13 +15,24 @@
       };
 
       $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
-        SetUpCurrentUser();
+        SetupCurrentUser();
       });
       $scope.$on(APP_EVENTS.LOGOUT, function(event) {
 
       });
+      $scope.$on(APP_EVENTS.STREET_ADOPTED, function(event) {
+        SetupUserStreets();
+      });
+      $scope.$on(APP_EVENTS.STREET_LEFT, function(event) {
+        SetupUserStreets();
+      });
 
-      function SetUpCurrentUser()
+      $scope.locateStreet = function (streetId)
+      {
+
+      };
+
+      function SetupCurrentUser()
       {
         if($rootScope.currentUser)
         {
@@ -29,11 +40,19 @@
             $scope.userProfile.fullName = data.firstName + ' ' + data.lastName;
             $scope.userProfile.address = data.addressLine1 + ' ' + data.city + ' ' + data.zip;
             $scope.userProfile.email = data.email;
+
+            SetupUserStreets();
           },
           function(err) {
 
           });
         }
+      }
+
+      function SetupUserStreets(){
+        $http.get("api/streets/current/").success(function(data, status) {
+          $scope.userProfile.adoptedStreets = data;
+        });
       }
     }]);
 })();

@@ -1,6 +1,6 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', 'mapService', '$compile', '$http', function($scope, mapService, $compile, $http) {
+  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, mapService, APP_EVENTS) {
     $scope.tooltip = {};
 
     angular.extend($scope, {
@@ -50,6 +50,8 @@ angular.module('notinphillyServerApp')
         $http.get("api/streets/adopt/" + properties.id).success(function(data, status) {
           $scope.isAdoptedSuccessfully = true;
           mapService.addNeigborhoodStreets(properties.parentId);
+
+          $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
         },
         function(err) {
           $scope.isStart = false;
@@ -60,6 +62,8 @@ angular.module('notinphillyServerApp')
         $http.get("api/streets/leave/" + properties.id).success(function(data, status) {
           mapService.addNeigborhoodStreets(properties.parentId);
           targetPopup._close();
+
+          $rootScope.$broadcast(APP_EVENTS.STREET_LEFT);
         });
       };
       newScope.close = function(){
@@ -100,13 +104,8 @@ angular.module('notinphillyServerApp')
           var layer = e.target;
           var properties = layer.feature.properties;
 
-          if(properties.active)
-          {
-            $scope.tooltip.isNhoodTooltipVisible = false;
-
-            var layer = e.target;
-            var properties = layer.feature.properties;
-          }
+          $scope.tooltip.isNhoodTooltipVisible = false;
+          $scope.tooltip.isStreetTooltipVisible = false;
       },
       neighborhoodMouseClickCallback : function(e) {
           $scope.sideMenu.isStreetLevel = true;
@@ -143,10 +142,11 @@ angular.module('notinphillyServerApp')
         }
       },
       streetMouseOutCallback: function(e){
-          $scope.tooltip.isStreetTooltipVisible = false;
-
           var layer = e.target;
           var properties = layer.feature.properties;
+
+          $scope.tooltip.isNhoodTooltipVisible = false;
+          $scope.tooltip.isStreetTooltipVisible = false;
 
           layer.setStyle({
             weight: 10,

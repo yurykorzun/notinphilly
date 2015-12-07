@@ -135,12 +135,15 @@ exports.leave = function(req, res, next) {
               NeighborhoodModel.findById(street.neighborhood, function(err, neighborhood) {
                 if (err) res.status(500).json(err);
 
-                if(neighborhood.totalAdopters > 0) {
+                if(neighborhood.totalAdoptedStreets > 0) {
                   neighborhood.totalAdoptedStreets -= 1;
-                  neighborhood.percentageAdoptedStreets = (neighborhood.totalAdoptedStreets / neighborhood.totalStreets) * 100;
-
-                  neighborhood.save(function(err, savedNeighborhood){});
+                  neighborhood.percentageAdoptedStreets =  Math.round((neighborhood.totalAdoptedStreets / neighborhood.totalStreets) * 100);
                 }
+                else {
+                  neighborhood.percentageAdoptedStreets = 0;
+                }
+
+                neighborhood.save(function(err, savedNeighborhood){});
 
               });
             });
@@ -152,4 +155,19 @@ exports.leave = function(req, res, next) {
           res.json({ "_id": user._id, "adoptedStreets" : user.adoptedStreets });
         }
     });
+};
+
+exports.currentUserStreets = function(req, res, next) {
+    var userId = req.user._id;
+
+    if (!userId) throw new Error('Required userId needs to be set');
+
+    UserModel.findById(userId, function(err, user) {
+        if (err) return next(err);
+        if (!user) return res.status(401).send('Unauthorized');
+
+        StreetModel.find({'_id': { $in: user.adoptedStreets}}, function(err, streets) {
+          res.json(streets);
+        });
+    }).sort({zipCode:1, streetName: 1}); ;
 };

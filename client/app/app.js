@@ -11,7 +11,9 @@
         "SPINNER_START": "spinnerStart",
         "SPINNER_END": "spinnerEnd",
         "LOGIN_SUCCESS": "loginSuccess",
-        "LOGOUT": "logout"
+        "LOGOUT": "logout",
+        "STREET_ADOPTED": "streetAdopted",
+        "STREET_LEFT": "streetLeft"
     });
 
     app.config(function ($routeProvider, $logProvider) {

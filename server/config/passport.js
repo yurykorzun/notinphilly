@@ -39,14 +39,20 @@ passport.use(new LocalStrategy({
 
 // Passport needs to be able to serialize and deserialize users to support persistent login sessions
 passport.serializeUser(function(user, done) {
-    console.log("serialize user" + user._id);
     done(null, user.userInfo);
 });
 
 passport.deserializeUser(function(user, done) {
-    console.log("deserialize user" + user._id);
     UserModel.findById(user._id, function(err, user) {
-        done(err, user.userInfo);
+        if(err || !user)
+        {
+          done(err, false, {
+              message: 'Your account is not found.'
+          });
+        }
+        else {
+          done(null, user.userInfo);
+        }
     });
 });
 

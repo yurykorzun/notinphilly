@@ -34,6 +34,9 @@
                         </div>
                         <div class="row offset">
                             <i class="fa fa-check-circle-o"></i> Participating in streets:
+                            <div ng-repeat="street in userProfile.adoptedStreets">
+                              <a href="" ng-click="locateStreet(street._id)">{{street.leftHundred}} {{street.type}} {{street.streetName}} {{street.type}} {{street.zipLeft}}</a>
+                            </div>
                         </div>
                      </div>
                  </div>
