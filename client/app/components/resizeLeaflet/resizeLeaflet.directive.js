@@ -11,9 +11,9 @@
           angular.element("#cityMap").height($(window).height());
       });
 
-      /*angular.element($window).bind('scroll', function(){
-        angular.element(".side").height($(window).height());
-      });*/
+      angular.element($window).bind('scroll', function(){
+        angular.element("#cityMap").height($(".side").height());
+      });
     }
   }
  }]);

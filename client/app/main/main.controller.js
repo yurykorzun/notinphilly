@@ -4,7 +4,7 @@ angular.module('notinphillyServerApp')
     $scope.sideMenu = {
       isUserProfileVisible: false,
       isUserProfileOpen: false,
-      isLoginVisible: true,
+      isLoginVisible: false,
       isLoginOpen: false,
       spinnerActive: false,
       onMapReturn : function() {
