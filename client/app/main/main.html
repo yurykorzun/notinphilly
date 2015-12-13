@@ -11,7 +11,7 @@
     <treasure-overlay-spinner active='sideMenu.spinnerActive'>
       <div class="side">
         <div class="row-fluid">
-          <img class="logo" src="public/img/logo.png"/>
+          <a href="http://notinphilly.org/"><img class="logo" src="public/img/logo.png"/></a>
           <uib-accordion>
             <uib-accordion-group heading="Your Profile" is-open="sideMenu.isUserProfileOpen" ng-show="sideMenu.isUserProfileVisible" panel-class="menu-profile" template-url="app/sidemenu/accordion-template.html">
               <div ng-controller="UserProfileController">
@@ -43,7 +43,7 @@
                </div>
              </div>
             </uib-accordion-group>
-            <uib-accordion-group heading="How it works" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
+            <uib-accordion-group heading="How it works" panel-class="how-it-works menu-info" template-url="app/sidemenu/accordion-template.html">
               <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference.
                   In return for a 6 month commitment to going out once a week to pick up litter, we will give you a trash grabber. No
                   more touching litter or killing your back! You will be amazed at how much we can get done together! Send any questions to us at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>.
@@ -58,7 +58,7 @@
                 </div>
               </ng-form>
             </uib-accordion-group>
-            <uib-accordion-group heading="Member login" is-open="sideMenu.isLoginOpen" ng-show="sideMenu.isLoginVisible" panel-class="menu-get-started" template-url="app/sidemenu/accordion-template.html">
+            <uib-accordion-group heading="Member login" is-open="sideMenu.isLoginOpen" ng-show="sideMenu.isLoginVisible" panel-class="menu-get-started menu-info" template-url="app/sidemenu/accordion-template.html">
               <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
                 <div class="form-group menu-login">
                   <label>Email</label>
