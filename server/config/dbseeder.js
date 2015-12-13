@@ -17,7 +17,6 @@ module.exports = function(res) {
 
   var neighborhoodInclude = ['COBBS_CREEK', 'WEST_PARK', 'EAST_PARK', 'FITLER_SQUARE', 'WALNUT_HILL', 'SOCIETY_HILL', 'OLD_CITY', 'CENTER_CITY', 'GARDEN_COURT', 'WOODLAND_TERRACE', 'UNIVERSITY_CITY', 'POWELTON', 'SPRUCE_HILL', 'CEDAR_PARK', 'LOGAN_SQUARE', 'FAIRMOUNT', 'SPRING_GARDEN', 'CALLOWHILL', 'CHINATOWN', 'RITTENHOUSE', 'WASHINGTON_SQUARE'];
 
-  res.send('starting to seed the database');
   console.log('starting to seed the database');
   StreetSegmentModel.find({}).remove({}, function(err) {
     console.log('Seeding Streets');
@@ -30,7 +29,7 @@ module.exports = function(res) {
         var neighborhoodProperties = neighborhoodRecord.properties;
 
         var streetsFound = arrayFind(streetsObj, function (element, index, array) {
-          return element.name == neighborhoodProperties.name;
+          return element.name === neighborhoodProperties.name;
         });
 
         var neighborhoodGeoData = {"type":"Feature", "geometry": neighborhoodRecord.geometry };
@@ -52,7 +51,10 @@ module.exports = function(res) {
             });
 
             console.log("Saved neighborhood " + newNeighborhood.name);
-            var streets = streetsData.data;
+            var disallowed = ['EXPY', 'RAMP'];
+            var streets = streetsData.data.filter(function(street){
+              return disallowed.indexOf(street.properties.ST_TYPE) === -1;
+            });
 
             console.log("Streets " + streets.length);
             for(var streetIndex = 0; streetIndex <  streets.length; streetIndex++)

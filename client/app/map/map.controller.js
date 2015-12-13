@@ -134,7 +134,7 @@ angular.module('notinphillyServerApp')
 
         layer.setStyle({
             opacity: 0.7,
-            weight: 15
+            weight: 22
         });
 
         if (!L.Browser.ie && !L.Browser.opera) {
@@ -149,7 +149,7 @@ angular.module('notinphillyServerApp')
           $scope.tooltip.isStreetTooltipVisible = false;
 
           layer.setStyle({
-            weight: 10,
+            weight: 15,
             opacity: 0.4
           });
       },

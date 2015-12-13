@@ -25,7 +25,6 @@ angular.module('notinphillyServerApp')
       $scope.sideMenu.isUserProfileVisible = false;
       $scope.sideMenu.isUserProfileOpen = false;
       $scope.sideMenu.isLoginVisible = true;
-      $scope.sideMenu.isLoginOpen = true;
     }
 
     $scope.sideMenu.spinnerActive = true;
@@ -49,7 +48,6 @@ angular.module('notinphillyServerApp')
                     $rootScope.$broadcast(APP_EVENTS.LOGIN_SUCCESS);
                   },
                   function() {
-                    ShowLoginForm();
                     $scope.sideMenu.spinnerActive = false;
                     $rootScope.$broadcast(APP_EVENTS.LOGOUT);
                   });

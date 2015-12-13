@@ -86,10 +86,6 @@
           mapLayerGroup.clearLayers();
 
           $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
-            var data = data.filter(function(street){
-              var disallowed = ['EXPY', 'RAMP'];
-              return disallowed.indexOf(street.properties.type) === -1;
-            });
             var geoJsonLayer = L.geoJson(data,
             {
               onEachFeature : function (feature, layer){
@@ -102,7 +98,7 @@
                },
               style: {
                 color: '#484848',
-                weight: 10,
+                weight: 15,
                 opacity: 0.4
               }
             });
@@ -126,7 +122,7 @@
             var nhoodCenter = layerBounds.getCenter();
             nhoodCenter.lng = nhoodCenter.lng - 0.001;
             map.panTo(nhoodCenter);
-            map.setZoom(16);
+            map.setZoom(17);
 
             setupStreets(properties.id);
           });
@@ -138,7 +134,7 @@
         {
           return {
             color: '#26A053',
-            weight: 10,
+            weight: 15,
             opacity: 0.4
           };
         }
