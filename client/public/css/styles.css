@@ -192,6 +192,16 @@ input[type*=submit], .btn, .btn-default {
     border-bottom: none;
     margin-left: 5px;
 }
+.tooltip-zooming{
+    bottom: 15px;
+    right: 15px;
+    max-width: 260px;
+    background-color: #0691CF;
+    color: white;
+}
+.tooltip-zooming a{
+    color: #fad308;
+}
 /*styles for index.html page*/
 .navbar-header{
     display: inline-block;
@@ -216,4 +226,13 @@ input[type*=submit], .btn, .btn-default {
 }
 .street-popup-address {
   padding: 2px;
+}
+/* Styles for screen 420px and less*/
+@media screen and (max-width: 420px){
+    .tooltip-zooming{
+        max-width: none;
+        margin: 0 auto;
+        left: 15px;
+        padding: 10px;
+    }
 }
