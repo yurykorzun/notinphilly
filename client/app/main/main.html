@@ -70,7 +70,7 @@
               </ng-form>
             </uib-accordion-group>
             <uib-accordion-group heading="Spread the word" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
-              <p>Spread the word about this movement on <a href="http://instagram.com/notinphilly">Instagram</a> and <a href="https://www.facebook.com/groups/1625723617652503/">Facebook</a>, using the #NotinPhilly or through our full page or ¼ page flyers.
+              <p>Spread the word about this movement on <a href="http://instagram.com/notinphilly">Instagram</a> and <a href="https://www.facebook.com/groups/1625723617652503/">Facebook</a>, using the #NotinPhilly or through our <a href="public/downloads/full-page-flyer.jpg" target="_blank">full page</a> or <a href="public/downloads/1-4-page-flyer.zip" target="_blank">¼ page</a> flyers.
                   Invite a neighbor to sign up and also go out once a week on your block or take another.
                   We also need "Neighborhood Champions" to distribute grabbers within their neighborhood. If you are interested, email us at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>.
               </p>
@@ -121,11 +121,11 @@
 <div class="col-xs-2 col-sm-1 col-md-1  sideItemsColumn">
   <div class="sideItemsColumnSection">
       <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="sideMenu.isVisible"><i class="fa fa-2x fa-angle-double-left" data-toggle="tooltip" data-placement="bottom" title="Collapse"></i></div>
-      <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="!sideMenu.isVisible"><i class="fa fa-2x fa-angle-double-right" data-toggle="tooltip" data-placement="bottom" title="Back"></i></div>
+      <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="!sideMenu.isVisible"><i class="fa fa-2x fa-angle-double-right" data-toggle="tooltip" data-placement="bottom" title="Expand"></i></div>
   </div>
 
   <div class="sideItemsColumnSection offset">
-    <div class="sideItem" ng-show="sideMenu.isStreetLevel" ng-click="sideMenu.onMapReturn()"><i class="fa fa-2x fa-level-up"></i></div>
+    <div class="sideItem" ng-show="sideMenu.isStreetLevel" ng-click="sideMenu.onMapReturn()"><i class="fa fa-2x fa-level-up" data-toggle="tooltip" data-placement="bottom" title="Back"></i></div>
     <div class="sideItem"><i class="fa fa-2x fa-search-plus"></i></div>
     <div class="sideItem"><i class="fa fa-2x fa-search-minus"></i></div>
   </div>
@@ -141,3 +141,9 @@
 </div>
 
 <div ng-include src="'app/map/map-template.html'"></div>
+
+<div class="tooltip-layer tooltip-zooming">
+    <p>
+        Click anywhere on the light gray to select a block. See a bug in your neighborhood? Let us know at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>
+    </p>
+</div>
