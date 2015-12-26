@@ -46,6 +46,9 @@ input[type*=submit], .btn, .btn-default {
 .offset {
     margin-top: 20px;
 }
+.offset-small {
+    margin-top: 10px;
+}
 .navbar-offset {
     margin-top: 40px;
 }
@@ -194,7 +197,7 @@ input[type*=submit], .btn, .btn-default {
 }
 .tooltip-zooming{
     bottom: 15px;
-    right: 15px;
+    right: 80px;
     max-width: 260px;
     background-color: #0691CF;
     color: white;

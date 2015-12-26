@@ -1,0 +1,77 @@
+<div ng-controller="SignupController">
+  <div class="modal-header">
+    <h3>Sign up and become a better citizen!</h3>
+  </div>
+  <div class="modal-body">
+    <form role="form">
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+          <div class="form-group">
+            <input type="text" id="firstName" ng-model="firstName" class="form-control input-sm" placeholder="First Name">
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+          <div class="form-group">
+            <input type="text" id="firstName" ng-model="lastName" class="form-control input-sm" placeholder="Last Name">
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+          <div class="col-xs-4 col-sm-4 col-md-4">
+            <div class="form-group">
+              <label>Birthday</label>
+              <input type="date" id="birthday" ng-model="birthday" class="form-control input-sm" placeholder="Birthday">
+            </div>
+          </div>
+          <div class="col-xs-2 col-sm-2 col-md-2">
+
+          </div>
+          <div class="col-xs-6 col-sm-6 col-md-6">
+            <div class="form-group">
+              <label>Business/Organization</label> (optional)
+              <input type="text" id="organizationName" ng-model="organizationName" class="form-control input-sm">
+            </div>
+          </div>
+      </div>
+
+      <div class="offset-small"><label>Address</label></div>
+
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+          <div class="form-group">
+            <input type="text" id="streetName" ng-model="streetName" class="form-control input-sm" placeholder="Street">
+          </div>
+        </div>
+        <div class="col-xs-3 col-sm-3 col-md-3">
+          <div class="form-group">
+            <input type="text" id="houseNumber" ng-model="houseNumber" class="form-control input-sm" placeholder="House number">
+          </div>
+        </div>
+        <div class="col-xs-3 col-sm-3 col-md-3">
+          <div class="form-group">
+            <input type="text" id="zipCode" ng-model="zipCode" class="form-control input-sm" placeholder="Zip code">
+          </div>
+        </div>
+      </div>
+
+      <div class="offset-small"><label>Password</label></div>
+
+      <div class="row">
+        <div class="col-xs-6 col-sm-6 col-md-6">
+          <div class="form-group">
+            <input type="password" id="password" ng-model="password" class="form-control input-sm" placeholder="Password">
+          </div>
+        </div>
+        <div class="col-xs-6 col-sm-6 col-md-6">
+          <div class="form-group">
+            <input type="password" id="passwordConfirm" ng-model="passwordConfirm" class="form-control input-sm" placeholder="Confirm password">
+          </div>
+        </div>
+      </div>
+
+      <input type="submit" value="Register" class="btn btn-info btn-block">
+    </form>
+  </div>
+</div>
+</div>
