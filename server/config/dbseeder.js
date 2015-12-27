@@ -2,11 +2,14 @@ var mongoose       = require('mongoose');
 var fs             = require('fs');
 var path           = require('path');
 var arrayFind      = require('array-find');
+
 var StreetSegmentModel = require('../api/street/streetSegment.model');
 var NeighborhoodModel = require('../api/neighborhood/neighborhood.model');
 var StateModel = require('../api/state/state.model');
 var RoleModel = require('../api/role/role.model');
 var UserModel = require('../api/user/user.model');
+var StreetNamesModel = require('../api/street/streetNames.model');
+var StreetZipsModel = require('../api/street/streetZipcodes.model');
 
 module.exports = function(res) {
   var streetsJson     = fs.readFileSync(path.resolve(__dirname, "../misc/streetsData.json"), 'utf8');
@@ -17,11 +20,9 @@ module.exports = function(res) {
 
   var neighborhoodInclude = ['COBBS_CREEK', 'WEST_PARK', 'EAST_PARK', 'FITLER_SQUARE', 'WALNUT_HILL', 'SOCIETY_HILL', 'OLD_CITY', 'CENTER_CITY', 'GARDEN_COURT', 'WOODLAND_TERRACE', 'UNIVERSITY_CITY', 'POWELTON', 'SPRUCE_HILL', 'CEDAR_PARK', 'LOGAN_SQUARE', 'FAIRMOUNT', 'SPRING_GARDEN', 'CALLOWHILL', 'CHINATOWN', 'RITTENHOUSE', 'WASHINGTON_SQUARE'];
 
-  console.log('starting to seed the database');
-  StreetSegmentModel.find({}).remove({}, function(err) {
-    console.log('Seeding Streets');
-    NeighborhoodModel.find({}).remove({}, function(err) {
-      console.log('Seeding Neighborhoods');
+  StreetSegmentModel.find({}).remove(function() {
+    NeighborhoodModel.find({}).remove(function()  {
+      var neighborhoods = new Array();
 
       for(var neighborhoodDataIndex = 0; neighborhoodDataIndex < neighborhoodsObj.length; neighborhoodDataIndex++)
       {
@@ -33,36 +34,49 @@ module.exports = function(res) {
         });
 
         var neighborhoodGeoData = {"type":"Feature", "geometry": neighborhoodRecord.geometry };
-        var newNeighborhood = new NeighborhoodModel({
+        var newNeighborhood = {
           name: neighborhoodProperties.listname,
           code: neighborhoodProperties.name,
           active: neighborhoodInclude.indexOf(neighborhoodProperties.name) > -1,
           totalStreets: streetsFound.data.length,
           geodata: neighborhoodGeoData
-        });
+        };
 
-        newNeighborhood.save(function(err, newNeighborhood) {
-          if(neighborhoodInclude.indexOf(newNeighborhood.code) > -1)
+        neighborhoods.push(newNeighborhood);
+      }
+
+      console.log('starting to seed the database');
+      NeighborhoodModel.create(neighborhoods, function(err, createdNeighborhoods)
+      {
+        if (err) return console.error(err);
+
+
+          console.log('Saved neighborhoods ' + createdNeighborhoods.length);
+
+          var neighborhoodsAllowed = createdNeighborhoods.filter(function(item){
+            return neighborhoodInclude.indexOf(item.code) > -1;
+          });
+
+          for(var savedIndex = 0; savedIndex < neighborhoodsAllowed.length; savedIndex++)
           {
-            if (err) return console.error(err);
+            var savedNeighborhood = neighborhoodsAllowed[savedIndex];
 
             var streetsData = arrayFind(streetsObj, function (element, index, array) {
-              return element.name == newNeighborhood.code;
+              return element.name == savedNeighborhood.code;
             });
 
-            console.log("Saved neighborhood " + newNeighborhood.name);
             var disallowed = ['EXPY', 'RAMP'];
-            var streets = streetsData.data.filter(function(street){
+            var streetsFound = streetsData.data.filter(function(street){
               return disallowed.indexOf(street.properties.ST_TYPE) === -1;
             });
 
-            console.log("Streets " + streets.length);
-            for(var streetIndex = 0; streetIndex <  streets.length; streetIndex++)
+            var streets = new Array();
+            for(var streetIndex = 0; streetIndex <  streetsFound.length; streetIndex++)
             {
-              var street = streets[streetIndex].properties;
-              var streetGeoData = {"type":"Feature", "geometry": streets[streetIndex].geometry };
+              var street = streetsFound[streetIndex].properties;
+              var streetGeoData = {"type":"Feature", "geometry": street.geometry };
 
-              var newStreetSegment = new StreetSegmentModel({
+              var newStreetSegment = {
                 streetName: street.ST_NAME,
                 neighborhood: newNeighborhood._id,
                 type: street.ST_TYPE,
@@ -77,19 +91,80 @@ module.exports = function(res) {
                 class: street.CLASS,
                 active: true,
                 geodata: streetGeoData
-             });
+             };
 
-             newStreetSegment.save(function(err, newStreet) {
-               if (err) return console.error(err);
-             });
+             streets.push(newStreetSegment);
             }
-          }
+
+            console.log('Saving Streets ' + savedNeighborhood.name + ' ' + streets.length);
+            if(savedIndex < neighborhoodsAllowed.length-1)
+            {
+              StreetSegmentModel.create(streets, function(err, createdStreets) {
+                if (err) return console.error(err);
+                console.log('Saved Streets ' + createdStreets.length);
+
+              });
+            }
+            else {
+              StreetSegmentModel.create(streets, function(err, createdStreets) {
+                if (err) return console.error(err);
+                console.log('Saved last portion of streets ' + createdStreets.length);
+
+                console.log('Saving aggregate street names');
+                StreetNamesModel.find({}).remove(function() {
+                  StreetSegmentModel.aggregate(
+                    [
+                      { "$group": {
+                          "_id": '$streetName'
+                      }},
+                      { "$sort": { "streetName": 1 } }
+                    ],
+                    function(err, result) {
+                      for(var resultIndex = 0; resultIndex < result.length; resultIndex++)
+                      {
+                        var streetName = result[resultIndex]._id;
+
+                      StreetNamesModel.create({
+                            name: streetName
+                        });
+                      }
+                    });
+                });
+
+                console.log('Saving aggregate street zipcodes');
+                StreetZipsModel.find({}).remove(function() {
+                  StreetSegmentModel.aggregate(
+                    [
+                      { "$group": {
+                          "_id": '$zipLeft'
+                      }},
+                      { "$sort": { "zipLeft": 1 } }
+                    ],
+                    function(err, result) {
+                      for(var resultIndex = 0; resultIndex < result.length; resultIndex++)
+                      {
+                        var zipCode = result[resultIndex]._id;
+
+                        StreetZipsModel.create({
+                            zipCode: zipCode
+                        });
+                      }
+                    });
+              });
+
+          });
+        }
+      }
+          console.log('Saving streets');
       });
 
-    }
-    console.log('Finished seeding Streets and Neighborhoods');
     });
-  });
+});
+
+
+
+
+
 
   UserModel.find({}).remove(function() {
       console.log('Seeding Users');

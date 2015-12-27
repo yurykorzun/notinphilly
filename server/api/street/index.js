@@ -12,4 +12,10 @@ router.get('/byparentgeo/:nid', controller.getByNeighborhoodGeojson);
 router.get('/adopt/:sid', authService.isAuthenticated, controller.adopt);
 router.get('/leave/:sid', authService.isAuthenticated, controller.leave);
 
+/*router.get('/lookupZipcode/:zip', controller.findBlock);
+router.get('/lookupName/:name', controller.findBlock);*/
+
+//router.get('/findBlock/:block', controller.findBlock);
+
+
 module.exports = router;
