@@ -37,7 +37,11 @@ angular.module('notinphillyServerApp')
 
       $scope.isStart = !properties.isAdopted;
       $scope.isAdopted = properties.isAdopted;
-
+      if ($rootScope.currentUser) {
+          $scope.isAuthorized = true;
+      } else {
+        $scope.isAuthorized = false;
+      }
       $scope.isAdoptedSuccessfully = false;
       $scope.isError = false;
 
