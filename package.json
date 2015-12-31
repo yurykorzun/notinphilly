@@ -18,7 +18,7 @@
     "passport-local": "~1.0.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node app.js",
     "postinstall": "./node_modules/bower/bin/bower install"
   }
 }
