@@ -7,9 +7,10 @@ The google doc with all the notes up to now:
 [Project page](https://codeforphilly.org/projects/not_in_philly-2/)
 
 To run the app, please try:
-  Git clone the solution
-  Install nodejs, npm, bower, mongodb
-  Run npm install in the folder
-  Run bower install
-  Uncomment db seeder in the app.js
-  Run 'node app.js' to start the server, which you can access at http://localhost:8080.
+  >Git clone the solution
+  >Install nodejs, npm, bower, mongodb
+  >Run npm install in the folder
+  >Run bower install
+  >Uncomment db seeder in the server.js
+  >Run 'node server' to start the server, which you can access at http://localhost:8080.
+  >If there are no errors in console and website shows up in your browser, open following url to seed the database http://localhost:8080/api/test/seed

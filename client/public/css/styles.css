@@ -197,7 +197,7 @@ input[type*=submit], .btn, .btn-default {
 }
 .tooltip-zooming{
     bottom: 15px;
-    right: 80px;
+    right: 15px;
     max-width: 260px;
     background-color: #0691CF;
     color: white;
@@ -231,11 +231,8 @@ input[type*=submit], .btn, .btn-default {
   padding: 2px;
 }
 /* Styles for screen 420px and less*/
-@media screen and (max-width: 420px){
+@media (max-width: 768px){
     .tooltip-zooming{
-        max-width: none;
-        margin: 0 auto;
-        left: 15px;
-        padding: 10px;
+        display: none;
     }
 }

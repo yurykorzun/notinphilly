@@ -11,7 +11,7 @@ var UserModel = require('../api/user/user.model');
 var StreetNamesModel = require('../api/street/streetNames.model');
 var StreetZipsModel = require('../api/street/streetZipcodes.model');
 
-module.exports = function(res) {
+module.exports = function() {
   var streetsJson     = fs.readFileSync(path.resolve(__dirname, "../misc/streetsData.json"), 'utf8');
   var neigborhoodJson = fs.readFileSync(path.resolve(__dirname, "../misc/neighborhoodData.json"), 'utf8');
 
@@ -57,6 +57,7 @@ module.exports = function(res) {
             return neighborhoodInclude.indexOf(item.code) > -1;
           });
 
+          var streets = new Array();
           for(var savedIndex = 0; savedIndex < neighborhoodsAllowed.length; savedIndex++)
           {
             var savedNeighborhood = neighborhoodsAllowed[savedIndex];
@@ -70,15 +71,14 @@ module.exports = function(res) {
               return disallowed.indexOf(street.properties.ST_TYPE) === -1;
             });
 
-            var streets = new Array();
             for(var streetIndex = 0; streetIndex <  streetsFound.length; streetIndex++)
             {
               var street = streetsFound[streetIndex].properties;
-              var streetGeoData = {"type":"Feature", "geometry": street.geometry };
+              var streetGeoData = {"type":"Feature", "geometry": streetsFound[streetIndex].geometry };
 
               var newStreetSegment = {
                 streetName: street.ST_NAME,
-                neighborhood: newNeighborhood._id,
+                neighborhood: savedNeighborhood._id,
                 type: street.ST_TYPE,
                 length: street.LENGTH,
                 zipLeft: street.ZIP_LEFT,
@@ -95,67 +95,71 @@ module.exports = function(res) {
 
              streets.push(newStreetSegment);
             }
+          }
 
-            console.log('Saving Streets ' + savedNeighborhood.name + ' ' + streets.length);
-            if(savedIndex < neighborhoodsAllowed.length-1)
-            {
-              StreetSegmentModel.create(streets, function(err, createdStreets) {
-                if (err) return console.error(err);
-                console.log('Saved Streets ' + createdStreets.length);
+          console.log('Saving Streets ' + streets.length);
+          StreetSegmentModel.collection.insertMany(streets, function(err, createdStreets) {
+            if (err) return console.error(err);
+            console.log('Saved Streets ' + JSON.stringify(createdStreets.result));
 
-              });
-            }
-            else {
-              StreetSegmentModel.create(streets, function(err, createdStreets) {
-                if (err) return console.error(err);
-                console.log('Saved last portion of streets ' + createdStreets.length);
+            console.log('Saving aggregate street names');
+            StreetNamesModel.find({}).remove(function() {
+              StreetSegmentModel.aggregate(
+                [
+                  { "$group": {
+                      "_id": '$streetName'
+                  }},
+                  { "$sort": { "streetName": 1 } }
+                ],
+                function(err, result) {
+                  if (err) return console.error(err);
 
-                console.log('Saving aggregate street names');
-                StreetNamesModel.find({}).remove(function() {
-                  StreetSegmentModel.aggregate(
-                    [
-                      { "$group": {
-                          "_id": '$streetName'
-                      }},
-                      { "$sort": { "streetName": 1 } }
-                    ],
-                    function(err, result) {
-                      for(var resultIndex = 0; resultIndex < result.length; resultIndex++)
-                      {
-                        var streetName = result[resultIndex]._id;
+                  console.log('Saved street names '  + result.length);
+                  var streetNames = new Array();
+                  for(var resultIndex = 0; resultIndex < result.length; resultIndex++)
+                  {
+                    var streetName = result[resultIndex]._id;
 
-                      StreetNamesModel.create({
-                            name: streetName
-                        });
-                      }
+                    streetNames.push({
+                          name: streetName
                     });
+                  }
+
+                  StreetNamesModel.collection.insertMany(streetNames, function(err, createdSreetNames) { });
                 });
+            });
 
-                console.log('Saving aggregate street zipcodes');
-                StreetZipsModel.find({}).remove(function() {
-                  StreetSegmentModel.aggregate(
-                    [
-                      { "$group": {
-                          "_id": '$zipLeft'
-                      }},
-                      { "$sort": { "zipLeft": 1 } }
-                    ],
-                    function(err, result) {
-                      for(var resultIndex = 0; resultIndex < result.length; resultIndex++)
-                      {
-                        var zipCode = result[resultIndex]._id;
+            console.log('Saving aggregate street zipcodes');
+            StreetZipsModel.find({}).remove(function() {
+              StreetSegmentModel.aggregate(
+                [
+                  { "$group": {
+                      "_id": '$zipLeft'
+                  }},
+                  { "$sort": { "zipLeft": 1 } }
+                ],
+                function(err, result) {
+                  if (err) return console.error(err);
 
-                        StreetZipsModel.create({
-                            zipCode: zipCode
-                        });
-                      }
-                    });
+                  console.log('Saved street zipcodes ' + result.length);
+                  var zipCodes = new Array();
+                  for(var resultIndex = 0; resultIndex < result.length; resultIndex++)
+                  {
+                    var zipCode = result[resultIndex]._id;
+
+                    if(zipCode && zipCode > 0)
+                    {
+                      zipCodes.push({
+                          zipCode: zipCode
+                      });
+                    }
+                  }
+
+                  StreetZipsModel.collection.insertMany(zipCodes, function(err, createdZipCodes) { });
+                });
               });
-
           });
-        }
-      }
-          console.log('Saving streets');
+
       });
 
     });

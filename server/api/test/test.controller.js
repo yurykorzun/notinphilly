@@ -4,7 +4,7 @@ exports.seed = function(req, res) {
   var dbseeder = require('../../../server/config/dbseeder');
   console.log("Trying to seed");
 
-  dbseeder(res);
+  dbseeder();
 
-  res.status(200).json({});
+  res.status(200).send('Database seeding was executed...');;
 };
