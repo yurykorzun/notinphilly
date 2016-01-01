@@ -1,8 +1,12 @@
 var mongoose = require('mongoose');
 var StreetModel = require('./streetSegment.model');
+var StreetZipcodesModel = require('../street/streetZipcodes.model');
+var StreetNamesModel = require('../street/streetNames.model');
 var UserModel = require('../user/user.model');
 var NeighborhoodModel = require('../neighborhood/neighborhood.model');
-var Schema = mongoose.Schema;var Schema = mongoose.Schema;
+
+
+var Schema = mongoose.Schema;
 
 exports.index = function(req, res, next) {
     res.json([]);
@@ -170,4 +174,60 @@ exports.currentUserStreets = function(req, res, next) {
           res.json(streets);
         });
     }).sort({zipCode:1, streetName: 1}); ;
+};
+
+exports.getStreetNames = function(req, res, next) {
+  var query = req.params.name;
+
+  var regex = new RegExp("^" + query, 'i');
+
+  StreetNamesModel.find({ name: { $regex : regex } },
+                  function(err, names){
+                    if (err) return next(err);
+                    res.json(names);
+                  });
+};
+
+exports.getZipCodes = function(req, res, next) {
+  var query = req.params.zip;
+
+  var regex = new RegExp("^" + query, 'i');
+
+  StreetZipcodesModel.find({ zipCode: regex  },
+                      function(err, codes){
+                        if (err) return next(err);
+                        res.json(codes);
+                      });
+};
+
+exports.getStreetNamesPaged = function(req, res, next) {
+  var page = req.params.page;
+  var skip = req.params.skip;
+  var query = req.params.name;
+
+  var regex = new RegExp("^" + query, 'i');
+  var itemsToSkip = (page - 1) * skip;
+
+  StreetNamesModel.find({ name: { $regex : regex } }, undefined,
+                  {sort:  { name: 1 }, skip:itemsToSkip, limit: skip },
+                  function(err, names){
+                    if (err) return next(err);
+                    res.json(names);
+                  });
+};
+
+exports.getZipCodesPaged = function(req, res, next) {
+  var page = req.params.page;
+  var skip = req.params.skip;
+  var query = req.params.zip;
+
+  var regex = new RegExp("^" + query, 'i');
+  var itemsToSkip = (page - 1) * skip;
+
+  StreetZipcodesModel.find({ zipCode: regex  }, undefined,
+                      {sort:  { zipCode: 1 }, skip:itemsToSkip, limit: skip },
+                      function(err, codes){
+                        if (err) return next(err);
+                        res.json(codes);
+                      });
 };

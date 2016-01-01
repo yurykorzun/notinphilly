@@ -49,7 +49,7 @@ app.use(passport.session());
 //seed the database
 var dbseeder = require('./server/config/dbseeder');
 //uncomment to seed
-dbseeder();
+//dbseeder();
 
 //Setup configuration
 require('./server/config/passport');

@@ -4,7 +4,9 @@
       'leaflet-directive',
       'ui.bootstrap',
       'ngAnimate',
-      'treasure-overlay-spinner'
+      'treasure-overlay-spinner',
+      'ui.select',
+      'ngSanitize'
     ])
 
     app.constant("APP_EVENTS", {

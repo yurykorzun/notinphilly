@@ -38,9 +38,27 @@
       <div class="offset-small"><label>Address</label></div>
 
       <div class="row">
+        <div class="col-xs-3 col-sm-3 col-md-3">
+          <div class="form-group">
+            <ui-select ng-model="zipCode" theme="bootstrap">
+             <ui-select-match placeholder="Enter zipcode...">{{$select.selected.zipCode}}</ui-select-match>
+             <ui-select-choices repeat="item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
+               <div ng-bind-html="item.zipCode | highlight: $select.search"></div>
+             </ui-select-choices>
+           </ui-select>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
-            <input type="text" id="streetName" ng-model="streetName" class="form-control input-sm" placeholder="Street">
+            <ui-select ng-model="streetName" theme="bootstrap">
+             <ui-select-match placeholder="Enter street name...">{{$select.selected.name}}</ui-select-match>
+             <ui-select-choices repeat="item in streetNames" refresh="refreshStreetNames($select.search)" refreshDelay="100">
+               <div ng-bind-html="item.name | highlight: $select.search"></div>
+             </ui-select-choices>
+           </ui-select>
           </div>
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
@@ -50,7 +68,7 @@
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <input type="text" id="zipCode" ng-model="zipCode" class="form-control input-sm" placeholder="Zip code">
+            <input type="text" id="apartmentNum" ng-model="apartmentNum" class="form-control input-sm" placeholder="Apartment/Unit (optional)">
           </div>
         </div>
       </div>

@@ -106,10 +106,7 @@ module.exports = function() {
             StreetNamesModel.find({}).remove(function() {
               StreetSegmentModel.aggregate(
                 [
-                  { "$group": {
-                      "_id": '$streetName'
-                  }},
-                  { "$sort": { "streetName": 1 } }
+                  { "$group": { "_id": '$streetName'}},{ "$sort": { "streetName": 1 } }
                 ],
                 function(err, result) {
                   if (err) return console.error(err);
@@ -133,10 +130,7 @@ module.exports = function() {
             StreetZipsModel.find({}).remove(function() {
               StreetSegmentModel.aggregate(
                 [
-                  { "$group": {
-                      "_id": '$zipLeft'
-                  }},
-                  { "$sort": { "zipLeft": 1 } }
+                  { "$group": {  "_id": '$zipLeft'}},{ "$sort": { "zipLeft": 1 } }
                 ],
                 function(err, result) {
                   if (err) return console.error(err);
@@ -150,7 +144,7 @@ module.exports = function() {
                     if(zipCode && zipCode > 0)
                     {
                       zipCodes.push({
-                          zipCode: zipCode
+                          zipCode: zipCode.toString()
                       });
                     }
                   }
