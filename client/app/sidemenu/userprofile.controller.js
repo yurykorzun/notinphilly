@@ -1,6 +1,7 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('UserProfileController', [ '$scope', '$http', '$rootScope', 'sessionService', 'APP_EVENTS', function($scope, $http, $rootScope, sessionService, APP_EVENTS) {
+    .controller('UserProfileController', [ '$scope', '$http', '$rootScope', 'sessionService', 'mapService', 'APP_EVENTS',
+    function($scope, $http, $rootScope, sessionService, mapService, APP_EVENTS) {
       $scope.userProfile = {
         logout: function() {
           $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
@@ -29,8 +30,10 @@
 
       $scope.locateStreet = function (streetId)
       {
-
+        mapService.goToStreet(streetId);
       };
+
+      SetupCurrentUser();
 
       function SetupCurrentUser()
       {

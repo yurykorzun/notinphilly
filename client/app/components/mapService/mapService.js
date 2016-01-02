@@ -80,6 +80,25 @@
         setupStreets(neighborhoodId);
       }
 
+      this.goToStreet = function(streetId)
+      {
+        leafletData.getMap().then(function (map) {
+          $http.get("api/streets/" + streetId).success(function(data, status) {
+            var start = L.latLng(data.geodata.geometry.coordinates[0][1], data.geodata.geometry.coordinates[0][0]);
+            var end = L.latLng(data.geodata.geometry.coordinates[1][1], data.geodata.geometry.coordinates[1][0]);
+            var streetBounds = new L.LatLngBounds(start, end);
+            var streetCenter = streetBounds.getCenter();
+            map.panTo(streetCenter);
+            map.setZoom(17);
+
+            setupStreets(data.neighborhood);
+          },
+          function(err) {
+
+          });
+        });
+      }
+
       var setupStreets = function(neighborhoodId)
       {
         leafletData.getMap().then(function (map) {
@@ -122,7 +141,7 @@
             var nhoodCenter = layerBounds.getCenter();
             nhoodCenter.lng = nhoodCenter.lng - 0.001;
             map.panTo(nhoodCenter);
-            map.setZoom(17);
+            map.setZoom(16);
 
             setupStreets(properties.id);
           });
