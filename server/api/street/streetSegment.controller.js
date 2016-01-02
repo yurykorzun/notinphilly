@@ -178,10 +178,12 @@ exports.currentUserStreets = function(req, res, next) {
 
 exports.getStreetNames = function(req, res, next) {
   var query = req.params.name;
+  var limit = req.params.limit;
 
   var regex = new RegExp("^" + query, 'i');
 
   StreetNamesModel.find({ name: { $regex : regex } },
+                  undefined, {sort:  { name: 1 }, limit: limit },
                   function(err, names){
                     if (err) return next(err);
                     res.json(names);
@@ -190,10 +192,12 @@ exports.getStreetNames = function(req, res, next) {
 
 exports.getZipCodes = function(req, res, next) {
   var query = req.params.zip;
+  var limit = req.params.limit;
 
   var regex = new RegExp("^" + query, 'i');
 
   StreetZipcodesModel.find({ zipCode: regex  },
+                      undefined, {sort:  { name: 1 }, limit: limit },
                       function(err, codes){
                         if (err) return next(err);
                         res.json(codes);

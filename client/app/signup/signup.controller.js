@@ -10,7 +10,7 @@
       $scope.refreshZipCodes = function(search) {
         if(search)
         {
-          return $http.get('/api/streets/lookupZipcodes/' + search)
+          return $http.get('/api/streets/lookupZipcodes/' + search + "/" + 10)
                       .then(function(response) {
                           $scope.zipCodes = response.data;
                       });
@@ -20,7 +20,7 @@
       $scope.refreshStreetNames = function(search) {
         if(search)
         {
-          return $http.get('/api/streets/lookupNames/' + search)
+          return $http.get('/api/streets/lookupNames/' + search + "/" + 10)
                       .then(function(response) {
                           $scope.streetNames = response.data;
                       });

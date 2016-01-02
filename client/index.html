@@ -38,9 +38,15 @@
     <!--View placeholder set by app.js-->
     <div ng-view></div>
   </div>
-
-  <!-- JS -->
   <script src="public/libs/jquery/dist/jquery.js"></script>
+  <!--tooltips-->
+  <script>
+      $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+      })
+  </script>
+  <!-- JS -->
+  
   <script src="public/libs/angular/angular.js"></script>
   <script src="public/libs/angular-route/angular-route.js"></script>
   <script src="public/libs/angular-leaflet-directive/dist/angular-leaflet-directive.js"></script>
