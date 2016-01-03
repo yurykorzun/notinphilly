@@ -5,10 +5,18 @@
     scope: {},
     //dynamically resize leaflet map's height
     link: function(scope, element, attributes){
+
+      /*angular.element($window).bind("scroll", function() {
+            element.children().height($(".side").height());
+            leafletData.getMap().then(function (map) {
+              map.invalidateSize();
+            });
+         });*/
+
      scope.$watch(function() {
              return $(".side").height();
             },
-            function(newHeight, oldHeight) {
+            function() {
               if($(".side-container").hasClass("ng-hide")) return;
 
               element.children().height($(".side").height());

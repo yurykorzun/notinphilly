@@ -1,6 +1,6 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .service('mapService', ['$http', 'leafletData', function($http, leafletData) {
+    .service('mapService', ['$http', '$q', 'leafletData', 'APP_EVENTS', function($http, $q, leafletData, APP_EVENTS) {
       var mapLayerGroup = L.layerGroup();
       var mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
@@ -46,85 +46,113 @@
                 fillColor: '#484848'
               }
             });
-            map.setZoom(13);
+
+            map.setView(APP_EVENTS.MAP_CENTER, 13, { animate: false });
             mapLayerGroup.addLayer(geoJsonLayer);
             mapLayerGroup.addTo(map);
           });
          });
       }
 
-      this.showStreetPopup = function(latLang, target, properties)
+      this.showStreetPopup = function(clickLatLang, streetLayer)
       {
         leafletData.getMap().then(function (map) {
-          var streetLongLat = latLang;
-          var pantToLongLat = target.feature.geometry.coordinates[0];
+          var properties = streetLayer.feature.properties;
+          var geometry = streetLayer.feature.geometry;
 
-          map.panTo({lat: pantToLongLat[1], lng: pantToLongLat[0]});
-          var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
+          var start = L.latLng(geometry.coordinates[0][1], geometry.coordinates[0][0]);
+          var end = L.latLng(geometry.coordinates[1][1], geometry.coordinates[1][0]);
+          var streetBounds = new L.LatLngBounds(start, end);
+          var streetCenter = streetBounds.getCenter();
 
-          properties.imageSrc = imageSrc;
-          var popup = L.popup({
-            keepInView: true,
-            minWidth: 240,
-            properties: properties
-          });
-          target.bindPopup(popup);
+          map.setView(streetCenter, 16, { animate: false });
 
-          popup.setContent('<div ng-include="\'app/map/street-popup-template.html\'"></div>');
-          target.openPopup();
+          openLayerPopup(streetCenter, streetLayer, properties);
         });
       }
 
       this.addNeigborhoodStreets = function(neighborhoodId)
       {
-        setupStreets(neighborhoodId);
+        leafletData.getMap().then(function (map) {
+          setupStreets(neighborhoodId, map);
+        });
       }
 
       this.goToStreet = function(streetId)
       {
         leafletData.getMap().then(function (map) {
-          $http.get("api/streets/" + streetId).success(function(data, status) {
-            var start = L.latLng(data.geodata.geometry.coordinates[0][1], data.geodata.geometry.coordinates[0][0]);
-            var end = L.latLng(data.geodata.geometry.coordinates[1][1], data.geodata.geometry.coordinates[1][0]);
-            var streetBounds = new L.LatLngBounds(start, end);
-            var streetCenter = streetBounds.getCenter();
-            map.panTo(streetCenter);
-            map.setZoom(17);
+        $http.get("api/streets/" + streetId).success(function(streetData, status) {
+          $http.get("api/neighborhoods/" + streetData.neighborhood).success(function(neighborhooData, status) {
+              var start = L.latLng(streetData.geodata.geometry.coordinates[0][1], streetData.geodata.geometry.coordinates[0][0]);
+              var end = L.latLng(streetData.geodata.geometry.coordinates[1][1], streetData.geodata.geometry.coordinates[1][0]);
+              var streetBounds = new L.LatLngBounds(start, end);
 
-            setupStreets(data.neighborhood);
-          },
-          function(err) {
+              var geoJsonLayer = L.geoJson(neighborhooData.geodata);
+              var layerBounds = geoJsonLayer.getBounds();
+              var streetCenter = layerBounds.getCenter();
 
+              setupStreets(streetData.neighborhood, map).then(function(layers) {
+                map.setView(streetCenter, 16, { animate: false });
+
+                var foundLayer = layers.filter(function(layer){
+                  return layer.feature.properties.id === streetData._id;
+                });
+
+                openLayerPopup(streetCenter, foundLayer[0], foundLayer[0].feature.properties);
+              });
+            });
           });
         });
       }
 
-      var setupStreets = function(neighborhoodId)
+      var setupStreets = function(neighborhoodId, map)
       {
-        leafletData.getMap().then(function (map) {
-          mapLayerGroup.clearLayers();
+        var deferred = $q.defer();
+        mapLayerGroup.clearLayers();
 
-          $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
-            var geoJsonLayer = L.geoJson(data,
-            {
-              onEachFeature : function (feature, layer){
-                 layer.setStyle(getStreetStyle(feature));
-                 layer.on({
-                  mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
-                  mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
-                  click: function(e) { mapCallbacks.streetClickCallback(e); }
-                });
-               },
-              style: {
-                color: '#484848',
-                weight: 15,
-                opacity: 0.4
-              }
-            });
-            mapLayerGroup.addLayer(geoJsonLayer);
-            geoJsonLayer.addTo(map);
+        $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
+          var geoJsonLayer = L.geoJson(data,
+          {
+            onEachFeature : function (feature, layer){
+               layer.setStyle(getStreetStyle(feature));
+               layer.on({
+                mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
+                mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
+                click: function(e) { mapCallbacks.streetClickCallback(e); }
+              });
+             },
+            style: {
+              color: '#484848',
+              weight: 15,
+              opacity: 0.4
+            }
           });
+          mapLayerGroup.addLayer(geoJsonLayer);
+          geoJsonLayer.addTo(map);
+
+          deferred.resolve(geoJsonLayer.getLayers());
+        },function(err)
+        {
+          deferred.reject(err);
         });
+
+
+        return deferred.promise;
+      }
+
+      var openLayerPopup = function(streetLongLat, layer, properties){
+        var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
+
+        properties.imageSrc = imageSrc;
+        var popup = L.popup({
+          keepInView: true,
+          minWidth: 240,
+          properties: properties
+        });
+        layer.bindPopup(popup);
+
+        popup.setContent('<div ng-include="\'app/map/street-popup-template.html\'"></div>');
+        layer.openPopup();
       }
 
       var onLayerClick = function(e)
@@ -136,14 +164,13 @@
             var properties = triggeredFeature.properties;
             var layerBounds = e.layer.getBounds();
 
-            //map.fitBounds(layerBounds);
-
             var nhoodCenter = layerBounds.getCenter();
             nhoodCenter.lng = nhoodCenter.lng - 0.001;
             map.panTo(nhoodCenter);
-            map.setZoom(16);
+            map.setZoom(16, { animate: false});
+            map.invalidateSize();
 
-            setupStreets(properties.id);
+            setupStreets(properties.id, map);
           });
         }
       }

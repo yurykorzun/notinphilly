@@ -38,7 +38,6 @@ exports.get = function(req, res) {
 
   NeighborhoodModel.findById(neighborhoodId, function(err, neighborhood) {
       if (err) return next(err);
-      if (!user) return res.status(401).send('Unauthorized');
       res.json(neighborhood);
   });
 };

@@ -3,13 +3,10 @@ angular.module('notinphillyServerApp')
   .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, mapService, APP_EVENTS) {
     $scope.tooltip = {};
 
+    var center = angular.extend(APP_EVENTS.MAP_CENTER, {zoom: 13});
     angular.extend($scope, {
                 zoomControl: false,
-                center: {
-                    lat: 39.948920,
-                    lng: -75.201825,
-                    zoom: 13
-                },
+                center: center,
                 tiles: {
                    name: 'Not in philly map',
                    url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
@@ -29,7 +26,6 @@ angular.module('notinphillyServerApp')
       $scope.tooltip.isNhoodTooltipVisible = false;
       $scope.tooltip.isStreetTooltipVisible = false;
     });
-
     $scope.$on('leafletDirectiveMap.cityMap.popupopen', function(event, leafletEvent){
       // Create the popup view when is opened
       var properties = leafletEvent.leafletEvent.popup.options.properties;
@@ -76,6 +72,12 @@ angular.module('notinphillyServerApp')
 
       $compile(leafletEvent.leafletEvent.popup._contentNode)(newScope);
     });
+    $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event, leafletEvent){
+      $scope.sideMenu.isStreetLevel = false;
+    });
+    $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event, leafletEvent){
+      $scope.sideMenu.isStreetLevel = true;
+    });
 
     var mapCallbacks = {
       neighborhoodMouseOverCallback : function(e)
@@ -112,7 +114,7 @@ angular.module('notinphillyServerApp')
           $scope.tooltip.isStreetTooltipVisible = false;
       },
       neighborhoodMouseClickCallback : function(e) {
-          $scope.sideMenu.isStreetLevel = true;
+          $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
       },
       streetMouseOverCallback : function(e)
       {
@@ -160,7 +162,7 @@ angular.module('notinphillyServerApp')
       streetClickCallback: function(e){
         if(e.target.feature)
         {
-          mapService.showStreetPopup(e.latlng, e.target, e.target.feature.properties);
+          mapService.showStreetPopup(e.latlng, e.target);
         }
         $scope.tooltip.isStreetTooltipVisible = false;
       }

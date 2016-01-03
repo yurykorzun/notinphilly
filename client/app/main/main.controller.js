@@ -8,7 +8,7 @@ angular.module('notinphillyServerApp')
       isLoginOpen: false,
       spinnerActive: false,
       onMapReturn : function() {
-        $scope.sideMenu.isStreetLevel = false;
+        $rootScope.$broadcast(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL);
         mapService.setNeighborhoodLayers();
     }};
 

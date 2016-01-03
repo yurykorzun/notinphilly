@@ -15,7 +15,4 @@ router.get('/leave/:sid', authService.isAuthenticated, controller.leave);
 router.get('/lookupZipcodes/:zip/:limit', controller.getZipCodes);
 router.get('/lookupNames/:name/:limit', controller.getStreetNames);
 
-//router.get('/findBlock/:block', controller.findBlock);
-
-
 module.exports = router;
