@@ -73,17 +73,17 @@
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <input type="text" id="houseNumber" ng-model="User.addressLine2" class="form-control input-sm" placeholder="House number">
+            <input type="text" id="houseNumber" ng-model="User.houseNumber" class="form-control input-sm" placeholder="House number">
           </div>
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <input type="text" id="apartmentNum" ng-model="User.addressLine2" class="form-control input-sm" placeholder="Apartment/Unit">
+            <input type="text" id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit">
           </div>
         </div>
       </div>
 
-      <div class="offset-small"><label>Password</label></div>
+      <div class="offset-small"><label>Password{{ User.password }}</label></div>
 
       <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
