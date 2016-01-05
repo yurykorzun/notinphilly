@@ -1,6 +1,6 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('SignupController', [ '$scope', '$http', function($scope, $http) {
+    .controller('SignupController', [ '$scope', '$location', '$http', function($scope, $location, $http) {
       $scope.zipCodes = [];
       $scope.zipCode = undefined;
 
@@ -26,5 +26,14 @@
                       });
         }
       };
+
+      $scope.register = function(){
+        $http.post('/api/users/', $scope.User).
+                success(function(data) {
+                    $location.path('/');
+                }).error(function(err) {
+                    $scope.errorMessage = err;
+                });
+      }
     }]);
 })();

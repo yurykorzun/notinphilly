@@ -18,9 +18,7 @@ exports.index = function(req, res) {
 exports.create = function(req, res, next) {
     var newUser = new UserModel(req.body);
     newUser.save(function(err, user) {
-        res.json({
-            token: token
-        });
+        res.json(user);
     });
 };
 

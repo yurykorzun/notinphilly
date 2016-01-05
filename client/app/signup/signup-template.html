@@ -5,14 +5,24 @@
   <div class="modal-body">
     <form role="form">
       <div class="row">
+        <div class="col-sm-6">
+          <div class="form group">
+            <label>Email</label>
+            <input type="text" id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email">
+          </div>
+        </div>
+      </div>
+      <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
-            <input type="text" id="firstName" ng-model="firstName" class="form-control input-sm" placeholder="First Name">
+            <label>First Name</label>
+            <input type="text" id="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name">
           </div>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
-            <input type="text" id="firstName" ng-model="lastName" class="form-control input-sm" placeholder="Last Name">
+            <label>Last Name</label>
+            <input type="text" id="lastName" ng-model="User.lastName" class="form-control input-sm" placeholder="Last Name">
           </div>
         </div>
       </div>
@@ -21,7 +31,7 @@
           <div class="col-xs-4 col-sm-4 col-md-4">
             <div class="form-group">
               <label>Birthday</label>
-              <input type="date" id="birthday" ng-model="birthday" class="form-control input-sm" placeholder="Birthday">
+              <input type="date" id="birthday" ng-model="User.birthDate" class="form-control input-sm" placeholder="Birthday">
             </div>
           </div>
           <div class="col-xs-2 col-sm-2 col-md-2">
@@ -30,7 +40,7 @@
           <div class="col-xs-6 col-sm-6 col-md-6">
             <div class="form-group">
               <label>Business/Organization</label> (optional)
-              <input type="text" id="organizationName" ng-model="organizationName" class="form-control input-sm">
+              <input type="text" id="organizationName" ng-model="User.businessName" class="form-control input-sm">
             </div>
           </div>
       </div>
@@ -40,7 +50,7 @@
       <div class="row">
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <ui-select ng-model="zipCode" theme="bootstrap" title="Zipcode">
+            <ui-select ng-model="User.zip" theme="bootstrap" title="Zipcode">
              <ui-select-match placeholder="Enter zipcode...">{{$select.selected.zipCode}}</ui-select-match>
              <ui-select-choices repeat="item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
                <div ng-bind-html="item.zipCode | highlight: $select.search"></div>
@@ -53,7 +63,7 @@
       <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
-            <ui-select ng-model="streetName" theme="bootstrap" title="Street name">
+            <ui-select ng-model="User.addressLine1" theme="bootstrap" title="Street name">
              <ui-select-match placeholder="Enter street name...">{{$select.selected.name}}</ui-select-match>
              <ui-select-choices repeat="item in streetNames" refresh="refreshStreetNames($select.search)" refreshDelay="100">
                <div ng-bind-html="item.name | highlight: $select.search"></div>
@@ -63,12 +73,12 @@
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <input type="text" id="houseNumber" ng-model="houseNumber" class="form-control input-sm" placeholder="House number">
+            <input type="text" id="houseNumber" ng-model="User.addressLine2" class="form-control input-sm" placeholder="House number">
           </div>
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <input type="text" id="apartmentNum" ng-model="apartmentNum" class="form-control input-sm" placeholder="Apartment/Unit">
+            <input type="text" id="apartmentNum" ng-model="User.addressLine2" class="form-control input-sm" placeholder="Apartment/Unit">
           </div>
         </div>
       </div>
@@ -78,17 +88,17 @@
       <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
-            <input type="password" id="password" ng-model="password" class="form-control input-sm" placeholder="Password">
+            <input type="password" id="password" ng-model="User.password" class="form-control input-sm" placeholder="Password">
           </div>
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
-            <input type="password" id="passwordConfirm" ng-model="passwordConfirm" class="form-control input-sm" placeholder="Confirm password">
+            <input type="password" id="passwordConfirm" ng-model="User.passwordConfirm" class="form-control input-sm" placeholder="Confirm password">
           </div>
         </div>
       </div>
 
-      <input type="submit" value="Register" class="btn btn-info btn-block">
+      <input type="submit" ng-click="register()" value="Register" class="btn btn-info btn-block">
     </form>
   </div>
 </div>
