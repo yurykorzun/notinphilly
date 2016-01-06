@@ -19,9 +19,12 @@
                                  templateUrl: 'app/signup/signup-template.html',
                                  //controller: 'ModalInstanceCtrl',
                                  resolve: {
-                                  
+
                                  }
                                });
+                               modalInstance.result.then(function (selectedItem) {
+                                 $scope.selected = selectedItem;
+                                });
         }
       }
     }]);

@@ -5,10 +5,11 @@
   <div class="modal-body">
     <form role="form">
       <div class="row">
-        <div class="col-sm-6">
+        <div class="col-sm-6 col-sm-6">
           <div class="form group">
             <label>Email</label>
             <input type="text" id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email">
+            <span class="label label-danger" ng-show="errorShow">{{ errorMessage }}</span>
           </div>
         </div>
       </div>
@@ -83,7 +84,7 @@
         </div>
       </div>
 
-      <div class="offset-small"><label>Password{{ User.password }}</label></div>
+      <div class="offset-small"><label>Password</label></div>
 
       <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
@@ -97,7 +98,11 @@
           </div>
         </div>
       </div>
-
+      <div class="col-sm-6 col-sm-6">
+        <h2>
+          <span class="label label-success" ng-show="successShow">Successfully Created an account</span>
+        </h2>
+      </div>
       <input type="submit" ng-click="register()" value="Register" class="btn btn-info btn-block">
     </form>
   </div>

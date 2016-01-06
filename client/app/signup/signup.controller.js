@@ -30,9 +30,13 @@
       $scope.register = function(){
         $http.post('/api/users/', $scope.User).
                 success(function(data) {
+                    $scope.errorShow = false;
+                    $scope.successShow = true;
                     $location.path('/');
                 }).error(function(err) {
                     $scope.errorMessage = err;
+                    $scope.successShow = false;
+                    $scope.errorShow = true;
                 });
       }
     }]);
