@@ -1,6 +1,8 @@
 <div ng-controller="SignupController">
   <div class="modal-header">
     <h3>Sign up and become a better citizen!</h3>
+    <div class="alert alert-success" ng-show="successShow">Successfully Created Your Account</div>
+    <div class="alert alert-danger" ng-show="errorShow">{{ errorMessage }}</div>
   </div>
   <div class="modal-body">
     <form role="form">
@@ -9,13 +11,6 @@
           <div class="form group">
             <label>Email</label>
             <input type="text" id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email">
-          </div>
-        </div>
-        <div class="col-sm-6 col-sm-6">
-          <div class="form group">
-          <h3>
-            <span class="label label-danger" ng-show="errorShow">{{ errorMessage }}</span>
-          </h3>
           </div>
         </div>
       </div>
@@ -105,11 +100,9 @@
         </div>
       </div>
       <div class="col-sm-6 col-sm-6">
-        <h2>
-          <span class="label label-success" ng-show="successShow">Successfully Created an account</span>
-        </h2>
       </div>
       <input type="submit" ng-click="register()" value="Register" class="btn btn-info btn-block">
+
     </form>
   </div>
 </div>

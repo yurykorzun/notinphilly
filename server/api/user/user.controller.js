@@ -20,7 +20,7 @@ exports.create = function(req, res, next) {
     if(err) throw err;
     if(user) {
       console.log('user already registred');
-      res.status(409).send('Please choose different email');
+      res.status(409).send('User with this email alreay has an account');
     } else {
       UserModel.create(
         {
