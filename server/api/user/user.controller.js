@@ -32,7 +32,8 @@ exports.create = function(req, res, next) {
           email: req.body.email,
           role: [1],
           businesName: req.body.businessName,
-          addressLine1: req.body.addressLine1,
+          addressLine1: req.body.houseNumber + ' ' + req.body.addressLine1 +
+          " " + req.body.aptNumber,
           addressLine2: req.body.addressLine2,
           active: true,
           city: req.body.city,
@@ -40,8 +41,12 @@ exports.create = function(req, res, next) {
           zip: req.body.zip,
           password: req.body.password
         }, function(err, thor){
-          console.log('Finished adding the user');
+          console.log(err);
+          if (err) {
+            res.status(500).send('There was an issue. Please try again later');
+          };
           res.status(200).send('Successfully Added the user');
+          console.log('Finished adding the user');
         }
       )
       res.status(200).send('Successfully Added the user');

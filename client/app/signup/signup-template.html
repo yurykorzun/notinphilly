@@ -54,7 +54,7 @@
           <div class="form-group">
             <ui-select ng-model="User.zip" theme="bootstrap" title="Zipcode">
              <ui-select-match placeholder="Enter zipcode...">{{$select.selected.zipCode}}</ui-select-match>
-             <ui-select-choices repeat="item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
+             <ui-select-choices repeat="item.zipCode as item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
                <div ng-bind-html="item.zipCode | highlight: $select.search"></div>
              </ui-select-choices>
            </ui-select>
@@ -65,9 +65,9 @@
       <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
-            <ui-select ng-model="User.addressLine1" theme="bootstrap" title="Street name">
+            <ui-select ng-model="User.addressLine1"  theme="bootstrap" title="Street name">
              <ui-select-match placeholder="Enter street name...">{{$select.selected.name}}</ui-select-match>
-             <ui-select-choices repeat="item in streetNames" refresh="refreshStreetNames($select.search)" refreshDelay="100">
+             <ui-select-choices repeat="item.name as item in streetNames" refresh="refreshStreetNames($select.search)" refreshDelay="100">
                <div ng-bind-html="item.name | highlight: $select.search"></div>
              </ui-select-choices>
            </ui-select>
