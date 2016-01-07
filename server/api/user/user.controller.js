@@ -13,6 +13,7 @@ exports.index = function(req, res) {
 };
 
 var checkForErrors = function(userInfo) {
+
   if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
     return "Please enter email address";
   }
@@ -38,10 +39,10 @@ exports.create = function(req, res, next) {
   mongoose.models["User"].findOne({email: req.body.email}, function(err, user) {
     if(err) throw err;
 
-    if(user & req.body.email !== "") {
+    if(user) {
       console.log('user already registred');
       res.status(409).send('User with this email alreay has an account');
-      return false;
+      return "User already exists";
     }
      console.log('req.body.email' + req.body.email);
      errorMessage = checkForErrors(req.body);
