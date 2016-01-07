@@ -12,16 +12,41 @@ exports.index = function(req, res) {
     });
 };
 
+var checkForErrors = function(userInfo) {
+  if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
+    return "Please enter email address";
+  }
+  if (userInfo.fistName === '' || typeof userInfo.firstName === 'undefined'){
+    return "Please enter your First name";
+  }
+  if (userInfo.email === '' || typeof userInfo.lastName === 'undefined'){
+    return "Please enter your last name";
+  }
+  if (userInfo.password === '' || typeof userInfo.password === 'undefined'){
+    return "Please enter password and confirm your password";
+  }
+  if (userInfo.password !== userInfo.passwordConfirm) {
+    return "Your passwords do not match";
+  }
+  return "false";
+}
+
 /**
  * Creates a new user
  */
 exports.create = function(req, res, next) {
   mongoose.models["User"].findOne({email: req.body.email}, function(err, user) {
     if(err) throw err;
-    if(user) {
+
+    if(user & req.body.email !== "") {
       console.log('user already registred');
       res.status(409).send('User with this email alreay has an account');
-    } else {
+      return false;
+    }
+     console.log('req.body.email' + req.body.email);
+     errorMessage = checkForErrors(req.body);
+     console.log('errorMessage' + errorMessage);
+    if (errorMessage === "false") {
       UserModel.create(
         {
           firstName: req.body.fistName,
@@ -32,8 +57,7 @@ exports.create = function(req, res, next) {
           email: req.body.email,
           role: [1],
           businesName: req.body.businessName,
-          addressLine1: req.body.houseNumber + ' ' + req.body.addressLine1 +
-          " " + req.body.aptNumber,
+          addressLine1: req.body.houseNumber + " " + req.body.addressLine1 + " " + req.body.aptNumber,
           addressLine2: req.body.addressLine2,
           active: true,
           city: req.body.city,
@@ -50,7 +74,8 @@ exports.create = function(req, res, next) {
         }
       )
       res.status(200).send('Successfully Added the user');
-      return true;
+    } else {
+      res.status(409).send(errorMessage);
     }
   });
 };
