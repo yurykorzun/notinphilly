@@ -1,36 +1,34 @@
 (function () {
-  angular.module('notinphillyServerApp').directive('resizeleaflet',  ['$window', '$timeout', 'leafletData', function ($window, $timeout, leafletData) {
+  angular.module('notinphillyServerApp').directive('resizeleaflet',  ['$window', 'leafletData', function ($window, leafletData) {
   return {
     restrict: 'A',
     scope: {},
     //dynamically resize leaflet map's height
     link: function(scope, element, attributes){
 
-      /*angular.element($window).bind("scroll", function() {
-            element.children().height($(".side").height());
-            leafletData.getMap().then(function (map) {
-              map.invalidateSize();
-            });
-         });*/
+      var resizeMap = function() {
+        var mapDiv = element.children();
+        var isSideMenuVisibile = !$(".side-container").hasClass("ng-hide");
+        var sideMenuHeight = $(".side").height();
+        var windowHeight = $($window).height();
+        var currentHeight = mapDiv.height();
 
-     scope.$watch(function() {
-             return $(".side").height();
-            },
-            function() {
-              if($(".side-container").hasClass("ng-hide")) return;
+        var newHeight = isSideMenuVisibile && sideMenuHeight > windowHeight ? sideMenuHeight : windowHeight;
 
-              element.children().height($(".side").height());
-              leafletData.getMap().then(function (map) {
-                map.invalidateSize();
-              });
-            });
-
-      angular.element($window).bind('resize', function(){
-          angular.element("#cityMap").height($(".side").height());
+        if(newHeight != currentHeight)
+        {
           leafletData.getMap().then(function (map) {
+            mapDiv.height(newHeight);
             map.invalidateSize();
           });
-      });
+        }
+      };
+
+      angular.element($window).bind("scroll", resizeMap);
+
+      scope.$watch(function() { return $(".side").height(); }, resizeMap);
+
+      angular.element($window).bind('resize', resizeMap);
     }
   }
  }]);
