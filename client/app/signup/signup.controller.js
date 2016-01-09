@@ -1,11 +1,12 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('SignupController', [ '$scope', '$http', function($scope, $http) {
+    .controller('SignupController', [ '$scope', '$location', '$http', function($scope, $location, $http) {
       $scope.zipCodes = [];
       $scope.zipCode = undefined;
 
       $scope.streetNames = [];
       $scope.streetName = undefined;
+      $scope.User = {};
 
       $scope.refreshZipCodes = function(search) {
         if(search)
@@ -26,5 +27,18 @@
                       });
         }
       };
+
+      $scope.register = function(){
+        $http.post('/api/users/', $scope.User).
+                success(function(data) {
+                    $scope.errorShow = false;
+                    $scope.successShow = true;
+                    $location.path('/');
+                }).error(function(err) {
+                    $scope.errorMessage = err;
+                    $scope.successShow = false;
+                    $scope.errorShow = true;
+                });
+      }
     }]);
 })();
