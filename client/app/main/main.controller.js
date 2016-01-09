@@ -37,6 +37,9 @@ angular.module('notinphillyServerApp')
     $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
       ShowUserProfile();
     });
+    $scope.$on(APP_EVENTS.LOGIN_FAILED, function(event) {
+      ShowLoginForm();
+    });
     $scope.$on(APP_EVENTS.LOGOUT, function(event) {
       ShowLoginForm();
     });

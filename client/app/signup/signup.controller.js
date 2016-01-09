@@ -7,7 +7,6 @@
       $scope.streetNames = [];
       $scope.streetName = undefined;
       $scope.User = {};
-
       $scope.refreshZipCodes = function(search) {
         if(search)
         {

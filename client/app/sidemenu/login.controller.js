@@ -11,6 +11,7 @@
                                   $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
                                 },
                                 function(err) {
+                                  $rootScope.$broadcast(APP_EVENTS.LOGIN_FAILED);
                                   $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
                                 });
         },
