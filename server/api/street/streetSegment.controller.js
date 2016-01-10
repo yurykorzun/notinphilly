@@ -161,6 +161,24 @@ exports.leave = function(req, res, next) {
     });
 };
 
+exports.findStreets = function(req, res, next) {
+    var zipCode = req.params.zip;
+    var streetName = req.params.street;
+    var houseNumber = req.params.house;
+
+    var blockPrefix = houseNumber.substring(0, 2);
+    var streetRegex = new RegExp(streetName, 'i');
+
+    StreetModel.find({  streetName: { $regex: streetRegex },
+                        $where: "/" + zipCode + "/.test(this.zipLeft) | /" + zipCode + "/.test(this.zipRight)",
+                        $where: "/^" + blockPrefix + "/.test(this.leftHundred) | /^" + blockPrefix + "/.test(this.rightHundred)"
+                      },
+                function(err, streets) {
+                    if (err) return next(err);
+                    res.json({ streets: streets });
+                });
+};
+
 exports.currentUserStreets = function(req, res, next) {
     var userId = req.user._id;
 

@@ -52,6 +52,23 @@ input[type*=submit], .btn, .btn-default {
 .navbar-offset {
     margin-top: 40px;
 }
+.min-padding-left{
+  padding-left: 2px;
+}
+.min-padding-right{
+  padding-right: 2px;
+}
+.no-padding
+{
+  padding: 0;
+}
+.form-textbox
+{
+  padding-top: 15px;
+  padding-bottom: 17px;
+  font-size: 14px;
+}
+
 .logo{
     margin: 20px 0 10px 0;
     padding: 20px 10px 10px 10px;
