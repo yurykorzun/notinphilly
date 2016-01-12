@@ -26,8 +26,12 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 app.use(methodOverride());
 
+var dbOptions = {
+  server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
+  replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
+};
 mongoose.connection.on('error', console.log);
-mongoose.connect(connectionString);
+mongoose.connect(connectionString, dbOptions);
 
 //make the app use the passport/express session
 app.use(expressSession({
