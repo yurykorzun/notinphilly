@@ -33,7 +33,7 @@ exports.getAllGeojson = function(req, res) {
 };
 
 
-exports.get = function(req, res) {
+exports.get = function(req, res, next) {
   var neighborhoodId = req.params.id;
 
   NeighborhoodModel.findById(neighborhoodId, function(err, neighborhood) {
