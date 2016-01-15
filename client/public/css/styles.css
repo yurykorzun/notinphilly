@@ -19,7 +19,7 @@ input[type*=submit], .btn, .btn-default {
     border-radius: 0;
 }
 .root-container {
-  padding: 0px;
+  padding: 0;
 }
 #cityMap {
     position: absolute;
@@ -155,8 +155,27 @@ input[type*=submit], .btn, .btn-default {
 .get-started-btn:hover{
     text-decoration: none;
 }
-.accordion-text {
-    display: none;
+.faq .panel-group{
+    margin-bottom: 0;
+}
+.faq .panel{
+    border: none;
+    box-shadow: none;
+}
+.faq .panel-group .panel-heading + .panel-collapse > .panel-body,.faq .panel-group .panel-heading + .panel-collapse > .list-group{
+    border-top: none;
+}
+.faq .panel-default > .panel-heading, .faq .panel-body{
+    background-color: transparent;
+    background-image: none;
+    padding: 2px 15px;
+}
+.faq a{
+    outline: none;
+    color: #337ab7;
+}
+.faq h4{
+    font-size: 14px;
 }
 #user-auth{
     display:none;
