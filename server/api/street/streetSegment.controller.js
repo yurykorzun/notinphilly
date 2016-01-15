@@ -30,9 +30,22 @@ exports.getByNeighborhood = function(req, res, next) {
     });
 };
 
+var isStreetAdoptedByUser = function(user, street_id) {
+  if (user.adoptedStreets.indexOf(street_id) == -1) {
+    return false;
+  } else {
+    return true;
+  }
+}
+
 exports.getByNeighborhoodGeojson = function(req, res, next) {
     var neighborhoodId = req.params.nid;
-
+    var user = {};
+    //Get user info
+    UserModel.findById(req.user._id, function(err, userFound) {
+        if (err) return next(err);
+        user = userFound;
+      });
     StreetModel.find({neighborhood: mongoose.Types.ObjectId(neighborhoodId)}, function(err, streets) {
         if (err) return next(err);
 
@@ -41,6 +54,7 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
         {
           var street = streets[nIndex];
           var geoItem = street.geodata;
+
           geoItem.properties = {
             id: street._id,
             parentId: street.neighborhood,
@@ -49,12 +63,11 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
             zipCode: street.zipLeft,
             type: street.type,
             totalAdopters: street.totalAdopters,
-            isAdopted: street.totalAdopters > 0,
+            isAdopted: isStreetAdoptedByUser(user, street._id),
             active: street.active
           };
           geoList.push(geoItem);
         }
-
         res.status(200).json(geoList);
     });
 };
@@ -70,6 +83,7 @@ exports.adopt = function(req, res, next) {
     if (!streetId) throw new Error('Required streetId needs to be set');
 
     console.log(user._id);
+
     UserModel.findById(user._id, function(err, user) {
         if (err) return next(err);
         if(user.adoptedStreets.indexOf(streetId) == -1)
