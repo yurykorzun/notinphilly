@@ -54,7 +54,7 @@ exports.create = function(req, res, next) {
           middleName: req.body.middleName,
           lastName: req.body.lastName,
           birthDate: req.body.birthDate,
-          phoneNumber: req.body.phoneNumber,
+          phoneNumber: req.body.phoneArea + req.body.phoneNumber1 + req.body.phoneNumber2 ,
           email: req.body.email,
           role: [1],
           businesName: req.body.businessName,

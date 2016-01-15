@@ -30,22 +30,37 @@ exports.getByNeighborhood = function(req, res, next) {
     });
 };
 
-var isStreetAdoptedByUser = function(user, street_id) {
-  if (user.adoptedStreets.indexOf(street_id) == -1) {
+var isStreetAdoptedByUser = function(user, street) {
+  if (typeof user.adoptedStreets !== 'undefined' && user.adoptedStreets.indexOf(street._id) == -1) {
     return false;
-  } else {
+  }
+
+  if (typeof user.adoptedStreets !== 'undefined' && user.adoptedStreets.indexOf(street._id) > -1) {
     return true;
   }
+
+  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters === 0) {
+    return false;
+  }
+
+
+  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters > 0) {
+    return true;
+  }
+
 }
 
 exports.getByNeighborhoodGeojson = function(req, res, next) {
     var neighborhoodId = req.params.nid;
     var user = {};
     //Get user info
-    UserModel.findById(req.user._id, function(err, userFound) {
-        if (err) return next(err);
-        user = userFound;
-      });
+    if (typeof req.user !== 'undefined') {
+      UserModel.findById(req.user._id, function(err, userFound) {
+          if (err) return next(err);
+          user = userFound;
+        });
+    }
+
     StreetModel.find({neighborhood: mongoose.Types.ObjectId(neighborhoodId)}, function(err, streets) {
         if (err) return next(err);
 
@@ -63,7 +78,7 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
             zipCode: street.zipLeft,
             type: street.type,
             totalAdopters: street.totalAdopters,
-            isAdopted: isStreetAdoptedByUser(user, street._id),
+            isAdopted: isStreetAdoptedByUser(user, street),
             active: street.active
           };
           geoList.push(geoItem);
