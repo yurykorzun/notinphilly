@@ -1,6 +1,6 @@
 <div ng-controller="SignupController">
   <div class="modal-header">
-    <h3>Sign up and become a better citizen!</h3>
+    <h3>Eleminating Litter Together!</h3>
     <div class="alert alert-success" ng-show="successShow">Successfully Created Your Account</div>
     <div class="alert alert-danger" ng-show="errorShow">{{ errorMessage }}</div>
   </div>
@@ -32,8 +32,8 @@
       <div class="row">
           <div class="col-xs-4 col-sm-4 col-md-4">
             <div class="form-group">
-              <label>Birthday</label>
-              <input type="date" id="birthday" ng-model="User.birthDate" class="form-control input-sm" placeholder="Birthday">
+              <label>Contact Phone Number</label>
+              <input type="tel" size=3 id="phoneArea" ng-model="User.phoneArea" >-<input type="tel" size=3 ng-model="User.phoneNumber1">-<input type="tel" size=4 ng-model="User.phoneNumber2">
             </div>
           </div>
           <div class="col-xs-2 col-sm-2 col-md-2">
