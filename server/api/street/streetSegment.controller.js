@@ -31,20 +31,20 @@ exports.getByNeighborhood = function(req, res, next) {
 };
 
 var isStreetAdoptedByUser = function(user, street) {
-  if (typeof user.adoptedStreets !== 'undefined' && user.adoptedStreets.indexOf(street._id) == -1) {
+  if (typeof user.adoptedStreets !== 'undefined' && user.adoptedStreets.indexOf(street._id) == -1 && street.totalAdopters <=5) {
     return false;
   }
 
-  if (typeof user.adoptedStreets !== 'undefined' && user.adoptedStreets.indexOf(street._id) > -1) {
+  if (typeof user.adoptedStreets !== 'undefined' && (user.adoptedStreets.indexOf(street._id) > -1 || street.totalAdopters > 5)) {
     return true;
   }
 
-  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters === 0) {
+  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters === 0 && street.totalAdopters <=5) {
     return false;
   }
 
 
-  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters > 0) {
+  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters > 0 || street.totalAdopters > 5) {
     return true;
   }
 
