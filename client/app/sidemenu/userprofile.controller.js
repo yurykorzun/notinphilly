@@ -12,7 +12,8 @@
                                 function(err) {
                                   $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
                                 });
-        }
+        },
+        adoptedStreets: []
       };
 
       $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {

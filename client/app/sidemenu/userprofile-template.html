@@ -16,7 +16,7 @@
           <div class="row">
               <i class="fa fa-envelope"></i> {{userProfile.email}}
           </div>
-          <div class="row offset">
+          <div class="row offset" ng-show="userProfile.adoptedStreets.length > 0">
               <i class="fa fa-check-circle-o"></i> Participating in streets:
               <div ng-repeat="street in userProfile.adoptedStreets">
                 <a href="" ng-click="locateStreet(street._id)">{{street.leftHundred}} {{street.type}} {{street.streetName}} {{street.type}} {{street.zipLeft}}</a>

@@ -105,6 +105,20 @@
         });
       }
 
+      this.zoomIn = function(zoomDelta)
+      {
+        leafletData.getMap().then(function (map) {
+          map.zoomIn(zoomDelta);
+        });
+      }
+
+      this.zoomOut = function(zoomDelta)
+      {
+        leafletData.getMap().then(function (map) {
+          map.zoomOut(zoomDelta);
+        });
+      }
+
       var setupStreets = function(neighborhoodId, map)
       {
         var deferred = $q.defer();

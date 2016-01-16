@@ -82,8 +82,8 @@
 
   <div class="sideItemsColumnSection offset">
     <div class="sideItem" ng-show="sideMenu.isStreetLevel" ng-click="sideMenu.onMapReturn()"><i class="fa fa-2x fa-level-up" data-toggle="tooltip" data-placement="bottom" title="Back"></i></div>
-    <div class="sideItem"><i class="fa fa-2x fa-search-plus"></i></div>
-    <div class="sideItem"><i class="fa fa-2x fa-search-minus"></i></div>
+    <div class="sideItem"><i class="fa fa-2x fa-search-plus" ng-click="sideMenu.mapZoomIn()"></i></div>
+    <div class="sideItem"><i class="fa fa-2x fa-search-minus" ng-click="sideMenu.mapZoomOut()"></i></div>
   </div>
 
   <div class="sideItemsColumnSection offset">

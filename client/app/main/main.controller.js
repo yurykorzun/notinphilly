@@ -7,10 +7,17 @@ angular.module('notinphillyServerApp')
       isLoginVisible: false,
       isLoginOpen: false,
       spinnerActive: false,
-      onMapReturn : function() {
+      onMapReturn: function() {
         $rootScope.$broadcast(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL);
         mapService.setNeighborhoodLayers();
-    }};
+      },
+      mapZoomIn: function() {
+        mapService.zoomIn(1);
+      },
+      mapZoomOut: function() {
+        mapService.zoomOut(1);
+      }
+  };
 
     function ShowUserProfile()
     {
