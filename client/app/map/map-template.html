@@ -1,8 +1,7 @@
 <div ng-controller="MapController">
   <!--Leaflet map of Philadelphia with layers-->
-  <!-- <div resizeleaflet> -->
   <div>
-    <leaflet id="cityMap" center="center" geojson="geojson" tiles="tiles" zoomControl="false" width="100%"></leaflet>
+    <leaflet id="cityMap" width="100%"></leaflet>
   </div>
 
   <div class="tooltip-layer" ng-show="tooltip.isNhoodTooltipVisible" ng-style="tooltip.nhoodTooltipStyle" ng-init="tooltip.isNhoodTooltipVisible = false">

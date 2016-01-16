@@ -1,7 +1,6 @@
 (function () {
   var  app = angular.module('notinphillyServerApp', [
       'ngRoute',
-      'leaflet-directive',
       'ui.bootstrap',
       'ngAnimate',
       'treasure-overlay-spinner',

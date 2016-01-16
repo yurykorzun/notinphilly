@@ -1,6 +1,7 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .service('mapService', ['$http', '$q', 'leafletData', 'APP_EVENTS', function($http, $q, leafletData, APP_EVENTS) {
+    .service('mapService', ['$http', '$q', 'APP_EVENTS', function($http, $q, APP_EVENTS) {
+      var map = undefined;
       var mapLayerGroup = L.layerGroup();
       var mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
@@ -9,6 +10,16 @@
         streetMouseOverCallback : undefined,
         streetMouseOutCallback: undefined
       };
+
+      this.setMap = function(mapInstance)
+      {
+        map = mapInstance;
+      }
+
+      this.getMap = function()
+      {
+        return map;
+      }
 
       this.setMapCallbacks = function(callbacks) {
         mapCallbacks = callbacks;
@@ -19,68 +30,53 @@
         $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
           mapLayerGroup.clearLayers();
 
-          leafletData.getMap().then(function (map) {
-            /* //Remove builtin zoom control
-            leafletData.getMap().then(function (map) {
-              if(map.zoomControl)
-              {
-                map.zoomControl.removeFrom(map);
-              }
-            });*/
-
-            var geoJsonLayer = L.geoJson(data,
-            {
-              onEachFeature: function (feature, layer){
-                     layer.setStyle(setNeighborhoodColor(feature));
-                     layer.on({
-                      mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
-                      mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
-                      click: function(e) { onLayerClick(e); mapCallbacks.neighborhoodMouseOutCallback(e); mapCallbacks.neighborhoodMouseClickCallback(e); },
-                      layerremove: function(e) { mapCallbacks.neighborhoodMouseOutCallback(e); }
-                     });
-                   },
-              style: {
-                color: '#9A9B9C',
-                weight: 2,
-                fillOpacity: 0.4,
-                fillColor: '#484848'
-              }
-            });
-
-            map.setView(APP_EVENTS.MAP_CENTER, 13, { animate: false });
-            mapLayerGroup.addLayer(geoJsonLayer);
-            mapLayerGroup.addTo(map);
+          var geoJsonLayer = L.geoJson(data,
+          {
+            onEachFeature: function (feature, layer){
+                   layer.setStyle(setNeighborhoodColor(feature));
+                   layer.on({
+                    mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
+                    mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
+                    click: function(e) { onLayerClick(e); mapCallbacks.neighborhoodMouseOutCallback(e); mapCallbacks.neighborhoodMouseClickCallback(e); },
+                    layerremove: function(e) { mapCallbacks.neighborhoodMouseOutCallback(e); }
+                   });
+                 },
+            style: {
+              color: '#9A9B9C',
+              weight: 2,
+              fillOpacity: 0.4,
+              fillColor: '#484848'
+            }
           });
+
+          map.setView(APP_EVENTS.MAP_CENTER, 13, { animate: false });
+          mapLayerGroup.addLayer(geoJsonLayer);
+          mapLayerGroup.addTo(map);
          });
       }
 
       this.showStreetPopup = function(clickLatLang, streetLayer)
       {
-        leafletData.getMap().then(function (map) {
-          var properties = streetLayer.feature.properties;
-          var geometry = streetLayer.feature.geometry;
+        var properties = streetLayer.feature.properties;
+        var geometry = streetLayer.feature.geometry;
 
-          var start = L.latLng(geometry.coordinates[0][1], geometry.coordinates[0][0]);
-          var end = L.latLng(geometry.coordinates[1][1], geometry.coordinates[1][0]);
-          var streetBounds = new L.LatLngBounds(start, end);
-          var streetCenter = streetBounds.getCenter();
+        var start = L.latLng(geometry.coordinates[0][1], geometry.coordinates[0][0]);
+        var end = L.latLng(geometry.coordinates[1][1], geometry.coordinates[1][0]);
+        var streetBounds = new L.LatLngBounds(start, end);
+        var streetCenter = streetBounds.getCenter();
 
-          map.setView(streetCenter, 16, { animate: false });
+        map.setView(streetCenter, 16, { animate: false });
 
-          openLayerPopup(streetCenter, streetLayer, properties);
-        });
+        openLayerPopup(streetCenter, streetLayer, properties);
       }
 
       this.addNeigborhoodStreets = function(neighborhoodId)
       {
-        leafletData.getMap().then(function (map) {
-          setupStreets(neighborhoodId, map);
-        });
+        setupStreets(neighborhoodId, map);
       }
 
       this.goToStreet = function(streetId)
       {
-        leafletData.getMap().then(function (map) {
         $http.get("api/streets/" + streetId).success(function(streetData, status) {
           $http.get("api/neighborhoods/" + streetData.neighborhood).success(function(neighborhooData, status) {
               var start = L.latLng(streetData.geodata.geometry.coordinates[0][1], streetData.geodata.geometry.coordinates[0][0]);
@@ -101,22 +97,17 @@
                 openLayerPopup(streetCenter, foundLayer[0], foundLayer[0].feature.properties);
               });
             });
-          });
         });
       }
 
       this.zoomIn = function(zoomDelta)
       {
-        leafletData.getMap().then(function (map) {
-          map.zoomIn(zoomDelta);
-        });
+        map.zoomIn(zoomDelta);
       }
 
       this.zoomOut = function(zoomDelta)
       {
-        leafletData.getMap().then(function (map) {
-          map.zoomOut(zoomDelta);
-        });
+        map.zoomOut(zoomDelta);
       }
 
       var setupStreets = function(neighborhoodId, map)
@@ -165,27 +156,29 @@
         });
         layer.bindPopup(popup);
 
-        popup.setContent('<div ng-include="\'app/map/street-popup-template.html\'"></div>');
-        layer.openPopup();
+        $http.get('app/map/street-popup-template.html').then(function(response) {
+            var rawHtml = response.data;
+            popup.setContent(rawHtml);
+            layer.openPopup();
+        });
+
       }
 
       var onLayerClick = function(e)
       {
         if(e.target.feature)
         {
-          leafletData.getMap().then(function (map) {
-            var triggeredFeature = e.target.feature;
-            var properties = triggeredFeature.properties;
-            var layerBounds = e.layer.getBounds();
+          var triggeredFeature = e.target.feature;
+          var properties = triggeredFeature.properties;
+          var layerBounds = e.layer.getBounds();
 
-            var nhoodCenter = layerBounds.getCenter();
-            nhoodCenter.lng = nhoodCenter.lng - 0.001;
-            map.panTo(nhoodCenter);
-            map.setZoom(16, { animate: false});
-            map.invalidateSize();
+          var nhoodCenter = layerBounds.getCenter();
+          nhoodCenter.lng = nhoodCenter.lng - 0.001;
+          map.panTo(nhoodCenter);
+          map.setZoom(16, { animate: false});
+          map.invalidateSize();
 
-            setupStreets(properties.id, map);
-          });
+          setupStreets(properties.id, map);
         }
       }
 

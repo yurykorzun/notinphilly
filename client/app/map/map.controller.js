@@ -18,18 +18,18 @@ angular.module('notinphillyServerApp')
                }
             });
 
-    $scope.$on('leafletDirectiveMap.cityMap.mouseout', function(event, leafletEvent){
+    $scope.$on('cityMap.mouseout', function(event, leafletEvent){
       $scope.tooltip.isNhoodTooltipVisible = false;
       $scope.tooltip.isStreetTooltipVisible = false;
     });
-    $scope.$on('leafletDirectiveMap.cityMap.blur', function(event, leafletEvent){
+    $scope.$on('cityMap.blur', function(event, leafletEvent){
       $scope.tooltip.isNhoodTooltipVisible = false;
       $scope.tooltip.isStreetTooltipVisible = false;
     });
-    $scope.$on('leafletDirectiveMap.cityMap.popupopen', function(event, leafletEvent){
+    $scope.$on('cityMap.popupopen', function(event, leafletEvent){
       // Create the popup view when is opened
-      var properties = leafletEvent.leafletEvent.popup.options.properties;
-      var targetPopup = leafletEvent.leafletEvent.popup;
+      var properties = leafletEvent.popup.options.properties;
+      var targetPopup = leafletEvent.popup;
 
       $scope.isStart = !properties.isAdopted;
       $scope.isAdopted = properties.isAdopted;
@@ -70,7 +70,7 @@ angular.module('notinphillyServerApp')
         targetPopup._close();
       }
 
-      $compile(leafletEvent.leafletEvent.popup._contentNode)(newScope);
+      $compile(leafletEvent.popup._contentNode)(newScope);
     });
     $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event, leafletEvent){
       $scope.sideMenu.isStreetLevel = false;
