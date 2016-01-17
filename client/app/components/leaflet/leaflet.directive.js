@@ -24,15 +24,6 @@
         mapid: 'yurykorzun.nljndeg0'
       }).addTo(map);
 
-      map.on('blur', function(event) {
-        $rootScope.$broadcast(scope.mapId + "." + event.type, event);
-      });
-      map.on('mouseout', function(mouseEvent) {
-        $rootScope.$broadcast(scope.mapId + "." + mouseEvent.type, mouseEvent);
-      });
-      map.on('popupopen', function(popupEvent) {
-        $rootScope.$broadcast(scope.mapId + "." + popupEvent.type, popupEvent);
-      });
       mapService.setMap(map);
     }
   }

@@ -12,6 +12,7 @@
     "angular-animate": "~1.4.8",
     "ui-select": "angular-ui-select#~0.13.2",
     "angular-sanitize": "~1.4.8",
-    "leaflet": "~0.7.7"
+    "leaflet": "~0.7.7",
+    "Leaflet.label": "~0.2.1"
   }
 }

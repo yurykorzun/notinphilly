@@ -3,75 +3,63 @@ angular.module('notinphillyServerApp')
   .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, mapService, APP_EVENTS) {
     $scope.tooltip = {};
 
-    var center = angular.extend(APP_EVENTS.MAP_CENTER, {zoom: 13});
-    angular.extend($scope, {
-                zoomControl: false,
-                center: center,
-                tiles: {
-                   name: 'Not in philly map',
-                   url: 'http://api.tiles.mapbox.com/v4/{mapid}/{z}/{x}/{y}.png?access_token={apikey}',
-                   type: 'xyz',
-                   options: {
-                       apikey: 'pk.eyJ1IjoieXVyeWtvcnp1biIsImEiOiJjaWY2eTN2aHMwc3VncnptM3QxMzU3d3hxIn0.Mt0JldEMvvTdWW4GW2RSlQ',
-                       mapid: 'yurykorzun.nljndeg0'
-                   }
-               }
-            });
+    mapService.getMap().then(function(map) {
+      map.on('blur', function(event) {
+        $scope.tooltip.isNhoodTooltipVisible = false;
+        $scope.tooltip.isStreetTooltipVisible = false;
+      });
+      map.on('mouseout', function(mouseEvent) {
+        $scope.tooltip.isNhoodTooltipVisible = false;
+        $scope.tooltip.isStreetTooltipVisible = false;
+      });
+      map.on('popupopen', function(popupEvent) {
+        // Create the popup view when is opened
+        var properties = popupEvent.popup.options.properties;
+        var targetPopup = popupEvent.popup;
 
-    $scope.$on('cityMap.mouseout', function(event, leafletEvent){
-      $scope.tooltip.isNhoodTooltipVisible = false;
-      $scope.tooltip.isStreetTooltipVisible = false;
-    });
-    $scope.$on('cityMap.blur', function(event, leafletEvent){
-      $scope.tooltip.isNhoodTooltipVisible = false;
-      $scope.tooltip.isStreetTooltipVisible = false;
-    });
-    $scope.$on('cityMap.popupopen', function(event, leafletEvent){
-      // Create the popup view when is opened
-      var properties = leafletEvent.popup.options.properties;
-      var targetPopup = leafletEvent.popup;
+        $scope.isStart = !properties.isAdopted;
+        $scope.isAdopted = properties.isAdopted;
+        if ($rootScope.currentUser) {
+            $scope.isAuthorized = true;
+        } else {
+          $scope.isAuthorized = false;
+        }
+        $scope.isAdoptedSuccessfully = false;
+        $scope.isError = false;
 
-      $scope.isStart = !properties.isAdopted;
-      $scope.isAdopted = properties.isAdopted;
-      if ($rootScope.currentUser) {
-          $scope.isAuthorized = true;
-      } else {
-        $scope.isAuthorized = false;
-      }
-      $scope.isAdoptedSuccessfully = false;
-      $scope.isError = false;
+        var newScope = $scope.$new();
+        newScope.address = properties.hundred + ' ' + properties.name + ' ' + properties.zipCode;
+        newScope.streetId = properties.id;
+        newScope.imageSrc = properties.imageSrc;
 
-      var newScope = $scope.$new();
-      newScope.address = properties.hundred + ' ' + properties.name + ' ' + properties.zipCode;
-      newScope.streetId = properties.id;
-      newScope.imageSrc = properties.imageSrc;
+        newScope.adoptStreet = function() {
+          $http.get("api/streets/adopt/" + properties.id).success(function(data, status) {
+            $scope.isAdoptedSuccessfully = true;
+            mapService.addNeigborhoodStreets(properties.parentId);
 
-      newScope.adoptStreet = function() {
-        $http.get("api/streets/adopt/" + properties.id).success(function(data, status) {
-          $scope.isAdoptedSuccessfully = true;
-          mapService.addNeigborhoodStreets(properties.parentId);
+            $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
+          },
+          function(err) {
+            $scope.isStart = false;
+            $scope.isError = true;
+          });
+        };
+        newScope.leave = function() {
+          $http.get("api/streets/leave/" + properties.id).success(function(data, status) {
+            mapService.addNeigborhoodStreets(properties.parentId);
+            targetPopup._close();
 
-          $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
-        },
-        function(err) {
-          $scope.isStart = false;
-          $scope.isError = true;
-        });
-      };
-      newScope.leave = function() {
-        $http.get("api/streets/leave/" + properties.id).success(function(data, status) {
-          mapService.addNeigborhoodStreets(properties.parentId);
+            $rootScope.$broadcast(APP_EVENTS.STREET_LEFT);
+          });
+        };
+        newScope.close = function(){
           targetPopup._close();
+        }
 
-          $rootScope.$broadcast(APP_EVENTS.STREET_LEFT);
-        });
-      };
-      newScope.close = function(){
-        targetPopup._close();
-      }
-
-      $compile(leafletEvent.popup._contentNode)(newScope);
+        $compile(popupEvent.popup._contentNode)(newScope);
+      });
     });
+
     $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event, leafletEvent){
       $scope.sideMenu.isStreetLevel = false;
     });
@@ -93,7 +81,7 @@ angular.module('notinphillyServerApp')
             top: (y - 120 ) + 'px',
             left: (x + 40) + 'px'
           };
-          $scope.tooltip.isNhoodTooltipVisible = true;
+          //$scope.tooltip.isNhoodTooltipVisible = true;
         }
         else
         {
@@ -125,7 +113,7 @@ angular.module('notinphillyServerApp')
             top: (y - 100 ) + 'px',
             left: (x + 20) + 'px'
           };
-          $scope.tooltip.isStreetTooltipVisible = true;
+          //$scope.tooltip.isStreetTooltipVisible = true;
         }
         else
         {
