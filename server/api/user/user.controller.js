@@ -1,6 +1,15 @@
 var mongoose = require('mongoose');
 var UserModel = require('./user.model');
+var mailer = require('nodemailer');
+var smtpTransport = {};
 
+//var smtpTransport =  mailer.createTransport('smtps://notinphilly%40antsdesigns.net:Test123!@host244.hostmonster.com');
+
+if (process.env.OS_EMAIL_ADDR && process.env.OS_EMAIL_PASSWD) {
+  smtpTransport =  mailer.createTransport( process.env.OS_EMAIL_ADDR +':'+ process.env.OS_EMAIL_PASSWD + '@host244.hostmonster.com');
+} else {
+  smtpTransport =  mailer.createTransport('smtps://notinphilly%40antsdesigns.net:Test123!@host244.hostmonster.com');
+}
 /**
  * Get list of users
  * restriction: 'admin'
@@ -13,7 +22,6 @@ exports.index = function(req, res) {
 };
 
 var checkForErrors = function(userInfo) {
-
   if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
     return "Please enter email address";
   }
@@ -44,7 +52,7 @@ exports.create = function(req, res, next) {
       res.status(409).send('User with this email alreay has an account');
       return "User already exists";
     }
-     console.log('req.body.email' + req.body.email);
+
      errorMessage = checkForErrors(req.body);
      console.log('errorMessage' + errorMessage);
     if (errorMessage === "false") {
@@ -74,6 +82,24 @@ exports.create = function(req, res, next) {
           console.log('Finished adding the user');
         }
       )
+      mongoose.models["User"].findOne({email: req.body.email}, function(err, user) {
+
+      var mailOptions = {
+         from: "noreply <noreply@notinphilly.org>",
+         to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
+         subject: "NotInPhilly. Confirm reservation.",
+         text: "Hi " + req.body.firstName + " \n please follow the link in order to confirm registration: http://notinphilly.org/confirm/" + user.activationHash
+      };
+
+      smtpTransport.sendMail(mailOptions, function(error, response){
+         if(error){
+             console.log("Encounter error: " + error);
+         }else{
+             console.log("Message sent.");
+         }
+      });
+    });
+
       res.status(200).send('Successfully Added the user');
     } else {
       res.status(409).send(errorMessage);
