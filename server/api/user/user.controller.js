@@ -68,9 +68,9 @@ exports.create = function(req, res, next) {
           businesName: req.body.businessName,
           addressLine1: req.body.houseNumber + " " + req.body.addressLine1 + " " + req.body.aptNumber,
           addressLine2: req.body.addressLine2,
-          active: true,
+          active: false,
           city: req.body.city,
-          state: 1,
+          state: req.body.state,
           zip: req.body.zip,
           password: req.body.password
         }, function(err, thor){
@@ -83,14 +83,12 @@ exports.create = function(req, res, next) {
         }
       )
       mongoose.models["User"].findOne({email: req.body.email}, function(err, user) {
-
-      var mailOptions = {
-         from: "noreply <noreply@notinphilly.org>",
-         to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
-         subject: "NotInPhilly. Confirm reservation.",
-         text: "Hi " + req.body.firstName + " \n please follow the link in order to confirm registration: http://notinphilly.org/confirm/" + user.activationHash
-      };
-
+          var mailOptions = { from: "noreply <noreply@notinphilly.org>",
+                              to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
+                              subject: "NotInPhilly. Confirm reservation.",
+                              text: "Hi " + req.body.firstName + ", \n Please follow the link in order to confirm registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n #NotInPhilly Team <b>Check us Out on Facebook</b>"
+                            };
+      //Send confirmation email
       smtpTransport.sendMail(mailOptions, function(error, response){
          if(error){
              console.log("Encounter error: " + error);
@@ -148,6 +146,7 @@ exports.me = function(req, res, next) {
     UserModel.findOne({_id: userId}, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
         if (err) return next(err);
         if (!user) return res.status(401).send('Unauthorized');
+        if (user.active != true) return res.status(401).send('Please activate your user');
         res.json(user);
     });
 };
@@ -157,7 +156,21 @@ exports.update = function(req, res) {
 };
 
 exports.activate = function(req, res) {
-
+  var confirmId = req.params.confirmId;
+  UserModel.findOne({activationHash: confirmId}, function(err, user){
+    console.log("Is user active ? : " + user.active);
+    if (err) return next(err);
+    if (!user) return res.status(404).send('Could not find the user with activation tag: ' + req.params.confirmId);
+      user.active = true;
+      user.save(function (err) {
+        if (err) {
+          console.log("Error while saving user" + err);
+        } else {
+          return res.status(200).send("User has been confirmed");
+          console.log("Successfully Confirmed user");
+        }
+      })
+  });
 };
 
 /**
