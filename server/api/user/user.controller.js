@@ -95,12 +95,11 @@ exports.create = function(req, res, next) {
  */
 
 //Use tempaltes instead of TEXT
-
 var sendConfirmationEmail = function(req, user) {
   var mailOptions = { from: "noreply <noreply@notinphilly.org>",
                       to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
                       subject: "NotInPhilly. Confirm reservation.",
-                      text: "Hi " + req.body.firstName + ", \n Please follow the link in order to confirm registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
+                      text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
                     };
 //Send confirmation email
 smtpTransport.sendMail(mailOptions, function(error, response){
