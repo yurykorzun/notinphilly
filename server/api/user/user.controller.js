@@ -3,8 +3,6 @@ var UserModel = require('./user.model');
 var mailer = require('nodemailer');
 var smtpTransport = {};
 
-//var smtpTransport =  mailer.createTransport('smtps://notinphilly%40antsdesigns.net:Test123!@host244.hostmonster.com');
-
 if (process.env.OS_EMAIL_ADDR && process.env.OS_EMAIL_PASSWD) {
   smtpTransport =  mailer.createTransport( process.env.OS_EMAIL_ADDR +':'+ process.env.OS_EMAIL_PASSWD + '@host244.hostmonster.com');
 } else {
@@ -83,27 +81,36 @@ exports.create = function(req, res, next) {
         }
       )
       mongoose.models["User"].findOne({email: req.body.email}, function(err, user) {
-          var mailOptions = { from: "noreply <noreply@notinphilly.org>",
-                              to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
-                              subject: "NotInPhilly. Confirm reservation.",
-                              text: "Hi " + req.body.firstName + ", \n Please follow the link in order to confirm registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash.replace(/\//gi, '') + "\n #NotInPhilly Team <b>Check us Out on Facebook</b>"
-                            };
-      //Send confirmation email
-      smtpTransport.sendMail(mailOptions, function(error, response){
-         if(error){
-             console.log("Encounter error: " + error);
-         }else{
-             console.log("Message sent.");
-         }
-      });
+        sendConfirmationEmail(req, user);
     });
-
-      res.status(200).send('Successfully Added the user');
+      res.status(200).send('Successfully Sent Confirmation Email');
     } else {
       res.status(409).send(errorMessage);
     }
   });
 };
+
+/**
+ * Send confirmation email
+ */
+
+//Use tempaltes instead of TEXT
+
+var sendConfirmationEmail = function(req, user) {
+  var mailOptions = { from: "noreply <noreply@notinphilly.org>",
+                      to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
+                      subject: "NotInPhilly. Confirm reservation.",
+                      text: "Hi " + req.body.firstName + ", \n Please follow the link in order to confirm registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
+                    };
+//Send confirmation email
+smtpTransport.sendMail(mailOptions, function(error, response){
+ if(error){
+     console.log("Encounter error: " + error);
+ }else{
+     console.log("Message sent.");
+ }
+});
+}
 
 /**
  * Get a single user
@@ -159,7 +166,6 @@ exports.update = function(req, res) {
 exports.activate = function(req, res) {
   var confirmId = req.params.confirmId;
   UserModel.findOne({activationHash: confirmId}, function(err, user){
-    console.log("Is user active ? : " + user.active);
     if (err) return next(err);
     if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
       user.active = true;
@@ -167,7 +173,11 @@ exports.activate = function(req, res) {
         if (err) {
           console.log("Error while saving user" + err);
         } else {
-          return res.status(200).send("User has been confirmed");
+          res.statusCode = 302;
+          res.setHeader("Location", "/");
+          res.end();
+          //return res.status(200).send("User has been confirmed");
+
           console.log("Successfully Confirmed user");
         }
       })
