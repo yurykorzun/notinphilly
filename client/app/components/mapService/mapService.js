@@ -37,7 +37,7 @@
             {
               onEachFeature: function (feature, layer){
                      layer.setStyle(setNeighborhoodColor(feature));
-                     setNeighborhoodLabel(feature, layer, map);
+                     //setNeighborhoodLabel(feature, layer, map);
                      layer.on({
                       mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
                       mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },

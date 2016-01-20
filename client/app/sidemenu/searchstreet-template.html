@@ -3,25 +3,17 @@
   <div class="alert alert-danger" ng-show="errorShow">Something went wrong...</div>
   <div><label>Find your street</label></div>
   <div class="row">
-    <div class="col-xs-3 col-sm-3 col-md-3 min-padding-right">
+    <div class="col-xs-4 col-sm-4 col-md-4 min-padding-right">
       <input type="text" id="houseNumber" ng-model="houseNumber" class="form-control input-sm form-textbox" placeholder="House #">
     </div>
-    <div class="col-xs-6 col-sm-6 col-md-6 no-padding">
+    <div class="col-xs-8 col-sm-8 col-md-8 min-padding-left">
       <ui-select ng-model="streetName.selected" theme="bootstrap" title="Street name">
        <ui-select-match placeholder="Street name">{{$select.selected.name}}</ui-select-match>
        <ui-select-choices repeat="item in streetNames" refresh="refreshStreetNames($select.search)" refreshDelay="100">
          <div ng-bind-html="item.name | highlight: $select.search"></div>
        </ui-select-choices>
      </ui-select>
-    </div>
-    <div class="col-xs-3 col-sm-3 col-md-3 min-padding-left">
-      <ui-select ng-model="zipCode.selected" theme="bootstrap" title="Zipcode">
-       <ui-select-match placeholder="Zipcode">{{$select.selected.zipCode}}</ui-select-match>
-       <ui-select-choices repeat="item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
-         <div ng-bind-html="item.zipCode | highlight: $select.search"></div>
-       </ui-select-choices>
-     </ui-select>
-    </div>
+   </div>
   </div>
   <div class="row offset">
     <div class="col-xs-5 col-sm-5 col-md-5">

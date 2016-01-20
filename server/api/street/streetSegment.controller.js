@@ -191,7 +191,7 @@ exports.leave = function(req, res, next) {
 };
 
 exports.findStreets = function(req, res, next) {
-    var zipCode = req.params.zip;
+    //var zipCode = req.params.zip;
     var streetName = req.params.street;
     var houseNumber = req.params.house;
 
@@ -199,7 +199,7 @@ exports.findStreets = function(req, res, next) {
     var streetRegex = new RegExp(streetName, 'i');
 
     StreetModel.find({  streetName: { $regex: streetRegex },
-                        $where: "/" + zipCode + "/.test(this.zipLeft) | /" + zipCode + "/.test(this.zipRight)",
+                      //  $where: "/" + zipCode + "/.test(this.zipLeft) | /" + zipCode + "/.test(this.zipRight)",
                         $where: "/^" + blockPrefix + "/.test(this.leftHundred) | /^" + blockPrefix + "/.test(this.rightHundred)"
                       },
                 function(err, streets) {
