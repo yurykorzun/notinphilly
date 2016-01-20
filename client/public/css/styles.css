@@ -273,6 +273,11 @@ input[type*=submit], .btn, .btn-default {
 .street-popup-address {
   padding: 2px;
 }
+.leaflet-label-overlay {;
+    position: absolute;
+    margin-right: 40px;
+    z-index: -1;
+}
 /* Styles for screen 420px and less*/
 @media (max-width: 768px){
     .tooltip-zooming{

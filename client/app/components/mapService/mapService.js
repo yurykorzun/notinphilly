@@ -1,7 +1,9 @@
 (function () {
   angular.module('notinphillyServerApp')
     .service('mapService', ['$http', '$q', 'APP_EVENTS', function($http, $q, APP_EVENTS) {
-      var map = undefined;
+
+      var deferredMap = $q.defer();
+
       var mapLayerGroup = L.layerGroup();
       var mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
@@ -13,12 +15,12 @@
 
       this.setMap = function(mapInstance)
       {
-        map = mapInstance;
+        deferredMap.resolve(mapInstance);
       }
 
       this.getMap = function()
       {
-        return map;
+        return deferredMap.promise;
       }
 
       this.setMapCallbacks = function(callbacks) {
@@ -27,122 +29,137 @@
 
       this.setNeighborhoodLayers = function()
       {
-        $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
-          mapLayerGroup.clearLayers();
+        deferredMap.promise.then(function(map) {
+          $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
+            mapLayerGroup.clearLayers();
 
-          var geoJsonLayer = L.geoJson(data,
-          {
-            onEachFeature: function (feature, layer){
-                   layer.setStyle(setNeighborhoodColor(feature));
-                   layer.on({
-                    mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
-                    mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
-                    click: function(e) { onLayerClick(e); mapCallbacks.neighborhoodMouseOutCallback(e); mapCallbacks.neighborhoodMouseClickCallback(e); },
-                    layerremove: function(e) { mapCallbacks.neighborhoodMouseOutCallback(e); }
-                   });
-                 },
-            style: {
-              color: '#9A9B9C',
-              weight: 2,
-              fillOpacity: 0.4,
-              fillColor: '#484848'
-            }
-          });
+            var geoJsonLayer = L.geoJson(data,
+            {
+              onEachFeature: function (feature, layer){
+                     layer.setStyle(setNeighborhoodColor(feature));
+                     //setNeighborhoodLabel(feature, layer, map);
+                     layer.on({
+                      mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
+                      mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
+                      click: function(e) { onLayerClick(e); mapCallbacks.neighborhoodMouseOutCallback(e); mapCallbacks.neighborhoodMouseClickCallback(e); },
+                      layerremove: function(e) { mapCallbacks.neighborhoodMouseOutCallback(e); }
+                     });
+                   },
+              style: {
+                color: '#9A9B9C',
+                weight: 2,
+                fillOpacity: 0.4,
+                fillColor: '#484848'
+              }
+            });
 
-          map.setView(APP_EVENTS.MAP_CENTER, 13, { animate: false });
-          mapLayerGroup.addLayer(geoJsonLayer);
-          mapLayerGroup.addTo(map);
-         });
+            map.setView(APP_EVENTS.MAP_CENTER, 13, { animate: false });
+            mapLayerGroup.addLayer(geoJsonLayer);
+            mapLayerGroup.addTo(map);
+           });
+        });
       }
 
       this.showStreetPopup = function(clickLatLang, streetLayer)
       {
-        var properties = streetLayer.feature.properties;
-        var geometry = streetLayer.feature.geometry;
+        deferredMap.promise.then(function(map) {
+          var properties = streetLayer.feature.properties;
+          var geometry = streetLayer.feature.geometry;
 
-        var start = L.latLng(geometry.coordinates[0][1], geometry.coordinates[0][0]);
-        var end = L.latLng(geometry.coordinates[1][1], geometry.coordinates[1][0]);
-        var streetBounds = new L.LatLngBounds(start, end);
-        var streetCenter = streetBounds.getCenter();
+          var start = L.latLng(geometry.coordinates[0][1], geometry.coordinates[0][0]);
+          var end = L.latLng(geometry.coordinates[1][1], geometry.coordinates[1][0]);
+          var streetBounds = new L.LatLngBounds(start, end);
+          var streetCenter = streetBounds.getCenter();
 
-        map.setView(streetCenter, 16, { animate: false });
+          map.setView(streetCenter, 16, { animate: false });
 
-        openLayerPopup(streetCenter, streetLayer, properties);
+          openLayerPopup(streetCenter, streetLayer, properties);
+        });
       }
 
       this.addNeigborhoodStreets = function(neighborhoodId)
       {
-        setupStreets(neighborhoodId, map);
+        deferredMap.promise.then(function(map) {
+          setupStreets(neighborhoodId, map);
+        });
       }
 
       this.goToStreet = function(streetId)
       {
-        $http.get("api/streets/" + streetId).success(function(streetData, status) {
-          $http.get("api/neighborhoods/" + streetData.neighborhood).success(function(neighborhooData, status) {
-              var start = L.latLng(streetData.geodata.geometry.coordinates[0][1], streetData.geodata.geometry.coordinates[0][0]);
-              var end = L.latLng(streetData.geodata.geometry.coordinates[1][1], streetData.geodata.geometry.coordinates[1][0]);
-              var streetBounds = new L.LatLngBounds(start, end);
+        deferredMap.promise.then(function(map) {
+          $http.get("api/streets/" + streetId).success(function(streetData, status) {
+            $http.get("api/neighborhoods/" + streetData.neighborhood).success(function(neighborhooData, status) {
+                var start = L.latLng(streetData.geodata.geometry.coordinates[0][1], streetData.geodata.geometry.coordinates[0][0]);
+                var end = L.latLng(streetData.geodata.geometry.coordinates[1][1], streetData.geodata.geometry.coordinates[1][0]);
+                var streetBounds = new L.LatLngBounds(start, end);
 
-              var geoJsonLayer = L.geoJson(neighborhooData.geodata);
-              var layerBounds = geoJsonLayer.getBounds();
-              var streetCenter = layerBounds.getCenter();
+                var geoJsonLayer = L.geoJson(neighborhooData.geodata);
+                var layerBounds = geoJsonLayer.getBounds();
+                var streetCenter = layerBounds.getCenter();
 
-              setupStreets(streetData.neighborhood, map).then(function(layers) {
-                map.setView(streetCenter, 16, { animate: false });
+                setupStreets(streetData.neighborhood, map).then(function(layers) {
+                  map.setView(streetCenter, 16, { animate: false });
 
-                var foundLayer = layers.filter(function(layer){
-                  return layer.feature.properties.id === streetData._id;
+                  var foundLayer = layers.filter(function(layer){
+                    return layer.feature.properties.id === streetData._id;
+                  });
+
+                  openLayerPopup(streetCenter, foundLayer[0], foundLayer[0].feature.properties);
                 });
-
-                openLayerPopup(streetCenter, foundLayer[0], foundLayer[0].feature.properties);
               });
-            });
+          });
         });
       }
 
       this.zoomIn = function(zoomDelta)
       {
-        map.zoomIn(zoomDelta);
+        deferredMap.promise.then(function(map) {
+          map.zoomIn(zoomDelta);
+        });
       }
 
       this.zoomOut = function(zoomDelta)
       {
-        map.zoomOut(zoomDelta);
+        deferredMap.promise.then(function(map) {
+          map.zoomOut(zoomDelta);
+        });
       }
 
       var setupStreets = function(neighborhoodId, map)
       {
-        var deferred = $q.defer();
-        mapLayerGroup.clearLayers();
+        var deferredSetup = $q.defer();
 
-        $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
-          var geoJsonLayer = L.geoJson(data,
+        deferredMap.promise.then(function(map) {
+          mapLayerGroup.clearLayers();
+
+          $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
+            var geoJsonLayer = L.geoJson(data,
+            {
+              onEachFeature : function (feature, layer){
+                 layer.setStyle(getStreetStyle(feature));
+                 layer.on({
+                  mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
+                  mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
+                  click: function(e) { mapCallbacks.streetClickCallback(e); }
+                });
+               },
+              style: {
+                color: '#484848',
+                weight: 15,
+                opacity: 0.4
+              }
+            });
+            mapLayerGroup.addLayer(geoJsonLayer);
+            geoJsonLayer.addTo(map);
+
+            deferredSetup.resolve(geoJsonLayer.getLayers());
+          },function(err)
           {
-            onEachFeature : function (feature, layer){
-               layer.setStyle(getStreetStyle(feature));
-               layer.on({
-                mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
-                mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
-                click: function(e) { mapCallbacks.streetClickCallback(e); }
-              });
-             },
-            style: {
-              color: '#484848',
-              weight: 15,
-              opacity: 0.4
-            }
+            deferredSetup.reject(err);
           });
-          mapLayerGroup.addLayer(geoJsonLayer);
-          geoJsonLayer.addTo(map);
-
-          deferred.resolve(geoJsonLayer.getLayers());
-        },function(err)
-        {
-          deferred.reject(err);
         });
 
-
-        return deferred.promise;
+        return deferredSetup.promise;
       }
 
       var openLayerPopup = function(streetLongLat, layer, properties){
@@ -161,24 +178,25 @@
             popup.setContent(rawHtml);
             layer.openPopup();
         });
-
       }
 
       var onLayerClick = function(e)
       {
         if(e.target.feature)
         {
-          var triggeredFeature = e.target.feature;
-          var properties = triggeredFeature.properties;
-          var layerBounds = e.layer.getBounds();
+          deferredMap.promise.then(function(map) {
+            var triggeredFeature = e.target.feature;
+            var properties = triggeredFeature.properties;
+            var layerBounds = e.layer.getBounds();
 
-          var nhoodCenter = layerBounds.getCenter();
-          nhoodCenter.lng = nhoodCenter.lng - 0.001;
-          map.panTo(nhoodCenter);
-          map.setZoom(16, { animate: false});
-          map.invalidateSize();
+            var nhoodCenter = layerBounds.getCenter();
+            nhoodCenter.lng = nhoodCenter.lng - 0.001;
+            map.panTo(nhoodCenter);
+            map.setZoom(16, { animate: false});
+            map.invalidateSize();
 
-          setupStreets(properties.id, map);
+            setupStreets(properties.id, map);
+          });
         }
       }
 
@@ -193,6 +211,22 @@
         }
       }
 
+      var setNeighborhoodLabel = function (feature, layer, map)
+      {
+        var textLatLng = layer.getBounds().getCenter();
+        var point = map.latLngToContainerPoint(textLatLng);
+        var newPoint = L.point([point.x - 20, point.y - 10]);
+        var newLatLng = map.containerPointToLatLng(newPoint);
+
+        layer.bindLabel(feature.properties.name, {
+                            noHide: true,
+                            direction: 'auto'
+                        }).addTo(mapLayerGroup);
+
+        var labelTitle = new L.LabelOverlay(newLatLng, feature.properties.name);
+        layer.addLayer(labelTitle);
+      }
+
       var setNeighborhoodColor = function (feature)
       {
          var properties = feature.properties;
@@ -200,47 +234,47 @@
          if(!properties.active)
          {
            return {
-             color: '#9A9B9C',
+             color: '#606264',
              weight: 2,
              fillColor: '#484848',
-             fillOpacity: 0.3
+             fillOpacity: 0.4
            };
          }
          else {
            if(properties.percentageAdoptedStreets == 0)
            {
              return {
-               color: '#9A9B9C',
+               color: '#606264',
                weight: 2,
                fillColor: '#49586B',
-               fillOpacity: 0.2
+               fillOpacity: 0.3
              };
            }
            else if(properties.percentageAdoptedStreets > 0 && properties.percentageAdoptedStreets < 25)
            {
               return {
-                color: '#9A9B9C',
+                color: '#4F5154',
                 weight: 2,
                 fillColor: '#6AC48E',
-                fillOpacity: 0.2
+                fillOpacity: 0.3
               };
             }
             else if(properties.percentageAdoptedStreets > 25 && properties.percentageAdoptedStreets < 60)
             {
               return {
-                  color: '#9A9B9C',
+                  color: '#4F5154',
                   weight: 2,
                   fillColor: '#26A053',
-                  fillOpacity: 0.2
+                  fillOpacity: 0.3
                 };
              }
              else
              {
                 return {
-                    color: '#9A9B9C',
+                    color: '#606264',
                     weight: 2,
                     fillColor: '#2E8E52',
-                    fillOpacity: 0.2
+                    fillOpacity: 0.3
                   };
              }
          }
@@ -272,8 +306,8 @@
           if(properties.active)
           {
             layer.setStyle({
-              color: '#9A9B9C',
-              fillOpacity: 0.2,
+              color: '#606264',
+              fillOpacity: 0.3,
               weight: 2
             });
           }
