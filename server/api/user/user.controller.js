@@ -86,7 +86,7 @@ exports.create = function(req, res, next) {
           var mailOptions = { from: "noreply <noreply@notinphilly.org>",
                               to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
                               subject: "NotInPhilly. Confirm reservation.",
-                              text: "Hi " + req.body.firstName + ", \n Please follow the link in order to confirm registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n #NotInPhilly Team <b>Check us Out on Facebook</b>"
+                              text: "Hi " + req.body.firstName + ", \n Please follow the link in order to confirm registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash.replace(/\//gi, '') + "\n #NotInPhilly Team <b>Check us Out on Facebook</b>"
                             };
       //Send confirmation email
       smtpTransport.sendMail(mailOptions, function(error, response){
@@ -115,7 +115,8 @@ exports.get = function(req, res, next) {
 
     UserModel.findById(userId, function(err, user) {
         if (err) return next(err);
-        if (!user) return res.status(401).send('Unauthorized');
+        if (!user) return res.status(401).send('Incorrect username or password');
+        if (user.active === false) return res.status(401).send('Please confirm the user. Check your email.');
         res.json(user);
     });
 };
@@ -160,7 +161,7 @@ exports.activate = function(req, res) {
   UserModel.findOne({activationHash: confirmId}, function(err, user){
     console.log("Is user active ? : " + user.active);
     if (err) return next(err);
-    if (!user) return res.status(404).send('Could not find the user with activation tag: ' + req.params.confirmId);
+    if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
       user.active = true;
       user.save(function (err) {
         if (err) {
