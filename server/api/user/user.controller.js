@@ -139,8 +139,26 @@ exports.destroy = function(req, res) {
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-
+  var confirmId = req.params.confirmId;
+  UserModel.findOne({activationHash: confirmId}, function(err, user){
+    if (err) return next(err);
+    if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
+      user.activationHash = this.encryptPassword(new Date().getTime().toString());
+      user.activationHash = user.activationHash.replace(/\//gi, '');
+      user.password = req.body.password;
+      user.save(function (err) {
+        if (err) {
+          console.log("Error while saving user" + err);
+        } else {
+          res.statusCode = 302;
+          res.setHeader("Location", "/");
+          res.end();
+          console.log("Password has been changed");
+        }
+      })
+  });
 };
+
 
 /**
  * Get my info
@@ -168,12 +186,14 @@ exports.activate = function(req, res) {
     if (err) return next(err);
     if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
       user.active = true;
+      user.activationHash = this.encryptPassword(new Date().getTime().toString());
+      user.activationHash = user.activationHash.replace(/\//gi, '');
       user.save(function (err) {
         if (err) {
           console.log("Error while saving user" + err);
         } else {
           res.statusCode = 302;
-          res.setHeader("Location", "/");
+          res.setHeader("Location", "/confirm.html");
           res.end();
           //return res.status(200).send("User has been confirmed");
 
