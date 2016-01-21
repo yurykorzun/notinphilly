@@ -1,6 +1,13 @@
 var mongoose = require('mongoose');
 var UserModel = require('./user.model');
+var mailer = require('nodemailer');
+var smtpTransport = {};
 
+if (process.env.OS_EMAIL_ADDR && process.env.OS_EMAIL_PASSWD) {
+  smtpTransport =  mailer.createTransport( process.env.OS_EMAIL_ADDR +':'+ process.env.OS_EMAIL_PASSWD + '@host244.hostmonster.com');
+} else {
+  smtpTransport =  mailer.createTransport('smtps://notinphilly%40antsdesigns.net:Test123!@host244.hostmonster.com');
+}
 /**
  * Get list of users
  * restriction: 'admin'
@@ -13,7 +20,6 @@ exports.index = function(req, res) {
 };
 
 var checkForErrors = function(userInfo) {
-
   if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
     return "Please enter email address";
   }
@@ -44,7 +50,7 @@ exports.create = function(req, res, next) {
       res.status(409).send('User with this email alreay has an account');
       return "User already exists";
     }
-     console.log('req.body.email' + req.body.email);
+
      errorMessage = checkForErrors(req.body);
      console.log('errorMessage' + errorMessage);
     if (errorMessage === "false") {
@@ -58,11 +64,11 @@ exports.create = function(req, res, next) {
           email: req.body.email,
           role: [1],
           businesName: req.body.businessName,
-          addressLine1: req.body.houseNumber + " " + req.body.addressLine1 + " " + req.body.aptNumber,
+          addressLine1: concatAddress(req),
           addressLine2: req.body.addressLine2,
-          active: true,
+          active: false,
           city: req.body.city,
-          state: 1,
+          state: req.body.state,
           zip: req.body.zip,
           password: req.body.password
         }, function(err, thor){
@@ -74,12 +80,56 @@ exports.create = function(req, res, next) {
           console.log('Finished adding the user');
         }
       )
-      res.status(200).send('Successfully Added the user');
+      mongoose.models["User"].findOne({email: req.body.email}, function(err, user) {
+        sendConfirmationEmail(req, user);
+    });
+      res.status(200).send('Successfully Sent Confirmation Email');
     } else {
       res.status(409).send(errorMessage);
     }
   });
 };
+
+var concatAddress = function (req) {
+  var address = "";
+
+  if (req.body.houseNumber) {
+    address = address.concat(req.body.houseNumber + " ");
+    console.log(address);
+  }
+
+  if (req.body.addressLine1) {
+    address = address.concat(req.body.addressLine1 + " ");
+    console.log(address);
+  }
+
+  if (req.body.aptNumber) {
+    address = address.concat(req.body.aptNumber);
+    console.log(address);
+  }
+  return address;
+}
+
+/**
+ * Send confirmation email
+ */
+
+//Use tempaltes instead of TEXT
+var sendConfirmationEmail = function(req, user) {
+  var mailOptions = { from: "noreply <noreply@notinphilly.org>",
+                      to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
+                      subject: "NotInPhilly. Confirm reservation.",
+                      text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
+                    };
+//Send confirmation email
+smtpTransport.sendMail(mailOptions, function(error, response){
+ if(error){
+     console.log("Encounter error: " + error);
+ }else{
+     console.log("Message sent.");
+ }
+});
+}
 
 /**
  * Get a single user
@@ -91,7 +141,8 @@ exports.get = function(req, res, next) {
 
     UserModel.findById(userId, function(err, user) {
         if (err) return next(err);
-        if (!user) return res.status(401).send('Unauthorized');
+        if (!user) return res.status(401).send('Incorrect username or password');
+        if (user.active === false) return res.status(401).send('Please confirm the user. Check your email.');
         res.json(user);
     });
 };
@@ -108,8 +159,26 @@ exports.destroy = function(req, res) {
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-
+  var confirmId = req.params.confirmId;
+  UserModel.findOne({activationHash: confirmId}, function(err, user){
+    if (err) return next(err);
+    if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
+      user.activationHash = this.encryptPassword(new Date().getTime().toString());
+      user.activationHash = user.activationHash.replace(/\//gi, '');
+      user.password = req.body.password;
+      user.save(function (err) {
+        if (err) {
+          console.log("Error while saving user" + err);
+        } else {
+          res.statusCode = 302;
+          res.setHeader("Location", "/");
+          res.end();
+          console.log("Password has been changed");
+        }
+      })
+  });
 };
+
 
 /**
  * Get my info
@@ -122,6 +191,7 @@ exports.me = function(req, res, next) {
     UserModel.findOne({_id: userId}, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
         if (err) return next(err);
         if (!user) return res.status(401).send('Unauthorized');
+        if (user.active != true) return res.status(401).send('Please activate your user');
         res.json(user);
     });
 };
@@ -131,7 +201,22 @@ exports.update = function(req, res) {
 };
 
 exports.activate = function(req, res) {
-
+  var confirmId = req.params.confirmId;
+  UserModel.findOne({activationHash: confirmId}, function(err, user){
+    if (err) return next(err);
+    if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
+      user.active = true;
+      user.save(function (err) {
+        if (err) {
+          console.log("Error while saving user" + err);
+        } else {
+          res.statusCode = 302;
+          res.setHeader("Location", "/confirm.html");
+          res.end();
+          console.log("Successfully Confirmed user(" + user.id +")");
+        }
+      })
+  });
 };
 
 /**
