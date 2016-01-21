@@ -64,7 +64,7 @@ exports.create = function(req, res, next) {
           email: req.body.email,
           role: [1],
           businesName: req.body.businessName,
-          addressLine1: req.body.houseNumber + " " + req.body.addressLine1 + " " + req.body.aptNumber,
+          addressLine1: concatAddress(req),
           addressLine2: req.body.addressLine2,
           active: false,
           city: req.body.city,
@@ -89,6 +89,26 @@ exports.create = function(req, res, next) {
     }
   });
 };
+
+var concatAddress = function (req) {
+  var address = "";
+
+  if (req.body.houseNumber) {
+    address = address.concat(req.body.houseNumber + " ");
+    console.log(address);
+  }
+
+  if (req.body.addressLine1) {
+    address = address.concat(req.body.addressLine1 + " ");
+    console.log(address);
+  }
+
+  if (req.body.aptNumber) {
+    address = address.concat(req.body.aptNumber);
+    console.log(address);
+  }
+  return address;
+}
 
 /**
  * Send confirmation email
@@ -186,8 +206,6 @@ exports.activate = function(req, res) {
     if (err) return next(err);
     if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
       user.active = true;
-      user.activationHash = this.encryptPassword(new Date().getTime().toString());
-      user.activationHash = user.activationHash.replace(/\//gi, '');
       user.save(function (err) {
         if (err) {
           console.log("Error while saving user" + err);
@@ -195,9 +213,7 @@ exports.activate = function(req, res) {
           res.statusCode = 302;
           res.setHeader("Location", "/confirm.html");
           res.end();
-          //return res.status(200).send("User has been confirmed");
-
-          console.log("Successfully Confirmed user");
+          console.log("Successfully Confirmed user(" + user.id +")");
         }
       })
   });
