@@ -37,7 +37,7 @@
             {
               onEachFeature: function (feature, layer){
                      layer.setStyle(setNeighborhoodColor(feature));
-                     //setNeighborhoodLabel(feature, layer, map);
+                     setNeighborhoodLabel(feature, layer, map);
                      layer.on({
                       mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
                       mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
@@ -223,8 +223,8 @@
                             direction: 'auto'
                         }).addTo(mapLayerGroup);
 
-        var labelTitle = new L.LabelOverlay(newLatLng, feature.properties.name);
-        layer.addLayer(labelTitle);
+        //var labelTitle = new L.LabelOverlay(newLatLng, feature.properties.name);
+        //layer.addLayer(labelTitle);
       }
 
       var setNeighborhoodColor = function (feature)
