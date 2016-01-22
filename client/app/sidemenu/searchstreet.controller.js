@@ -31,7 +31,7 @@
       };
 
       $scope.findStreet = function() {
-        var findStreetsUrl = '/api/streets/findstreets/' + $scope.zipCode.selected.zipCode + "/" + $scope.streetName.selected.name + "/" + $scope.houseNumber;
+        var findStreetsUrl = '/api/streets/findstreets/' + $scope.streetName.selected.name + "/" + $scope.houseNumber;
         $http.get(findStreetsUrl)
                       .then(function(response) {
                         if(response.data.streets.length > 0)
@@ -61,7 +61,7 @@
       };
 
       $scope.isValidForSearch = function() {
-        if($scope.zipCode && $scope.zipCode.selected && $scope.streetName && $scope.streetName.selected && $scope.houseNumber)
+        if($scope.streetName && $scope.streetName.selected && $scope.houseNumber)
         {
           return true;
         }

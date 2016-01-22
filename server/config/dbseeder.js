@@ -18,7 +18,7 @@ module.exports = function() {
   var neighborhoodsObj = JSON.parse(neigborhoodJson);
   var streetsObj       = JSON.parse(streetsJson);
 
-  var neighborhoodInclude = ['COBBS_CREEK', 'WEST_PARK', 'EAST_PARK', 'FITLER_SQUARE', 'WALNUT_HILL', 'SOCIETY_HILL', 'OLD_CITY', 'CENTER_CITY', 'GARDEN_COURT', 'WOODLAND_TERRACE', 'UNIVERSITY_CITY', 'POWELTON', 'SPRUCE_HILL', 'CEDAR_PARK', 'LOGAN_SQUARE', 'FAIRMOUNT', 'SPRING_GARDEN', 'CALLOWHILL', 'CHINATOWN', 'RITTENHOUSE', 'WASHINGTON_SQUARE'];
+  //var neighborhoodInclude = ['COBBS_CREEK', 'WEST_PARK', 'EAST_PARK', 'FITLER_SQUARE', 'WALNUT_HILL', 'SOCIETY_HILL', 'OLD_CITY', 'CENTER_CITY', 'GARDEN_COURT', 'WOODLAND_TERRACE', 'UNIVERSITY_CITY', 'POWELTON', 'SPRUCE_HILL', 'CEDAR_PARK', 'LOGAN_SQUARE', 'FAIRMOUNT', 'SPRING_GARDEN', 'CALLOWHILL', 'CHINATOWN', 'RITTENHOUSE', 'WASHINGTON_SQUARE'];
 
   StreetSegmentModel.find({}).remove(function() {
     NeighborhoodModel.find({}).remove(function()  {
@@ -37,7 +37,8 @@ module.exports = function() {
         var newNeighborhood = {
           name: neighborhoodProperties.listname,
           code: neighborhoodProperties.name,
-          active: neighborhoodInclude.indexOf(neighborhoodProperties.name) > -1,
+          //active: neighborhoodInclude.indexOf(neighborhoodProperties.name) > -1,
+          active: true,
           totalStreets: streetsFound.data.length,
           geodata: neighborhoodGeoData
         };
@@ -53,14 +54,14 @@ module.exports = function() {
 
           console.log('Saved neighborhoods ' + createdNeighborhoods.length);
 
-          var neighborhoodsAllowed = createdNeighborhoods.filter(function(item){
+          /*var neighborhoodsAllowed = createdNeighborhoods.filter(function(item){
             return neighborhoodInclude.indexOf(item.code) > -1;
-          });
+          });*/
 
           var streets = new Array();
-          for(var savedIndex = 0; savedIndex < neighborhoodsAllowed.length; savedIndex++)
+          for(var savedIndex = 0; savedIndex < createdNeighborhoods.length; savedIndex++)
           {
-            var savedNeighborhood = neighborhoodsAllowed[savedIndex];
+            var savedNeighborhood = createdNeighborhoods[savedIndex];
 
             var streetsData = arrayFind(streetsObj, function (element, index, array) {
               return element.name == savedNeighborhood.code;

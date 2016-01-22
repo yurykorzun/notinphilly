@@ -48,8 +48,10 @@ userSchema
         this.salt = this.makeSalt();
         this.hashedPassword = this.encryptPassword(password);
 
-        //also store an activation hash
+        //also store an activation hash and remove any "/", so we can pass it as parameter into URL for activation
         this.activationHash = this.encryptPassword(new Date().getTime().toString());
+        this.activationHash = this.activationHash.replace(/\//gi, '');
+        console.log(this.activationHash);
     })
     .get(function() {
         return this._password;

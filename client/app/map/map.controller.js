@@ -52,12 +52,23 @@ angular.module('notinphillyServerApp')
             $rootScope.$broadcast(APP_EVENTS.STREET_LEFT);
           });
         };
+
         newScope.close = function(){
-          targetPopup._close();
+          if($scope.authError === false) {
+            targetPopup._close();
+          }
         }
 
         $compile(popupEvent.popup._contentNode)(newScope);
       });
+    });
+
+    $scope.$on(APP_EVENTS.LOGIN_FAILED, function(event, leafletEvent) {
+      $scope.authError = true;
+    });
+
+    $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event, leafletEvent) {
+      $scope.authError = false;
     });
 
     $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event, leafletEvent){

@@ -223,8 +223,8 @@
                             direction: 'auto'
                         }).addTo(mapLayerGroup);
 
-        var labelTitle = new L.LabelOverlay(newLatLng, feature.properties.name);
-        layer.addLayer(labelTitle);
+        //var labelTitle = new L.LabelOverlay(newLatLng, feature.properties.name);
+        //layer.addLayer(labelTitle);
       }
 
       var setNeighborhoodColor = function (feature)
