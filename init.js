@@ -50,22 +50,9 @@ app.use(expressSession({
 
 app.use(passport.initialize());
 app.use(passport.session());
-
-//Setup configuration
-require('./server/config/passport');
-
-var server = require('http').createServer(app);
-require('./server/config/express')(app);
-
-// routes ==================================================
-require('./server/routes')(app);
-
-// start app ===============================================
-// startup our app at http://localhost:8080
-app.listen(port);
-
-// shoutout to the user
-console.log('Magic happens on port ' + port);
-
-// expose app
-exports = module.exports = app;
+//seed the database
+var dbseeder = require('./server/config/dbseeder');
+//uncomment to seed
+dbseeder();
+app.listen(8888, function(){
+});
