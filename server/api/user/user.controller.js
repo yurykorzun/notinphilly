@@ -4,7 +4,7 @@ var mailer = require('nodemailer');
 var smtpTransport = {};
 
 if (process.env.OS_EMAIL_ADDR && process.env.OS_EMAIL_PASSWD) {
-  smtpTransport =  mailer.createTransport( process.env.OS_EMAIL_ADDR +':'+ process.env.OS_EMAIL_PASSWD + '@host244.hostmonster.com');
+  smtpTransport = mailer.createTransport( "smtps://" + process.env.OS_EMAIL_ADDR +':'+ process.env.OS_EMAIL_PASSWD + '@host244.hostmonster.com');
 } else {
   smtpTransport =  mailer.createTransport('smtps://notinphilly%40antsdesigns.net:Test123!@host244.hostmonster.com');
 }
