@@ -150,6 +150,7 @@ module.exports = function() {
                   }
 
                   StreetZipsModel.collection.insertMany(zipCodes, function(err, createdZipCodes) { });
+process.exit();
                 });
               });
           });
@@ -170,11 +171,7 @@ module.exports = function() {
         firstName: 'Yury',
         middleName: undefined,
         lastName: 'Korzun',
-        birthDate: Date('1987-05-01'),
-        phoneNumber: '123456789',
-        email: 'test@test.me',
-        role: [1],
-        businesName: 'Not in Philly',
+        birthDate: Date('1987-05-01'), phoneNumber: '123456789', email: 'test@test.me', role: [1], businesName: 'Not in Philly',
         addressLine1: 'Main st. 1',
         addressLine2: undefined,
         active: true,
@@ -184,7 +181,6 @@ module.exports = function() {
         password: '1234test'
       }, function(err, thor) {
         if (err) return console.error(err);
-
         console.log('Finished seeding Users');
       });
   });
