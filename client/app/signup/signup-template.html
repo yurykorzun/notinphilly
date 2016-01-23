@@ -1,4 +1,4 @@
-<div ng-controller="SignupController">
+<div>
   <div class="modal-header">
     <h3>Eleminating Litter Together!</h3>
     <div class="alert alert-success" ng-show="successShow">Sent confirmation email to your email address. Please check your inbox.</div>
@@ -6,14 +6,6 @@
   </div>
   <div class="modal-body">
     <form id="signinForm" role="form">
-      <div class="row">
-        <div class="col-sm-6 col-sm-6">
-          <div class="form group">
-            <label>Email</label>
-            <input type="text" id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email" required>
-          </div>
-        </div>
-      </div>
       <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
@@ -28,17 +20,22 @@
           </div>
         </div>
       </div>
+      <div class="row">
+        <div class="col-sm-6 col-sm-6">
+          <div class="form group">
+            <label>Email</label>
+            <input type="text" id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email" required>
+          </div>
+        </div>
+        <div class="col-xs-4 col-sm-4 col-md-4">
+          <div class="form-group">
+            <label>Contact Phone Number</label>
+            <input type="tel" size=3 id="phoneArea" ng-model="User.phoneArea" >-<input type="tel" size=3 ng-model="User.phoneNumber1">-<input type="tel" size=4 ng-model="User.phoneNumber2">
+          </div>
+        </div>
+      </div>
 
       <div class="row">
-          <div class="col-xs-4 col-sm-4 col-md-4">
-            <div class="form-group">
-              <label>Contact Phone Number</label>
-              <input type="tel" size=3 id="phoneArea" ng-model="User.phoneArea" >-<input type="tel" size=3 ng-model="User.phoneNumber1">-<input type="tel" size=4 ng-model="User.phoneNumber2">
-            </div>
-          </div>
-          <div class="col-xs-2 col-sm-2 col-md-2">
-
-          </div>
           <div class="col-xs-6 col-sm-6 col-md-6">
             <div class="form-group">
               <label>Business/Organization</label> (optional)
@@ -52,17 +49,9 @@
       <div class="row">
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <ui-select ng-model="User.zip" theme="bootstrap" title="Zipcode">
-             <ui-select-match placeholder="Enter zipcode...">{{$select.selected.zipCode}}</ui-select-match>
-             <ui-select-choices repeat="item.zipCode as item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
-               <div ng-bind-html="item.zipCode | highlight: $select.search"></div>
-             </ui-select-choices>
-           </ui-select>
+            <input type="text" id="houseNumber" ng-model="User.houseNumber" class="form-control input-sm" placeholder="House number">
           </div>
         </div>
-      </div>
-
-      <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
             <ui-select ng-model="User.addressLine1"  theme="bootstrap" title="Street name">
@@ -75,12 +64,20 @@
         </div>
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <input type="text" id="houseNumber" ng-model="User.houseNumber" class="form-control input-sm" placeholder="House number">
+            <input type="text" id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit">
           </div>
         </div>
+      </div>
+
+      <div class="row">
         <div class="col-xs-3 col-sm-3 col-md-3">
           <div class="form-group">
-            <input type="text" id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit">
+            <ui-select ng-model="User.zip" theme="bootstrap" title="Zipcode">
+             <ui-select-match placeholder="Enter zipcode...">{{$select.selected.zipCode}}</ui-select-match>
+             <ui-select-choices repeat="item.zipCode as item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
+               <div ng-bind-html="item.zipCode | highlight: $select.search"></div>
+             </ui-select-choices>
+           </ui-select>
           </div>
         </div>
       </div>
@@ -99,10 +96,26 @@
           </div>
         </div>
       </div>
-      <div class="col-sm-6 col-sm-6">
-      </div>
-      <input type="submit" ng-click="register()" value="Register" class="btn btn-info btn-block">
 
+      <div class="offset-small"></div>
+
+      <div class="row">
+        <div class="col-sm-3 col-sm-3">
+        </div>
+        <div class="col-sm-6 col-sm-6">
+          <a class="btn btn-lg btn-success btn-block input-block-level" href="" ng-click="register()">
+              <i class="fa fa-check">Register</i>
+          </a>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-3 col-sm-3">
+        </div>
+        <div class="col-sm-6 col-sm-6">
+          <a class="btn btn-lg btn-danger btn-block input-block-level" href="" ng-click="close()">
+              <i class="fa fa-close">Maybe next time</i>
+          </a>
+        </div>
     </form>
   </div>
 </div>

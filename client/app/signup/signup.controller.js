@@ -1,6 +1,6 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('SignupController', [ '$scope', '$location', '$http', function($scope, $location, $http) {
+    .controller('SignupController', [ '$scope', '$location', '$http', "$uibModalInstance", function($scope, $location, $http, $uibModalInstance) {
       $scope.zipCodes = [];
       $scope.zipCode = undefined;
 
@@ -38,6 +38,9 @@
                     $scope.successShow = false;
                     $scope.errorShow = true;
                 });
+      }
+      $scope.close = function(){
+        $uibModalInstance.dismiss('cancel');
       }
     }]);
 })();

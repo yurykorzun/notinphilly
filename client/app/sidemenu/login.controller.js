@@ -20,7 +20,7 @@
         signup : function() {
           var modalInstance = $uibModal.open({
                                  templateUrl: 'app/signup/signup-template.html',
-                                 //controller: 'ModalInstanceCtrl',
+                                 controller: 'SignupController',
                                  resolve: {
 
                                  }

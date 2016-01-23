@@ -41,7 +41,7 @@
                      layer.on({
                       mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
                       mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
-                      click: function(e) { onLayerClick(e); },
+                      click: function(e) { onNeighborhoodLayerClick(e); mapCallbacks.neighborhoodMouseClickCallback(e);},
                      });
                    },
               style: {
@@ -72,7 +72,7 @@
 
           map.setView(streetCenter, 16, { animate: false });
 
-          openLayerPopup(streetCenter, streetLayer, properties);
+          openStreetLayerPopup(streetCenter, streetLayer, properties);
         });
       }
 
@@ -103,7 +103,7 @@
                     return layer.feature.properties.id === streetData._id;
                   });
 
-                  openLayerPopup(streetCenter, foundLayer[0], foundLayer[0].feature.properties);
+                  openStreetLayerPopup(streetCenter, foundLayer[0], foundLayer[0].feature.properties);
                 });
               });
           });
@@ -162,25 +162,7 @@
         return deferredSetup.promise;
       }
 
-      var openLayerPopup = function(streetLongLat, layer, properties){
-        var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
-
-        properties.imageSrc = imageSrc;
-        var popup = L.popup({
-          keepInView: true,
-          minWidth: 240,
-          properties: properties
-        });
-        layer.bindPopup(popup);
-
-        $http.get('app/map/street-popup-template.html').then(function(response) {
-            var rawHtml = response.data;
-            popup.setContent(rawHtml);
-            layer.openPopup();
-        });
-      }
-
-      var onLayerClick = function(e)
+      var onNeighborhoodLayerClick = function(e)
       {
         if(e.target.feature)
         {
@@ -198,6 +180,24 @@
             setupStreets(properties.id, map);
           });
         }
+      }
+
+      var openStreetLayerPopup = function(streetLongLat, layer, properties){
+        var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10"
+
+        properties.imageSrc = imageSrc;
+        var popup = L.popup({
+          keepInView: true,
+          minWidth: 240,
+          properties: properties
+        });
+        layer.bindPopup(popup);
+
+        $http.get('app/map/street-popup-template.html').then(function(response) {
+            var rawHtml = response.data;
+            popup.setContent(rawHtml);
+            layer.openPopup();
+        });
       }
 
       var getStreetStyle = function(feature){
@@ -224,7 +224,7 @@
 
       var setStreetLabel = function (feature, layer)
       {
-        layer.bindLabel("<p><h4>" + feature.properties.type  + " " + feature.properties.name + " " + feature.properties.zipCode + "</h4></p>" +
+        layer.bindLabel("<p><h4>" +  feature.properties.name + " " + feature.properties.type + " " + feature.properties.zipCode + "</h4></p>" +
                         "<p>Total participants " + feature.properties.totalAdopters + "</p>",
                         {
                             noHide: true,

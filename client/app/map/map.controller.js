@@ -108,7 +108,7 @@ angular.module('notinphillyServerApp')
       {
       },
       neighborhoodMouseClickCallback : function(e) {
-          $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
+        $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
       },
       streetMouseOverCallback : function(e)
       {
