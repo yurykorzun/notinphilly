@@ -41,8 +41,7 @@
                      layer.on({
                       mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
                       mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
-                      click: function(e) { onLayerClick(e); mapCallbacks.neighborhoodMouseOutCallback(e); mapCallbacks.neighborhoodMouseClickCallback(e); },
-                      layerremove: function(e) { mapCallbacks.neighborhoodMouseOutCallback(e); }
+                      click: function(e) { onLayerClick(e); },
                      });
                    },
               style: {
@@ -137,6 +136,7 @@
             {
               onEachFeature : function (feature, layer){
                  layer.setStyle(getStreetStyle(feature));
+                 setStreetLabel(feature, layer);
                  layer.on({
                   mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
                   mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
@@ -201,7 +201,7 @@
       }
 
       var getStreetStyle = function(feature){
-        if(feature.properties.isAdopted)
+        if(feature.properties.isAdoptedByUser)
         {
           return {
             color: '#26A053',
@@ -213,18 +213,23 @@
 
       var setNeighborhoodLabel = function (feature, layer, map)
       {
-        var textLatLng = layer.getBounds().getCenter();
-        var point = map.latLngToContainerPoint(textLatLng);
-        var newPoint = L.point([point.x - 20, point.y - 10]);
-        var newLatLng = map.containerPointToLatLng(newPoint);
-
-        layer.bindLabel(feature.properties.name, {
+        layer.bindLabel("<p><h4>" + feature.properties.name + "</h4></p>" +
+                        "<p>Total streets: " + feature.properties.totalStreets + "</p>" +
+                        "<p>Participating streets: " + feature.properties.totalAdoptedStreets + "</p>"
+                        , {
                             noHide: true,
                             direction: 'auto'
                         }).addTo(mapLayerGroup);
+      }
 
-        //var labelTitle = new L.LabelOverlay(newLatLng, feature.properties.name);
-        //layer.addLayer(labelTitle);
+      var setStreetLabel = function (feature, layer)
+      {
+        layer.bindLabel("<p><h4>" + feature.properties.type  + " " + feature.properties.name + " " + feature.properties.zipCode + "</h4></p>" +
+                        "<p>Total participants " + feature.properties.totalAdopters + "</p>",
+                        {
+                            noHide: true,
+                            direction: 'auto'
+                        }).addTo(mapLayerGroup);
       }
 
       var setNeighborhoodColor = function (feature)
@@ -250,7 +255,7 @@
                fillOpacity: 0.3
              };
            }
-           else if(properties.percentageAdoptedStreets > 0 && properties.percentageAdoptedStreets < 25)
+           else if(properties.totalAdoptedStreets > 0 && properties.percentageAdoptedStreets < 25)
            {
               return {
                 color: '#4F5154',

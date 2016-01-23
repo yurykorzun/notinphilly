@@ -169,9 +169,9 @@ process.exit();
   UserModel.find({}).remove(function() {
       console.log('Seeding Users');
       UserModel.create({
-        firstName: 'Yury',
+        firstName: 'Test',
         middleName: undefined,
-        lastName: 'Korzun',
+        lastName: 'Test',
         birthDate: Date('1987-05-01'), phoneNumber: '123456789', email: 'test@test.me', role: [1], businesName: 'Not in Philly',
         addressLine1: 'Main st. 1',
         addressLine2: undefined,

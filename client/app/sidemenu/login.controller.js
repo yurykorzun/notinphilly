@@ -9,10 +9,12 @@
                                .then(function(response){
                                   $rootScope.$broadcast(APP_EVENTS.LOGIN_SUCCESS);
                                   $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+                                  $scope.authError = false;
                                 },
                                 function(err) {
                                   $rootScope.$broadcast(APP_EVENTS.LOGIN_FAILED);
                                   $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+                                  $scope.authError = true;
                                 });
         },
         signup : function() {
