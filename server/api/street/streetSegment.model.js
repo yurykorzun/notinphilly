@@ -12,6 +12,7 @@ var StreetSchema = new Schema({
   zipLeft: Number,
   zipRight: Number,
   code: Number,
+  block: String,
   leftHundred: Number,
   rightHundred: Number,
   segmentId: Number,

@@ -196,10 +196,10 @@ exports.findStreets = function(req, res, next) {
 
     var blockPrefix = houseNumber.substring(0, 2);
     var streetRegex = new RegExp(streetName, 'i');
+    var blockRegex = new RegExp(blockPrefix, 'i');
 
     StreetModel.find({  streetName: { $regex: streetRegex },
-                      //  $where: "/" + zipCode + "/.test(this.zipLeft) | /" + zipCode + "/.test(this.zipRight)",
-                        $where: "/^" + blockPrefix + "/.test(this.leftHundred) | /^" + blockPrefix + "/.test(this.rightHundred)"
+                        block: { $regex: blockRegex }
                       },
                 function(err, streets) {
                     if (err) return next(err);

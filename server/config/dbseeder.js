@@ -85,6 +85,7 @@ module.exports = function() {
                 zipLeft: street.ZIP_LEFT,
                 zipRight: street.ZIP_RIGHT,
                 code: street.ST_CODE,
+                block: street.L_HUNDRED.toString().substring(0,2),
                 leftHundred: street.L_HUNDRED,
                 rightHundred: street.R_HUNDRED,
                 segmentId: street.SEG_ID,
