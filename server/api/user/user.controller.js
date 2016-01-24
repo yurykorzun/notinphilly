@@ -70,7 +70,8 @@ exports.create = function(req, res, next) {
           city: req.body.city,
           state: req.body.state,
           zip: req.body.zip,
-          password: req.body.password
+          password: req.body.password,
+          distributer: req.body.distributer
         }, function(err, thor){
           console.log(err);
           if (err) {

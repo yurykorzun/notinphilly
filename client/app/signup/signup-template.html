@@ -40,8 +40,9 @@
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4">
           <div class="form-group">
-            <label>Contact Phone Number</label>
-            <input type="tel" size=3 id="phoneArea" ng-model="User.phoneArea" >-<input type="tel" size=3 ng-model="User.phoneNumber1">-<input type="tel" size=4 ng-model="User.phoneNumber2">
+            <label>Phone</label> (optional)<br>
+            <input type="tel" size=3 id="phoneArea" ng-model="User.phoneArea" >-<input type="tel" size=3 ng-model="User.phoneNumber1">-<input type="tel" size=4 ng-model="User.phoneNumber2"><br>
+            <small>We will just use it to see if you will re-new after 6 months</small>
           </div>
         </div>
       </div>
@@ -55,7 +56,7 @@
           </div>
       </div>
 
-      <div class="offset-small"><label>Address</label></div>
+      <div class="offset-small"><label>Address</label> (optional, to get the grabber to you)</div>
 
       <div class="row">
         <div class="col-xs-3 col-sm-3 col-md-3 min-padding-right">
@@ -108,6 +109,14 @@
         </div>
       </div>
 
+      <div class="row">
+        <div class="col-xs-8 col-xs-offset-2">
+          <div class="form-group">
+            <label><input type="checkbox" id="distributeCheckbox" ng-model="User.distributer"><small> If needed, I can help distribute materials to those in my neighborhood.</small></label>
+          </div>
+        </div>
+      </div>
+
       <div class="offset-small"></div>
 
       <div class="row">
@@ -127,7 +136,7 @@
               <i class="fa fa-close"> Maybe next time</i>
           </a>
         </div>
+      </div>
     </form>
   </div>
-</div>
 </div>
