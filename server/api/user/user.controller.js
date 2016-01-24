@@ -118,7 +118,7 @@ var concatAddress = function (req) {
 var sendConfirmationEmail = function(req, user) {
   var mailOptions = { from: "noreply <noreply@notinphilly.org>",
                       to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
-                      subject: "NotInPhilly. Confirm reservation.",
+                      subject: "NotInPhilly. Confirm registration.",
                       text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
                     };
 //Send confirmation email

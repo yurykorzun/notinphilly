@@ -191,7 +191,6 @@ exports.leave = function(req, res, next) {
 };
 
 exports.findStreets = function(req, res, next) {
-    //var zipCode = req.params.zip;
     var streetName = req.params.street;
     var houseNumber = req.params.house;
 
@@ -230,11 +229,12 @@ exports.getStreetNames = function(req, res, next) {
   var regex = new RegExp("^" + query, 'i');
 
   StreetNamesModel.find({ name: { $regex : regex } },
-                  undefined, {sort:  { name: 1 }, limit: limit },
-                  function(err, names){
-                    if (err) return next(err);
-                    res.json(names);
-                  });
+                        undefined,
+                        {sort:  { name: 1 }, limit: limit },
+                        function(err, names){
+                          if (err) return next(err);
+                          res.json(names);
+                        });
 };
 
 exports.getZipCodes = function(req, res, next) {
@@ -244,11 +244,12 @@ exports.getZipCodes = function(req, res, next) {
   var regex = new RegExp("^" + query, 'i');
 
   StreetZipcodesModel.find({ zipCode: regex  },
-                      undefined, {sort:  { name: 1 }, limit: limit },
-                      function(err, codes){
-                        if (err) return next(err);
-                        res.json(codes);
-                      });
+                            undefined,
+                            {sort:  { name: 1 }, limit: limit },
+                            function(err, codes){
+                              if (err) return next(err);
+                              res.json(codes);
+                            });
 };
 
 exports.getStreetNamesPaged = function(req, res, next) {
@@ -259,12 +260,13 @@ exports.getStreetNamesPaged = function(req, res, next) {
   var regex = new RegExp("^" + query, 'i');
   var itemsToSkip = (page - 1) * skip;
 
-  StreetNamesModel.find({ name: { $regex : regex } }, undefined,
-                  {sort:  { name: 1 }, skip:itemsToSkip, limit: skip },
-                  function(err, names){
-                    if (err) return next(err);
-                    res.json(names);
-                  });
+  StreetNamesModel.find({ name: { $regex : regex } },
+                        undefined,
+                        {sort:  { name: 1 }, skip:itemsToSkip, limit: skip },
+                        function(err, names){
+                          if (err) return next(err);
+                          res.json(names);
+                        });
 };
 
 exports.getZipCodesPaged = function(req, res, next) {
@@ -275,10 +277,11 @@ exports.getZipCodesPaged = function(req, res, next) {
   var regex = new RegExp("^" + query, 'i');
   var itemsToSkip = (page - 1) * skip;
 
-  StreetZipcodesModel.find({ zipCode: regex  }, undefined,
-                      {sort:  { zipCode: 1 }, skip:itemsToSkip, limit: skip },
-                      function(err, codes){
-                        if (err) return next(err);
-                        res.json(codes);
-                      });
+  StreetZipcodesModel.find({ zipCode: regex  },
+                            undefined,
+                            {sort:  { zipCode: 1 }, skip:itemsToSkip, limit: skip },
+                            function(err, codes){
+                              if (err) return next(err);
+                              res.json(codes);
+                            });
 };

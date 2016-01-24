@@ -5,6 +5,7 @@
       'ngAnimate',
       'treasure-overlay-spinner',
       'ui.select',
+      'ngCookies',
       'ngSanitize'
     ])
 
@@ -18,6 +19,7 @@
         "ENTER_STREET_LEVEL": "enterStreetLevel",
         "STREET_ADOPTED": "streetAdopted",
         "STREET_LEFT": "streetLeft",
+        "FOUND_STREET": "notinphilly.foundStreet",
         "MAP_CENTER": {  lat: 39.931054,  lng: -75.204009 },
     });
 
