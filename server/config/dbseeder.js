@@ -151,7 +151,6 @@ module.exports = function() {
                   }
 
                   StreetZipsModel.collection.insertMany(zipCodes, function(err, createdZipCodes) { });
-process.exit();
                 });
               });
           });

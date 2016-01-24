@@ -1,11 +1,22 @@
 <div>
   <div class="modal-header">
-    <h3>Eliminating Litter Together!</h3>
-    <div class="alert alert-success" ng-show="successShow">Sent confirmation email to your email address. Please check your inbox.</div>
-    <div class="alert alert-danger" ng-show="errorShow">{{ errorMessage }}</div>
+    <h3 ng-show="!isRegisterSuccess && !isRegisterFailed">Signup and join others in eliminating litter!</h3>
+    <div class="alert alert-success" ng-show="isRegisterSuccess">Sent confirmation email to your email address. Please check your inbox.</div>
+    <div class="alert alert-danger" ng-show="isRegisterFailed">{{ errorMessage }}</div>
   </div>
   <div class="modal-body">
-    <form id="signinForm" role="form">
+    <div class="row" ng-show="isRegisterSuccess">
+      <div class="row">
+        <div class="col-sm-3 col-sm-3">
+        </div>
+        <div class="col-sm-6 col-sm-6">
+          <a class="btn btn-lg btn-success btn-block input-block-level" href="" ng-click="close()">
+              Close
+          </a>
+        </div>
+      </div>
+    </div>
+    <form id="signinForm" role="form" ng-show="!isRegisterSuccess">
       <div class="row">
         <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
@@ -48,22 +59,22 @@
       <div class="offset-small"><label>Address</label> (optional, to get the grabber to you)</div>
 
       <div class="row">
-        <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="col-xs-3 col-sm-3 col-md-3 min-padding-right">
           <div class="form-group">
             <input type="text" id="houseNumber" ng-model="User.houseNumber" class="form-control input-sm" placeholder="House number">
           </div>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-6">
+        <div class="col-xs-6 col-sm-6 col-md-6 min-padding-right min-padding-left">
           <div class="form-group">
             <ui-select ng-model="User.addressLine1"  theme="bootstrap" title="Street name">
-             <ui-select-match placeholder="Enter street name...">{{$select.selected.name}}</ui-select-match>
+             <ui-select-match placeholder="Street name">{{$select.selected.name}}</ui-select-match>
              <ui-select-choices repeat="item.name as item in streetNames" refresh="refreshStreetNames($select.search)" refreshDelay="100">
                <div ng-bind-html="item.name | highlight: $select.search"></div>
              </ui-select-choices>
            </ui-select>
           </div>
         </div>
-        <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="col-xs-3 col-sm-3 col-md-3 min-padding-left">
           <div class="form-group">
             <input type="text" id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit">
           </div>
@@ -71,10 +82,10 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-3 col-sm-3 col-md-3">
+        <div class="col-xs-6 col-sm-3 col-md-3">
           <div class="form-group">
             <ui-select ng-model="User.zip" theme="bootstrap" title="Zipcode">
-             <ui-select-match placeholder="Enter zipcode...">{{$select.selected.zipCode}}</ui-select-match>
+             <ui-select-match placeholder="Zipcode">{{$select.selected.zipCode}}</ui-select-match>
              <ui-select-choices repeat="item.zipCode as item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
                <div ng-bind-html="item.zipCode | highlight: $select.search"></div>
              </ui-select-choices>

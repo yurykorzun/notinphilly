@@ -70,8 +70,6 @@
           var streetBounds = new L.LatLngBounds(start, end);
           var streetCenter = streetBounds.getCenter();
 
-          map.setView(streetCenter, 16, { animate: false });
-
           openStreetLayerPopup(streetCenter, streetLayer, properties);
         });
       }
@@ -189,6 +187,7 @@
         var popup = L.popup({
           keepInView: true,
           minWidth: 240,
+          autoPan: false,
           properties: properties
         });
         layer.bindPopup(popup);
