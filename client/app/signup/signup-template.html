@@ -66,7 +66,7 @@
         </div>
         <div class="col-xs-6 col-sm-6 col-md-6 min-padding-right min-padding-left">
           <div class="form-group">
-            <ui-select ng-model="User.addressLine1"  theme="bootstrap" title="Street name">
+            <ui-select ng-model="User.streetName"  theme="bootstrap" title="Street name">
              <ui-select-match placeholder="Street name">{{$select.selected.name}}</ui-select-match>
              <ui-select-choices repeat="item.name as item in streetNames" refresh="refreshStreetNames($select.search)" refreshDelay="100">
                <div ng-bind-html="item.name | highlight: $select.search"></div>

@@ -10,10 +10,13 @@ var userSchema = new Schema({
   lastName: { type : String, default: '' },
   birthDate: { type : Date, default: '' },
   phoneNumber: { type : String, default: '' },
-  businesName: { type : String, default: '' },
-  addressLine1: { type : String, default: '' },
-  addressLine2: { type : String, default: '' },
+  businessName: { type : String, default: '' },
+  houseNumber: { type : String, default: '' },
+  streetName: { type : String, default: '' },
+  apartmentNumber: { type : String, default: '' },
+  zip: { type : String, default: '' },
   city: { type : String, default: '' },
+  isDistributer: {  type: Boolean, default: false },
   state: {
     type: Number,
     ref: 'State'
@@ -23,7 +26,6 @@ var userSchema = new Schema({
     type: Number,
     ref: 'Role'
   }],
-  zip: { type : String, default: '' },
   hashedPassword: { type: String, default: '' },
   activationHash: String,
   salt: { type: String, default: '' },
@@ -35,7 +37,6 @@ var userSchema = new Schema({
   adoptedStreets: [{
     type: Schema.Types.ObjectId,
     ref: 'StreetSegment'}],
-  distributer: {  type: Boolean, default: false },
   createDate: { type : Date, default: Date.now }
 },
 {
@@ -67,6 +68,12 @@ userSchema
         'email': this.email,
         'roles': this.roles
       };
+    });
+
+userSchema
+    .virtual('address')
+    .get(function () {
+      return this.houseNumber + " " + this.streetName + " " + this.zip;
     });
 
 /*userSchema.path('email').validate(function(value, respond) {

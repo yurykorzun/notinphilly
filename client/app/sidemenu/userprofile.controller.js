@@ -43,7 +43,7 @@
         {
           $http.get("api/users/current/").success(function(data, status) {
             $scope.userProfile.fullName = data.firstName + ' ' + data.lastName;
-            $scope.userProfile.address = data.addressLine1 + ' ' + data.city + ' ' + data.zip;
+            $scope.userProfile.address = data.houseNumber + " " + data.streetName + " " + data.zip;
             $scope.userProfile.email = data.email;
 
             SetupUserStreets();

@@ -56,22 +56,23 @@ exports.create = function(req, res, next) {
     if (errorMessage === "false") {
       UserModel.create(
         {
-          firstName: req.body.fistName,
+          firstName: req.body.firstName,
           middleName: req.body.middleName,
           lastName: req.body.lastName,
           birthDate: req.body.birthDate,
           phoneNumber: req.body.phoneArea + req.body.phoneNumber1 + req.body.phoneNumber2 ,
           email: req.body.email,
           role: [1],
-          businesName: req.body.businessName,
-          addressLine1: concatAddress(req),
-          addressLine2: req.body.addressLine2,
+          businessName: req.body.businessName,
+          houseNumber: req.body.houseNumber,
+          streetName: req.body.streetName,
+          apartmentNumber: req.body.aptNumber,
           active: false,
           city: req.body.city,
           state: req.body.state,
           zip: req.body.zip,
           password: req.body.password,
-          distributer: req.body.distributer
+          isDistributer: req.body.distributer
         }, function(err, thor){
           console.log(err);
           if (err) {
@@ -90,26 +91,6 @@ exports.create = function(req, res, next) {
     }
   });
 };
-
-var concatAddress = function (req) {
-  var address = "";
-
-  if (req.body.houseNumber) {
-    address = address.concat(req.body.houseNumber + " ");
-    console.log(address);
-  }
-
-  if (req.body.addressLine1) {
-    address = address.concat(req.body.addressLine1 + " ");
-    console.log(address);
-  }
-
-  if (req.body.aptNumber) {
-    address = address.concat(req.body.aptNumber);
-    console.log(address);
-  }
-  return address;
-}
 
 /**
  * Send confirmation email
@@ -189,7 +170,7 @@ exports.me = function(req, res, next) {
 
     if (!userId) throw new Error('Required userId needs to be set');
 
-    UserModel.findOne({_id: userId}, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
+    UserModel.findOne({_id: userId}, '-salt -hashedPassword -activationHash -__v', function(err, user) { // don't ever give out the password or salt
         if (err) return next(err);
         if (!user) return res.status(401).send('Unauthorized');
         if (user.active != true) return res.status(401).send('Please activate your user');
