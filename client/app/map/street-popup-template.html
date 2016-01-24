@@ -5,45 +5,44 @@
   <div class="street-popup-address">
     <h4><i class="fa fa-map-marker"></i> {{address}} </h4>
   </div>
-  <div ng-show="isStart">
-    <div ng-show="!isAdoptedSuccessfully && isAuthorized">
+  <div ng-show="!isShowLogin && !isShowError">
+    <div ng-show="!isAdoptedByUser && !isAdoptedSuccessfully">
       <div class="street-popup-buttons">
-        <button type='button' class='btn btn-success' ng-click='adoptStreet()'>I want to particpate!</button>
+        <h4 ng-show="totalAdopters == 0">Be the first one to participate in cleaning up this street!</h4>
+        <h4 ng-show="totalAdopters > 0">Join others in cleaning up this street!</h4>
+
+        <button type='button' class='btn btn-success' ng-click='isAuthorized ? adoptStreet() : showLogin()'>I want to particpate!</button>
         <button type='button' class='btn btn-danger' ng-click='close()'>Not this time</button>
       </div>
     </div>
-    <div ng-controller="mainController">
-    <div ng-show="isAdoptedSuccessfully && isAuthorized">
-        <h3>Thank you!</h3>
-        <div class="street-popup-buttons">
-          <button type='button' class='btn btn-success' ng-click='close()'>No problem!</button>
-        </div>
+    <div ng-show="isAuthorized && isAdoptedSuccessfully">
+      <h3>Thank you!</h3>
+      <div class="street-popup-buttons">
+        <button type='button' class='btn btn-success' ng-click='close()'>No problem!</button>
+      </div>
     </div>
-
+    <div ng-show="isAuthorized && isAdoptedByUser">
+      <h4>You are participating in taking care of this street.</h4>
+      <div class="street-popup-buttons">
+        <button type='button' class='btn btn-success' ng-click='close()'>Great, thanks!</button>
+        <button type='button' class='btn btn-danger' ng-click='leave()'>Leave street</button>
+      </div>
+    </div>
   </div>
-  <div ng-show="isError">
-    <h4>Sorry, something went wrong. Please try again later or contact us.</h4>
+  <div ng-show="isShowError">
+    <h4>Sorry, something went wrong. Please try again later or contact notinphilly@gmail.com.</h4>
     <div class="street-popup-buttons">
       <button type='button' class='btn btn-success' ng-click='close()'>Close</button>
     </div>
   </div>
-</div>
-<div ng-show="isAdopted && isAuthorized">
-  <h4>You are participating in taking care of this street.</h4>
-  <div class="street-popup-buttons">
-    <button type='button' class='btn btn-success' ng-click='close()'>Great, thanks!</button>
-    <button type='button' class='btn btn-danger' ng-click='leave()'>Leave</button>
+  <div ng-show="isShowLogin">
+      <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
+        <div class="form-group menu-login">
+          <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Login failed. Please check your username or password.</div>
+          <label>Email</label>
+          <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
+          <label>Password</label>
+          <input type="password" class="form-control" name="pass" ng-model="loginForm.password" placeholder="Please enter your password" required></input><br/>
+          <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm);" value="Login"/> Or <a ng-click="loginForm.signup()">Sign up</a>
+        </div>
   </div>
-</div>
-<div ng-show="!isAuthorized">
-    <button type='button' class='btn btn-warning' ng-hide="signBtn" ng-click='signBtn=true;signInForm=true'>Sign Up</button>
-    <ng-form ng-show="signInForm" ng-controller="LoginController" ng-submit="loginForm.login()">
-      <div class="form-group menu-login">
-        <label>Email</label>
-        <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
-        <label>Password</label>
-        <input type="password" class="form-control" name="pass" ng-model="loginForm.password" placeholder="Please enter your password" required></input><br/>
-        <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Username or password is incorrect</div>
-        <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm);close();" value="Login"/> Or <a ng-click="loginForm.signup()">Sign up</a>
-      </div>
-</div>
