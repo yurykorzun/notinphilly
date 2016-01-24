@@ -1,6 +1,6 @@
 <div>
   <div class="modal-header">
-    <h3>Eleminating Litter Together!</h3>
+    <h3>Eliminating Litter Together!</h3>
     <div class="alert alert-success" ng-show="successShow">Sent confirmation email to your email address. Please check your inbox.</div>
     <div class="alert alert-danger" ng-show="errorShow">{{ errorMessage }}</div>
   </div>
@@ -29,8 +29,9 @@
         </div>
         <div class="col-xs-4 col-sm-4 col-md-4">
           <div class="form-group">
-            <label>Contact Phone Number</label>
-            <input type="tel" size=3 id="phoneArea" ng-model="User.phoneArea" >-<input type="tel" size=3 ng-model="User.phoneNumber1">-<input type="tel" size=4 ng-model="User.phoneNumber2">
+            <label>Phone</label> (optional)<br>
+            <input type="tel" size=3 id="phoneArea" ng-model="User.phoneArea" >-<input type="tel" size=3 ng-model="User.phoneNumber1">-<input type="tel" size=4 ng-model="User.phoneNumber2"><br>
+            <small>We will just use it to see if you will re-new after 6 months</small>
           </div>
         </div>
       </div>
@@ -44,7 +45,7 @@
           </div>
       </div>
 
-      <div class="offset-small"><label>Address</label></div>
+      <div class="offset-small"><label>Address</label> (optional, to get the grabber to you)</div>
 
       <div class="row">
         <div class="col-xs-3 col-sm-3 col-md-3">
