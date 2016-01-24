@@ -35,6 +35,7 @@ var userSchema = new Schema({
   adoptedStreets: [{
     type: Schema.Types.ObjectId,
     ref: 'StreetSegment'}],
+  distributer: {  type: Boolean, default: false },
   createDate: { type : Date, default: Date.now }
 },
 {
