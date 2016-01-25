@@ -194,7 +194,7 @@ exports.findStreets = function(req, res, next) {
     var streetName = req.params.street;
     var houseNumber = req.params.house;
 
-    var blockPrefix = houseNumber.substring(0, 2);
+    var blockPrefix = houseNumber.toString().length > 2 ? houseNumber.toString().slice(0, -2) : houseNumber;
     var streetRegex = new RegExp(streetName, 'i');
     var blockRegex = new RegExp(blockPrefix, 'i');
 

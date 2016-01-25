@@ -85,7 +85,8 @@ module.exports = function() {
                 zipLeft: street.ZIP_LEFT,
                 zipRight: street.ZIP_RIGHT,
                 code: street.ST_CODE,
-                block: street.L_HUNDRED.toString().substring(0,2),
+                //slice the block number from the address
+                block: street.L_HUNDRED.toString().length > 2 ? street.L_HUNDRED.toString().slice(0, -2) : street.L_HUNDRED,
                 leftHundred: street.L_HUNDRED,
                 rightHundred: street.R_HUNDRED,
                 segmentId: street.SEG_ID,
