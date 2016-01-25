@@ -53,6 +53,6 @@ app.use(passport.session());
 //seed the database
 var dbseeder = require('./server/config/dbseeder');
 //uncomment to seed
-dbseeder();
-app.listen(8888, function(){
+//dbseeder();
+app.listen(port, function(){
 });

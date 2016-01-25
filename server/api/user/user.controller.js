@@ -60,7 +60,7 @@ exports.create = function(req, res, next) {
           middleName: req.body.middleName,
           lastName: req.body.lastName,
           birthDate: req.body.birthDate,
-          phoneNumber: req.body.phoneArea + req.body.phoneNumber1 + req.body.phoneNumber2 ,
+          phoneNumber: req.body.phoneNumber,
           email: req.body.email,
           role: [1],
           businessName: req.body.businessName,

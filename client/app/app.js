@@ -6,6 +6,7 @@
       'treasure-overlay-spinner',
       'ui.select',
       'ngCookies',
+      'ui.mask',
       'ngSanitize'
     ])
 
