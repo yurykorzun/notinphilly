@@ -74,17 +74,19 @@ exports.create = function(req, res, next) {
           password: req.body.password,
           isDistributer: req.body.distributer
         }, function(err, thor){
-          console.log(err);
           if (err) {
+            console.log(err);
             res.status(500).send('There was an issue. Please try again later');
           };
-          res.status(200).send('Successfully Added the user');
+
+          UserModel.findOne({email: req.body.email}, function(err, user) {
+            sendConfirmationEmail(req, user);
+          });
           console.log('Finished adding the user');
+          res.status(200).send('Successfully Added the user');
         }
-      )
-      mongoose.models["User"].findOne({email: req.body.email}, function(err, user) {
-        sendConfirmationEmail(req, user);
-    });
+      );
+
       res.status(200).send('Successfully Sent Confirmation Email');
     } else {
       res.status(409).send(errorMessage);
@@ -170,7 +172,7 @@ exports.me = function(req, res, next) {
 
     if (!userId) throw new Error('Required userId needs to be set');
 
-    UserModel.findOne({_id: userId}, '-salt -hashedPassword -activationHash -__v', function(err, user) { // don't ever give out the password or salt
+    UserModel.findOne({_id: userId}, '-salt -hashedPassword -__v', function(err, user) { // don't ever give out the password or salt
         if (err) return next(err);
         if (!user) return res.status(401).send('Unauthorized');
         if (user.active != true) return res.status(401).send('Please activate your user');
