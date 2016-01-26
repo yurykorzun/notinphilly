@@ -41,7 +41,7 @@
         <div class="col-xs-4 col-sm-4 col-md-4">
           <div class="form-group">
             <label>Phone</label> (optional)<br>
-            <input type="tel" size=3 id="phoneArea" ng-model="User.phoneArea" >-<input type="tel" size=3 ng-model="User.phoneNumber1">-<input type="tel" size=4 ng-model="User.phoneNumber2"><br>
+            <input name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="text"/>
             <small>We will just use it to see if you will re-new after 6 months</small>
           </div>
         </div>
