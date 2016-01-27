@@ -53,7 +53,7 @@ userSchema
         //also store an activation hash and remove any "/", so we can pass it as parameter into URL for activation
         this.activationHash = this.encryptPassword(new Date().getTime().toString());
         this.activationHash = this.activationHash.replace(/\//gi, '');
-        console.log(this.activationHash);
+        console.log("activationHash " + this.activationHash);
     })
     .get(function() {
         return this._password;
