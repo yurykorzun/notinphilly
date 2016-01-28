@@ -14,9 +14,10 @@
     "express-session": "~1.11.3",
     "method-override": "~2.0.2",
     "mongoose": "~4.1",
+    "nodemailer": "~2.0.0",
     "passport": "~0.3.0",
     "passport-local": "~1.0.0",
-    "nodemailer": "~2.0.0"
+    "uuid": "^2.0.1"
   },
   "scripts": {
     "start": "node server.js",
