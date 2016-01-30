@@ -17,7 +17,7 @@ var db = require('./server/config/db');
 
 // set our port
 var port = process.env.PORT || 8080;
-var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.AWS_MONGODB_URL || "mongodb://localhost/notinphilly"
+var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.AWS_MONGO_DB_URL || "mongodb://localhost/notinphilly"
 
 //app.use(cookieParser());
 app.use(bodyParser.urlencoded({
