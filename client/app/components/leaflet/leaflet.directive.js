@@ -1,5 +1,5 @@
 (function () {
-  angular.module('notinphillyServerApp').directive('leaflet',  ['$window', '$rootScope', 'mapService', 'APP_EVENTS', function ($window, $rootScope, mapService, APP_EVENTS) {
+  angular.module('notinphillyServerApp').directive('leaflet',  ['$window', '$rootScope', 'mapService', 'APP_CONSTS', function ($window, $rootScope, mapService, APP_CONSTS) {
   return {
     restrict: 'E',
     scope: {},
@@ -13,7 +13,7 @@
       $(element).attr("id", scope.mapId);
 
       var map = new L.Map(scope.mapId, {
-          center: APP_EVENTS.MAP_CENTER,
+          center: APP_CONSTS.MAP_CENTER,
           zoom: 13,
           zoomControl: false
       });

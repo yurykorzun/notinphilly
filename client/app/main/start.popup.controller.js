@@ -1,6 +1,6 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('StartPopupController', [ '$scope', '$http', '$rootScope', '$uibModalInstance', '$cookies', 'mapService', 'APP_EVENTS', function($scope, $http, $rootScope, $uibModalInstance, $cookies, mapService, APP_EVENTS) {
+    .controller('StartPopupController', [ '$scope', '$http', '$rootScope', '$uibModalInstance', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $uibModalInstance, $cookies, mapService, APP_EVENTS, APP_CONSTS) {
       $scope.zipCodes = [];
       $scope.zipCode = {};
 
@@ -41,7 +41,7 @@
                           $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
                           mapService.goToStreet(firstStreet._id);
 
-                          $cookies.put(APP_EVENTS.FOUND_STREET, firstStreet._id);
+                          $cookies.put(APP_CONSTS.FOUND_STREET, firstStreet._id);
 
                           $scope.streetName = {};
                           $scope.zipCode = {};

@@ -7,7 +7,8 @@
       'ui.select',
       'ngCookies',
       'ui.mask',
-      'ngSanitize'
+      'ngSanitize',
+      'ui.grid'
     ])
 
     app.constant("APP_EVENTS", {
@@ -19,7 +20,10 @@
         "ENTER_NEIGBORHOOD_LEVEL": "enterNeigborhoodLevel",
         "ENTER_STREET_LEVEL": "enterStreetLevel",
         "STREET_ADOPTED": "streetAdopted",
-        "STREET_LEFT": "streetLeft",
+        "STREET_LEFT": "streetLeft"
+    });
+
+  app.constant("APP_CONSTS", {
         "FOUND_STREET": "notinphilly.foundStreet",
         "MAP_CENTER": {  lat: 39.931054,  lng: -75.204009 },
     });
@@ -29,6 +33,10 @@
         .when('/', {
           templateUrl: 'app/main/main.html',
           controller: 'mainController'
+        })
+        .when('/admin', {
+          templateUrl: 'app/admin/admin-template.html',
+          controller: 'adminController'
         })
         .otherwise({
           redirectTo: '/'

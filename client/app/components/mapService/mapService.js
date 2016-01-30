@@ -1,6 +1,6 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .service('mapService', ['$http', '$q', 'APP_EVENTS', function($http, $q, APP_EVENTS) {
+    .service('mapService', ['$http', '$q', 'APP_EVENTS', 'APP_CONSTS', function($http, $q, APP_EVENTS, APP_CONSTS) {
 
       var deferredMap = $q.defer();
 
@@ -52,7 +52,7 @@
               }
             });
 
-            map.setView(APP_EVENTS.MAP_CENTER, 13, { animate: false });
+            map.setView(APP_CONSTS.MAP_CENTER, 13, { animate: false });
             mapLayerGroup.addLayer(geoJsonLayer);
             mapLayerGroup.addTo(map);
            });

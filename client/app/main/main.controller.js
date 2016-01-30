@@ -1,6 +1,6 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('mainController', [ '$scope', '$http', '$rootScope', '$uibModal', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', function($scope, $http, $rootScope, $uibModal, $cookies, mapService, sessionService, APP_EVENTS) {
+  .controller('mainController', [ '$scope', '$http', '$rootScope', '$uibModal', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $uibModal, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
     $scope.sideMenu = {
       isUserProfileVisible: false,
       isUserProfileOpen: false,
@@ -18,7 +18,7 @@ angular.module('notinphillyServerApp')
         mapService.zoomOut(1);
       }
   };
-  var foundStreet = $cookies.get(APP_EVENTS.FOUND_STREET);
+  var foundStreet = $cookies.get(APP_CONSTS.FOUND_STREET);
   if(!foundStreet){
     var modalInstance = $uibModal.open({
                            templateUrl: 'app/main/start-popup-template.html',
