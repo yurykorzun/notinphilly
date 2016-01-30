@@ -200,7 +200,7 @@
       }
 
       var getStreetStyle = function(feature){
-        if(feature.properties.isAdoptedByUser)
+        if(feature.properties.totalAdopters > 0)
         {
           return {
             color: '#26A053',
@@ -223,7 +223,7 @@
 
       var setStreetLabel = function (feature, layer)
       {
-        layer.bindLabel("<p><h4>" +  feature.properties.name + " " + feature.properties.type + " " + feature.properties.zipCode + "</h4></p>" +
+        layer.bindLabel("<p><h4>" + feature.properties.hundred + " " + feature.properties.name + " " + feature.properties.type + " " + feature.properties.zipCode + "</h4></p>" +
                         "<p>Total participants " + feature.properties.totalAdopters + "</p>",
                         {
                             noHide: true,
@@ -245,7 +245,7 @@
            };
          }
          else {
-           if(properties.percentageAdoptedStreets == 0)
+           if(properties.totalAdoptedStreets == 0)
            {
              return {
                color: '#606264',
@@ -254,7 +254,7 @@
                fillOpacity: 0.3
              };
            }
-           else if(properties.totalAdoptedStreets > 0 && properties.percentageAdoptedStreets < 25)
+           else if(properties.totalAdoptedStreets > 0 && properties.percentageAdoptedStreets < 10)
            {
               return {
                 color: '#4F5154',
@@ -263,7 +263,7 @@
                 fillOpacity: 0.3
               };
             }
-            else if(properties.percentageAdoptedStreets > 25 && properties.percentageAdoptedStreets < 60)
+            else if(properties.percentageAdoptedStreets > 10 && properties.percentageAdoptedStreets < 25)
             {
               return {
                   color: '#4F5154',
