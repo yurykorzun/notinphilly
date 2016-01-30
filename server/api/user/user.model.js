@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 var crypto   = require('bcrypt-nodejs');
-
+var uuid = require('uuid');
 var Schema = mongoose.Schema;
 
 // define our user schema
@@ -51,8 +51,7 @@ userSchema
         this.hashedPassword = this.encryptPassword(password);
 
         //also store an activation hash and remove any "/", so we can pass it as parameter into URL for activation
-        this.activationHash = this.encryptPassword(new Date().getTime().toString());
-        this.activationHash = this.activationHash.replace(/\//gi, '');
+        this.activationHash = uuid.v4();
         console.log("activationHash " + this.activationHash);
     })
     .get(function() {

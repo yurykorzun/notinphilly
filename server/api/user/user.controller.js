@@ -1,6 +1,7 @@
 var mongoose = require('mongoose');
 var UserModel = require('./user.model');
 var mailer = require('nodemailer');
+var uuid = require('uuid');
 var smtpTransport = {};
 
 if (process.env.OS_EMAIL_ADDR && process.env.OS_EMAIL_PASSWD) {
@@ -147,8 +148,7 @@ exports.changePassword = function(req, res, next) {
   UserModel.findOne({activationHash: confirmId}, function(err, user){
     if (err) return next(err);
     if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
-      user.activationHash = this.encryptPassword(new Date().getTime().toString());
-      user.activationHash = user.activationHash.replace(/\//gi, '');
+      user.activationHash = uuid.v4();
       user.password = req.body.password;
       user.save(function (err) {
         if (err) {
