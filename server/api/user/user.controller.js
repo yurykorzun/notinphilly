@@ -1,18 +1,8 @@
 var mongoose = require('mongoose');
 var UserModel = require('./user.model');
-var mailer = require('nodemailer');
+var mailer = require('../../components/mailer');
 var uuid = require('uuid');
-var smtpTransport = {};
 
-if (process.env.OS_EMAIL_ADDR && process.env.OS_EMAIL_PASSWD) {
-  smtpTransport = mailer.createTransport( "smtps://" + process.env.OS_EMAIL_ADDR +':'+ process.env.OS_EMAIL_PASSWD + '@host244.hostmonster.com');
-} else {
-  smtpTransport =  mailer.createTransport('smtps://notinphilly%40antsdesigns.net:Test123!@host244.hostmonster.com');
-}
-/**
- * Get list of users
- * restriction: 'admin'
- */
 exports.index = function(req, res) {
     UserModel.find({}, '-salt -hashedPassword', function(err, users) {
         if (err) return res.status(500).send(err);
@@ -20,30 +10,11 @@ exports.index = function(req, res) {
     });
 };
 
-var checkForErrors = function(userInfo) {
-  if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
-    return "Please enter email address";
-  }
-  if (userInfo.fistName === '' || typeof userInfo.firstName === 'undefined'){
-    return "Please enter your First name";
-  }
-  if (userInfo.email === '' || typeof userInfo.lastName === 'undefined'){
-    return "Please enter your last name";
-  }
-  if (userInfo.password === '' || typeof userInfo.password === 'undefined'){
-    return "Please enter password and confirm your password";
-  }
-  if (userInfo.password !== userInfo.passwordConfirm) {
-    return "Your passwords do not match";
-  }
-  return "false";
-}
-
 /**
  * Creates a new user
  */
 exports.create = function(req, res, next) {
-  mongoose.models["User"].findOne({email: req.body.email}, function(err, user) {
+  UserModel.findOne({email: req.body.email}, function(err, user) {
     if(err) throw err;
 
     if(user) {
@@ -95,6 +66,25 @@ exports.create = function(req, res, next) {
   });
 };
 
+var checkForErrors = function(userInfo) {
+  if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
+    return "Please enter email address";
+  }
+  if (userInfo.fistName === '' || typeof userInfo.firstName === 'undefined'){
+    return "Please enter your First name";
+  }
+  if (userInfo.email === '' || typeof userInfo.lastName === 'undefined'){
+    return "Please enter your last name";
+  }
+  if (userInfo.password === '' || typeof userInfo.password === 'undefined'){
+    return "Please enter password and confirm your password";
+  }
+  if (userInfo.password !== userInfo.passwordConfirm) {
+    return "Your passwords do not match";
+  }
+  return "false";
+}
+
 /**
  * Send confirmation email
  */
@@ -106,14 +96,8 @@ var sendConfirmationEmail = function(req, user) {
                       subject: "NotInPhilly. Confirm registration.",
                       text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
                     };
-//Send confirmation email
-smtpTransport.sendMail(mailOptions, function(error, response){
- if(error){
-     console.log("Encounter error: " + error);
- }else{
-     console.log("Message sent.");
- }
-});
+  //Send confirmation email
+  mailer.sendMail(mailOptions);
 }
 
 /**
@@ -185,7 +169,7 @@ exports.update = function(req, res) {
 };
 
 exports.activate = function(req, res) {
-  var confirmId = req.params.confirmId;
+  var confirmId = req.params.activationId;
   UserModel.findOne({activationHash: confirmId}, function(err, user){
     if (err) return next(err);
     if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);

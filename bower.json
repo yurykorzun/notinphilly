@@ -16,6 +16,7 @@
     "Leaflet.label": "~0.2.1",
     "angular-cookies": "~1.4.9",
     "angular-ui-mask": "~1.7.0",
-    "angular-ui-grid": "~3.1.0"
+    "angular-ui-grid": "~3.1.0",
+    "mapbox.js": "~2.2.4"
   }
 }

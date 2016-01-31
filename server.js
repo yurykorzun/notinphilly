@@ -3,9 +3,10 @@ var express        = require('express');
 var mongoose       = require('mongoose');
 var app            = express();
 var passport       = require('passport');
+var settings       = require('./server/config/settings');
 
 // set our port
-var port = process.env.PORT || 8080;
+var port = settings.serverSettings.HTTP_PORT;
 
 // configuration ===========================================
 require('./server/config/db')(app);
