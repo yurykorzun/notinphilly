@@ -15,24 +15,20 @@ exports.isAuthenticated = function (req, res, next) {
 /**
  * Checks if the user role meets the minimum requirements of the route
  */
-exports.hasRole = function (role) {
-  if (!role) throw new Error('Required role needs to be set');
-  if (req.isAuthenticated()) {
-    if(req.user.userInfo.roles.indexOf(role) > -1)
-    {
-      next();
-    }
+exports.hasRole = function (user, role) {
+  if(user.roles.indexOf(role) > -1)
+  {
+    return true;
   }
-  else {
-    res.send(401);
-  }
+
+  return false;
 }
 
-exports.isAdmin = function () {
+exports.isAdmin = function (req, res, next) {
   var adminRoleId = 1;
-  
+
   if (req.isAuthenticated()) {
-    if(req.user.userInfo.roles.indexOf(adminRoleId) > -1)
+    if(req.user.roles.indexOf(adminRoleId) > -1)
     {
       next();
     }

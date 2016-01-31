@@ -75,6 +75,12 @@ userSchema
       return this.houseNumber + " " + this.streetName + " " + this.zip;
     });
 
+userSchema
+    .virtual('isAdmin')
+    .get(function () {
+      return roles.indexOf(1) > 0;
+    });
+
 /*userSchema.path('email').validate(function(value, respond) {
     mongoose.models["User"].findOne({email: value}, function(err, user) {
       if(err) throw err;
