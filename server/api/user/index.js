@@ -4,12 +4,12 @@ var authService = require('../../auth/authService');
 
 var router = express.Router();
 
-router.get('/', authService.isAuthenticated, controller.index);
+router.get('/', authService.isAdmin, controller.index);
 router.get('/current/', authService.isAuthenticated, controller.me);
-router.get('/:id', controller.get);
-router.delete('/:id', authService.isAuthenticated, controller.destroy);
+router.get('/:id', authService.isAdmin, controller.get);
+router.get('/confirm/:activationId', controller.activate);
+router.get('/all', controller.activate);
+router.delete('/:id', authService.isAdmin, controller.destroy);
 router.post('/', controller.create);
-router.post('/:id', authService.isAuthenticated, controller.update);
-router.get('/confirm/:confirmId', controller.activate);
 
 module.exports = router;

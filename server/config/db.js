@@ -2,9 +2,10 @@ var express        = require('express');
 var mongoose       = require('mongoose');
 var expressSession = require('express-session');
 var mongoStore     = require('connect-mongo')(expressSession);
+var settings       = require('./settings');
 
 module.exports = function(app) {
-    var connectionString = process.env.OPENSHIFT_MONGODB_DB_URL || process.env.AWS_MONGO_DB_URL || "mongodb://localhost/notinphilly"
+    var connectionString = settings.serverSettings.DB_CONNECTION_STRING;
 
     var dbOptions = {
       server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
@@ -33,7 +34,7 @@ module.exports = function(app) {
     }));
 
     //seed the database
-    //var dbseeder = require('./server/config/dbseeder');
+    //var dbseeder = require('../components/dbseeder');
     //uncomment to seed
     //dbseeder();
 };
