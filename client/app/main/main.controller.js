@@ -1,6 +1,7 @@
 (function () {
 angular.module('notinphillyServerApp')
   .controller('mainController', [ '$scope', '$http', '$rootScope', '$uibModal', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $uibModal, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
+    $scope.bugTooltip = false;
     $scope.sideMenu = {
       isUserProfileVisible: false,
       isUserProfileOpen: false,
@@ -60,6 +61,12 @@ angular.module('notinphillyServerApp')
     });
     $scope.$on(APP_EVENTS.LOGOUT, function(event) {
       ShowLoginForm();
+    });
+    $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event){
+      $scope.bugTooltip = !$scope.bugTooltip;
+    });
+    $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event){
+      $scope.bugTooltip = !$scope.bugTooltip;
     });
 
     sessionService.checkLoggedin()
