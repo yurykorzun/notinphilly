@@ -27,7 +27,7 @@ input[type*=submit], .btn, .btn-default {
 }
 #cityMap {
     position: absolute;
-    top: 50px;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
@@ -37,9 +37,9 @@ input[type*=submit], .btn, .btn-default {
 }
 .side-container {
     z-index: 100;
-    margin-top: -20px;
     padding-right: 0;
     overflow-y: scroll;
+    overflow-x: hidden;
     max-height: 100vh;
 }
 .side {
@@ -48,7 +48,6 @@ input[type*=submit], .btn, .btn-default {
     box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.2);
     margin-left: -10px;
     z-index: 100;
-    margin-bottom: 40px;
 }
 .offset {
     margin-top: 20px;
@@ -86,7 +85,7 @@ input[type*=submit], .btn, .btn-default {
 .sideItemsColumn {
     z-index: 100;
     padding: 0;
-    margin-top: -20px;
+    margin-top: 10px;
     max-width: 45px;
 }
 .sideItemsColumnSection {
