@@ -251,24 +251,6 @@ input[type*=submit], .btn, .btn-default {
     color: #fad308;
 }
 /*styles for index.html page*/
-.navbar-header{
-    display: inline-block;
-}
-.navbar-launching-btn{
-    position: relative;
-    display: inline-block;
-    vertical-align: top;
-}
-.navbar-launching-btn > p{
-    display: block;
-    color: #777;
-    padding: 15px 0;
-    text-decoration: underline;
-    cursor: pointer;
-}
-.navbar-launching-btn > p:hover{
-    color: #333;
-}
 .street-popup {
   text-align: center;
 }
