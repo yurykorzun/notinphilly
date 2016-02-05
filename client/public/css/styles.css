@@ -190,12 +190,15 @@ input[type*=submit], .btn, .btn-default {
 }
 .tooltip-layer{
     position: fixed;
-    border-radius: 25px;
+    border-radius: 20px;
     border: 1px solid #BDB9BB;
     background-color: white;
-    padding: 20px;
     box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.2);
     z-index: 11;
+    padding: 5px 10px;
+}
+.tooltip-layer p {
+    margin: 10px;
 }
 .partners{
     display: inline-block;
