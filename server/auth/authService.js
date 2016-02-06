@@ -37,3 +37,17 @@ exports.isAdmin = function (req, res, next) {
     res.send(401);
   }
 }
+
+exports.isAdmin = function () {
+  var adminRoleId = 1;
+  
+  if (req.isAuthenticated()) {
+    if(req.user.userInfo.roles.indexOf(adminRoleId) > -1)
+    {
+      next();
+    }
+  }
+  else {
+    res.send(401);
+  }
+}
