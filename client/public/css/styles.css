@@ -1,7 +1,3 @@
-body {
-    overflow: hidden;
-}
-
 p{
     margin: 0;
 }
@@ -27,7 +23,7 @@ input[type*=submit], .btn, .btn-default {
 }
 #cityMap {
     position: absolute;
-    top: 50px;
+    top: 0;
     bottom: 0;
     left: 0;
     right: 0;
@@ -37,9 +33,9 @@ input[type*=submit], .btn, .btn-default {
 }
 .side-container {
     z-index: 100;
-    margin-top: -20px;
     padding-right: 0;
     overflow-y: scroll;
+    overflow-x: hidden;
     max-height: 100vh;
 }
 .side {
@@ -48,7 +44,6 @@ input[type*=submit], .btn, .btn-default {
     box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.2);
     margin-left: -10px;
     z-index: 100;
-    margin-bottom: 40px;
 }
 .offset {
     margin-top: 20px;
@@ -86,7 +81,7 @@ input[type*=submit], .btn, .btn-default {
 .sideItemsColumn {
     z-index: 100;
     padding: 0;
-    margin-top: -20px;
+    margin-top: 10px;
     max-width: 45px;
 }
 .sideItemsColumnSection {
@@ -190,12 +185,15 @@ input[type*=submit], .btn, .btn-default {
 }
 .tooltip-layer{
     position: fixed;
-    border-radius: 25px;
+    border-radius: 20px;
     border: 1px solid #BDB9BB;
     background-color: white;
-    padding: 20px;
     box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.2);
     z-index: 11;
+    padding: 5px 10px;
+}
+.tooltip-layer p {
+    margin: 10px;
 }
 .partners{
     display: inline-block;
@@ -249,23 +247,18 @@ input[type*=submit], .btn, .btn-default {
     color: #fad308;
 }
 /*styles for index.html page*/
-.navbar-header{
-    display: inline-block;
+.launching {
+    z-index: 100;
+    position: fixed;
+    right: 0;
+    border-left: 1px solid #BDB9BB;
+    border-bottom: 1px solid #BDB9BB;
+    padding: 10px;
 }
-.navbar-launching-btn{
-    position: relative;
-    display: inline-block;
-    vertical-align: top;
-}
-.navbar-launching-btn > p{
-    display: block;
-    color: #777;
-    padding: 15px 0;
-    text-decoration: underline;
-    cursor: pointer;
-}
-.navbar-launching-btn > p:hover{
-    color: #333;
+.launching p {
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 1.1em;
 }
 .street-popup {
   text-align: center;
