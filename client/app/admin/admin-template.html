@@ -1,1 +1,12 @@
-<h1>Test</h1>
+<div ng-if="!isUserAdmin">
+  <div class="row">
+    <div class="col-md-8">
+      <h3>There is nothing for you to see there. If you still think there is, please contact website admin.</h3>
+    </div>
+  </div>
+</div>
+<div ng-if="isUserAdmin">
+  <div class="row">
+    <h4>Users</h4>
+  </div>
+</div>

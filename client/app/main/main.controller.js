@@ -63,10 +63,10 @@ angular.module('notinphillyServerApp')
       ShowLoginForm();
     });
     $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event){
-      $scope.bugTooltip = !$scope.bugTooltip;
+      $scope.bugTooltip = true;
     });
     $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event){
-      $scope.bugTooltip = !$scope.bugTooltip;
+      $scope.bugTooltip = false;
     });
 
     sessionService.checkLoggedin()

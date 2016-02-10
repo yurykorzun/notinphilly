@@ -73,5 +73,14 @@
         return deferred.promise;
       };
 
+      this.isAdmin = function() {
+        if($rootScope.currentUser && $rootScope.currentUser.isAdmin)
+        {
+          return true;
+        }
+
+        return false;
+      };
+
     }]);
   })();
