@@ -7,6 +7,7 @@ var settings       = require('./server/config/settings');
 
 // set our port
 var port = settings.serverSettings.HTTP_PORT;
+var ip = settings.serverSettings.HTTP_IP;
 
 // configuration ===========================================
 require('./server/config/db')(app);
@@ -21,10 +22,11 @@ var server = require('http').createServer(app);
 // routes ==================================================
 require('./server/routes')(app);
 
+console.log('Express server starting on %s %d', ip, port);
 // start app ===============================================
 // startup our app at http://localhost:PORT
-app.listen(port, function () {
-  console.log('Express server listening on %d', port);
+server.listen(port, ip, function () {
+  console.log('Express server listening on %s  %d', ip, port);
 });
 
 // expose app
