@@ -1,12 +1,19 @@
-<div ng-if="!isUserAdmin">
-  <div class="row">
-    <div class="col-md-8">
-      <h3>There is nothing for you to see there. If you still think there is, please contact website admin.</h3>
+<div class="root-admin">
+  <div ng-if="!isUserAdmin">
+    <div class="row">
+      <div class="col-md-8">
+        <h3>There is nothing for you to see there. If you still think there is, please contact website admin.</h3>
+      </div>
     </div>
   </div>
-</div>
-<div ng-if="isUserAdmin">
-  <div class="row">
-    <h4>Users</h4>
+  <div ng-if="isUserAdmin">
+    <div class="row">
+      <div class="col-md-3">
+        <a href=""><h4>Users</h4></a>
+      </div>
+    </div>
+    <div class="row offset">
+      <div ng-include src="'app/admin/users-template.html'"></div>
+    </div>
   </div>
 </div>

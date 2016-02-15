@@ -8,7 +8,8 @@
       'ngCookies',
       'ui.mask',
       'ngSanitize',
-      'ui.grid'
+      'ui.grid',
+      'ui.grid.pagination'
     ])
 
     app.constant("APP_EVENTS", {
@@ -36,7 +37,7 @@
         })
         .when('/admin', {
           templateUrl: 'app/admin/admin-template.html',
-          controller: 'adminController'
+          controller: 'AdminController'
         })
         .otherwise({
           redirectTo: '/'

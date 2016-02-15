@@ -4,10 +4,29 @@ var mailer = require('../../components/mailer');
 var uuid = require('uuid');
 
 exports.index = function(req, res) {
-    UserModel.find({}, '-salt -hashedPassword', function(err, users) {
+    UserModel.find({}, '-salt -hashedPassword -_v -authToken -__v', function(err, users) {
         if (err) return res.status(500).send(err);
         res.status(200).json(users);
     });
+};
+
+exports.getAllPaged = function(req, res) {
+  var page = req.params.pageNumber;
+  var skip = req.params.pageSize;
+  var itemsToSkip = (page - 1) * skip;
+
+  UserModel.count({}, function( err, count){
+      UserModel.find({},
+                    '-salt -hashedPassword -_v -authToken -__v',
+                    {skip:itemsToSkip, limit: skip },
+                    function(err, users) {
+                      if (err) return res.status(500).send(err);
+
+                      var data = { users: users, count: count};
+                      res.status(200).json(data);
+                  });
+  });
+
 };
 
 /**

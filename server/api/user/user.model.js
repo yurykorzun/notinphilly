@@ -65,7 +65,8 @@ userSchema
         '_id': this._id,
         'fullname': this.firstName + ' ' + this.lastName,
         'email': this.email,
-        'roles': this.roles
+        'roles': this.roles,
+        'isAdmin': this.roles.indexOf(1) > -1
       };
     });
 
@@ -78,7 +79,7 @@ userSchema
 userSchema
     .virtual('isAdmin')
     .get(function () {
-      return roles.indexOf(1) > 0;
+      return this.roles.indexOf(1) > -1;
     });
 
 /*userSchema.path('email').validate(function(value, respond) {
@@ -98,6 +99,9 @@ userSchema
           'role': this.role
       };
   });
+
+userSchema.set('toObject', {  virtuals: true });
+userSchema.set('toJSON', {  virtuals: true });
 
 userSchema.methods = {
     /**
