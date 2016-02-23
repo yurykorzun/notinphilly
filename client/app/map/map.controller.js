@@ -84,6 +84,17 @@ angular.module('notinphillyServerApp')
           targetPopup._close();
         }
 
+        newScope.checkin = function() {
+          $http.get("api/userstats/checkin/").then(function(response){
+            console.log("Success");
+            targetPopup._close();
+          },
+          function(err){
+            console.log($rootScope.currentUser._id);
+            console.log("ERROR during checkin: " + err);
+          });
+        };
+
         newScope.showLogin = function(){
           setUpDefaultView();
           $scope.isShowLogin = true;
