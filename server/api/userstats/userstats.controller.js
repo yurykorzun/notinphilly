@@ -18,7 +18,8 @@ var saveUserStats = function(userStats, res) {
   });
 }
 
-var createUserStats = function(UserStatsModel, res) {
+var createUserStats = function(userId, res) {
+  console.log("Created a new user stats");
   UserStatsModel.create(
   {
     checkin: 1,
@@ -35,14 +36,18 @@ var createUserStats = function(UserStatsModel, res) {
  */
 exports.checkin = function(req, res, next) {
     var userId = req.params.id;
-   UserStatsModel.findOne(userId, function(err, userStats) {
-       if (err) return next(err);
-         if (typeof userStats != 'undefined' && userStats != 'null') {
+    console.log(req.user._id);
+    if (userId != req.user._id) return res.status(401).send();
+   UserStatsModel.findOne({uid: userId}, function(err, userStats) {
+       if (err) {
+         return next(err);
+       }
+         if (typeof userStats != 'undefined' && userStats != null) {
          userStats.checkin = userStats.checkin + 1 ;
-        saveUserStats(userStats, res);
+         saveUserStats(userStats, res);
        }
        else {
-         createUserStats(UserStatsModel, res);
+         createUserStats(userId, res);
        }
     });
 };
