@@ -24,7 +24,7 @@ var createUserStats = function(userId, res) {
   {
     checkin: 1,
     uid: userId,
-    date: ''
+    date: Date(Date.now())
   },
   function(err, thor){
 
@@ -36,18 +36,6 @@ var createUserStats = function(userId, res) {
  */
 exports.checkin = function(req, res, next) {
     var userId = req.params.id;
-    console.log(req.user._id);
     if (userId != req.user._id) return res.status(401).send();
-   UserStatsModel.findOne({uid: userId}, function(err, userStats) {
-       if (err) {
-         return next(err);
-       }
-         if (typeof userStats != 'undefined' && userStats != null) {
-         userStats.checkin = userStats.checkin + 1 ;
-         saveUserStats(userStats, res);
-       }
-       else {
-         createUserStats(userId, res);
-       }
-    });
+     createUserStats(userId, res);
 };
