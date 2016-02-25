@@ -1,0 +1,5 @@
+
+> not-in-philly@ start /home/alex/code/notinphilly
+> node server.js
+
+Magic happens on port 8080
