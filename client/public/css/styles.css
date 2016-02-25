@@ -1,3 +1,10 @@
+body {
+  padding: 0;
+  margin: 0;
+}
+html, body, #cityMap {
+  height: 100%;
+}
 p{
     margin: 0;
 }
@@ -28,7 +35,6 @@ input[type*=submit], .btn, .btn-default {
     left: 0;
     right: 0;
     width: 100%;
-    height: 100%;
     z-index: 1;
 }
 .side-container {
