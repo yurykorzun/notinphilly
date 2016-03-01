@@ -86,7 +86,6 @@ angular.module('notinphillyServerApp')
 
         newScope.checkin = function() {
           $http.get("api/userstats/checkin/" + $rootScope.currentUser._id).then(function(response){
-            console.log("Success");
             targetPopup._close();
           },
           function(err){
