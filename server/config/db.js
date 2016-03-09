@@ -3,6 +3,7 @@ var mongoose       = require('mongoose');
 var expressSession = require('express-session');
 var mongoStore     = require('connect-mongo')(expressSession);
 var settings       = require('./settings');
+var argv          = require('boring')();
 
 module.exports = function(app) {
     var connectionString = settings.serverSettings.DB_CONNECTION_STRING;
@@ -32,9 +33,9 @@ module.exports = function(app) {
           db: 'notinphilly'
       })
     }));
-
-    //seed the database
-    //var dbseeder = require('../components/dbseeder');
-    //uncomment to seed
-    //dbseeder();
+    if (argv['seed-db']) {
+      console.log('Seeding DB');
+      var dbseeder = require('../components/dbseeder');
+      dbseeder();
+    }
 };
