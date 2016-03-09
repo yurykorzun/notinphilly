@@ -13,5 +13,5 @@ To run the app locally:
 2. Install nodejs, npm, bower, mongodb
 3. Run `npm install` in the folder
 4. Run `bower install`
-5. Seed database by uncommenting seeder in `server/config/db`
-6. Run `node server` to start the server, which you can access at http://localhost:8080.
+5. Run `node server --seed-db` to start the server and seed the database. You can access the server http://localhost:8080.
+6. In the future, just type `node server`, you only need to seed the database once.
