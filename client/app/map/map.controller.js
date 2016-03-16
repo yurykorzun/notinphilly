@@ -4,27 +4,26 @@ angular.module('notinphillyServerApp')
     $scope.tooltip = {};
 
     mapService.getMap().then(function(map) {
+
       map.on('popupopen', function(popupEvent) {
+
         var setUpDefaultView = function(){
           $scope.isAuthorized = false;
           $scope.isAdoptedByUser = false;
           $scope.isShowAdoptedSuccess = false;
           $scope.isShowError = false;
           $scope.isShowLogin = false;
-        }
+        };
 
-        var initView = function()
-        {
+        var initView = function() {
           $scope.isAuthorized = ($rootScope.currentUser != undefined);
-          if($scope.isAuthorized)
-          {
+
+          if ($scope.isAuthorized) {
             $scope.isAdoptedByUser = properties.isAdoptedByUser;
-          }
-          else
-          {
+          } else {
             $scope.isAdoptedByUser = false;
           }
-        }
+        };
 
         // Create the popup view when is opened
         var properties = popupEvent.popup.options.properties;
@@ -80,9 +79,9 @@ angular.module('notinphillyServerApp')
           });
         };
 
-        newScope.close = function(){
+        newScope.close = function() {
           targetPopup._close();
-        }
+        };
 
         newScope.checkin = function() {
           $http.get("api/userstats/checkin/" + $rootScope.currentUser._id).then(function(response){
@@ -95,10 +94,10 @@ angular.module('notinphillyServerApp')
           });
         };
 
-        newScope.showLogin = function(){
+        newScope.showLogin = function() {
           setUpDefaultView();
           $scope.isShowLogin = true;
-        }
+        };
 
         $compile(popupEvent.popup._contentNode)(newScope);
       });
@@ -112,24 +111,19 @@ angular.module('notinphillyServerApp')
     });
 
     var mapCallbacks = {
-      neighborhoodMouseOverCallback : function(e)
-      {
+      neighborhoodMouseOverCallback : function(e) {
       },
-      neighborhoodMouseOutCallback : function(e)
-      {
+      neighborhoodMouseOutCallback : function(e) {
       },
       neighborhoodMouseClickCallback : function(e) {
         $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
       },
-      streetMouseOverCallback : function(e)
-      {
+      streetMouseOverCallback : function(e) {
       },
-      streetMouseOutCallback: function(e){
-
+      streetMouseOutCallback: function(e) {
       },
-      streetClickCallback: function(e){
-        if(e.target.feature)
-        {
+      streetClickCallback: function(e) {
+        if (e.target.feature) {
           mapService.showStreetPopup(e.latlng, e.target);
         }
       }
