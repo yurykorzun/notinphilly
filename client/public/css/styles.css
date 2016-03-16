@@ -92,6 +92,7 @@ input[type*=submit], .btn, .btn-default {
 }
 .sideItemsColumnSection {
     border: 1px solid #BDB9BB;
+    border-left: none;
     background-color: #FFFFFF;
 }
 .sideItem {
