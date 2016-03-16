@@ -1,7 +1,9 @@
 (function () {
 angular.module('notinphillyServerApp')
   .controller('mainController', [ '$scope', '$http', '$rootScope', '$uibModal', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $uibModal, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
+
     $scope.bugTooltip = false;
+
     $scope.sideMenu = {
       isUserProfileVisible: false,
       isUserProfileOpen: false,
@@ -19,28 +21,25 @@ angular.module('notinphillyServerApp')
         mapService.zoomOut(1);
       }
   };
-  var foundStreet = $cookies.get(APP_CONSTS.FOUND_STREET);
-  if(!foundStreet){
-    var modalInstance = $uibModal.open({
-                           templateUrl: 'app/main/start-popup-template.html',
-                           controller: 'StartPopupController',
-                           resolve: {
 
-                           }
-                         });
+  var foundStreet = $cookies.get(APP_CONSTS.FOUND_STREET);
+  if (!foundStreet) {
+    var modalInstance = $uibModal.open({
+                          templateUrl: 'app/main/start-popup-template.html',
+                          controller: 'StartPopupController',
+                          resolve: {}
+                        });
   }
 
 
-    function ShowUserProfile()
-    {
+    function ShowUserProfile() {
       $scope.sideMenu.isUserProfileVisible = true;
       $scope.sideMenu.isUserProfileOpen = true;
       $scope.sideMenu.isLoginVisible = false;
       $scope.sideMenu.isLoginOpen = false;
     }
 
-    function ShowLoginForm()
-    {
+    function ShowLoginForm() {
       $scope.sideMenu.isUserProfileVisible = false;
       $scope.sideMenu.isUserProfileOpen = false;
       $scope.sideMenu.isLoginVisible = true;
@@ -62,10 +61,10 @@ angular.module('notinphillyServerApp')
     $scope.$on(APP_EVENTS.LOGOUT, function(event) {
       ShowLoginForm();
     });
-    $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event){
+    $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event) {
       $scope.bugTooltip = true;
     });
-    $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event){
+    $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event) {
       $scope.bugTooltip = false;
     });
 
