@@ -88,8 +88,8 @@ angular.module('notinphillyServerApp')
             targetPopup._close();
           },
           function(err){
-            console.log($rootScope.currentUser._id);
-            console.log("ERROR during checkin: " + err);
+            setUpDefaultView();
+            $scope.isShowError = true;
           });
         };
 

@@ -44,6 +44,6 @@ exports.logout = function (req, res) {
 exports.login = function (req, res, next) {
   console.log("Login successfully");
   if (req.isAuthenticated()) {
-    return res.json({ id: req.user._id, email: req.user.email });
+    return res.json({ _id: req.user._id, email: req.user.email });
   }
 }
