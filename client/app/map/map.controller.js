@@ -84,7 +84,7 @@ angular.module('notinphillyServerApp')
         };
 
         newScope.checkin = function() {
-          $http.get("api/userstats/checkin/" + $rootScope.currentUser._id).then(function(response){
+          $http.get("api/userstats/checkin?uid=" + $rootScope.currentUser._id +"&sid=" + properties.id).then(function(response){
             targetPopup._close();
           },
           function(err){

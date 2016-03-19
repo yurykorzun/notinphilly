@@ -3,7 +3,7 @@ var UserStatsModel = require('./userstats.model');
 var UserController = require('../user/user.controller');
 var mailer = require('../../components/mailer');
 var uuid = require('uuid');
-
+var url = require('url');
 
 var saveUserStats = function(userStats, res) {
   userStats.save(function (err) {
@@ -18,12 +18,13 @@ var saveUserStats = function(userStats, res) {
   });
 }
 
-var createUserStats = function(userId, res) {
+var createUserStats = function(userId, streetId, res) {
   console.log("Created a new user stats");
   UserStatsModel.create(
   {
     checkin: 1,
     uid: userId,
+    sid: streetId,
     date: Date(Date.now())
   },
   function(err, thor){
@@ -35,7 +36,6 @@ var createUserStats = function(userId, res) {
  * Checkin the user
  */
 exports.checkin = function(req, res, next) {
-    var userId = req.params.id;
-    if (userId != req.user._id) return res.status(401).send();
-     createUserStats(userId, res);
+    var queryObj = url.parse(req.url, true).query;
+     createUserStats(queryObj.uid, queryObj.sid,  res);
 };
