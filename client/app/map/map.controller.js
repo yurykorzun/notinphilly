@@ -107,6 +107,7 @@ angular.module('notinphillyServerApp')
     });
     $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event, leafletEvent){
       $scope.sideMenu.isStreetLevel = true;
+      $scope.sideMenu.isVisible = false;
     });
 
     var mapCallbacks = {
