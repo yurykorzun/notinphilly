@@ -16,7 +16,7 @@ angular.module('notinphillyServerApp')
         };
 
         var initView = function() {
-          $scope.isAuthorized = ($rootScope.currentUser != undefined);
+          $scope.isAuthorized = ($rootScope.currentUser !== undefined);
 
           if ($scope.isAuthorized) {
             $scope.isAdoptedByUser = properties.isAdoptedByUser;
@@ -66,6 +66,7 @@ angular.module('notinphillyServerApp')
             $scope.isShowError = true;
           });
         };
+        
         newScope.leave = function() {
           $http.get("api/streets/leave/" + properties.id).then(function(response) {
             mapService.addNeigborhoodStreets(properties.parentId);

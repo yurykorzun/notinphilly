@@ -19,16 +19,16 @@
         },
         signup : function() {
           var modalInstance = $uibModal.open({
-                                 templateUrl: 'app/signup/signup-template.html',
-                                 controller: 'SignupController',
-                                 resolve: {
+                                templateUrl: 'app/signup/signup-template.html',
+                                controller: 'SignupController',
+                                resolve: {
 
-                                 }
-                               });
-                               modalInstance.result.then(function (selectedItem) {
-                                 $scope.selected = selectedItem;
-                                });
+                                }
+                              });
+                              modalInstance.result.then(function (selectedItem) {
+                                $scope.selected = selectedItem;
+                              });
         }
-      }
+      };
     }]);
 })();

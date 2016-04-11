@@ -20,16 +20,17 @@ angular.module('notinphillyServerApp')
       mapZoomOut: function() {
         mapService.zoomOut(1);
       }
-  };
+    };
 
-  var foundStreet = $cookies.get(APP_CONSTS.FOUND_STREET);
-  if (!foundStreet) {
-    var modalInstance = $uibModal.open({
-                          templateUrl: 'app/main/start-popup-template.html',
-                          controller: 'StartPopupController',
-                          resolve: {}
-                        });
-  }
+    var foundStreet = $cookies.get(APP_CONSTS.FOUND_STREET);
+    
+    if (!foundStreet) {
+      var modalInstance = $uibModal.open({
+                            templateUrl: 'app/main/start-popup-template.html',
+                            controller: 'StartPopupController',
+                            resolve: {}
+                          });
+    }
 
 
     function ShowUserProfile() {
