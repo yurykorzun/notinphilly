@@ -133,7 +133,7 @@
               style: {
                 color: '#484848',
                 weight: 15,
-                opacity: 0.4
+                opacity: 0.2
               }
             });
             mapLayerGroup.addLayer(geoJsonLayer);
