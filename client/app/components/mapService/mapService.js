@@ -100,6 +100,37 @@
           });
         });
       };
+      
+      this.goToCoordinates = function(start, end) {
+          deferredMap.promise.then(function(map){
+              var start = L.latLng(start[0], start[1]);
+              console.log(start);
+              var end = L.LatLng(end[0], end[1]);
+              console.log(stop);
+              
+              var streetBounds = new L.LatLngBounds(start, end);
+
+              //var geoJsonLayer = L.geoJson(neighborhooData.geodata);
+              var streetCenter = streetBounds.getCenter();
+
+              setupStreets(map).then(function(layers) {
+                map.setView(streetCenter, 16, { animate: false });
+
+                var foundLayer = layers.filter(function(layer) {
+                  return layer.feature.properties.id === streetData._id;
+                });
+                
+                openStreetLayerPopup(streetCenter, foundLayer[0], foundLayer[0].feature.properties);
+              });
+          })
+      }
+      
+      this.getBounds = function() {
+              var geoJsonLayer = L.geoJson(neighborhooData.geodata);
+              var layerBounds = geoJsonLayer.getBounds();
+              
+              return layerBounds;
+      }
 
       this.zoomIn = function(zoomDelta) {
         deferredMap.promise.then(function(map) {

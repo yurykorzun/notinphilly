@@ -9,6 +9,11 @@
 
       $scope.errorShow = false;
       $scope.notFoundShow = false;
+      
+      $scope.getMap = function() {
+          mapService.goToCoordinates(	[-75.0508381888625, 	40.0490649017493 ], 	[ 	-75.0508240660636, 	40.0494101432795 ])
+          return mapService.getMap();
+      }
 
       $scope.refreshZipCodes = function(search) {
         if(search)
@@ -29,7 +34,7 @@
                       });
         }
       };
-
+ 
       $scope.findStreet = function() {
         var findStreetsUrl = '/api/streets/findstreets/' + $scope.streetName.selected.name + "/" + $scope.houseNumber;
         $http.get(findStreetsUrl)
