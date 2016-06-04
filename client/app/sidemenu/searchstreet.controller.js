@@ -10,11 +10,6 @@
       $scope.errorShow = false;
       $scope.notFoundShow = false;
       
-      $scope.getMap = function() {
-          mapService.goToCoordinates(	[-75.0508381888625, 	40.0490649017493 ], 	[ 	-75.0508240660636, 	40.0494101432795 ])
-          return mapService.getMap();
-      }
-
       $scope.refreshZipCodes = function(search) {
         if(search)
         {
@@ -64,6 +59,10 @@
                         $scope.notFoundShow = false;
                       });
       };
+      
+      $scope.goToCoordinates = function(lat, lng) {
+          mapService.goToCoordinates(lat, lng);
+      }
 
       $scope.isValidForSearch = function() {
         if($scope.streetName && $scope.streetName.selected && $scope.houseNumber)

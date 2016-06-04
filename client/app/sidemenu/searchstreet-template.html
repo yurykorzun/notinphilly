@@ -1,7 +1,7 @@
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCRXxFuQfwpv7tPUahOB2yP4S7dR3Nt_wg&libraries=places&callback=initAutocomplete"
          async defer></script>
 
-<ng-form ng-controller="SearchStreetController">
+<ng-form ng-controller="SearchStreetController" id="SearchStreetController">
   <div class="alert alert-success" ng-show="notFoundShow">Sorry, we couldn't find anything...</div>
   <div class="alert alert-danger" ng-show="errorShow">Something went wrong...</div>
   <div><label>Find your street</label></div>
@@ -9,9 +9,7 @@
     <div class="col-xs-4 col-sm-4 col-md-4 min-padding-right">
       <input id="pac-input" type="text" placeholder="Search Box">
       <script>
-     function initAutocomplete(mapService) {
-
-        var map = angular.injector(['ng', 'notinphillyServerApp']).get("mapService").getMap();
+     function initAutocomplete() {
         // Create the search box and link it to the UI element.
         var input = document.getElementById('pac-input');
         var searchBox = new google.maps.places.SearchBox(input);
@@ -22,12 +20,9 @@
         // more details for that place.
         searchBox.addListener('places_changed', function() {
           var places = searchBox.getPlaces();
-          console.log(places[0].geometry.location);
-          if (places.length == 0) {
-              angular.injector(['ng', 'notinphillyServerApp']).get("mapService").goToCoordinates();
-            return;
-          }
-
+          places.forEach(function(place){
+             angular.element(document.getElementById('SearchStreetController')).scope().goToCoordinates(place.geometry.location.lat(),place.geometry.location.lng());
+          })
         });
       }
        </script>
