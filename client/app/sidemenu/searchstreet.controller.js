@@ -61,7 +61,8 @@
       };
       
       $scope.goToCoordinates = function(lat, lng) {
-          mapService.goToCoordinates(lat, lng);
+           $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
+           mapService.goToCoordinates(lat, lng);
       }
 
       $scope.isValidForSearch = function() {
