@@ -76,6 +76,7 @@
       };
 
       this.goToStreet = function(streetId) {
+          console.log("Gotostreets");
         deferredMap.promise.then(function(map) {
           $http.get("api/streets/" + streetId).success(function(streetData, status) {
             $http.get("api/neighborhoods/" + streetData.neighborhood).success(function(neighborhooData, status) {
@@ -86,7 +87,6 @@
               var geoJsonLayer = L.geoJson(neighborhooData.geodata);
               var layerBounds = geoJsonLayer.getBounds();
               var streetCenter = layerBounds.getCenter();
-
               setupStreets(streetData.neighborhood, map).then(function(layers) {
                 map.setView(streetCenter, 16, { animate: false });
 
@@ -100,6 +100,20 @@
           });
         });
       };
+      
+      this.goToCoordinates = function(lat, lng) {
+          console.log(lat + "  " + lng)
+         deferredMap.promise.then(function(map) {
+             map.setView([lat,lng], 16, {animate: false});
+         })
+      }
+      
+      this.getBounds = function() {
+              var geoJsonLayer = L.geoJson(neighborhooData.geodata);
+              var layerBounds = geoJsonLayer.getBounds();
+              
+              return layerBounds;
+      }
 
       this.zoomIn = function(zoomDelta) {
         deferredMap.promise.then(function(map) {

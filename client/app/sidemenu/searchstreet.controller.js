@@ -9,7 +9,7 @@
 
       $scope.errorShow = false;
       $scope.notFoundShow = false;
-
+      
       $scope.refreshZipCodes = function(search) {
         if(search)
         {
@@ -29,7 +29,7 @@
                       });
         }
       };
-
+ 
       $scope.findStreet = function() {
         var findStreetsUrl = '/api/streets/findstreets/' + $scope.streetName.selected.name + "/" + $scope.houseNumber;
         $http.get(findStreetsUrl)
@@ -59,6 +59,11 @@
                         $scope.notFoundShow = false;
                       });
       };
+      
+      $scope.goToCoordinates = function(lat, lng) {
+           $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
+           mapService.goToCoordinates(lat, lng);
+      }
 
       $scope.isValidForSearch = function() {
         if($scope.streetName && $scope.streetName.selected && $scope.houseNumber)

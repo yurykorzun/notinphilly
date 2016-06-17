@@ -58,7 +58,6 @@ angular.module('notinphillyServerApp')
             setUpDefaultView();
             $scope.isShowAdoptedSuccess = true;
             mapService.addNeigborhoodStreets(properties.parentId);
-
             $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
           },
           function(err) {
