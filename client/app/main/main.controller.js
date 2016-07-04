@@ -1,7 +1,6 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('mainController', [ '$scope', '$http', '$rootScope', '$uibModal', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $uibModal, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
-
-    
+  .controller('mainController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $uibModal, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
+      
   }]);
 })();

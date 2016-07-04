@@ -1,0 +1,12 @@
+<div ng-controller="searchAddressController">
+  <div class="address-search-form">
+    <div class="input-group col-md-12">
+        <input id="address-search" search-autocomplete ng-model="autocomplete" options="options" details="details" type="text" class="form-control input-lg" placeholder="Enter address..." />
+        <span class="input-group-btn">
+            <button class="btn btn-info btn-lg" type="button" ng-click="findStreet()" ng-disabled="!isValidForSearch()">
+                <i class="glyphicon glyphicon-search"></i>
+            </button>
+        </span>
+    </div>
+  </div>
+</div>

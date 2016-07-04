@@ -33,7 +33,11 @@ body{
 {
     border: 1px solid #ddd;
 }
-.address-search
+.address-search-form
 {
   margin: 20px 10px 20px 10px;
+}
+#cityMap {
+    height:700px;
+    z-index: 1;
 }
