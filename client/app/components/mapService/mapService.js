@@ -5,6 +5,7 @@
       var deferredMap = $q.defer();
 
       var mapLayerGroup = L.layerGroup();
+      var mapStreetLayer = undefined;
       var mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
         neighborhoodMouseOutCallback : undefined,
@@ -51,6 +52,7 @@
             map.setView(APP_CONSTS.MAP_CENTER, 13, { animate: false });
             mapLayerGroup.addLayer(geoJsonLayer);
             mapLayerGroup.addTo(map);
+            mapStreetLayer = undefined;
            });
         });
       };
@@ -82,7 +84,7 @@
           mapLayerGroup.clearLayers();
 
           map.panTo(location);
-          map.setZoom(16, { animate: false });
+          map.setZoom(17, { animate: false });
           map.invalidateSize();
 
           var LeafIcon = L.Icon.extend({
@@ -105,6 +107,7 @@
             var foundStreets = result.data;
 
             var streetLayer = createStreetLayer(foundStreets);
+            mapStreetLayer = streetLayer;
             mapLayerGroup.addLayer(streetLayer);
             streetLayer.addTo(map);
 
@@ -136,23 +139,40 @@
               var end = L.latLng(streetData.geodata.geometry.coordinates[1][1], streetData.geodata.geometry.coordinates[1][0]);
               var streetBounds = new L.LatLngBounds(start, end);
 
-              var geoJsonLayer = L.geoJson(neighborhooData.geodata);
-              var layerBounds = geoJsonLayer.getBounds();
-              var streetCenter = layerBounds.getCenter();
-
               loadStreets(streetData.neighborhood, map).then(function(layers) {
-                map.setView(streetCenter, 16, { animate: false });
-
                 var foundLayer = layers.filter(function(layer) {
                   return layer.feature.properties.id === streetData._id;
-                });
+                })[0];
 
-                openStreetLayerPopup(streetCenter, foundLayer[0], foundLayer[0].feature.properties);
+                var geoJsonLayer = L.geoJson(foundLayer.feature);
+                var layerBounds = geoJsonLayer.getBounds();
+                var streetCenter = layerBounds.getCenter();
+
+                map.setView(streetCenter, 16, { animate: false });
+
+                openStreetLayerPopup(streetCenter, foundLayer, foundLayer.feature.properties);
               });
             });
           });
         });
       };
+
+      this.selectStreet = function(streetId) {
+        deferredMap.promise.then(function(map) {
+          var layers = mapStreetLayer.getLayers();
+          var foundLayer = layers.filter(function(layer) {
+            return layer.feature.properties.id === streetId;
+          })[0];
+
+          var geoJsonLayer = L.geoJson(foundLayer.feature);
+          var layerBounds = geoJsonLayer.getBounds();
+          var streetCenter = layerBounds.getCenter();
+
+          map.setView(streetCenter, 17, { animate: false });
+
+          openStreetLayerPopup(streetCenter, foundLayer, foundLayer.feature.properties);
+        });
+      }
 
       this.zoomIn = function(zoomDelta) {
         deferredMap.promise.then(function(map) {
@@ -175,10 +195,11 @@
           $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
             var streetLayer = createStreetLayer(data);
 
-            mapLayerGroup.addLayer(geoJsonLayer);
+            mapLayerGroup.addLayer(streetLayer);
+            mapStreetLayer = streetLayer;
             streetLayer.addTo(map);
 
-            deferredSetup.resolve(streetLayers);
+            deferredSetup.resolve(streetLayer.getLayers());
           }, function(err) {
             deferredSetup.reject(err);
           });

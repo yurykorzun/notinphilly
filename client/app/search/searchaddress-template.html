@@ -1,9 +1,14 @@
 <div ng-controller="searchAddressController">
+  <div>
+    <div class="col-md-10">
+      <h4>Find participating streets nearby:</h4>
+    </div>
+  </div>
   <div class="row">
     <div class="address-search-form">
       <div class="input-group col-md-12">
         <div ng-show="hasAddress()" class="input-group-addon" ng-click="findStreet()"><i class="fa fa-search"></i></div>
-        <input id="address-search" search-autocomplete ng-model="autocomplete" options="options" details="details" type="text" class="form-control input-lg" placeholder="Enter address..." />
+        <input id="address-search" search-autocomplete ng-model="autocomplete" options="options" details="details" type="text" class="form-control input-lg" placeholder="Enter your address..." />
         <div ng-show="hasAddress()" class="input-group-addon" ng-click="clearSearch()"><i class="fa fa-close"></i></div>
       </div>
     </div>
@@ -11,7 +16,7 @@
   <div class="row" ng-show="hasStreets()">
     <div class="row">
       <div class="col-md-6">
-        <h4>Found streets nearby:</h4>
+        <h4>We found following streets:</h4>
       </div>
     </div>
     <div class="found-streets-items col-md-12 clearfix">
@@ -23,12 +28,12 @@
         </div>
         <div class="col-md-10">
           <div class="col-md-8">
-            <h4>{{foundStreet.properties.type}} {{foundStreet.properties.name}} {{foundStreet.properties.hundred}}</h4>
+            <h4>{{foundStreet.properties.name}} {{foundStreet.properties.type}} {{foundStreet.properties.hundred}}</h4>
             <h6>Zip: {{foundStreet.properties.zipCode}}</h6>
             <h6>Participants: {{foundStreet.properties.totalAdopters}}</h6>
           </div>
           <div class="col-md-4">
-            <a class="btn bth-sm btn-success btn-block" href="" ng-click="chooseStreet()">
+            <a class="btn bth-sm btn-success btn-block" href="" ng-click="chooseStreet(foundStreet.properties.id)">
               Select street
             </a>
           </div>

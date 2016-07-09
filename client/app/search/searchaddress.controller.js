@@ -26,8 +26,8 @@ angular.module('notinphillyServerApp')
       }
     };
 
-    $scope.chooseStreet = function() {
-
+    $scope.chooseStreet = function(streetId) {
+      mapService.selectStreet(streetId);
     }
 
     $scope.hasAddress = function() {
