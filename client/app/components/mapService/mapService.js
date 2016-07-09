@@ -71,9 +71,64 @@
 
       this.addNeigborhoodStreets = function(neighborhoodId) {
         deferredMap.promise.then(function(map) {
-          setupStreets(neighborhoodId, map);
+          loadStreets(neighborhoodId, map);
         });
       };
+
+      this.showAddressStreets = function(location) {
+        var deferredLoading = $q.defer();
+
+        deferredLoading.promise.then(function(map) {
+          deferredMap.promise.then(function(map) {
+            mapLayerGroup.clearLayers();
+
+            map.panTo(location);
+            map.setZoom(16, { animate: false });
+            map.invalidateSize();
+
+            var LeafIcon = L.Icon.extend({
+              options: {
+                iconSize:     [32, 32], // size of the icon
+                iconAnchor:   [16, 32], // point of the icon which will correspond to marker's location
+                popupAnchor:  [16, 0] // point from which the popup should open relative to the iconAnchor
+              }
+            });
+
+            var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
+            var addressIcon = new LeafIcon({iconUrl: 'public/img/address_house.png'});
+
+            var addressMarker = L.marker(location, {icon: addressIcon});
+            mapLayerGroup.addLayer(addressMarker);
+            addressMarker.addTo(map)
+
+            $http.post('api/streets/byloc/', location).then(function(result) {
+              var addressLocation = location;
+              var foundStreets = result.data;
+
+              var streetLayer = createStreetLayer(foundStreets);
+              mapLayerGroup.addLayer(streetLayer);
+              streetLayer.addTo(map);
+
+              for(var i = 0; i < foundStreets.length; i++)
+              {
+                var street = foundStreets[i];
+                var geoJsonLayer = L.geoJson(street);
+                var layerBounds = geoJsonLayer.getBounds();
+                var streetCenter = layerBounds.getCenter();
+
+                var streetMarker = L.marker(streetCenter, {icon: markerIcon});
+                mapLayerGroup.addLayer(streetMarker);
+                streetMarker.addTo(map);
+              }
+              deferredSetup.resolve(foundStreets);
+            }, function(err) {
+              deferredSetup.reject(err);
+            });
+          });
+        });
+
+        return deferredSetup.promise;
+      }
 
       this.goToStreet = function(streetId) {
         deferredMap.promise.then(function(map) {
@@ -87,7 +142,7 @@
               var layerBounds = geoJsonLayer.getBounds();
               var streetCenter = layerBounds.getCenter();
 
-              setupStreets(streetData.neighborhood, map).then(function(layers) {
+              loadStreets(streetData.neighborhood, map).then(function(layers) {
                 map.setView(streetCenter, 16, { animate: false });
 
                 var foundLayer = layers.filter(function(layer) {
@@ -113,39 +168,46 @@
         });
       };
 
-      var setupStreets = function(neighborhoodId, map) {
+      var loadStreets = function(neighborhoodId, map) {
         var deferredSetup = $q.defer();
 
         deferredMap.promise.then(function(map) {
           mapLayerGroup.clearLayers();
 
           $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
-            var geoJsonLayer = L.geoJson(data, {
-              onEachFeature : function (feature, layer){
-                layer.setStyle(getStreetStyle(feature));
-                //setStreetLabel(feature, layer);
-                layer.on({
-                  mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
-                  mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
-                  click: function(e) { mapCallbacks.streetClickCallback(e); }
-                });
-              },
-              style: {
-                color: '#484848',
-                weight: 15,
-                opacity: 0.2
-              }
-            });
-            mapLayerGroup.addLayer(geoJsonLayer);
-            geoJsonLayer.addTo(map);
+            var streetLayer = createStreetLayer(data);
 
-            deferredSetup.resolve(geoJsonLayer.getLayers());
+            mapLayerGroup.addLayer(geoJsonLayer);
+            streetLayer.addTo(map);
+
+            deferredSetup.resolve(streetLayers);
           }, function(err) {
             deferredSetup.reject(err);
           });
         });
 
         return deferredSetup.promise;
+      };
+
+      var createStreetLayer = function(streets) {
+        var geoJsonLayer = L.geoJson(streets, {
+          onEachFeature : function (feature, layer){
+            layer.setStyle(getStreetStyle(feature));
+            //setStreetLabel(feature, layer);
+            layer.on({
+              mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
+              mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
+              click: function(e) { mapCallbacks.streetClickCallback(e); }
+            });
+          },
+          style: {
+            color: '#484848',
+            weight: 15,
+            opacity: 0.2
+          }
+        });
+
+        return geoJsonLayer;
       };
 
       var onNeighborhoodLayerClick = function(e) {
@@ -161,7 +223,7 @@
             map.setZoom(16, { animate: false });
             map.invalidateSize();
 
-            setupStreets(properties.id, map);
+            loadStreets(properties.id, map);
           });
         }
       };

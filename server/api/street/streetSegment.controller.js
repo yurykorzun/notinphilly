@@ -30,25 +30,50 @@ exports.getByNeighborhood = function(req, res, next) {
     });
 };
 
-var isStreetAdoptedByUser = function(user, street) {
-  if (typeof user.adoptedStreets !== 'undefined' && user.adoptedStreets.indexOf(street._id) == -1 && street.totalAdopters <=5) {
-    return false;
-  }
+exports.getByLocation = function(req, res, next) {
+    var locationLat = req.body.lat;
+    var locationLng = req.body.lng;
 
-  if (typeof user.adoptedStreets !== 'undefined' && (user.adoptedStreets.indexOf(street._id) > -1 || street.totalAdopters > 5)) {
-    return true;
-  }
+    var user = {};
+    //Get user info
+    if (typeof req.user !== 'undefined') {
+      UserModel.findById(req.user._id, function(err, userFound) {
+          if (err) return next(err);
+          user = userFound;
+        });
+    }
 
-  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters === 0 && street.totalAdopters <=5) {
-    return false;
-  }
+    StreetModel.find({ 'geodata.geometry':
+      { '$near': {
+      '$minDistance': 0,
+      '$maxDistance': 70,
+      '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
+      }}
+    }, function(err, streets) {
+        if (err) return next(err);
 
+        var geoList = new Array();
+        for(var nIndex = 0, length = streets.length; nIndex < length; nIndex++)
+        {
+          var street = streets[nIndex];
+          var geoItem = street.geodata;
 
-  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters > 0 || street.totalAdopters > 5) {
-    return true;
-  }
-
-}
+          geoItem.properties = {
+            id: street._id,
+            parentId: street.neighborhood,
+            name: street.streetName,
+            hundred: street.leftHundred,
+            zipCode: street.zipLeft,
+            type: street.type,
+            totalAdopters: street.totalAdopters,
+            isAdoptedByUser: isStreetAdoptedByUser(user, street),
+            active: street.active
+          };
+          geoList.push(geoItem);
+        }
+        res.status(200).json(geoList);
+    });
+};
 
 exports.getByNeighborhoodGeojson = function(req, res, next) {
     var neighborhoodId = req.params.nid;
@@ -86,6 +111,25 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
         res.status(200).json(geoList);
     });
 };
+
+var isStreetAdoptedByUser = function(user, street) {
+  if (typeof user.adoptedStreets !== 'undefined' && user.adoptedStreets.indexOf(street._id) == -1 && street.totalAdopters <=5) {
+    return false;
+  }
+
+  if (typeof user.adoptedStreets !== 'undefined' && (user.adoptedStreets.indexOf(street._id) > -1 || street.totalAdopters > 5)) {
+    return true;
+  }
+
+  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters === 0 && street.totalAdopters <=5) {
+    return false;
+  }
+
+
+  if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters > 0 || street.totalAdopters > 5) {
+    return true;
+  }
+}
 
 /**
  * Connects a street to a user

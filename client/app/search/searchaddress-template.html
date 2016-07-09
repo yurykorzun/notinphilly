@@ -1,12 +1,42 @@
 <div ng-controller="searchAddressController">
-  <div class="address-search-form">
-    <div class="input-group col-md-12">
+  <div class="row">
+    <div class="address-search-form">
+      <div class="input-group col-md-12">
+        <div ng-show="hasAddress()" class="input-group-addon" ng-click="findStreet()"><i class="fa fa-search"></i></div>
         <input id="address-search" search-autocomplete ng-model="autocomplete" options="options" details="details" type="text" class="form-control input-lg" placeholder="Enter address..." />
-        <span class="input-group-btn">
-            <button class="btn btn-info btn-lg" type="button" ng-click="findStreet()" ng-disabled="!isValidForSearch()">
-                <i class="glyphicon glyphicon-search"></i>
-            </button>
-        </span>
+        <div ng-show="hasAddress()" class="input-group-addon" ng-click="clearSearch()"><i class="fa fa-close"></i></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="row">
+      <div class="col-md-6">
+        <h4>Found streets nearby:</h4>
+      </div>
+    </div>
+    <div class="row">
+      <div class="found-streets-items col-md-12 clearfix">
+         <div class="street-item-block clearfix">
+          <div class="row">
+            <div class="col-md-2">
+              <div class="street-marker-icon pull-left">
+                  <img src="public/img/map_marker.png" />
+              </div>
+            </div>
+            <div class="col-md-8">
+              <h5>Chestnut 5005</h5>
+              <p>Title: Manager</p>
+              <div class="row">
+                <div class="col-md-5">
+                  <a class="btn bth-sm btn-success btn-block input-block-level" href="" ng-click="chooseStreet()">
+                    Select street
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>

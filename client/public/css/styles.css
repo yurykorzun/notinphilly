@@ -37,6 +37,23 @@ body{
 {
   margin: 20px 10px 20px 10px;
 }
+.street-item-block
+{
+    border:1px solid #E6E6E6;
+    margin-bottom:25px;
+    border-color:#80cde5;
+}
+.street-item-block .street-marker-icon
+{
+    margin-right:22px;
+    text-align:center!important;
+    background-color:#f2f2f2;
+    padding:20px 0;
+}
+.street-item-block .street-marker-icon img
+{
+  width:70px;
+}
 #cityMap {
     height:700px;
     z-index: 1;
