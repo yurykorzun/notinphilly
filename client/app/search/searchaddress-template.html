@@ -8,32 +8,29 @@
       </div>
     </div>
   </div>
-  <div class="row">
+  <div class="row" ng-show="hasStreets()">
     <div class="row">
       <div class="col-md-6">
         <h4>Found streets nearby:</h4>
       </div>
     </div>
-    <div class="row">
-      <div class="found-streets-items col-md-12 clearfix">
-         <div class="street-item-block clearfix">
-          <div class="row">
-            <div class="col-md-2">
-              <div class="street-marker-icon pull-left">
-                  <img src="public/img/map_marker.png" />
-              </div>
-            </div>
-            <div class="col-md-8">
-              <h5>Chestnut 5005</h5>
-              <p>Title: Manager</p>
-              <div class="row">
-                <div class="col-md-5">
-                  <a class="btn bth-sm btn-success btn-block input-block-level" href="" ng-click="chooseStreet()">
-                    Select street
-                  </a>
-                </div>
-              </div>
-            </div>
+    <div class="found-streets-items col-md-12 clearfix">
+       <div class="street-item-block row clearfix" ng-repeat="foundStreet in foundStreets">
+        <div class="col-md-2">
+          <div class="street-marker-icon pull-left">
+              <img src="public/img/map_marker.png" />
+          </div>
+        </div>
+        <div class="col-md-10">
+          <div class="col-md-8">
+            <h4>{{foundStreet.properties.type}} {{foundStreet.properties.name}} {{foundStreet.properties.hundred}}</h4>
+            <h6>Zip: {{foundStreet.properties.zipCode}}</h6>
+            <h6>Participants: {{foundStreet.properties.totalAdopters}}</h6>
+          </div>
+          <div class="col-md-4">
+            <a class="btn bth-sm btn-success btn-block" href="" ng-click="chooseStreet()">
+              Select street
+            </a>
           </div>
         </div>
       </div>

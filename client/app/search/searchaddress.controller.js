@@ -2,10 +2,12 @@
 angular.module('notinphillyServerApp')
   .controller('searchAddressController', [ '$scope', '$http', '$rootScope', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
     $scope.options = { country: 'us'};
+    $scope.foundStreets = [];
 
     $scope.clearSearch = function() {
       $scope.details = $scope.autocomplete = undefined;
-      $rootScope.$broadcast(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL);
+      $scope.foundStreets = [];
+      //$rootScope.$broadcast(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL);
       mapService.setNeighborhoodLayers();
     };
 
@@ -17,7 +19,7 @@ angular.module('notinphillyServerApp')
         location = { lat: location.lat(), lng: location.lng() };
 
         mapService.showAddressStreets(location).then(function(streets){
-          
+          $scope.foundStreets = streets;
         });
 
         //$rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
@@ -31,6 +33,10 @@ angular.module('notinphillyServerApp')
     $scope.hasAddress = function() {
       var addressDetails = $scope.details;
       return addressDetails != undefined;
+    };
+
+    $scope.hasStreets = function(){
+      return $scope.foundStreets.length > 0;
     };
   }]);
 })();

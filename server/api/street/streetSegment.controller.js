@@ -46,7 +46,7 @@ exports.getByLocation = function(req, res, next) {
     StreetModel.find({ 'geodata.geometry':
       { '$near': {
       '$minDistance': 0,
-      '$maxDistance': 70,
+      '$maxDistance': 50,
       '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
       }}
     }, function(err, streets) {

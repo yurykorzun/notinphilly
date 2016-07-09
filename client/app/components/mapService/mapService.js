@@ -76,58 +76,56 @@
       };
 
       this.showAddressStreets = function(location) {
-        var deferredLoading = $q.defer();
+        var deferredStreets = $q.defer();
 
-        deferredLoading.promise.then(function(map) {
-          deferredMap.promise.then(function(map) {
-            mapLayerGroup.clearLayers();
+        deferredMap.promise.then(function(map) {
+          mapLayerGroup.clearLayers();
 
-            map.panTo(location);
-            map.setZoom(16, { animate: false });
-            map.invalidateSize();
+          map.panTo(location);
+          map.setZoom(16, { animate: false });
+          map.invalidateSize();
 
-            var LeafIcon = L.Icon.extend({
-              options: {
-                iconSize:     [32, 32], // size of the icon
-                iconAnchor:   [16, 32], // point of the icon which will correspond to marker's location
-                popupAnchor:  [16, 0] // point from which the popup should open relative to the iconAnchor
-              }
-            });
+          var LeafIcon = L.Icon.extend({
+            options: {
+              iconSize:     [32, 32], // size of the icon
+              iconAnchor:   [16, 32], // point of the icon which will correspond to marker's location
+              popupAnchor:  [16, 0] // point from which the popup should open relative to the iconAnchor
+            }
+          });
 
-            var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
-            var addressIcon = new LeafIcon({iconUrl: 'public/img/address_house.png'});
+          var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
+          var addressIcon = new LeafIcon({iconUrl: 'public/img/address_house.png'});
 
-            var addressMarker = L.marker(location, {icon: addressIcon});
-            mapLayerGroup.addLayer(addressMarker);
-            addressMarker.addTo(map)
+          var addressMarker = L.marker(location, {icon: addressIcon});
+          mapLayerGroup.addLayer(addressMarker);
+          addressMarker.addTo(map)
 
-            $http.post('api/streets/byloc/', location).then(function(result) {
-              var addressLocation = location;
-              var foundStreets = result.data;
+          $http.post('api/streets/byloc/', location).then(function(result) {
+            var addressLocation = location;
+            var foundStreets = result.data;
 
-              var streetLayer = createStreetLayer(foundStreets);
-              mapLayerGroup.addLayer(streetLayer);
-              streetLayer.addTo(map);
+            var streetLayer = createStreetLayer(foundStreets);
+            mapLayerGroup.addLayer(streetLayer);
+            streetLayer.addTo(map);
 
-              for(var i = 0; i < foundStreets.length; i++)
-              {
-                var street = foundStreets[i];
-                var geoJsonLayer = L.geoJson(street);
-                var layerBounds = geoJsonLayer.getBounds();
-                var streetCenter = layerBounds.getCenter();
+            for(var i = 0; i < foundStreets.length; i++)
+            {
+              var street = foundStreets[i];
+              var geoJsonLayer = L.geoJson(street);
+              var layerBounds = geoJsonLayer.getBounds();
+              var streetCenter = layerBounds.getCenter();
 
-                var streetMarker = L.marker(streetCenter, {icon: markerIcon});
-                mapLayerGroup.addLayer(streetMarker);
-                streetMarker.addTo(map);
-              }
-              deferredSetup.resolve(foundStreets);
-            }, function(err) {
-              deferredSetup.reject(err);
-            });
+              var streetMarker = L.marker(streetCenter, {icon: markerIcon});
+              mapLayerGroup.addLayer(streetMarker);
+              streetMarker.addTo(map);
+            }
+            deferredStreets.resolve(foundStreets);
+          }, function(err) {
+            deferredStreets.reject(err);
           });
         });
 
-        return deferredSetup.promise;
+        return deferredStreets.promise;
       }
 
       this.goToStreet = function(streetId) {

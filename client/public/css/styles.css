@@ -1,11 +1,13 @@
 body{
   font-family: Tahoma, Helvetica, Geneva, sans-serif;
 }
+
 .logo-main {
   width: 200px;
   border-right: 1px solid #f5f5f5;
   padding-right: 5px;
 }
+
 .top-bar {
     background: #fdfdfd;
     color: #999;
@@ -14,35 +16,43 @@ body{
     line-height: 25px;
     border-bottom: 1px solid #f5f5f5;
 }
+
 .social-icons a {
   color: #1FA2DC;
 }
+
 .header-title {
   color:#939CA0;
   font-size:14px;
 }
+
 .email-contact a {
   color: #999;
 }
+
 .header {
     padding: 15px 0px;
     border-top: 1px solid #ddd;
     border-bottom: 1px solid #ddd;
 }
+
 .tab-contents
 {
     border: 1px solid #ddd;
 }
+
 .address-search-form
 {
   margin: 20px 10px 20px 10px;
 }
+
 .street-item-block
 {
     border:1px solid #E6E6E6;
-    margin-bottom:25px;
+    margin-bottom:5px;
     border-color:#80cde5;
 }
+
 .street-item-block .street-marker-icon
 {
     margin-right:22px;
@@ -50,10 +60,12 @@ body{
     background-color:#f2f2f2;
     padding:20px 0;
 }
+
 .street-item-block .street-marker-icon img
 {
-  width:70px;
+  width:50px;
 }
+
 #cityMap {
     height:700px;
     z-index: 1;
