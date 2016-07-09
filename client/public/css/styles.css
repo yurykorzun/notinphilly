@@ -29,6 +29,10 @@ body{
 .email-contact a {
   color: #999;
 }
+.donate {
+  width: 100px;
+  margin-left: 10px;
+}
 
 .header {
     padding: 15px 0px;
