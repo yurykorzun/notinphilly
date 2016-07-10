@@ -124,7 +124,7 @@ angular.module('notinphillyServerApp')
       },
       streetClickCallback: function(e) {
         if (e.target.feature) {
-          mapService.showStreetPopup(e.latlng, e.target);
+          mapService.showStreetPopup(e.target);
         }
       }
     };

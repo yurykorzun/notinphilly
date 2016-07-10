@@ -30,6 +30,7 @@
         deferredMap.promise.then(function(map) {
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
             mapLayerGroup.clearLayers();
+            map.closePopup();
 
             var geoJsonLayer = L.geoJson(data, {
               onEachFeature: function (feature, layer){
@@ -57,15 +58,14 @@
         });
       };
 
-      this.showStreetPopup = function(clickLatLang, streetLayer) {
+      this.showStreetPopup = function(streetLayer) {
         deferredMap.promise.then(function(map) {
           var properties = streetLayer.feature.properties;
           var geometry = streetLayer.feature.geometry;
 
-          var start = L.latLng(geometry.coordinates[0][1], geometry.coordinates[0][0]);
-          var end = L.latLng(geometry.coordinates[1][1], geometry.coordinates[1][0]);
-          var streetBounds = new L.LatLngBounds(start, end);
-          var streetCenter = streetBounds.getCenter();
+          var geoJsonLayer = L.geoJson(streetLayer.feature);
+          var layerBounds = geoJsonLayer.getBounds();
+          var streetCenter = layerBounds.getCenter();
 
           openStreetLayerPopup(streetCenter, streetLayer, properties);
         });
@@ -82,6 +82,7 @@
 
         deferredMap.promise.then(function(map) {
           mapLayerGroup.clearLayers();
+          map.closePopup();
 
           map.panTo(location);
           map.setZoom(17, { animate: false });
@@ -191,6 +192,7 @@
 
         deferredMap.promise.then(function(map) {
           mapLayerGroup.clearLayers();
+          map.closePopup();
 
           $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
             var streetLayer = createStreetLayer(data);
@@ -248,21 +250,25 @@
       };
 
       var openStreetLayerPopup = function(streetLongLat, layer, properties) {
-        var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10";
+        deferredMap.promise.then(function(map) {
+            var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10";
 
-        properties.imageSrc = imageSrc;
-        var popup = L.popup({
-          keepInView: true,
-          minWidth: 240,
-          autoPan: false,
-          properties: properties
-        });
-        layer.bindPopup(popup);
+            properties.imageSrc = imageSrc;
+            var popup = L.popup({
+              keepInView: true,
+              minWidth: 240,
+              autoPan: false,
+              properties: properties
+            });
+            popup.setLatLng(streetLongLat);
 
-        $http.get('app/map/street-popup-template.html').then(function(response) {
-          var rawHtml = response.data;
-          popup.setContent(rawHtml);
-          layer.openPopup();
+            map.panTo(streetLongLat);
+
+            $http.get('app/map/street-popup-template.html').then(function(response) {
+              var rawHtml = response.data;
+              popup.setContent(rawHtml);
+              popup.openOn(map);
+            });
         });
       };
 
