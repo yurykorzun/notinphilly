@@ -1,31 +1,31 @@
 #!/bin/bash
 echo "Started importing notinphilly db..."
 
-host=127.0.0.1
-database=notinphilly
-port=27017
-user=
-password=
+host=$1
+database=$2
+port=$3
+user=$4
+password=$5
 
 echo $host $port $user $password
 
-mongoimport -h $host --port $port -d $database -c neighborhoods -f neighborhoods_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c neighborhoods --authenticationDatabase admin -f neighborhoods_export.json
 
-mongoimport -h $host --port $port -d $database -c roles -f roles_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c roles --authenticationDatabase admin -f roles_export.json
 
-mongoimport -h $host --port $port -d $database -c sessions -f sessions_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c sessions --authenticationDatabase admin -f sessions_export.json
 
-mongoimport -h $host --port $port -d $database -c states -f states_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c states --authenticationDatabase admin -f states_export.json
 
-mongoimport -h $host --port $port -d $database -c streetNames -f streetNames_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c streetNames --authenticationDatabase admin -f streetNames_export.json
 
-mongoimport -h $host --port $port -d $database -c streetSegments -f streetSegments_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c streetSegments --authenticationDatabase admin -f streetSegments_export.json
 
-mongoimport -h $host --port $port -d $database -c userProfiles -f userProfiles_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c userProfiles --authenticationDatabase admin -f userProfiles_export.json
 
-mongoimport -h $host --port $port -d $database -c userStats -f userStats_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c userStats --authenticationDatabase admin -f userStats_export.json
 
-mongoimport -h $host --port $port -d $database -c zipCodes -f zipCodes_export.json
+mongoimport -h $host --port $port -u $user -p $password -d $database -c zipCodes --authenticationDatabase admin -f zipCodes_export.json
 
 echo "Finished importing db..." 
 
