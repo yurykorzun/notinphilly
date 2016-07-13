@@ -1,0 +1,19 @@
+<div class="street-item-block row clearfix" ng-repeat="street in streetlist">
+ <div class="col-md-2">
+   <div class="street-marker-icon pull-left">
+       <img src="public/img/map_marker.png" />
+   </div>
+ </div>
+ <div class="col-md-10">
+   <div class="col-md-8">
+     <h4>{{street.properties.name}} {{street.properties.type}} {{street.properties.hundred}}</h4>
+     <h6>Zip: {{street.properties.zipCode}}</h6>
+     <h6>Participants: {{street.properties.totalAdopters}}</h6>
+   </div>
+   <div class="col-md-4">
+     <a class="btn bth-sm btn-success btn-block" href="" ng-click="chooseStreet(street.properties.id)">
+       Select street
+     </a>
+   </div>
+ </div>
+</div>
