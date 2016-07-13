@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Not in Philly</title>
+    <link rel="icon" type="image/png" href="img/logo-tab.png">
+    <link href='http://fonts.googleapis.com/css?family=Arimo' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="fancybox/jquery.fancybox.css?v=2.1.5" type="text/css" media="screen" />
+    <link rel="stylesheet" href="plugin/owl-carousel/owl.carousel.css">
+    <link rel="stylesheet" href="plugin/owl-carousel/owl.theme.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="responsive.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js"></script>
+    <script type="text/javascript" src="fancybox/jquery.fancybox.pack.js?v=2.1.5"></script>
+    <script src="plugin/owl-carousel/owl.carousel.js"></script>
+    <script src="main.js"></script>
+</head>
+<body>
+
+    <!--fancybox - user-authentication-->
+    <div id="user-auth">
+        <fieldset id="common-fields">
+            <label for="user-email" id="user-email-label">Email address</label><span>*</span>
+            <input type="email" name="user[email]" id="user-email">
+            <div class="radio">
+                <label for="user-new"><input type="radio" name="user" id="user-new" value="new" checked="checked">I haven't signed up yet</label>
+                <label for="user-existing"><input type="radio" name="user" id="user-existing" value="existing">I've already signed up</label>
+            </div>
+        </fieldset>
+
+        <fieldset id="signup-fields">
+
+            <label for="user-password-confirmation" id="user-password-confirmation-label">Choose a password</label><span>*</span>
+            <input type="password" name="user[password-confirmation]" id="user-password-confirmation">
+
+            <label for="user-name" id="user-name-label">Name</label><span>*</span>
+            <input type="text" name="user[name]" id="user-name">
+
+            <label for="user-streets-owned" id="user-streets-owned-label">Streets adopted</label><span>*</span>
+            <textarea name="user[streets-owned]" id="user-streets-owned"></textarea>
+
+            <label for="user-organization" id="user-organization-label">Organization or company you are signing up through</label>
+            <input type="text" name="user[organization]" id="user-organization">
+
+            <label for="user-phone" id="user-phone-label">Mobile phone number (we will just use it to see if you will re-new after 6 months)</label>
+            <input type="tel" name="user[phone]" id="user-phone">
+
+            <label for="user-mailing-address" id="user-mailing-address-label">Mailing address (to get the grabber to you)</label>
+            <input type="email" name="user[mailing-address]" id="user-mailing-address">
+
+            <button type="submit" class="btn">Sign Up</button>
+            <div class="hr">
+                <span>or</span>
+            </div>
+            <button class="btn fb">
+                <img src="img/fb_icon.png" alt="Facebook icon" title="Facebook icon">
+                Sign up with Facebook
+            </button>
+        </fieldset>
+
+        <fieldset id="signin-fields">
+            <label for="user-password" id="user-password-label">Password</label><span>*</span>
+            <input type="password" name="user[password]" id="user-password">
+
+            <label for="user-remember-me"><input name="user[remember-me]" type="hidden" value="0">
+                <input type="checkbox" value="1" checked="checked" name="user[remember-me]" id="user-remember-me">Stay signed in
+            </label>
+
+            <button type="submit" class="btn">Sign In</button>
+            <div class="hr">
+                <span>or</span>
+            </div>
+            <button class="btn fb">
+                <img src="img/fb_icon.png" alt="Facebook icon" title="Facebook icon">
+                Sign in with Facebook
+            </button>
+            <p><a id='forgot-password-link' role="button">Forgot your password?</a></p>
+        </fieldset>
+
+        <fieldset id="forgot-password-fields">
+            <button type="submit" class="btn">Email me my password</button>
+            <p><a id='remembered-password-link' role="button">I remembered my password</a></p>
+        </fieldset>
+    </div>
+
+    <!--side-->
+    <div id="side">
+        <img src="img/logo.png"/>
+
+        <div class="tag-line">
+            <h2>Eliminating Litter Together!</h2>
+        </div>
+
+        <div class="get-started">
+            <a href="#user-auth" class="get-started-btn">
+                <h2>Let's get started<span> (member login)</span><img src="img/arrow.png"/></h2>
+            </a>
+        </div>
+
+        <ul>
+
+            <li>
+                <h2 class="accordion">How it works</h2>
+                <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference.
+                    In return for a 6 month commitment to going out once a week to pick up litter, we will give you a trash grabber. No
+                    more touching litter or killing your back! You will be amazed at how much we can get done together! Send any questions to us at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>.
+                </p>
+            </li>
+
+            <li>
+                <h2 class="accordion">Spread the word</h2>
+                <p>Spread the word about this movement on social media or through our full page or ¼ page flyers.
+                    Invite a neighbor to sign up and also go out once a week on your block or take another.
+                    We also need "Neighborhood Champions" to distribute grabbers within their neighborhood. If you are interested, email us at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>.
+                </p>
+            </li>
+
+            <li class="faq">
+                <div>
+                    <h2 class="accordion">FAQ</h2>
+                    <ul>
+                        <li>
+                            <a href="#" class="accordion">So I signed up and I just get a grabber? Isn’t that kind of lame?</a>
+                            <p>We agree. Once enough people sign up, we will be able to solicit gifts and hold raffles from area businesses.</p>
+                        </li>
+                        <li>
+                            <a href="#" class="accordion">What if my block is too large?</a>
+                            <p>Blocks can be adopted by multiple people. Get your neighbors involved!</p>
+                        </li>
+                        <li>
+                            <a href="#" class="accordion">Why do you ask what company or organization I am signing up through?</a>
+                            <p>We want to give good press to companies, non-profits, and houses of worship that have their members take part.</p>
+                        </li>
+                        <li>
+                            <a href="#" class="accordion">What if I move or unable to complete by 6 month commitment?</a>
+                            <p>Keep the grabber as our gift and eliminate litter where you go.</p>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+
+            <li class="contact-us">
+                <div>
+                    <h2 class="accordion">Contact us</h2>
+                </div>
+            </li>
+
+        </ul>
+
+        <div class="partners-social p-desktop">
+            <div class="partners">
+                <p>SUPPORTED BY</p>
+                <a href="http://www.codeforamerica.org/" target="_blank"><img src="img/partner-cfa.png"/></a>
+                <a href="https://codeforphilly.org/" target="_blank"><img src="img/partner-cfp.png"/></a>
+                <a href="https://www.google.org/" target="_blank"><img src="img/partner-google.png"/></a>
+            </div>
+
+            <div class="social">
+                <p>SOCIAL</p>
+                <a href="https://codeforphilly.org/" target="_blank"><img src="img/social-instagram.png"/></a>
+                <a href="https://codeforphilly.org/" target="_blank"><img src="img/social-facebook.png"/></a>
+                <a href="https://codeforphilly.org/" target="_blank"><img src="img/social-twitter.png"/></a>
+                <a href="https://codeforphilly.org/" target="_blank"><img src="img/social-youtube.png"/></a>
+            </div>
+        </div>
+
+    </div>
+
+    <!--info-container-->
+    <div id="info-container">
+
+        <div id="map">
+        </div>
+
+        <div id="slider-wrapper">
+
+            <div id="slider">
+
+                <div class="hide-slider-btn">
+                    <p>Hide images</p>
+                    <div class="arrow"></div>
+                </div>
+
+                <div id="owl-example" class="owl-carousel">
+                    <div class="slide">
+                        <img src="img/1.jpg"/>
+                    </div>
+                    <div class="slide">
+                        <img src="img/2.jpg"/>
+                    </div>
+                    <div class="slide">
+                        <img src="img/3.jpg"/>
+                    </div>
+                    <div class="slide">
+                        <img src="img/4.jpg"/>
+                    </div>
+                    <div class="slide video-wrapper">
+                        <iframe src="https://www.youtube.com/embed/UL-j4HLM9Fg" allowfullscreen="" frameborder="0"></iframe>
+                    </div>
+                    <div class="slide">
+                        <img src="img/5.jpg"/>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="partners-social p-mobile">
+        <div class="partners">
+            <p>SUPPORTED BY</p>
+            <a href="http://www.codeforamerica.org/" target="_blank"><img src="img/partner-cfa.png"/></a>
+            <a href="https://codeforphilly.org/" target="_blank"><img src="img/partner-cfp.png"/></a>
+            <a href="https://www.google.org/" target="_blank"><img src="img/partner-google.png"/></a>
+        </div>
+
+        <div class="social">
+            <p>SOCIAL</p>
+            <a href="https://codeforphilly.org/" target="_blank"><img src="img/social-instagram.png"/></a>
+            <a href="https://codeforphilly.org/" target="_blank"><img src="img/social-facebook.png"/></a>
+            <a href="https://codeforphilly.org/" target="_blank"><img src="img/social-twitter.png"/></a>
+            <a href="https://codeforphilly.org/" target="_blank"><img src="img/social-youtube.png"/></a>
+        </div>
+    </div>
+
+
+</body>
+</html>

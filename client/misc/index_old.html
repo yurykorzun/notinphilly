@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<title>Not in Philly</title>
+
+	<!-- CSS -->
+	<link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap.css">
+	<link rel="stylesheet" href="libs/bootstrap/dist/css/bootstrap-theme.css">
+	<link rel="stylesheet" href="libs/leaflet/dist/leaflet.css" />
+	<link rel="stylesheet" href="css/styles.css" />
+
+</head>
+<body>
+	 <nav class="navbar navbar-fixed-top navbar-default" role="navigation">
+      <div class="container-fluid">
+          <!-- Brand and toggle get grouped for better mobile display -->
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">Let's make Philly awesome!</a>
+          </div>
+          <!-- Collect the nav links, forms, and other content for toggling -->
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li class="active"><a href="#">Link</a></li>
+              <li><a href="#">Link</a></li>
+            </ul>
+          </div><!-- /.navbar-collapse -->
+      </div><!-- /.container-fluid -->
+	  </nav>
+		<div class="navbar-offset"></div>
+		<div id="map"></div>
+		<div class="row">
+			<div class="col-md-3 sidebar">
+				<div class="col-md-12 sidebar-left pull-left">
+				<div class="panel-group sidebar-body" id="accordion-left">
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<span class="pull-right slide-submenu">
+									<i class="fa fa-chevron-left"></i>
+								</span>
+							</h4>
+						</div>
+						<div id="layers" class="panel-collapse collapse in">
+							<div class="panel-body list-group">
+								<a href="/" class="list-group-item">
+									<img src="img/notinphilly_logo.png" class="logo"/>
+								</a>
+								<div class="start">
+									<button id="start" type="button" class="btn-primary btn-start">
+									<span class="glyphicon glyphicon-ok" aria-hidden="true"></span>&nbsp;Let's get started
+									</button>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div class="panel-heading">
+							<h4 class="panel-title">
+								<a data-toggle="collapse">
+									<i class="fa fa-list-alt"></i>
+									How it works
+								</a>
+							</h4>
+						</div>
+						<div>
+							<div class="panel-body">
+								<p>
+								Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. In return for a 6 month commitment to going out once a week to pick up litter, we will give you a trash grabber.
+								</p>
+								<p>
+									No more touching litter or killing your back! You will be amazed at how much we can get done together!
+								</p>
+							</div>
+						</div>
+					</div>
+					<div class="panel panel-default">
+						<div>
+							<div class="panel-body">
+								<img src="img/codeforphilly.png" class="sponsor-logo"/>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8">
+			<div class="goback col">
+				<button id="goback" type="button" class="btn-primary btn-goback" style="display:none;">
+						<span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></span>&nbsp;Go back
+				</button>
+			</div>
+		</div>
+		</div>
+
+		<!-- JS -->
+		<script src="libs/jquery/dist/jquery.js"></script>
+		<script src="libs/angular/angular.js"></script>
+		<script src="libs/angular-route/angular-route.js"></script>
+		<script src="libs/bootstrap/dist/js/bootstrap.js"></script>
+
+		<script src="libs/leaflet/dist/leaflet.js"></script>
+		<script src="libs/leaflet-providers/leaflet-providers.js"></script>
+		<script src="js/neighborhoods.js"></script>
+		<script src="js/streets.js"></script>
+
+		<!-- ANGULAR CUSTOM -->
+		<script src="js/controllers/MainCtrl.js"></script>
+		<script src="js/controllers/UserCtrl.js"></script>
+		<script src="js/services/UserService.js"></script>
+		<script src="js/appRoutes.js"></script>
+		<script src="js/app.js"></script>
+
+		<script type="text/javascript">
+		 $(document).ready(function() {
+			 var map = new L.Map("map", {
+					 center: new L.LatLng(39.952604, -75.163368),
+					 zoom: 13
+			 });
+			 L.tileLayer.provider("Stamen.Terrain").addTo(map);
+
+			$("#map").data("map", map);
+
+			initalizeNeighborhoods();
+		 });
+
+		 function initalizeNeighborhoods()
+		 {
+			 var map = $("#map").data("map");
+			 var neighborhoodsData = getNeighborhoodsBoundries();
+
+			 var geoJsonLayer = L.geoJson(neighborhoodsData,
+			 {
+				 onEachFeature: attachEventsToLayers,
+				 style: {
+					 color: '#486CFA',
+					 weight: 2,
+					 fillOpacity: 0.4,
+						fillColor: '#78D2FF'
+				 }
+			 });
+			 var features = neighborhoodsData.features;
+
+			 geoJsonLayer.addTo(map);
+			 map.setView(L.latLng(39.952604, -75.163368));
+			 map.setZoom(13);
+
+			 $("#map").data("features", features);
+			 $("#map").data("geoJsonLayer", geoJsonLayer);
+		 }
+
+		function attachEventsToLayers(feature, layer){
+				layer.setStyle(getRandomColor());
+				layer.on({
+				 mouseover: highlightNeighborhood,
+				 mouseout: resetHighlightNeighborhood,
+				 click: onLayerClick
+		 		});
+	 }
+
+		function onLayerClick(e)
+		{
+			if(e.target.feature)
+			{
+				var geoJsonLayer = $("#map").data("geoJsonLayer");
+				var map = $("#map").data("map");
+
+				var triggeredFeature = e.target.feature;
+				var layerBounds = e.layer.getBounds();
+
+				$("#properties .panel-body").text("clicked -" + triggeredFeature.properties.name);
+
+				map.removeLayer(geoJsonLayer);
+				map.fitBounds(layerBounds);
+
+				var streetsData = getStreets(triggeredFeature.properties.name);
+				if(streetsData)
+				{
+					var streetsJson = { "type": "FeatureCollection",
+															"features": streetsData
+														};
+					geoJsonLayer = L.geoJson(streetsJson,
+					{
+						onEachFeature: attachEventsToStreets,
+					});
+
+					geoJsonLayer.addTo(map);
+				}
+
+				$("#map").data("geoJsonLayer", geoJsonLayer);
+				$("#goback").show();
+			}
+		}
+
+		$("#goback").on("click", function() {
+			var map = $("#map").data("map");
+			var geoJsonLayer = $("#map").data("geoJsonLayer");
+
+			map.removeLayer(geoJsonLayer);
+			initalizeNeighborhoods();
+
+			$("#goback").hide();
+		});
+
+		function attachEventsToStreets(feature, layer){
+				layer.setStyle(getRandomStreetColor());
+				layer.on({
+				 mouseover: highlightStreet,
+ 				 mouseout: resetHighlightStreet,
+ 				 click: onStreetClick
+				});
+	 	}
+
+		function onStreetClick(e)
+		{
+			if(e.target.feature)
+			{
+				var map = $("#map").data("map");
+				var properties = e.target.feature.properties;
+
+				var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=190x190&location=" +  e.latlng.lat + "," + e.latlng.lng  + "&fov=70&heading=170&pitch=10"
+
+				var popup = L.popup({
+					keepInView: true
+				})
+		    .setLatLng(e.latlng)
+		    .setContent("<p>Let's adopt a street!<br /> Street: " + properties.ST_NAME + " " + properties.L_HUNDRED + ", zipcode: " + properties.ZIP_LEFT + "</p><p><button type='button' class='btn btn-success'>I am in!</button></p><p> <img src='" + imageSrc + "' /></p>");
+
+				popup.openOn(map);
+
+				map.panTo(e.latlng);
+			}
+		}
+
+		function getRandomColor()
+		{
+			var colorValue = Math.floor(Math.random() * 3) + 1;
+			var style= {};
+
+			switch (colorValue) {
+				case 1:
+					style = {
+						color: 'Blue',
+						weight: 2,
+						fillColor: 'Red',
+						fillOpacity: 0.2
+					};
+					break;
+				case 2:
+					style = {
+						color: 'Blue',
+						weight: 2,
+						fillColor: 'Green',
+						fillOpacity: 0.2
+					};
+					break;
+				case 3:
+					style = {
+							color: 'Blue',
+							weight: 2,
+							fillColor: 'Yellow',
+							fillOpacity: 0.2
+						};
+					break;
+			}
+
+			return style;
+		}
+
+
+		function getRandomStreetColor()
+		{
+			var colorValue = Math.floor(Math.random() * 3) + 1;
+			var style= {};
+
+			switch (colorValue) {
+				case 1:
+					style = {
+						color: '#E897AA',
+						opacity: 0.5,
+						weight: 5
+					};
+					break;
+				case 2:
+					style = {
+						color: '#98EBA2',
+						opacity: 0.5,
+						weight: 5
+					};
+					break;
+				case 3:
+					style = {
+							color: '#E6EB98',
+							opacity: 0.5,
+							weight: 5
+						};
+					break;
+			}
+
+			return style;
+		}
+
+		function highlightNeighborhood(e) {
+		    var layer = e.target;
+
+		    layer.setStyle({
+		        weight: 7,
+						fillOpacity: 0.9,
+		        color: '#666'
+		    });
+
+		    if (!L.Browser.ie && !L.Browser.opera) {
+		        layer.bringToFront();
+		    }
+		}
+
+		function resetHighlightNeighborhood(e) {
+		    var layer = e.target;
+
+				layer.setStyle({
+					color: 'Blue',
+					fillOpacity: 0.2,
+					weight: 2
+				});
+		}
+
+		function highlightStreet(e) {
+				var layer = e.target;
+
+				layer.setStyle({
+						opacity: 0.8,
+						weight: 15
+				});
+
+				if (!L.Browser.ie && !L.Browser.opera) {
+						layer.bringToFront();
+				}
+		}
+
+		function resetHighlightStreet(e) {
+				var layer = e.target;
+
+				layer.setStyle({
+					opacity: 0.5,
+					weight: 5
+				});
+		}
+
+		</script>
+</body>
+</html>
