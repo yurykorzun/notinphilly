@@ -5,7 +5,7 @@
 			<i class="fa fa-envelope"></i> &nbsp; <a href="mailto:notinphilly@gmail.com">notinphilly@gmail.com</a>
 		</div>
     <div class="donate pull-left">
-      <a href="">
+      <a href="#">
           <i class="fa fa-credit-card"> Donate</i>
       </a>
 		</div>
@@ -28,7 +28,7 @@
       <div class="col-md-9">
         <div class="pull-right">
           <div class="header-title">
-            <h3>Getting rid of litter together!</h2>
+            <h3>Litter? Not in Philly!</h2>
             <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
           </div>
         </div>
@@ -39,8 +39,8 @@
 <div class="main-block">
   <div class="container">
     <div class="row tab-contents">
-      <uib-tabset active="active">
-       <uib-tab index="0" heading="Explore">
+      <uib-tabset active="main.activeTabIndex">
+       <uib-tab index="0" heading="Search" select="main.onSearchSelect()">
          <div ng-controller="searchAddressController">
             <div class="col-md-12">
               <div class="row">
@@ -51,7 +51,9 @@
               </div>
            </div>
          </div>
-         <div class="map-block">
+       </uib-tab>
+       <uib-tab index="1" active="main.isExploreOpen" heading="Explore" select="main.onExploreSelect()" deselect="main.onExploreLeave()">
+         <div class="map-block" ng-show="main.activeTabIndex == 1">
            <div class="container">
              <div class="row">
                <div ng-include src="'app/map/map-template.html'"></div>
@@ -59,14 +61,14 @@
            </div>
          </div>
        </uib-tab>
-      <uib-tab index="1" heading="Profile" ng-show="main.isUserProfileVisible" >
+      <uib-tab index="2" heading="Profile" disable="!main.isUserProfileVisible" ng-show="main.isUserProfileVisible">
         <div class="container">
           <div class="row tab-contents">
-
+          User profile
           </div>
         </div>
       </uib-tab>
-       <uib-tab index="2" heading="Members" ng-show="main.isLoginVisible" >
+       <uib-tab index="3" heading="Members" disable="!main.isLoginVisible" ng-show="main.isLoginVisible">
          <div class="container">
            <div class="row tab-contents">
              <div class="col-md-2"></div>
@@ -85,7 +87,7 @@
            </div>
          </div>
        </uib-tab>
-       <uib-tab index="2" heading="About us">
+       <uib-tab index="4" heading="About us">
         <div class="container">
          <div class="row tab-contents">
            <div class="col-md-10">

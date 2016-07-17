@@ -9,14 +9,12 @@ angular.module('notinphillyServerApp')
     });
 
     var scrollToMap = function() {
-       $anchorScroll('cityMap');
+      $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
     }
 
     $scope.clearSearch = function() {
       $scope.details = $scope.autocomplete = undefined;
       $scope.foundStreets = [];
-      //$rootScope.$broadcast(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL);
-      mapService.setNeighborhoodLayers();
     };
 
     $scope.$watch(function() { return $scope.details; }, function(searchDetails) {
@@ -39,8 +37,6 @@ angular.module('notinphillyServerApp')
         mapService.showAddressStreets(location).then(function(streets){
           $scope.foundStreets = streets;
         });
-
-        //$rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
       }
     };
 

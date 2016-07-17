@@ -4,23 +4,27 @@ angular.module('notinphillyServerApp')
                               function($scope, $http, $rootScope, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
     $scope.main = {
       isUserProfileVisible: false,
-      isUserProfileOpen: false,
       isLoginVisible: false,
-      isLoginOpen: false,
+      activeTabIndex: 0,
       spinnerActive: false
     };
 
-    function ShowUserProfile() {
+    function ShowUserProfile(isActive) {
       $scope.main.isUserProfileVisible = true;
-      $scope.main.isUserProfileOpen = true;
+      if(isActive)
+      {
+        main.activeTabIndex = 2;
+      }
       $scope.main.isLoginVisible = false;
-      $scope.main.isLoginOpen = false;
     }
 
-    function ShowLoginForm() {
+    function ShowLoginForm(isActive) {
       $scope.main.isUserProfileVisible = false;
-      $scope.main.isUserProfileOpen = false;
       $scope.main.isLoginVisible = true;
+      if(isActive)
+      {
+        main.activeTabIndex = 3;
+      }
     }
 
     $scope.spinnerActive = true;
@@ -31,14 +35,29 @@ angular.module('notinphillyServerApp')
       $scope.main.spinnerActive = false;
     });
     $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
-      ShowUserProfile();
+      ShowUserProfile(true);
     });
     $scope.$on(APP_EVENTS.LOGIN_FAILED, function(event) {
-      ShowLoginForm();
+      ShowLoginForm(true);
     });
     $scope.$on(APP_EVENTS.LOGOUT, function(event) {
-      ShowLoginForm();
+      ShowLoginForm(true);
     });
+    $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
+      $scope.main.activeTabIndex = 1;
+    });
+
+    $scope.main.onSearchSelect = function() {
+      $rootScope.$broadcast(APP_EVENTS.OPEN_SEARCH);
+    }
+
+    $scope.main.onExploreSelect = function() {
+      $rootScope.$broadcast(APP_EVENTS.OPENED_EXPLORE);
+    }
+
+    $scope.main.onExploreLeave = function() {
+      $rootScope.$broadcast(APP_EVENTS.CLOSED_EXPLORE);
+    }
 
     sessionService.checkLoggedin()
                   .then(function() {
@@ -48,7 +67,8 @@ angular.module('notinphillyServerApp')
                   },
                   function() {
                     $scope.main.spinnerActive = false;
-                    $rootScope.$broadcast(APP_EVENTS.LOGOUT);
+                    $scope.main.isSearchOpen = true;
+                    ShowLoginForm(false);
                   });
   }]);
 })();

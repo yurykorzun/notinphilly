@@ -1,10 +1,17 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, mapService, APP_EVENTS) {
-    $scope.tooltip = {};
+  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$timeout', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, $timeout, mapService, APP_EVENTS) {
+    $scope.$on(APP_EVENTS.OPENED_EXPLORE, function(event) {
+        $timeout(function() {
+            mapService.resetSize();
+        }, 30);
+    });
+
+    $scope.$on(APP_EVENTS.CLOSED_EXPLORE, function(event) {
+
+    });
 
     mapService.getMap().then(function(map) {
-
       map.on('popupopen', function(popupEvent) {
 
         var setUpDefaultView = function(){
