@@ -13,7 +13,7 @@ angular.module('notinphillyServerApp')
       $scope.main.isUserProfileVisible = true;
       if(isActive)
       {
-        main.activeTabIndex = 2;
+        $scope.main.activeTabIndex = 2;
       }
       $scope.main.isLoginVisible = false;
     }
@@ -23,7 +23,7 @@ angular.module('notinphillyServerApp')
       $scope.main.isLoginVisible = true;
       if(isActive)
       {
-        main.activeTabIndex = 3;
+        $scope.main.activeTabIndex = 3;
       }
     }
 

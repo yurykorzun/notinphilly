@@ -2,7 +2,7 @@
   <div>
     <div class="col-md-12">
       <h4>Welcome to notinphilly.org!</h4>
-      Let's begin with finding your block and participating streets nearby:
+      <p>Let's begin with finding your block and participating streets nearby:</p>
     </div>
   </div>
   <div class="row">
@@ -16,8 +16,11 @@
   </div>
   <div class="row" ng-show="hasStreets()">
     <div class="row">
-      <div class="col-md-6">
+      <div class="col-md-4">
         <h4>We found following streets:</h4>
+      </div>
+      <div class="col-md-3 pull-right">
+        <a href="" ng-click="switchToMap()">Veiw on map</a>
       </div>
     </div>
     <div class="found-streets-items col-md-12 clearfix">
