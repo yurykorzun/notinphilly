@@ -26,6 +26,20 @@
         mapCallbacks = callbacks;
       };
 
+      this.resetSize = function()
+      {
+          deferredMap.promise.then(function(map) {
+              map.invalidateSize();
+          });
+      }
+
+      this.destroy = function()
+      {
+          deferredMap.promise.then(function(map) {
+              map.remove();
+          });
+      }
+
       this.setNeighborhoodLayers = function() {
         deferredMap.promise.then(function(map) {
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
@@ -54,6 +68,8 @@
             mapLayerGroup.addLayer(geoJsonLayer);
             mapLayerGroup.addTo(map);
             mapStreetLayer = undefined;
+
+            map.invalidateSize();
            });
         });
       };
@@ -86,7 +102,6 @@
 
           map.panTo(location);
           map.setZoom(17, { animate: false });
-          map.invalidateSize();
 
           var LeafIcon = L.Icon.extend({
             options: {
@@ -123,6 +138,8 @@
               mapLayerGroup.addLayer(streetMarker);
               streetMarker.addTo(map);
             }
+
+            map.invalidateSize();
             deferredStreets.resolve(foundStreets);
           }, function(err) {
             deferredStreets.reject(err);

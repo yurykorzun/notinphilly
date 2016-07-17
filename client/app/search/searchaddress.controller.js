@@ -8,17 +8,6 @@ angular.module('notinphillyServerApp')
       ev.preventDefault();
     });
 
-    var scrollToMap = function() {
-       $anchorScroll('cityMap');
-    }
-
-    $scope.clearSearch = function() {
-      $scope.details = $scope.autocomplete = undefined;
-      $scope.foundStreets = [];
-      //$rootScope.$broadcast(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL);
-      mapService.setNeighborhoodLayers();
-    };
-
     $scope.$watch(function() { return $scope.details; }, function(searchDetails) {
       if(searchDetails)
       {
@@ -28,6 +17,16 @@ angular.module('notinphillyServerApp')
         $scope.clearSearch();
       }
     });
+
+    $scope.switchToMap = function() {
+      $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+    }
+
+    $scope.clearSearch = function() {
+      $scope.details = $scope.autocomplete = undefined;
+      $scope.foundStreets = [];
+      mapService.setNeighborhoodLayers();
+    };
 
     $scope.findStreet = function() {
       var addressDetails = $scope.details;
@@ -39,14 +38,12 @@ angular.module('notinphillyServerApp')
         mapService.showAddressStreets(location).then(function(streets){
           $scope.foundStreets = streets;
         });
-
-        //$rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
       }
     };
 
     $scope.chooseStreet = function(streetId) {
       mapService.selectStreet(streetId);
-      scrollToMap();
+      $scope.switchToMap();
     }
 
     $scope.hasAddress = function() {
