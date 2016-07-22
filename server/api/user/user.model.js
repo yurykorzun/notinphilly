@@ -11,8 +11,7 @@ var userSchema = new Schema({
   birthDate: { type : Date, default: '' },
   phoneNumber: { type : String, default: '' },
   businessName: { type : String, default: '' },
-  houseNumber: { type : String, default: '' },
-  streetName: { type : String, default: '' },
+  addressName: { type : String, default: '' },
   apartmentNumber: { type : String, default: '' },
   zip: { type : String, default: '' },
   city: { type : String, default: '' },
@@ -73,7 +72,7 @@ userSchema
 userSchema
     .virtual('address')
     .get(function () {
-      return this.houseNumber + " " + this.streetName + " " + this.zip;
+      return this.addressName + " " + this.apartmentNumber;
     });
 
 userSchema

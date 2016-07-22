@@ -17,83 +17,40 @@
       </div>
     </div>
     <form id="signinForm" role="form" ng-show="!isRegisterSuccess">
-      <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
             <label>First Name</label>
             <input type="text" id="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name" required>
           </div>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6">
           <div class="form-group">
             <label>Last Name</label>
             <input type="text" id="lastName" ng-model="User.lastName" class="form-control input-sm" placeholder="Last Name" required>
           </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-sm-6 col-sm-6">
-          <div class="form group">
+          <div class="form-group">
             <label>Email</label>
             <input type="text" id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email" required>
-          </div>
-        </div>
-        <div class="col-xs-4 col-sm-4 col-md-4">
-          <div class="form-group">
+         </div>
+         <div class="form-group">
             <label>Phone</label> (optional)<br>
             <input name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="text"/>
             <small>We will just use it to see if you will re-new after 6 months</small>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-          <div class="col-xs-6 col-sm-6 col-md-6">
+         </div>
             <div class="form-group">
               <label>Business/Organization</label> (optional)
               <input type="text" id="organizationName" ng-model="User.businessName" class="form-control input-sm">
             </div>
-          </div>
-      </div>
-
-      <div class="offset-small"><label>Address</label> (optional, to get the grabber to you)</div>
-
-      <div class="row">
-        <div class="col-xs-3 col-sm-3 col-md-3 min-padding-right">
+          <div class="form-group"><label>Address</label> (optional, to get the grabber to you)
+                  <div ng-controller="searchAddressController">
+                    <div>
+                      <input id="addressName" search-autocomplete ng-model="User.addressName" options="options" details="details" type="text" class="input-md" placeholder="Enter your address..." />
+                    </div>
+           </div>
+           </div>
+                  
           <div class="form-group">
-            <input type="text" id="houseNumber" ng-model="User.houseNumber" class="form-control input-sm" placeholder="House number">
-          </div>
-        </div>
-        <div class="col-xs-6 col-sm-6 col-md-6 min-padding-right min-padding-left">
-          <div class="form-group">
-            <ui-select ng-model="User.streetName"  theme="bootstrap" title="Street name">
-             <ui-select-match placeholder="Street name">{{$select.selected.name}}</ui-select-match>
-             <ui-select-choices repeat="item.name as item in streetNames" refresh="refreshStreetNames($select.search)" refreshDelay="100">
-               <div ng-bind-html="item.name | highlight: $select.search"></div>
-             </ui-select-choices>
-           </ui-select>
-          </div>
-        </div>
-        <div class="col-xs-3 col-sm-3 col-md-3 min-padding-left">
-          <div class="form-group">
+            <label>Apartment Number</label>
             <input type="text" id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit">
           </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-6 col-sm-3 col-md-3">
-          <div class="form-group">
-            <ui-select ng-model="User.zip" theme="bootstrap" title="Zipcode">
-             <ui-select-match placeholder="Zipcode">{{$select.selected.zipCode}}</ui-select-match>
-             <ui-select-choices repeat="item.zipCode as item in zipCodes" refresh="refreshZipCodes($select.search)" refreshDelay="100">
-               <div ng-bind-html="item.zipCode | highlight: $select.search"></div>
-             </ui-select-choices>
-           </ui-select>
-          </div>
-        </div>
-      </div>
-
+ 
       <div class="offset-small"><label>Password</label></div>
 
       <div class="row">
@@ -109,13 +66,11 @@
         </div>
       </div>
 
-      <div class="row">
         <div class="col-xs-8 col-xs-offset-2">
           <div class="form-group">
             <label><input type="checkbox" id="distributeCheckbox" ng-model="User.distributer"><small> If needed, I can help distribute materials to those in my neighborhood.</small></label>
           </div>
         </div>
-      </div>
 
       <div class="offset-small"></div>
 
