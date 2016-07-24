@@ -6,7 +6,7 @@ var cookieParser   = require('cookie-parser');
 var methodOverride = require('method-override');
 var path           = require('path');
 var expressSession = require('express-session');
-var mongoStore     = require('connect-mongo')(expressSession);
+var mongoStore     = require('connect-mongo/es5')(expressSession);
 
 module.exports = function(app, secretToken) {
   console.log("init express");
