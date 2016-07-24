@@ -85,13 +85,12 @@ angular.module('notinphillyServerApp')
         };
 
         newScope.checkin = function() {
-          $http.get("api/userstats/checkin/" + $rootScope.currentUser._id).then(function(response){
-            console.log("Success");
+          $http.get("api/userstats/checkin?uid=" + $rootScope.currentUser._id +"&sid=" + properties.id).then(function(response){
             targetPopup._close();
           },
           function(err){
-            console.log($rootScope.currentUser._id);
-            console.log("ERROR during checkin: " + err);
+            setUpDefaultView();
+            $scope.isShowError = true;
           });
         };
 
@@ -109,6 +108,7 @@ angular.module('notinphillyServerApp')
     });
     $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event, leafletEvent){
       $scope.sideMenu.isStreetLevel = true;
+      $scope.sideMenu.isVisible = false;
     });
 
     var mapCallbacks = {

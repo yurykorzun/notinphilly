@@ -8,6 +8,7 @@ var userStatsSchema = new Schema({
   checkin: { type : Number, default: 0 },
   date: { type : String, default: '' },
   uid: { type : String, default: '' },
+  sid: { type: String, default: ''}
 },
 {
   collection: 'userStats'

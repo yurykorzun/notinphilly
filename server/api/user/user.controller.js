@@ -58,7 +58,7 @@ exports.create = function(req, res, next) {
           houseNumber: req.body.houseNumber,
           streetName: req.body.streetName,
           apartmentNumber: req.body.aptNumber,
-          active: false,
+          active: true,
           city: req.body.city,
           state: req.body.state,
           zip: req.body.zip,
@@ -71,7 +71,7 @@ exports.create = function(req, res, next) {
           };
 
           UserModel.findOne({email: req.body.email}, function(err, user) {
-            sendConfirmationEmail(req, user);
+            //sendConfirmationEmail(req, user);
           });
           console.log('Finished adding the user');
           res.status(200).send('Successfully Added the user');
@@ -187,6 +187,22 @@ exports.update = function(req, res) {
 
 };
 
+exports.resetPassword = function(req, res) {
+    var confirmId = req.params.activationId;
+    var password = req.params.password;
+    var confirmPassword = req.params.confirmPassword;
+    
+    if (password == confirmPassword) {
+       UserModel.findOne({activationHash: confirmId}, function(err, user){
+           if (err) return next(err);
+           if (!user) return res.status(401).send('Could not find the user with activation Tag' + req.param.confirmId);
+            
+       });
+    } else {
+        
+    }
+}
+ 
 exports.activate = function(req, res) {
   var confirmId = req.params.activationId;
   UserModel.findOne({activationHash: confirmId}, function(err, user){
