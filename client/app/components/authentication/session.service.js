@@ -52,7 +52,7 @@
       this.checkLoggedin = function() {
         var deferred = $q.defer();
 
-        $http.get("/api/auth/checkauth")
+        $http.get("/api/auth/islogged")
         .then(function(response)
         {
           if(response.data.authenticated)
