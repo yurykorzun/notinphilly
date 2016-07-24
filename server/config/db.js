@@ -1,11 +1,11 @@
 var express        = require('express');
 var mongoose       = require('mongoose');
-var expressSession = require('express-session');
-var mongoStore     = require('connect-mongo')(expressSession);
 var settings       = require('./settings');
 var argv          = require('boring')();
 
 module.exports = function(app) {
+    console.log("init db");
+
     var connectionString = settings.serverSettings.DB_CONNECTION_STRING;
 
     var dbOptions = {
@@ -19,20 +19,6 @@ module.exports = function(app) {
     );
     mongoose.connect(connectionString, dbOptions);
 
-    //make the app use the passport/express session
-    app.use(expressSession({
-      name: "notinphilly.sid",
-      resave: false,
-      saveUninitialized: false,
-      secret: 'notinphillynotinphilly',
-      cookie: {
-        maxAge: 3600000
-      },
-      store: new mongoStore({
-          mongooseConnection: mongoose.connection,
-          db: 'notinphilly'
-      })
-    }));
     if (argv['seed-db']) {
       console.log('Seeding DB');
       var dbseeder = require('../components/dbseeder');
