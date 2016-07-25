@@ -7,7 +7,7 @@ var settings       = require('./server/config/settings');
 // set our port
 var port = settings.serverSettings.HTTP_PORT;
 var ip = settings.serverSettings.HTTP_IP;
-var secretToken = 'notinphillynotinphillydave';
+var secretToken = 'notinphillynotinphilly';
 
 // configuration ===========================================
 require('./server/config/express')(app, secretToken);
