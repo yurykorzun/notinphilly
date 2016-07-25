@@ -22,7 +22,7 @@ module.exports = function(app, secretToken) {
 
   //make the app use the passport/express session
   app.use(expressSession({
-    name: "notinphilly.sid",
+    name: "notinphillytoken.sid",
     resave: false,
     saveUninitialized: false,
     secret: secretToken,
