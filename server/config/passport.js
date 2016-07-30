@@ -26,7 +26,6 @@ module.exports = function(app) {
             });
           }
           else {
-            console.log("deserializeUser" + JSON.stringify(user.userInfo));
             done(null, user.userInfo);
           }
       });

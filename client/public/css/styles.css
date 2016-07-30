@@ -66,13 +66,17 @@ body{
 {
     margin-right:22px;
     text-align:center!important;
-    background-color:#f2f2f2;
-    padding:20px 0;
 }
 
 .street-item-block .street-marker-icon img
 {
-  width:50px;
+
+}
+
+.view-onstreet-section
+{
+  padding-top: 30px;
+  padding-bottom: 30px;
 }
 
 .menu-login {

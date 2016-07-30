@@ -133,6 +133,11 @@ angular.module('notinphillyServerApp')
         if (e.target.feature) {
           mapService.showStreetPopup(e.target);
         }
+      },
+      pinClickCallback: function(e) {
+        if (e.target.streetLayer) {
+          //mapService.showStreetPopup(e.target.streetLayer);
+        }
       }
     };
 

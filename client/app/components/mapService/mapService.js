@@ -11,7 +11,8 @@
         neighborhoodMouseOutCallback : undefined,
         neighborhoodMouseClickCallback : undefined,
         streetMouseOverCallback : undefined,
-        streetMouseOutCallback: undefined
+        streetMouseOutCallback: undefined,
+        pinClickCallback: undefined
       };
 
       this.setMap = function(mapInstance) {
@@ -134,7 +135,15 @@
               var layerBounds = geoJsonLayer.getBounds();
               var streetCenter = layerBounds.getCenter();
 
+              street["streetCenter"] = streetCenter;
+              street["streetMapPreview"] = "https://api.mapbox.com/styles/v1/yurykorzun/cimv1ezcc00sqb8m7z8e3yeiz/static/" + streetCenter.lng + "," + streetCenter.lat + ",15/120x95?logo=false&access_token=pk.eyJ1IjoieXVyeWtvcnp1biIsImEiOiJjaWY2eTN2aHMwc3VncnptM3QxMzU3d3hxIn0.Mt0JldEMvvTdWW4GW2RSlQ"
+              street.properties.hundred = street.properties.hundred === 0 ? undefined : street.properties.hundred;
+
               var streetMarker = L.marker(streetCenter, {icon: markerIcon});
+              streetMarker.streetLayer = geoJsonLayer;
+              streetMarker.on({
+                click: function(e) { mapCallbacks.pinClickCallback(e); }
+              });
               mapLayerGroup.addLayer(streetMarker);
               streetMarker.addTo(map);
             }
@@ -268,7 +277,7 @@
 
       var openStreetLayerPopup = function(streetLongLat, layer, properties) {
         deferredMap.promise.then(function(map) {
-            var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&fov=70&heading=170&pitch=10";
+            var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "& key=AIzaSyARRi6qzN2f_jQpkH_2nedCFpTY2ehOy4A";
 
             properties.imageSrc = imageSrc;
             var popup = L.popup({
