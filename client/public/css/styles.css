@@ -40,7 +40,14 @@ body{
   border-bottom: 1px solid #ddd;
 }
 
+.menu-userProfile {
+  margin-left: 15px;
+}
 
+.menu-userProfile-logout {
+  margin-top: 10px;
+  margin-left: 5px;
+}
 
 .tab-contents
 {
