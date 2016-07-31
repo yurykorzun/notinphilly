@@ -133,18 +133,16 @@ body{
     width: 90px;
     padding-bottom: 15px;
   }
+  .logo-container
+  {
+    float: none;
+  }
   .logo-main {
-    width: 200px;
-    margin-left: 30%;
+    width: 150px;
   }
 }
 
 @media (min-width: 1000px) {
-  .foot
-  {
-    width:80%;
-    margin: 0 auto;
-  }
   .cfp-logo
   {
     width: 120px;
