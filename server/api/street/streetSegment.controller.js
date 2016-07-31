@@ -99,7 +99,7 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
             id: street._id,
             parentId: street.neighborhood,
             name: street.streetName,
-            hundred: street.leftHundred,
+            hundred: street.leftHundred === 0 ? (street.rightHundred === 0 ? undefined : street.rightHundred) : street.leftHundred,
             zipCode: street.zipLeft,
             type: street.type,
             totalAdopters: street.totalAdopters,
