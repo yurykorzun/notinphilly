@@ -1,0 +1,10 @@
+<ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
+  <div class="form-group menu-login">
+    <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Login failed. Please check your username or password.</div>
+    <label>Email</label>
+    <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
+    <label>Password</label>
+    <input type="password" class="form-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input><br/>
+    <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)" value="Login"/> Or <a href="" ng-click="loginForm.signup()">Sign up</a>
+  </div>
+</ng-form>

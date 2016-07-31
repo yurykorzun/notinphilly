@@ -32,6 +32,7 @@
       $scope.locateStreet = function (streetId)
       {
         $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
+        $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
         mapService.goToStreet(streetId);
       };
 
