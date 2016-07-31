@@ -75,16 +75,16 @@
         });
       };
 
-      this.showStreetPopup = function(streetLayer) {
+      this.showStreetPopup = function(streetFeature) {
         deferredMap.promise.then(function(map) {
-          var properties = streetLayer.feature.properties;
-          var geometry = streetLayer.feature.geometry;
+          var properties = streetFeature.properties;
+          var geometry = streetFeature.geometry;
 
-          var geoJsonLayer = L.geoJson(streetLayer.feature);
+          var geoJsonLayer = L.geoJson(streetFeature);
           var layerBounds = geoJsonLayer.getBounds();
           var streetCenter = layerBounds.getCenter();
 
-          openStreetLayerPopup(streetCenter, streetLayer, properties);
+          openStreetLayerPopup(streetCenter, properties);
         });
       };
 
@@ -137,10 +137,9 @@
 
               street["streetCenter"] = streetCenter;
               street["streetMapPreview"] = "https://api.mapbox.com/styles/v1/yurykorzun/cimv1ezcc00sqb8m7z8e3yeiz/static/" + streetCenter.lng + "," + streetCenter.lat + ",15/120x95?logo=false&access_token=pk.eyJ1IjoieXVyeWtvcnp1biIsImEiOiJjaWY2eTN2aHMwc3VncnptM3QxMzU3d3hxIn0.Mt0JldEMvvTdWW4GW2RSlQ"
-              street.properties.hundred = street.properties.hundred === 0 ? undefined : street.properties.hundred;
 
               var streetMarker = L.marker(streetCenter, {icon: markerIcon});
-              streetMarker.streetLayer = geoJsonLayer;
+              streetMarker.street = street;
               streetMarker.on({
                 click: function(e) { mapCallbacks.pinClickCallback(e); }
               });
@@ -177,7 +176,7 @@
 
                 map.setView(streetCenter, 16, { animate: false });
 
-                openStreetLayerPopup(streetCenter, foundLayer, foundLayer.feature.properties);
+                openStreetLayerPopup(streetCenter, foundLayer.feature.properties);
               });
             });
           });
@@ -197,7 +196,7 @@
 
           map.setView(streetCenter, 17, { animate: false });
 
-          openStreetLayerPopup(streetCenter, foundLayer, foundLayer.feature.properties);
+          openStreetLayerPopup(streetCenter, foundLayer.feature.properties);
         });
       }
 
@@ -275,7 +274,7 @@
         }
       };
 
-      var openStreetLayerPopup = function(streetLongLat, layer, properties) {
+      var openStreetLayerPopup = function(streetLongLat, properties) {
         deferredMap.promise.then(function(map) {
             var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=220x100&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "& key=AIzaSyARRi6qzN2f_jQpkH_2nedCFpTY2ehOy4A";
 

@@ -110,11 +110,9 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event, leafletEvent){
-      $scope.sideMenu.isStreetLevel = false;
+
     });
     $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event, leafletEvent){
-      $scope.sideMenu.isStreetLevel = true;
-      $scope.sideMenu.isVisible = false;
     });
 
     var mapCallbacks = {
@@ -131,12 +129,12 @@ angular.module('notinphillyServerApp')
       },
       streetClickCallback: function(e) {
         if (e.target.feature) {
-          mapService.showStreetPopup(e.target);
+          mapService.showStreetPopup(e.target.feature);
         }
       },
       pinClickCallback: function(e) {
-        if (e.target.streetLayer) {
-          //mapService.showStreetPopup(e.target.streetLayer);
+        if (e.target.street) {
+          mapService.showStreetPopup(e.target.street);
         }
       }
     };
