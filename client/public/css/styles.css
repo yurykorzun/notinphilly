@@ -40,10 +40,7 @@ body{
   border-bottom: 1px solid #ddd;
 }
 
-.foot
-{
-  padding: 20px;
-}
+
 
 .tab-contents
 {
@@ -143,6 +140,11 @@ body{
 }
 
 @media (min-width: 1000px) {
+  .foot
+  {
+    width:80%;
+    margin: 0 auto;
+  }
   .cfp-logo
   {
     width: 120px;
