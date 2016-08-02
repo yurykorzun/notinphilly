@@ -277,7 +277,7 @@
       var openStreetLayerPopup = function(streetLongLat, properties) {
         deferredMap.promise.then(function(map) {
             //https://maps.googleapis.com/maps/api/streetview?size=220x100&location=39.953798462302345,-75.19377532873054&fov=70&heading=170&pitch=10
-            var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=270x110&location=" +  streetLongLat.lat + "," + streetLongLat.lng + "&fov=50&heading=150&pitch=10";
+            var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=270x120&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&key=AIzaSyARRi6qzN2f_jQpkH_2nedCFpTY2ehOy4A";
 
             properties.imageSrc = imageSrc;
             var popup = L.popup({
