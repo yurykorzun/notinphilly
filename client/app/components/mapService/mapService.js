@@ -94,7 +94,7 @@
         });
       };
 
-      this.showAddressStreets = function(location) {
+      this.findStreetsNear = function(location, page, take) {
         var deferredStreets = $q.defer();
 
         deferredMap.promise.then(function(map) {
@@ -119,9 +119,9 @@
           mapLayerGroup.addLayer(addressMarker);
           addressMarker.addTo(map)
 
-          $http.post('api/streets/byloc/', location).then(function(result) {
+          $http.post('api/streets/byloc/' + page + '/' + take, location).then(function(result) {
             var addressLocation = location;
-            var foundStreets = result.data;
+            var foundStreets = result.data.streets;
 
             var streetLayer = createStreetLayer(foundStreets);
             mapStreetLayer = streetLayer;
@@ -148,7 +148,7 @@
             }
 
             map.invalidateSize();
-            deferredStreets.resolve(foundStreets);
+            deferredStreets.resolve(result.data);
           }, function(err) {
             deferredStreets.reject(err);
           });

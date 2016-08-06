@@ -1,15 +1,30 @@
 'use strict';
 
 (function () {
-  angular.module('notinphillyServerApp').directive('streetslist', function() {
+  angular.module('notinphillyServerApp').directive('streetslist', ['$rootScope', 'mapService', 'APP_EVENTS', function($rootScope, mapService, APP_EVENTS) {
     return {
       restrict: 'E',
       scope: {
-        streets: '='
+        streets: '=',
+        hasMoreStreets: '=',
+        streetsPage: '=',
+        streetsSkip: '=',
+        location: '='
       },
-      templateUrl: "app/components/streetslist/streetslist-template.html",
-      link: function(scope, element, attrs, controller) {
+      controller: function($scope) {
+        $scope.chooseStreet = function(streetId) {
+          mapService.selectStreet(streetId);
+          $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+        };
 
-      }
-  });
+        $scope.loadMore = function() {
+          $scope.streetsPage++;
+          mapService.findStreetsNear($scope.location, $scope.streetsPage, $scope.streetsSkip).then(function(searchResults){
+            $scope.streets.concat(searchResults.streets);
+          });
+        }
+      },
+      templateUrl: "app/components/streetslist/streetslist-template.html"
+    }
+  }]);
 })();

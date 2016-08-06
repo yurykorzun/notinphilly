@@ -16,10 +16,6 @@ exports.session = function (req, res) {
 
 
 exports.checkAuthenticated = function (req, res) {
-  console.log("checkAuthenticated");
-  console.log(req.isAuthenticated());
-  console.log(req.cookies);
-  
   if(req.isAuthenticated() && req.user) {
     return res.json({ "user" : req.user, "authenticated" : true });
   }
@@ -52,8 +48,6 @@ exports.logout = function (req, res) {
  */
 exports.login = function (req, res, next) {
     if (req.isAuthenticated() && req.user) {
-
-      console.log("Login successfully");
       return res.json({ _id: req.user._id, email: req.user.email });
     }
 

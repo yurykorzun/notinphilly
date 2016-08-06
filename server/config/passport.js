@@ -13,7 +13,6 @@ module.exports = function(app) {
 
   // Passport needs to be able to serialize and deserialize users to support persistent login sessions
   passport.serializeUser(function(user, done) {
-      console.log("serialize user");
       done(null, user.userInfo);
   });
 
@@ -36,12 +35,10 @@ module.exports = function(app) {
           passwordField: 'password' // this is the virtual field on the model
       },
       function(email, password, done) {
-          console.log('Authenticating user ' + email);
           UserModel.findOne({
               email: email.toLowerCase()
           }, function(err, user) {
               if (err) {
-                console.log(err);
                 return done(err);
               }
               else if (!user) {

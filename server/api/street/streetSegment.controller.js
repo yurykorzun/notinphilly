@@ -34,6 +34,8 @@ exports.getByNeighborhood = function(req, res, next) {
 exports.getByLocation = function(req, res, next) {
     var locationLat = req.body.lat;
     var locationLng = req.body.lng;
+    var page = parseInt(req.params.page);
+    var take = parseInt(req.params.take);
 
     var user = {};
     //Get user info
@@ -43,21 +45,28 @@ exports.getByLocation = function(req, res, next) {
           user = userFound;
         });
     }
+    var skipRecords = (page - 1) * take;
 
-    StreetModel.find({ 'geodata.geometry':
+    var findQuery = StreetModel.find({ 'geodata.geometry':
       { '$near': {
       '$minDistance': 0,
       '$maxDistance': 90,
       '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
       }}
-    }, function(err, streets) {
+    },
+    { skip: skipRecords },
+    function(err, streets) {
         if (err) return next(err);
 
         var geoList = new Array();
-        for(var nIndex = 0, length = streets.length; nIndex < length; nIndex++)
+        var takeItems = streets.length >= take ? take : streets.length;
+
+        for(var nIndex = 0, length = takeItems; nIndex < length; nIndex++)
         {
           var street = streets[nIndex];
           var geoItem = street.geodata;
+
+          console.log("geoItem " + JSON.stringify(geoItem));
 
           geoItem.properties = {
             id: street._id,
@@ -72,7 +81,7 @@ exports.getByLocation = function(req, res, next) {
           };
           geoList.push(geoItem);
         }
-        res.status(200).json(geoList);
+        res.status(200).json({ streets: geoList, total: streets.length, page: page, take: take  });
     });
 };
 
@@ -125,7 +134,6 @@ var isStreetAdoptedByUser = function(user, street) {
   if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters === 0 && street.totalAdopters <=5) {
     return false;
   }
-
 
   if (typeof user.adoptedStreets === 'undefined' && street.totalAdopters > 0 || street.totalAdopters > 5) {
     return true;
