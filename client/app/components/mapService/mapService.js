@@ -94,7 +94,33 @@
         });
       };
 
-      this.findStreetsNear = function(location, page, take) {
+      this.getStreetsForCurrentUser = function()
+      {
+        var deferredStreets = $q.defer();
+
+        $http.get("api/streets/current/").success(function(result, status) {
+          var foundStreets = result;
+
+          for(var i = 0; i < foundStreets.length; i++)
+          {
+            var street = foundStreets[i];
+            var geoJsonLayer = L.geoJson(street);
+            var layerBounds = geoJsonLayer.getBounds();
+            var streetCenter = layerBounds.getCenter();
+
+            street["streetCenter"] = streetCenter;
+            street["streetMapPreview"] = "https://api.mapbox.com/styles/v1/yurykorzun/cimv1ezcc00sqb8m7z8e3yeiz/static/" + streetCenter.lng + "," + streetCenter.lat + ",15/120x95?logo=false&access_token=pk.eyJ1IjoieXVyeWtvcnp1biIsImEiOiJjaWY2eTN2aHMwc3VncnptM3QxMzU3d3hxIn0.Mt0JldEMvvTdWW4GW2RSlQ";
+          }
+
+            deferredStreets.resolve(result);
+          }, function(err) {
+            deferredStreets.reject(err);
+        });
+
+        return deferredStreets.promise;
+      }
+
+      this.findStreetsNear = function(location) {
         var deferredStreets = $q.defer();
 
         deferredMap.promise.then(function(map) {
@@ -119,9 +145,9 @@
           mapLayerGroup.addLayer(addressMarker);
           addressMarker.addTo(map)
 
-          $http.post('api/streets/byloc/' + page + '/' + take, location).then(function(result) {
+          $http.post('api/streets/byloc', location).then(function(result) {
             var addressLocation = location;
-            var foundStreets = result.data.streets;
+            var foundStreets = result.data;
 
             var streetLayer = createStreetLayer(foundStreets);
             mapStreetLayer = streetLayer;

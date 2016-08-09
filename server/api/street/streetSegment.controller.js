@@ -12,6 +12,31 @@ exports.index = function(req, res, next) {
     res.json([]);
 };
 
+function convertStreetsData(user, streetsResult)
+{
+  var geoList = new Array();
+  for(var nIndex = 0, length = streetsResult.length; nIndex < length; nIndex++)
+  {
+    var street = streetsResult[nIndex];
+    var geoItem = street.geodata;
+
+    geoItem.properties = {
+      id: street._id,
+      parentId: street.neighborhood,
+      name: street.streetName,
+      hundred: street.leftHundred === 0 ? (street.rightHundred === 0 ? undefined : street.rightHundred) : street.leftHundred,
+      zipCode: street.zipLeft,
+      type: street.type,
+      totalAdopters: street.totalAdopters,
+      isAdoptedByUser: isStreetAdoptedByUser(user, street),
+      active: street.active
+    };
+    geoList.push(geoItem);
+  }
+
+  return geoList;
+}
+
 exports.get = function(req, res, next) {
     var streetId = req.params.sid;
 
@@ -31,7 +56,35 @@ exports.getByNeighborhood = function(req, res, next) {
     });
 };
 
+
 exports.getByLocation = function(req, res, next) {
+    var locationLat = req.body.lat;
+    var locationLng = req.body.lng;
+
+    var user = {};
+    //Get user info
+    if (typeof req.user !== 'undefined') {
+      UserModel.findById(req.user._id, function(err, userFound) {
+          if (err) return next(err);
+          user = userFound;
+        });
+    }
+    var findQuery = StreetModel.find({ 'geodata.geometry':
+      { '$near': {
+      '$minDistance': 0,
+      '$maxDistance': 90,
+      '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
+      }}
+    })
+    .exec(function(err, streets) {
+        if (err) return next(err);
+
+        var convertedResult = convertStreetsData(user, streets);
+        res.status(200).json(user, convertedResult);
+    });
+};
+
+exports.getByLocationPaged = function(req, res, next) {
     var locationLat = req.body.lat;
     var locationLng = req.body.lng;
     var page = parseInt(req.params.page);
@@ -46,16 +99,15 @@ exports.getByLocation = function(req, res, next) {
         });
     }
     var skipRecords = (page - 1) * take;
-
     var findQuery = StreetModel.find({ 'geodata.geometry':
       { '$near': {
       '$minDistance': 0,
       '$maxDistance': 90,
       '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
       }}
-    },
-    { skip: skipRecords },
-    function(err, streets) {
+    })
+    .skip(skipRecords)
+    .exec(function(err, streets) {
         if (err) return next(err);
 
         var geoList = new Array();
@@ -65,8 +117,6 @@ exports.getByLocation = function(req, res, next) {
         {
           var street = streets[nIndex];
           var geoItem = street.geodata;
-
-          console.log("geoItem " + JSON.stringify(geoItem));
 
           geoItem.properties = {
             id: street._id,
@@ -99,26 +149,8 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
     StreetModel.find({neighborhood: mongoose.Types.ObjectId(neighborhoodId)}, function(err, streets) {
         if (err) return next(err);
 
-        var geoList = new Array();
-        for(var nIndex = 0, length = streets.length; nIndex < length; nIndex++)
-        {
-          var street = streets[nIndex];
-          var geoItem = street.geodata;
-
-          geoItem.properties = {
-            id: street._id,
-            parentId: street.neighborhood,
-            name: street.streetName,
-            hundred: street.leftHundred === 0 ? (street.rightHundred === 0 ? undefined : street.rightHundred) : street.leftHundred,
-            zipCode: street.zipLeft,
-            type: street.type,
-            totalAdopters: street.totalAdopters,
-            isAdoptedByUser: isStreetAdoptedByUser(user, street),
-            active: street.active
-          };
-          geoList.push(geoItem);
-        }
-        res.status(200).json(geoList);
+        var convertedResult = convertStreetsData(user, streets);
+        res.status(200).json(convertedResult);
     });
 };
 
@@ -270,7 +302,8 @@ exports.currentUserStreets = function(req, res, next) {
         if (!user) return res.status(401).send('Unauthorized');
 
         StreetModel.find({'_id': { $in: user.adoptedStreets}}, function(err, streets) {
-          res.json(streets);
+          var convertedResult = convertStreetsData(user, streets);
+          res.status(200).json(convertedResult);
         });
     }).sort({zipCode:1, streetName: 1}); ;
 };

@@ -13,7 +13,7 @@ router.get('/adopt/:sid', authService.isAuthenticated, controller.adopt);
 router.get('/leave/:sid', authService.isAuthenticated, controller.leave);
 router.get('/findstreets/:street/:house', controller.findStreets);
 
-router.post('/byloc/:page/:take', controller.getByLocation);
+router.post('/byloc/', controller.getByLocation);
 
 router.get('/lookupZipcodes/:zip/:limit', controller.getZipCodes);
 router.get('/lookupNames/:name/:limit', controller.getStreetNames);
