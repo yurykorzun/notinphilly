@@ -56,9 +56,12 @@
       }
 
       function SetupUserStreets(){
-        $http.get("api/streets/current/").success(function(data, status) {
-          $scope.userProfile.adoptedStreets = data;
-        });
+        mapService.getStreetsForCurrentUser().then(function(response){
+                                                    $scope.userProfile.adoptedStreets = response;
+                                                  },
+                                                  function(err) {
+
+                                                  });
       }
     }]);
 })();

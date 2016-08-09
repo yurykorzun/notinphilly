@@ -17,36 +17,23 @@
   <div class="row" ng-show="hasStreets()">
     <div class="row">
       <div class="col-md-5">
-        <h4>We found following streets:</h4>
+        <h4>We found {{totalStreets}} streets nearby:</h4>
       </div>
       <div class="col-md-3 pull-right">
         <a href="" ng-click="switchToMap()">Veiw on map</a>
       </div>
     </div>
     <div class="found-streets-items col-md-12 clearfix">
-       <div class="street-item-block row clearfix" ng-repeat="foundStreet in foundStreets">
-        <div class="col-md-3">
-          <div class="street-marker-icon pull-left">
-            <a href="" ng-click="chooseStreet(foundStreet.properties.id)">
-              <img ng-src="{{ foundStreet.streetMapPreview }}" />
-            </a>
-          </div>
-        </div>
-        <div class="col-md-9">
-          <div class="col-md-8">
-            <h4>{{foundStreet.properties.hundred}} {{foundStreet.properties.name}} {{foundStreet.properties.type}}</h4>
-            <h6>Zip: {{foundStreet.properties.zipCode}}</h6>
-            <h6>Participants: {{foundStreet.properties.totalAdopters}}</h6>
-          </div>
-          <div class="col-md-4">
-            <div class="view-onstreet-section">
-              <a class="btn bth-sm btn-success btn-block" href="" ng-click="chooseStreet(foundStreet.properties.id)">
-                View
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
+       <streetslist streets="pagedStreets" location="location"/>
+       <div ng-show="hasMoreStreets">
+           <div class="col-md-2">
+           </div>
+           <div class="col-md-7">
+             <a class="btn bth-sm btn-default btn-block" href="" ng-click="loadMore()">
+               Load more>>
+             </a>
+           </div>
+       </div>
     </div>
   </div>
 </div>

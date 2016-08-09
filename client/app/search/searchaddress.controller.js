@@ -2,7 +2,13 @@
 angular.module('notinphillyServerApp')
   .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$anchorScroll', '$location', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $anchorScroll, $location, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
     $scope.options = { country: 'us'};
-    $scope.foundStreets = [];
+    $scope.streets = [];
+    $scope.pagedStreets = [];
+
+    $scope.streetsPage = 1;
+    $scope.streetsSkip = 4;
+    $scope.hasMoreStreets = false;
+    $scope.location = undefined;
 
     $scope.$on('$locationChangeStart', function(ev) {
       ev.preventDefault();
@@ -24,7 +30,8 @@ angular.module('notinphillyServerApp')
 
     $scope.clearSearch = function() {
       $scope.details = $scope.autocomplete = undefined;
-      $scope.foundStreets = [];
+      $scope.pagedStreets = $scope.streets = [];
+      $scope.streetsPage = 1;
       mapService.setNeighborhoodLayers();
     };
 
@@ -32,18 +39,20 @@ angular.module('notinphillyServerApp')
       var addressDetails = $scope.details;
       if(addressDetails && addressDetails.geometry)
       {
-        var location = addressDetails.geometry.location;
-        location = { lat: location.lat(), lng: location.lng() };
+        $scope.location = addressDetails.geometry.location;
+        $scope.location = { lat: $scope.location.lat(), lng: $scope.location.lng() };
 
-        mapService.showAddressStreets(location).then(function(streets){
-          $scope.foundStreets = streets;
+        mapService.findStreetsNear($scope.location).then(function(searchResults){
+          $scope.streets = searchResults;
+          $scope.totalStreets = searchResults.length;
+          setPagedStreets($scope.streets);
         });
       }
     };
 
-    $scope.chooseStreet = function(streetId) {
-      mapService.selectStreet(streetId);
-      $scope.switchToMap();
+    $scope.loadMore = function() {
+      $scope.streetsPage++;
+      setPagedStreets($scope.streets);
     }
 
     $scope.hasAddress = function() {
@@ -52,7 +61,18 @@ angular.module('notinphillyServerApp')
     };
 
     $scope.hasStreets = function(){
-      return $scope.foundStreets.length > 0;
+      return $scope.streets.length > 0;
     };
+
+    var setPagedStreets = function(streets)
+    {
+        var startIndex = (($scope.streetsPage - 1) * $scope.streetsSkip);
+        var endIndex = $scope.streetsPage * $scope.streetsSkip;
+        endIndex = streets.length < endIndex ? streets.length : endIndex;
+
+        var pagedStreets = streets.slice(startIndex, endIndex);
+        $scope.pagedStreets = $scope.pagedStreets.concat(pagedStreets);
+        $scope.hasMoreStreets = endIndex < streets.length;
+    }
   }]);
 })();
