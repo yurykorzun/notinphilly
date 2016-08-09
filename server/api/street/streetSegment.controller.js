@@ -80,7 +80,7 @@ exports.getByLocation = function(req, res, next) {
         if (err) return next(err);
 
         var convertedResult = convertStreetsData(user, streets);
-        res.status(200).json(user, convertedResult);
+        res.status(200).json(convertedResult);
     });
 };
 
