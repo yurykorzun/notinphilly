@@ -301,7 +301,12 @@
           onAdd: function (map) {
             var container = L.DomUtil.create('div');
             container.innerHTML = '<div class="map-control"><a class="map-control-text"><i class="fa fa-2x fa-search-plus"></i></a></div><div class="map-control"><a class="map-control-text"><i class="fa fa-2x fa-search-minus"></i></a></div>';
-
+            container.children[0].onclick = function(){
+              self.zoomIn(1);
+            }
+            container.children[1].onclick = function(){
+              self.zoomOut(1);
+            }
             return container;
           }
         });
