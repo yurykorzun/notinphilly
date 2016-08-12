@@ -52,8 +52,8 @@
             </div>
          </div>
        </uib-tab>
-       <uib-tab index="1" active="main.isExploreOpen" heading="Map" select="main.onExploreSelect()" deselect="main.onExploreLeave()">
-         <div class="map-block" ng-show="main.activeTabIndex == 1">
+       <uib-tab index="1" heading="Map" select="main.onExploreSelect()" deselect="main.onExploreLeave()">
+         <div class="map-block">
            <div class="container">
              <div class="row tab-inner">
                <div ng-include src="'app/map/map-template.html'"></div>

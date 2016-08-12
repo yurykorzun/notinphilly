@@ -15,8 +15,11 @@
         <div class="row">
             <i class="fa fa-envelope"></i> {{userProfile.email}}
         </div>
-        <div class="row offset" ng-show="userProfile.adoptedStreets.length > 0">
+        <div class="row offset" ng-show="hasStreets()">
             <i class="fa fa-check-circle-o"></i> Participating in streets:
+            <div class="col-md-3 pull-right">
+              <a href="" ng-click="switchToMap()">Veiw on map</a>
+            </div>
             <streetslist streets="userProfile.adoptedStreets"/>
         </div>
      </div>

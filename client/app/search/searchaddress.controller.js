@@ -6,7 +6,7 @@ angular.module('notinphillyServerApp')
     $scope.pagedStreets = [];
 
     $scope.streetsPage = 1;
-    $scope.streetsSkip = 4;
+    $scope.streetsPageSize = 4;
     $scope.hasMoreStreets = false;
     $scope.location = undefined;
 
@@ -25,6 +25,7 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.switchToMap = function() {
+      mapService.showStreets($scope.streets, $scope.location);
       $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
     }
 
@@ -42,17 +43,17 @@ angular.module('notinphillyServerApp')
         $scope.location = addressDetails.geometry.location;
         $scope.location = { lat: $scope.location.lat(), lng: $scope.location.lng() };
 
-        mapService.findStreetsNear($scope.location).then(function(searchResults){
+        mapService.findStreetsNear($scope.location).then(function(searchResults)
+        {
           $scope.streets = searchResults;
-          $scope.totalStreets = searchResults.length;
-          setPagedStreets($scope.streets);
+          setPagedStreets($scope.streets, $scope.streetsPage, $scope.streetsPageSize);
         });
       }
     };
 
     $scope.loadMore = function() {
       $scope.streetsPage++;
-      setPagedStreets($scope.streets);
+      setPagedStreets($scope.streets, $scope.streetsPage, $scope.streetsPageSize);
     }
 
     $scope.hasAddress = function() {
@@ -64,13 +65,14 @@ angular.module('notinphillyServerApp')
       return $scope.streets.length > 0;
     };
 
-    var setPagedStreets = function(streets)
+    var setPagedStreets = function(streets, page, pageSize)
     {
-        var startIndex = (($scope.streetsPage - 1) * $scope.streetsSkip);
-        var endIndex = $scope.streetsPage * $scope.streetsSkip;
+        var startIndex = ((page - 1) * pageSize);
+        var endIndex = page * pageSize;
         endIndex = streets.length < endIndex ? streets.length : endIndex;
 
         var pagedStreets = streets.slice(startIndex, endIndex);
+
         $scope.pagedStreets = $scope.pagedStreets.concat(pagedStreets);
         $scope.hasMoreStreets = endIndex < streets.length;
     }
