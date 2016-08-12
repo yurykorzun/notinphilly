@@ -31,10 +31,22 @@
 
       $scope.locateStreet = function (streetId)
       {
+        mapService.showStreets($scope.streets);
+        mapService.selectStreet(streetId);
+
         $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
         $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
-        mapService.goToStreet(streetId);
       };
+
+      $scope.hasStreets = function ()
+      {
+        return $scope.userProfile.adoptedStreets.length > 0
+      };
+
+      $scope.switchToMap = function() {
+        mapService.showStreets($scope.userProfile.adoptedStreets);
+        $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+      }
 
       SetupCurrentUser();
 

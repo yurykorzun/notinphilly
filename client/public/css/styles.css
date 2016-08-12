@@ -69,6 +69,7 @@ body{
     border:1px solid #E6E6E6;
     margin-bottom:5px;
     border-color:#80cde5;
+    background-color: white;
 }
 
 .street-item-block .street-marker-icon
@@ -137,6 +138,22 @@ body{
 #cityMap {
     height:700px;
     z-index: 1;
+}
+
+.map-control {
+  background-color: white;
+  font-size: 16px;
+	cursor: pointer;
+  border: 1px solid black;
+  padding: 2px;
+}
+
+.map-control-text {
+  color: black;
+}
+
+.map-control a:hover {
+	background-color: #f4f4f4;
 }
 
 @media (max-width: 999px) {

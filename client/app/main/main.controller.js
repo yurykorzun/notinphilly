@@ -43,12 +43,15 @@ angular.module('notinphillyServerApp')
     $scope.$on(APP_EVENTS.LOGOUT, function(event) {
       ShowLoginForm(true);
     });
+    $scope.$on(APP_EVENTS.OPEN_SEARCH, function(event) {
+      $scope.main.activeTabIndex = 0;
+    });
     $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
       $scope.main.activeTabIndex = 1;
     });
 
     $scope.main.onSearchSelect = function() {
-      $rootScope.$broadcast(APP_EVENTS.OPEN_SEARCH);
+      $rootScope.$broadcast(APP_EVENTS.OPENED_SEARCH);
     }
 
     $scope.main.onExploreSelect = function() {

@@ -19,6 +19,7 @@
         "LOGIN_FAILED": "loginFailed",
         "LOGOUT": "logout",
         "OPEN_SEARCH": "openSearch",
+        "OPENED_SEARCH": "openedSearch",
         "OPEN_EXPLORE": "openExplore",
         "OPENED_EXPLORE": "openedExplore",
         "CLOSED_EXPLORE": "closedExplore",
