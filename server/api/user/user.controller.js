@@ -138,7 +138,8 @@ exports.get = function(req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function(req, res) {
-
+  var userId = req.params.id;
+  // TODO: actually delete the user with this id
 };
 
 /**
