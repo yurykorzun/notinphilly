@@ -1,19 +1,23 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('UserProfileController', [ '$scope', '$http', '$rootScope', 'sessionService', 'mapService', 'APP_EVENTS',
+  .controller('UserProfileController', [ '$scope', '$http', '$rootScope', 'sessionService', 'mapService', 'APP_EVENTS',
     function($scope, $http, $rootScope, sessionService, mapService, APP_EVENTS) {
       $scope.userProfile = {
         logout: function() {
           $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
           sessionService.logout().then(function(response){
-                                  $rootScope.$broadcast(APP_EVENTS.LOGOUT);
-                                  $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
-                                },
-                                function(err) {
-                                  $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
-                                });
+            $rootScope.$broadcast(APP_EVENTS.LOGOUT);
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+          },
+          function(err) {
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+          });
         },
-        adoptedStreets: []
+        adoptedStreets: [],
+        editForm: false,
+        toggleEdit: function () {
+          $scope.userProfile.editForm = !$scope.userProfile.editForm;
+        }
       };
 
       $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
@@ -59,6 +63,8 @@
             $scope.userProfile.address = data.houseNumber + " " + data.streetName + " " + data.zip;
             $scope.userProfile.email = data.email;
 
+            $scope.userProfile.aptNumber = data.apartmentNumber;
+
             SetupUserStreets();
           },
           function(err) {
@@ -69,11 +75,11 @@
 
       function SetupUserStreets(){
         mapService.getStreetsForCurrentUser().then(function(response){
-                                                    $scope.userProfile.adoptedStreets = response;
-                                                  },
-                                                  function(err) {
+          $scope.userProfile.adoptedStreets = response;
+        },
+        function(err) {
 
-                                                  });
+        });
       }
     }]);
 })();

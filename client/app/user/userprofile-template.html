@@ -1,27 +1,64 @@
-<div ng-controller="UserProfileController">
- <div class="row menu-userProfile">
-     <div class="col-sm-10 col-md-10">
-        <div class="row">
-          <div class="pull-left">
-            <h4>{{userProfile.fullName}}</h4>
+<div class="user-profile" ng-controller="UserProfileController">
+ <div class="row">
+   <div class="col-xs-12">
+    <div class="row">
+      <div class="col-xs-6">
+        <h4 class="heading">{{userProfile.fullName}}</h4>
+      </div>
+      <div class="col-xs-6">
+        <ul class="list-inline user-profile-actions pull-right">
+          <li ng-hide="userProfile.editForm"><a href="" ng-click="userProfile.toggleEdit()">Edit profile <i class="fa fa-pencil"></i></a></li>
+          <li><a href="" ng-click="userProfile.logout()">Log out <i class="fa fa-sign-out"></i></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <address>
+      <i class="fa fa-map-pin" aria-hidden="true"></i> {{userProfile.address}}<br>
+      <span ng-show="userProfile.aptNumber"><i class="fa fa-building" aria-hidden="true"></i> Apt. {{userProfile.aptNumber}}<br></span>
+      <i class="fa fa-envelope" aria-hidden="true"></i> {{userProfile.email}}
+    </address>
+
+    <form class="edit-form" ng-show="userProfile.editForm">
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <label for="addressName" class="control-label">Street Address</label>
+          <div ng-controller="searchAddressController">
+            <input id="addressName" search-autocomplete ng-model="userProfile.address" options="options" details="details" class="form-control input-sm" placeholder="Enter your street address..." type="text">
           </div>
-          <div class="pull-left menu-userProfile-logout">
-            <a href ng-click="userProfile.logout()">Logout <i class="fa fa-sign-out"></i></a>
+        </div>             
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="apartmentNum" class="control-label">Apartment Number</label>
+          <input id="apartmentNum" ng-model="userProfile.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+        </div>
+        <div class="col-md-6 form-group">
+         <label for="email">Email address</label>
+         <input type="email" class="form-control" id="email" ng-model="userProfile.email" placeholder="Email address">
+       </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-offset-6 col-sm-6">
+          <div class="form-actions form-group pull-right">
+            <button type="submit" class="btn btn-primary">Update profile</button>
+            <button type="button" class="btn btn-default btn-cancel pull-left" ng-click="userProfile.toggleEdit()">Cancel</button>
           </div>
         </div>
-        <div class="row">
-         <small><i class="fa fa-map-marker"/> {{userProfile.address}}</small>
-        </div>
-        <div class="row">
-            <i class="fa fa-envelope"></i> {{userProfile.email}}
-        </div>
-        <div class="row offset" ng-show="hasStreets()">
-            <i class="fa fa-check-circle-o"></i> Participating in streets:
-            <div class="col-md-3 pull-right">
-              <a href="" ng-click="switchToMap()">Veiw on map</a>
-            </div>
-            <streetslist streets="userProfile.adoptedStreets"/>
-        </div>
-     </div>
- </div>
+      </div>
+    </form>
+
+    <div class="row" ng-show="hasStreets()">
+      <div class="col-xs-12">
+        <div class="street-list-header">
+          <i class="fa fa-check-circle-o"></i> Participating in streets:
+          <ul class="list-inline user-profile-actions pull-right">
+            <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
+          </ul>
+      </div>
+        <streetslist streets="userProfile.adoptedStreets"/>
+      </div>
+    </div>
+</div>
+</div>
 </div>
