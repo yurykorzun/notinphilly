@@ -41,11 +41,11 @@ angular.module('notinphillyServerApp')
 
      $http.delete(url)
        .success(function (data) {
-         // TODO: refresh ui-grid
-         console.log('woohoo!');
+         getPage(1, 25);
        })
        .error(function (error) {
-         console.error('aww');
+         // TODO: Probably give better info
+         console.error('error:', error);
        });
    };
 
