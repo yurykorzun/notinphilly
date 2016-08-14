@@ -34,7 +34,7 @@
         "MAP_CENTER": {  lat: 39.931054,  lng: -75.204009 },
     });
 
-    app.config(function ($httpProvider, $routeProvider, $logProvider, $provide) {
+    app.config(function ($httpProvider, $routeProvider, $locationProvider, $logProvider, $provide) {
       $httpProvider.defaults.withCredentials = true;
       $routeProvider
         .when('/', {
@@ -58,6 +58,12 @@
         ]);
 
         $logProvider.debugEnabled(false);
+
+        $locationProvider.html5Mode({
+          enabled: true,
+          requireBase: false
+        });
+
     });
 
   app.run([
