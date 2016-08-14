@@ -1,7 +1,7 @@
 <div>
   <div class="modal-header">
     <h3 ng-show="!isRegisterSuccess && !isRegisterFailed">Signup and join others in eliminating litter!</h3>
-    <div class="alert alert-success" ng-show="isRegisterSuccess">Thank you for registring!!!</div>
+    <div class="alert alert-success" ng-show="isRegisterSuccess">Sent confirmation email to your email address. Please check your inbox.</div>
     <div class="alert alert-danger" ng-show="isRegisterFailed">{{ errorMessage }}</div>
   </div>
   <div class="modal-body">
@@ -45,12 +45,12 @@
                     </div>
            </div>
            </div>
-                  
+
           <div class="form-group">
             <label>Apartment Number</label>
             <input type="text" id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit">
           </div>
- 
+
       <div class="offset-small"><label>Password</label></div>
 
       <div class="row">
