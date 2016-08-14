@@ -1,12 +1,7 @@
 <div>
   <div class="modal-header">
-<<<<<<< HEAD
-    <h3 ng-show="!isRegisterSuccess && !isRegisterFailed">Signup and join others in eliminating litter!</h3>
-    <div class="alert alert-success" ng-show="isRegisterSuccess">Sent confirmation email to your email address. Please check your inbox.</div>
-=======
     <h3 class="modal-title" ng-show="!isRegisterSuccess && !isRegisterFailed">Sign up and join others in eliminating litter!</h3>
-    <div class="alert alert-success" ng-show="isRegisterSuccess">Thank you for registering!!!</div>
->>>>>>> d0b408e8b35384a54cf48522859fbe3b2392073e
+    <div class="alert alert-success" ng-show="isRegisterSuccess">Sent confirmation email to your email address. Please check your inbox.</div>
     <div class="alert alert-danger" ng-show="isRegisterFailed">{{ errorMessage }}</div>
   </div>
   <div class="modal-body">
@@ -22,44 +17,6 @@
       </div>
     </div>
     <form id="signinForm" role="form" ng-show="!isRegisterSuccess">
-<<<<<<< HEAD
-          <div class="form-group">
-            <label>First Name</label>
-            <input type="text" id="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name" required>
-          </div>
-          <div class="form-group">
-            <label>Last Name</label>
-            <input type="text" id="lastName" ng-model="User.lastName" class="form-control input-sm" placeholder="Last Name" required>
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="text" id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email" required>
-         </div>
-         <div class="form-group">
-            <label>Phone</label> (optional)<br>
-            <input name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="text"/>
-            <small>We will just use it to see if you will re-new after 6 months</small>
-         </div>
-            <div class="form-group">
-              <label>Business/Organization</label> (optional)
-              <input type="text" id="organizationName" ng-model="User.businessName" class="form-control input-sm">
-            </div>
-          <div class="form-group"><label>Address</label> (optional, to get the grabber to you)
-                  <div ng-controller="searchAddressController">
-                    <div>
-                      <input id="addressName" search-autocomplete ng-model="User.addressName" options="options" details="details" type="text" class="input-md" placeholder="Enter your address..." />
-                    </div>
-           </div>
-           </div>
-
-          <div class="form-group">
-            <label>Apartment Number</label>
-            <input type="text" id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit">
-          </div>
-
-      <div class="offset-small"><label>Password</label></div>
-
-=======
       <div class="row">
         <div class="col-xs-6 form-group">
           <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
@@ -93,13 +50,12 @@
           <div ng-controller="searchAddressController">
               <input id="addressName" search-autocomplete ng-model="User.addressName" options="options" details="details" class="form-control input-sm" placeholder="Enter your street address..." type="text">
           </div>
-        </div>             
+        </div>
         <div class="col-md-6 form-group">
           <label for="apartmentNum" class="control-label">Apartment Number</label>
           <input id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
         </div>
       </div>
->>>>>>> d0b408e8b35384a54cf48522859fbe3b2392073e
       <div class="row">
         <div class="col-xs-6">
           <div class="form-group">
