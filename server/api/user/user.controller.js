@@ -69,7 +69,7 @@ exports.create = function(req, res, next) {
           }
           else {
             UserModel.findOne({email: req.body.email}, function(err, user) {
-              sendConfirmationEmail(req, user);
+              //sendConfirmationEmail(req, user);
               res.status(200).send('Successfully Sent Confirmation Email');
             });
           }
