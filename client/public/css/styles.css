@@ -1,7 +1,69 @@
+/* GLOBAL ################### */
+
+/* Color Key -----
+
+#fdc442 Yellow
+#ebebeb Light Gray
+------------------ */
+
 body{
-  font-family: Tahoma, Helvetica, Geneva, sans-serif;
+  font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;
 }
 
+h1,h2,h3,h4,h5,h6 { font-family:"Open Sans", Helvetica, Geneva, sans-serif; }
+
+/* Helper Classes for Colors and Spacing  ############ */
+.bg-white { background-color: #ffffff;  }
+.bg-gray { background-color: #ebebeb;  }
+.bg-yellow { background-color: #fdc442; }
+.bg-black-70 { background-color: rgba(0,0,0,0.7); }
+.bg-black-90 { background-color: rgba(0,0,0,0.9); }
+
+.text-white { color: #ffffff; }
+.text-yellow { color: #fdc442; }
+
+.padding-top { padding-top:20px; }
+.padding-bottom { padding-top:20px; }
+.padding-top--small { padding-top:10px; }
+.padding-bottom--small { padding-top:10px; }
+.padding-top--large { padding-top:40px; }
+.padding-bottom--large { padding-top:40px; }
+
+/* Padding for just the vertical and horizontal axes */
+.padding-y { padding-top:20px; padding-bottom:20px; }
+.padding-x { padding-left:20px; padding-right:20px; }
+
+/* HEADER ##################### */
+
+/* MAIN NAV ################### */
+
+
+/* FOOTER ##################### */
+.footer { background: rgba(0,0,0,0.9); }
+.footer-logo {
+  color: #ffffff;
+  font-weight:bold;
+  font-family:"Open Sans", Helvetica, Geneva, sans-serif;
+  font-size: 25px; 
+}
+
+/* HOMEPAGE ################### */
+
+/* -- HERO ------------------ */
+
+.background-image {
+  background: 
+  rgba(0,0,0,0.7)
+  url(../img/homepage-hero.jpg);
+  background-size: cover;
+  background-position: center center;
+}
+/* -- FIND BLOCK ------------ */
+/* -- EXPLORE MAP ----------- */
+
+
+
+/* Legacy Styles */
 .top-bar {
     background: #fdfdfd;
     background-color: #F2F8FF;
@@ -12,7 +74,7 @@ body{
     border-bottom: 1px solid #f5f5f5;
 }
 
- .pac-container {
+.pac-container {
     z-index: 1050;
     width: 100%;
 }

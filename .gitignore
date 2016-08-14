@@ -3,3 +3,5 @@ node_modules
 
 # Bower Dependency Directory
 client/public/libs
+
+.DS_Store
