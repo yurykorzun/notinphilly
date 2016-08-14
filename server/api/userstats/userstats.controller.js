@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var UserStatsModel = require('./userstats.model');
 var UserController = require('../user/user.controller');
-var mailer = require('../../components/mailer');
 var uuid = require('uuid');
 var url = require('url');
 
