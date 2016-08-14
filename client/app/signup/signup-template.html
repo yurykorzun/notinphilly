@@ -1,7 +1,7 @@
 <div>
   <div class="modal-header">
-    <h3 ng-show="!isRegisterSuccess && !isRegisterFailed">Signup and join others in eliminating litter!</h3>
-    <div class="alert alert-success" ng-show="isRegisterSuccess">Thank you for registring!!!</div>
+    <h3 class="modal-title" ng-show="!isRegisterSuccess && !isRegisterFailed">Sign up and join others in eliminating litter!</h3>
+    <div class="alert alert-success" ng-show="isRegisterSuccess">Thank you for registering!!!</div>
     <div class="alert alert-danger" ng-show="isRegisterFailed">{{ errorMessage }}</div>
   </div>
   <div class="modal-body">
@@ -17,81 +17,79 @@
       </div>
     </div>
     <form id="signinForm" role="form" ng-show="!isRegisterSuccess">
-          <div class="form-group">
-            <label>First Name</label>
-            <input type="text" id="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name" required>
-          </div>
-          <div class="form-group">
-            <label>Last Name</label>
-            <input type="text" id="lastName" ng-model="User.lastName" class="form-control input-sm" placeholder="Last Name" required>
-          </div>
-          <div class="form-group">
-            <label>Email</label>
-            <input type="text" id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email" required>
-         </div>
-         <div class="form-group">
-            <label>Phone</label> (optional)<br>
-            <input name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="text"/>
-            <small>We will just use it to see if you will re-new after 6 months</small>
-         </div>
-            <div class="form-group">
-              <label>Business/Organization</label> (optional)
-              <input type="text" id="organizationName" ng-model="User.businessName" class="form-control input-sm">
-            </div>
-          <div class="form-group"><label>Address</label> (optional, to get the grabber to you)
-                  <div ng-controller="searchAddressController">
-                    <div>
-                      <input id="addressName" search-autocomplete ng-model="User.addressName" options="options" details="details" type="text" class="input-md" placeholder="Enter your address..." />
-                    </div>
-           </div>
-           </div>
-                  
-          <div class="form-group">
-            <label>Apartment Number</label>
-            <input type="text" id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit">
-          </div>
- 
-      <div class="offset-small"><label>Password</label></div>
-
       <div class="row">
-        <div class="col-xs-6 col-sm-6 col-md-6">
+        <div class="col-xs-6 form-group">
+          <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input id="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name" type="text" required>
+        </div>
+        <div class="col-xs-6 form-group">
+          <label for="lastName" class="control-label">Last Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input id="lastName" ng-model="User.lastName" class="form-control input-sm" placeholder="Last Name" type="text" required>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+        </div>
+        <div class="col-md-6 form-group">
+          <label for="phone" class="control-label">Phone Number</label>
+          <input id="phone" class="form-control input-sm" name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel"/>
+          <small>Only used to see if you will renew after 6 months</small>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <label for="organizationName" class="control-label">Business/Organization</label>
+          <input id="organizationName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 form-group">
+          <label for="addressName" class="control-label">Address</label> (to get the grabber to you)
+          <div ng-controller="searchAddressController">
+              <input id="addressName" search-autocomplete ng-model="User.addressName" options="options" details="details" class="form-control input-sm" placeholder="Enter your street address..." type="text">
+          </div>
+        </div>             
+        <div class="col-md-6 form-group">
+          <label for="apartmentNum" class="control-label">Apartment Number</label>
+          <input id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-6">
           <div class="form-group">
+            <label for="password" class="control-label">Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
             <input type="password" id="password" ng-model="User.password" class="form-control input-sm" placeholder="Password" required>
           </div>
         </div>
-        <div class="col-xs-6 col-sm-6 col-md-6">
+        <div class="col-xs-6">
           <div class="form-group">
+            <label for="passwordConfirm" class="control-label">Confirm Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
             <input type="password" id="passwordConfirm" ng-model="User.passwordConfirm" class="form-control input-sm" placeholder="Confirm password" required>
           </div>
         </div>
       </div>
-
-        <div class="col-xs-8 col-xs-offset-2">
+      <div class="row">
+        <div class="col-xs-12">
           <div class="form-group">
-            <label><input type="checkbox" id="distributeCheckbox" ng-model="User.distributer"><small> If needed, I can help distribute materials to those in my neighborhood.</small></label>
+            <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="User.distributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
           </div>
         </div>
-
-      <div class="offset-small"></div>
-
-      <div class="row">
-        <div class="col-sm-3 col-sm-3">
-        </div>
-        <div class="col-sm-6 col-sm-6">
-          <a class="btn btn-lg btn-success btn-block input-block-level" href="" ng-click="register()">
-              <i class="fa fa-check"> Register</i>
-          </a>
-        </div>
       </div>
       <div class="row">
-        <div class="col-sm-3 col-sm-3">
-        </div>
-        <div class="col-sm-6 col-sm-6">
-          <a class="btn btn-danger btn-block input-block-level" href="" ng-click="close()">
-              <i class="fa fa-close"> Maybe next time</i>
-          </a>
+        <div class="col-sm-6 col-sm-offset-3">
+          <button class="btn btn-success btn-lg btn-block" ng-click="register()" type="button"><i class="fa fa-check" aria-hidden="true"></i> Register now</button>
         </div>
       </div>
+      <div class="row row-buffer--top">
+       <div class="col-sm-6 col-sm-offset-3">
+        <button class="btn btn-danger btn-md btn-block" ng-click="close()" type="button"><i class="fa fa-ban" aria-hidden="true"></i> Maybe next time</button>
+      </div>
+    </div>
     </form>
+  </div>
+  <div class="modal-footer">
+    <small aria-hidden="true">* Required fields</small>
   </div>
 </div>
