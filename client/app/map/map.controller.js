@@ -1,10 +1,17 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, mapService, APP_EVENTS) {
-    $scope.tooltip = {};
+  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$timeout', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, $timeout, mapService, APP_EVENTS) {
+    $scope.$on(APP_EVENTS.OPENED_EXPLORE, function(event) {
+        $timeout(function() {
+            mapService.resetSize();
+        }, 30);
+    });
+
+    $scope.$on(APP_EVENTS.CLOSED_EXPLORE, function(event) {
+
+    });
 
     mapService.getMap().then(function(map) {
-
       map.on('popupopen', function(popupEvent) {
 
         var setUpDefaultView = function(){
@@ -34,7 +41,7 @@ angular.module('notinphillyServerApp')
 
         var newScope = $scope.$new();
         newScope.totalAdopters = properties.totalAdopters;
-        newScope.address = properties.hundred + ' ' + properties.name + ' ' + properties.zipCode;
+        newScope.address = (properties.hundred ? properties.hundred : '')  + ' ' + properties.name + ' ' + properties.zipCode;
         newScope.streetId = properties.id;
         newScope.imageSrc = properties.imageSrc;
 
@@ -104,11 +111,9 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event, leafletEvent){
-      $scope.sideMenu.isStreetLevel = false;
+
     });
     $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event, leafletEvent){
-      $scope.sideMenu.isStreetLevel = true;
-      $scope.sideMenu.isVisible = false;
     });
 
     var mapCallbacks = {
@@ -125,7 +130,12 @@ angular.module('notinphillyServerApp')
       },
       streetClickCallback: function(e) {
         if (e.target.feature) {
-          mapService.showStreetPopup(e.latlng, e.target);
+          mapService.showStreetPopup(e.target.feature);
+        }
+      },
+      pinClickCallback: function(e) {
+        if (e.target.street) {
+          mapService.showStreetPopup(e.target.street);
         }
       }
     };

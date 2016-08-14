@@ -1,114 +1,127 @@
-<!--Launching message-->
-<div class="launching bg-warning" uib-popover="Sign up for your street wherever you are and we'll contact you when we expand to your neighborhood." popover-placement="bottom">
-    <p>Test launch in Walnut Hill</p>
-</div>
+<treasure-overlay-spinner active='main.spinnerActive'>
+<div class="top-bar">
+  <div class="container">
+    <div class="row">
+      <div class="email-contact pull-left">
+        <i class="fa fa-envelope"></i>&nbsp;<a href="mailto:notinphilly@gmail.com">notinphilly@gmail.com</a>
+      </div>
+      <div class="donate pull-left">
+        <a href="#"><i class="fa fa-credit-card"></i>&nbsp;Donate</a>
+      </div>
 
-<div class="row-fluid">
-  <!--Side menu-->
-  <div class="col-xs-10 col-sm-6 col-md-4 col-lg-3 pull-left side-container" ng-show="sideMenu.isVisible" ng-init="sideMenu.isVisible = true">
-    <treasure-overlay-spinner active='sideMenu.spinnerActive'>
-      <div class="side">
-        <div class="row-fluid">
-          <a href="/"><img class="logo" src="public/img/logo.png"/></a>
-          <uib-accordion>
-            <uib-accordion-group heading="Your Profile" is-open="sideMenu.isUserProfileOpen" ng-show="sideMenu.isUserProfileVisible" panel-class="menu-profile" template-url="app/sidemenu/accordion-template.html">
-              <div ng-include="" src="'app/sidemenu/userprofile-template.html'"></div>
-            </uib-accordion-group>
-            <uib-accordion-group heading="How it works" panel-class="how-it-works menu-info" template-url="app/sidemenu/accordion-template.html">
-              <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference.
-                  In return for a 6 month commitment to going out once a week to pick up litter, we will give you a trash grabber. No
-                  more touching litter or killing your back! You will be amazed at how much we can get done together! Send any questions to us at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>.
-              </p>
-            </uib-accordion-group>
-            <uib-accordion-group heading="Street search" panel-class="menu-tag-line" template-url="app/sidemenu/accordion-template.html">
-              <div ng-include="" src="'app/sidemenu/searchstreet-template.html'"></div>
-            </uib-accordion-group>
-            <uib-accordion-group heading="Member login" is-open="sideMenu.isLoginOpen" ng-show="sideMenu.isLoginVisible" panel-class="menu-get-started menu-info" template-url="app/sidemenu/accordion-template.html">
-              <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
-                <div class="form-group menu-login">
-                  <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Login failed. Please check your username or password.</div>
-                  <label>Email</label>
-                  <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
-                  <label>Password</label>
-                  <input type="password" class="form-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input><br/>
-                  <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)" value="Login"/> Or <a href="" ng-click="loginForm.signup()">Sign up</a>
-                </div>
-              </ng-form>
-            </uib-accordion-group>
-            <uib-accordion-group heading="Spread the word" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
-              <p>Spread the word about this movement on <a href="http://instagram.com/notinphilly">Instagram</a> and <a href="https://www.facebook.com/groups/1625723617652503/">Facebook</a>, using the #NotinPhilly or through our <a href="public/downloads/full-page-flyer.jpg" target="_blank">full page</a> or <a href="public/downloads/1-4-page-flyer.zip" target="_blank">¼ page</a> flyers.
-                  Invite a neighbor to sign up and also go out once a week on your block or take another.
-                  We also need "Neighborhood Champions" to distribute grabbers within their neighborhood. If you are interested, email us at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>.
-              </p>
-            </uib-accordion-group>
-            <uib-accordion-group heading="FAQ" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
-              <uib-accordion class="faq">
-                  <uib-accordion-group heading="So I signed up and I just get a grabber? Isn’t that kind of lame?">
-                      We agree. Once enough people sign up, we will be able to solicit gifts and hold raffles from area businesses.
-                  </uib-accordion-group>
-                  <uib-accordion-group heading="What if my block is too large?">
-                      You can just take care of one side or there can be multiple participants for each block. Get your neighbors involved!
-                  </uib-accordion-group>
-                  <uib-accordion-group heading="Why do you ask what company or organization I am signing up through?">
-                      We want to give good press to companies, non-profits, and houses of worship that have their members take part.
-                  </uib-accordion-group>
-                  <uib-accordion-group heading="What if I move or unable to complete by 6 month commitment?">
-                      Keep the grabber as our gift and eliminate litter where you go.
-                  </uib-accordion-group>
-              </uib-accordion>
-            </uib-accordion-group>
-            <uib-accordion-group heading="Contact us" panel-class="menu-info" template-url="app/sidemenu/accordion-template.html">
-                <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>
-            </uib-accordion-group>
-          </uib-accordion>
+      <div class="social-icons pull-right">
+        <a href="https://www.facebook.com/groups/1625723617652503/"><i class="fa fa-2x fa-facebook square-2 rounded-1"></i></a>
+        <a href="https://www.instagram.com/notinphilly/"><i class="fa fa-2x fa-instagram square-2 rounded-1"></i></a>
+        <a href="https://twitter.com/NotinPhilly"><i class="fa fa-2x fa-twitter square-2 rounded-1"></i></a>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="header">
+  <div class="container">
+		<div class="row">
+			<div class="col-md-2">
+        <div class="logo-container">
+			    <a href="/"><img ng-src="/public/img/logo_main.png" alt="Description" class="logo-main center-block" /></a>
         </div>
-        <div class="row-fluid">
-          <div ng-include src="'app/sidemenu/instagram-template.html'"></div>
+			</div>
+      <div class="col-md-1">
+      </div>
+      <div class="col-md-9">
+        <div class="pull-right">
+          <div class="header-title">
+            <h3>Litter? Not in Philly!</h2>
+            <p>Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
+          </div>
         </div>
-        <div class="row-fluid">
-          <div class="partners">
-            <p>SUPPORTED BY</p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="main-block">
+  <div class="container">
+    <div class="row tab-contents">
+      <uib-tabset active="main.activeTabIndex">
+       <uib-tab index="0" heading="Search" select="main.onSearchSelect()">
+          <div class="col-md-12 tab-inner">
             <div class="row">
-              <div class="col-xs-4 col-sm-4 col-md-4"><a href="http://www.codeforamerica.org/" target="_blank"><img src="public/img/partner-cfa.png"/></a></div>
-              <div class="col-xs-4 col-sm-4 col-md-4"><a href="https://codeforphilly.org/" target="_blank"><img src="public/img/partner-cfp.png"/></a></div>
-              <div class="col-xs-4 col-sm-4 col-md-4"><a href="http://www.thinkbrownstone.com/" target="_blank"><img src="public/img/partner-thinkbrownstone.png"/></a></div>
+              <div class="col-md-3"></div>
+              <div class="col-md-6">
+                <div ng-include src="'app/search/searchaddress-template.html'"></div>
+              </div>
+            </div>
+         </div>
+       </uib-tab>
+       <uib-tab index="1" heading="Map" select="main.onExploreSelect()" deselect="main.onExploreLeave()">
+         <div class="map-block">
+           <div class="container">
+             <div class="row tab-inner">
+               <div ng-include src="'app/map/map-template.html'"></div>
+             </div>
+           </div>
+         </div>
+       </uib-tab>
+      <uib-tab index="2" heading="Profile" disable="!main.isUserProfileVisible" ng-show="main.isUserProfileVisible">
+        <div class="container">
+          <div class="row tab-contents tab-inner">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+              <div ng-include="" src="'app/user/userprofile-template.html'"></div>
             </div>
           </div>
         </div>
+      </uib-tab>
+       <uib-tab index="3" heading="Members" disable="!main.isLoginVisible" ng-show="main.isLoginVisible">
+         <div class="container">
+          <div class="row tab-contents tab-inner">
+            <div class="col-md-3"></div>
+              <div class="col-md-6">
+              <div ng-include src="'app/user/login-template.html'"></div>
+            </div>
+          </div>
+         </div>
+       </uib-tab>
+       <uib-tab index="4" heading="About us">
+        <div class="container">
+         <div class="row tab-contents">
+           <div class="col-md-10">
+             <div ng-include src="'app/faq/faq-template.html'"></div>
+           </div>
+        </div>
       </div>
-    </treasure-overlay-spinner>
+      </uib-tab>
+     </uib-tabset>
+    </div>
   </div>
 </div>
-
-<div class="col-xs-2 col-sm-1 col-md-1  sideItemsColumn">
-  <div class="sideItemsColumnSection">
-      <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="sideMenu.isVisible"><i class="fa fa-2x fa-angle-double-left"></i></div>
-      <div class="sideItem" ng-click="sideMenu.isVisible = !sideMenu.isVisible" ng-show="!sideMenu.isVisible"><i class="fa fa-2x fa-angle-double-right"></i></div>
-  </div>
-
-  <div class="sideItemsColumnSection offset">
-    <div class="sideItem" ng-show="sideMenu.isStreetLevel" ng-click="sideMenu.onMapReturn()"><i class="fa fa-2x fa-level-up"></i></div>
-    <div class="sideItem"><i class="fa fa-2x fa-search-plus" ng-click="sideMenu.mapZoomIn()"></i></div>
-    <div class="sideItem"><i class="fa fa-2x fa-search-minus" ng-click="sideMenu.mapZoomOut()"></i></div>
-  </div>
-
-  <div class="sideItemsColumnSection offset">
-    <a class="social" href="http://instagram.com/notinphilly" target="_blank">
-        <div class="sideItem"><i class="fa fa-2x fa-instagram"></i></div>
-    </a>
-    <a class="social" href="https://www.facebook.com/groups/1625723617652503/" target="_blank">
-        <div class="sideItem"><i class="fa fa-2x fa-facebook"></i></div>
-    </a>
+</treasure-overlay-spinner>
+<div class="foot">
+  <div class="container">
+    <div class="center-block">
+      <div class="row">
+        <div class="col-md-2 col-md-offset-2">
+          <h4>Our partners:</h4>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-3 col-md-offset-2">
+          <a href="http://prc.org">
+            <img src="public/img/PRC-LOGO.jpg" class="prc-logo">
+          </a>
+        </div>
+        <div class="col-md-2">
+          <a href="http://codeforphilly.org">
+            <img src="public/img/partner-cfp.png" class="cfp-logo">
+          </a>
+        </div>
+        <div class="col-md-3">
+          <a href="http://thinkbrownstone.com">
+            <img src="public/img/partner-thinkbrownstone.png" class="thb-logo">
+          </a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
-
-<div class="screen hidden-md hidden-lg" ng-show="sideMenu.isVisible" ng-click="sideMenu.isVisible = false"></div>
-
-<div ng-include src="'app/map/map-template.html'"></div>
-
-<div class="tooltip-layer tooltip-zooming" ng-show="bugTooltip">
-    <button type="button" class="close" aria-label="Close" ng-click="bugTooltip = false"><span aria-hidden="true">&times;</span></button>
-    <p>
-        Click anywhere on the light gray to select a block. See a bug in your neighborhood? Let us know at <a href="mailto:notinphilly@gmail.com" target="_blank">notinphilly@gmail.com</a>
-    </p>
-</div>
+<footer>
+</foot>

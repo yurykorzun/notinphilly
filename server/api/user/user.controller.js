@@ -1,7 +1,8 @@
-var mongoose = require('mongoose');
-var UserModel = require('./user.model');
-var mailer = require('../../components/mailer');
-var uuid = require('uuid');
+var mongoose      = require('mongoose');
+var UserModel     = require('./user.model');
+var uuid          = require('uuid');
+var settings      = require('../../config/settings');
+var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
 
 exports.index = function(req, res) {
     UserModel.find({}, '-salt -hashedPassword -_v -authToken -__v', function(err, users) {
@@ -41,10 +42,8 @@ exports.create = function(req, res, next) {
       res.status(409).send('User with this email alreay has an account');
       return "User already exists";
     }
-
      errorMessage = checkForErrors(req.body);
-     console.log('errorMessage' + errorMessage);
-    if (errorMessage === "false") {
+    if (!errorMessage) {
       UserModel.create(
         {
           firstName: req.body.firstName,
@@ -53,12 +52,11 @@ exports.create = function(req, res, next) {
           birthDate: req.body.birthDate,
           phoneNumber: req.body.phoneNumber,
           email: req.body.email,
-          role: [1],
+          role: [4],
           businessName: req.body.businessName,
-          houseNumber: req.body.houseNumber,
-          streetName: req.body.streetName,
+          addressName: req.body.addressName,
           apartmentNumber: req.body.aptNumber,
-          active: true,
+          active: false,
           city: req.body.city,
           state: req.body.state,
           zip: req.body.zip,
@@ -68,17 +66,17 @@ exports.create = function(req, res, next) {
           if (err) {
             console.log(err);
             res.status(500).send('There was an issue. Please try again later');
-          };
-
-          UserModel.findOne({email: req.body.email}, function(err, user) {
-            //sendConfirmationEmail(req, user);
-          });
+          }
+          else {
+            UserModel.findOne({email: req.body.email}, function(err, user) {
+              sendConfirmationEmail(req, user);
+              res.status(200).send('Successfully Sent Confirmation Email');
+            });
+          }
           console.log('Finished adding the user');
-          res.status(200).send('Successfully Added the user');
         }
       );
 
-      res.status(200).send('Successfully Sent Confirmation Email');
     } else {
       res.status(409).send(errorMessage);
     }
@@ -101,7 +99,7 @@ var checkForErrors = function(userInfo) {
   if (userInfo.password !== userInfo.passwordConfirm) {
     return "Your passwords do not match";
   }
-  return "false";
+  return undefined;
 }
 
 /**
@@ -110,13 +108,16 @@ var checkForErrors = function(userInfo) {
 
 //Use tempaltes instead of TEXT
 var sendConfirmationEmail = function(req, user) {
-  var mailOptions = { from: "noreply <noreply@notinphilly.org>",
-                      to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
-                      subject: "NotInPhilly. Confirm registration.",
-                      text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
-                    };
-  //Send confirmation email
-  mailer.sendMail(mailOptions);
+  var data = {
+    from: 'noreply <noreply@notinphilly.org>',
+    cc: 'notinphilly@gmail.com',
+    to: req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
+    subject: "NotInPhilly. Confirm registration.",
+    text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
+  };
+
+  mailgun.messages().send(data, function (error, body) {
+  });
 }
 
 /**
@@ -191,18 +192,18 @@ exports.resetPassword = function(req, res) {
     var confirmId = req.params.activationId;
     var password = req.params.password;
     var confirmPassword = req.params.confirmPassword;
-    
+
     if (password == confirmPassword) {
        UserModel.findOne({activationHash: confirmId}, function(err, user){
            if (err) return next(err);
            if (!user) return res.status(401).send('Could not find the user with activation Tag' + req.param.confirmId);
-            
+
        });
     } else {
-        
+
     }
 }
- 
+
 exports.activate = function(req, res) {
   var confirmId = req.params.activationId;
   UserModel.findOne({activationHash: confirmId}, function(err, user){

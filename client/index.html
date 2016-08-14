@@ -13,7 +13,6 @@
     <link rel="shortcut icon" href="favicon.ico">
     <link rel="stylesheet" href="public/libs/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="public/libs/bootstrap/dist/css/bootstrap-theme.css">
-    <link rel="stylesheet" href="public/libs/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="public/libs/mapbox.js/mapbox.css" />
     <link rel="stylesheet" href="public/libs/Leaflet.label/dist/leaflet.label.css" />
     <link rel="stylesheet" href="public/libs/font-awesome/css/font-awesome.css" />
@@ -22,9 +21,6 @@
     <link rel="styleSheet" href="public/libs/angular-ui-grid/ui-grid.min.css"/>
     <link rel="stylesheet" href="public/css/styles.css" />
     <link rel="stylesheet" href="public/css/admin-styles.css" />
-
-    <script type="text/javascript">window._trackJs = { token: '4b385892ad7d4d32bcdd5076af963bd9' };</script>
-    <script type="text/javascript" src="https://d2zah9y47r7bi2.cloudfront.net/releases/current/tracker.js"></script>
 </head>
 <body ng-app="notinphillyServerApp">
   <div class="container-fluid root-container">
@@ -33,7 +29,7 @@
   </div>
   <script src="public/libs/jquery/dist/jquery.js"></script>
   <!-- JS -->
-
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyARRi6qzN2f_jQpkH_2nedCFpTY2ehOy4A&libraries=places"></script>
   <script src="public/libs/angular/angular.js"></script>
   <script src="public/libs/angular-route/angular-route.js"></script>
   <script src="public/libs/bootstrap/dist/js/bootstrap.js"></script>
@@ -53,17 +49,17 @@
   <!-- ANGULAR CUSTOM -->
   <script src="app/app.js"></script>
   <script src="app/components/leaflet/leaflet.directive.js"></script>
+  <script src="app/components/searchAutocomplete/searchAutocomplete.directive.js"></script>
   <script src="app/components/leaflet/leaflet.overlay.js"></script>
   <script src="app/components/mapService/mapService.js"></script>
   <script src="app/components/authentication/session.service.js"></script>
   <script src="app/components/settings/settings.js"></script>
+  <script src="app/components/streetslist/streetslist.directive.js"></script>
   <script src="app/map/map.controller.js"></script>
   <script src="app/main/main.controller.js"></script>
-  <script src="app/main/start.popup.controller.js"></script>
-  <script src="app/sidemenu/login.controller.js"></script>
-  <script src="app/sidemenu/userprofile.controller.js"></script>
-  <script src="app/sidemenu/searchstreet.controller.js"></script>
-  <script src="app/sidemenu/instagram.carousel.controller.js"></script>
+  <script src="app/search/searchaddress.controller.js"></script>
+  <script src="app/user/login.controller.js"></script>
+  <script src="app/user/userprofile.controller.js"></script>
   <script src="app/signup/signup.controller.js"></script>
   <script src="app/admin/admin.controller.js"></script>
   <script src="app/admin/admin.users.controller.js"></script>
