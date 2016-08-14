@@ -17,6 +17,18 @@
         editForm: false,
         toggleEdit: function () {
           $scope.userProfile.editForm = !$scope.userProfile.editForm;
+        },
+        update: function () {
+          var userId = $rootScope.currentUser._id;
+          $scope.userProfile._id = userId;
+
+          $http.put('/api/users/' + userId, $scope.userProfile).
+            success(function(data) {
+              // Successfully updated user
+            }).error(function(err) {
+              // Update user error
+              $scope.errorMessage = err;
+            });
         }
       };
 
@@ -50,7 +62,7 @@
       $scope.switchToMap = function() {
         mapService.showStreets($scope.userProfile.adoptedStreets);
         $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
-      }
+      };
 
       SetupCurrentUser();
 
@@ -63,7 +75,10 @@
             $scope.userProfile.address = data.houseNumber + " " + data.streetName + " " + data.zip;
             $scope.userProfile.email = data.email;
 
+            $scope.userProfile.houseNumber = data.houseNumber;
+            $scope.userProfile.streetName = data.streetName;
             $scope.userProfile.aptNumber = data.apartmentNumber;
+            $scope.userProfile.zip = data.zip;
 
             SetupUserStreets();
           },

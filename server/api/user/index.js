@@ -11,5 +11,6 @@ router.get('/:id', authService.isAdmin, controller.get);
 router.get('/confirm/:activationId', controller.activate);
 router.delete('/:id', authService.isAdmin, controller.destroy);
 router.post('/', controller.create);
+router.put('/:id', authService.isAuthenticated, controller.update);
 
 module.exports = router;
