@@ -27,7 +27,7 @@ exports.checkAuthenticated = function (req, res) {
  * returns nothing
  */
 exports.logout = function (req, res) {
-  res.clearCookie('notinphilly.sid');
+  res.clearCookie('notinphillytoken.sid');
 
   if(req.user) {
     req.logout();
