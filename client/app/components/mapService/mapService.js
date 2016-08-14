@@ -362,8 +362,7 @@
 
             var nhoodCenter = layerBounds.getCenter();
             nhoodCenter.lng = nhoodCenter.lng - 0.001;
-            map.panTo(nhoodCenter);
-            map.setZoom(16, { animate: false });
+            map.setView( nhoodCenter, 16, { animate: true });
             map.invalidateSize();
 
             loadStreets(properties.id, map);
