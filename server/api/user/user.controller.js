@@ -1,7 +1,8 @@
-var mongoose = require('mongoose');
-var UserModel = require('./user.model');
-var mailer = require('../../components/mailer');
-var uuid = require('uuid');
+var mongoose      = require('mongoose');
+var UserModel     = require('./user.model');
+var uuid          = require('uuid');
+var settings      = require('../../config/settings');
+var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
 
 exports.index = function(req, res) {
     UserModel.find({}, '-salt -hashedPassword -_v -authToken -__v', function(err, users) {
@@ -41,6 +42,8 @@ exports.create = function(req, res, next) {
       res.status(409).send('User with this email alreay has an account');
       return "User already exists";
     }
+    console.log(settings.EMAIL_API_KEY);
+    console.log(settings.EMAIL_DOMAIN);
 
      errorMessage = checkForErrors(req.body);
     if (!errorMessage) {
@@ -69,7 +72,7 @@ exports.create = function(req, res, next) {
           }
           else {
             UserModel.findOne({email: req.body.email}, function(err, user) {
-              //sendConfirmationEmail(req, user);
+              sendConfirmationEmail(req, user);
               res.status(200).send('Successfully Sent Confirmation Email');
             });
           }
@@ -108,13 +111,18 @@ var checkForErrors = function(userInfo) {
 
 //Use tempaltes instead of TEXT
 var sendConfirmationEmail = function(req, user) {
-  var mailOptions = { from: "noreply <noreply@notinphilly.org>",
-                      to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
-                      subject: "NotInPhilly. Confirm registration.",
-                      text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
-                    };
-  //Send confirmation email
-  mailer.sendMail(mailOptions);
+  var data = {
+    from: 'noreply <noreply@notinphilly.org>',
+    cc: 'notinphilly@gmail.com',
+    to: req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
+    subject: "NotInPhilly. Confirm registration.",
+    text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
+  };
+
+  mailgun.messages().send(data, function (error, body) {
+    console.log(error);
+    console.log(body);
+  });
 }
 
 /**
