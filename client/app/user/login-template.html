@@ -1,10 +1,17 @@
 <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
-  <div class="form-group menu-login">
-    <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Login failed. Please check your username or password.</div>
-    <label>Email</label>
-    <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
-    <label>Password</label>
-    <input type="password" class="form-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input><br/>
-    <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)" value="Login"/> Or <a href="" ng-click="loginForm.signup()">Sign up</a>
-  </div>
+  <fieldset class="form-group menu-login">
+    <legend>Member Login</legend> 
+
+    <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">We couldn't log you in. Please check that you entered your email address and password correctly.</div>
+
+    <p>
+      <label for="login-email">Email Address</label>
+      <input type="email" id="login-email" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
+    </p>
+    <p>
+      <label for="login-pass">Password</label>
+      <input type="password" id="login-pass" class="form-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input>
+    </p>
+    <p><button type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)">Log Me In</button> or <a href="#" ng-click="loginForm.signup()">Sign up for an account</a></p>
+  </fieldset>
 </ng-form>
