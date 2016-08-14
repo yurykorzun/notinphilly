@@ -10,50 +10,110 @@ body{
   font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;
 }
 
-h1,h2,h3,h4,h5,h6 { font-family:"Open Sans", Helvetica, Geneva, sans-serif; }
+h1,h2,h3,h4,h5,h6 { 
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
+  line-height: 1.2;
+  font-weight: bold;
+  margin: 0 0 10px 0;
+}
+
+/* Typography ----------------*/
+.headline-l { font-size:50px; }
+.headline-m { font-size:30px; }
+.headline-s { font-size:22px; }
 
 /* Helper Classes for Colors and Spacing  ############ */
+.is-hidden {
+  display: none!important;
+}
+
+.block { display: block; }
+
+.accessibly-hidden {
+  position: absolute !important;
+  display: block;
+  visibility: visible;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+}
+
 .bg-white { background-color: #ffffff;  }
 .bg-gray { background-color: #ebebeb;  }
 .bg-yellow { background-color: #fdc442; }
+.bg-blue { background-color: #18a0dc; }
+
 .bg-black-70 { background-color: rgba(0,0,0,0.7); }
 .bg-black-90 { background-color: rgba(0,0,0,0.9); }
-
 .text-white { color: #ffffff; }
 .text-yellow { color: #fdc442; }
+.text-blue { color: #18a0dc; }
 
-.padding-top { padding-top:20px; }
-.padding-bottom { padding-top:20px; }
-.padding-top--small { padding-top:10px; }
-.padding-bottom--small { padding-top:10px; }
-.padding-top--large { padding-top:40px; }
-.padding-bottom--large { padding-top:40px; }
+.padding-20 { padding: 20px; }
+.padding-40 { padding: 40px; }
+.padding-top { padding-top: 20px; }
+.padding-bottom { padding-bottom: 20px; }
+.padding-top--small { padding-top: 10px; }
+.padding-bottom--small { padding-bottom: 10px; }
+.padding-top--large { padding-top: 40px; }
+.padding-bottom--large { padding-bottom: 40px; }
 
 /* Padding for just the vertical and horizontal axes */
 .padding-y { padding-top:20px; padding-bottom:20px; }
+.padding-y--small { padding-top:10px; padding-bottom:10px; }
+.padding-y--large { padding-top:40px; padding-bottom:40px; }
 .padding-x { padding-left:20px; padding-right:20px; }
+.padding-x--small { padding-left:10px; padding-right:10px; }
+.padding-x--large { padding-left:40px; padding-right:40px; }
+
+/* Add spacing above Bootstrap rows */
+.row-buffer { margin-top:20px; }
+.row-buffer--small { margin-top:10px; }
+.row-buffer--large { margin-top:40px; }
 
 /* HEADER ##################### */
 
-/* MAIN NAV ################### */
+.main-logo {
+  display: inline-block;
+  overflow: hidden;
+  width:100%;
 
-
-/* FOOTER ##################### */
-.footer { background: rgba(0,0,0,0.9); }
-.footer-logo {
-  color: #ffffff;
-  font-weight:bold;
-  font-family:"Open Sans", Helvetica, Geneva, sans-serif;
-  font-size: 25px; 
 }
+.main-logo img {
+  display: block;
+  width:100%;
+  height:auto;
+}
+/* MAIN NAV ################### */
+.main-nav a { 
+  display: inline-block;
+  padding: 10px; 
+  color: #fff; 
+  text-transform: uppercase; 
+  text-align: center;
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
+  font-size: 16px; 
+  font-weight: bold;
+}
+.main-nav a:hover {
+  text-decoration:none; 
+}
+
 
 /* HOMEPAGE ################### */
 
 /* -- HERO ------------------ */
 
-.background-image {
+.homepage-hero {
   background: 
-  rgba(0,0,0,0.7)
+  linear-gradient(
+    rgba(0, 0, 0, 0.7), 
+    rgba(0, 0, 0, 0.7)
+  ),
   url(../img/homepage-hero.jpg);
   background-size: cover;
   background-position: center center;
@@ -62,8 +122,56 @@ h1,h2,h3,h4,h5,h6 { font-family:"Open Sans", Helvetica, Geneva, sans-serif; }
 /* -- EXPLORE MAP ----------- */
 
 
+/* -- PARTNERS ----------- */
 
-/* Legacy Styles */
+.partner-logo {
+  display: block;
+  padding: 20px;
+  overflow: hidden;
+  background: #ffffff;
+}
+.partner-logo img { 
+  display: block;
+  margin:0 auto;
+  max-width: 100%;
+  height: auto; 
+  max-height: 130px;
+}
+
+.partner-logo img.tall-logo { 
+  width: auto;
+  max-height:80px;
+}
+
+
+/* FOOTER ######################## */
+
+.footer-logo {
+  margin-bottom:0;
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
+}
+
+
+.social-icons {
+  text-align: center;
+}
+.social-icons a {
+  display:inline-block;
+  padding:10px;
+  margin:0 5px;
+  background: #727272;
+  color: #000;
+  text-align: center;
+  line-height: 1;
+  border-radius: 50%;
+}
+.social-icons i.fa {
+  width:22px;
+  font-size:22px;
+}
+
+/*############################################## */
+/* Legacy Styles ############################################## */
 .top-bar {
     background: #fdfdfd;
     background-color: #F2F8FF;
@@ -79,10 +187,6 @@ h1,h2,h3,h4,h5,h6 { font-family:"Open Sans", Helvetica, Geneva, sans-serif; }
     width: 100%;
 }
 
-.social-icons a {
-  color: #1FA2DC;
-}
-
 .header-title {
   color:#939CA0;
   font-size:14px;
@@ -96,11 +200,13 @@ h1,h2,h3,h4,h5,h6 { font-family:"Open Sans", Helvetica, Geneva, sans-serif; }
   margin-left: 10px;
 }
 
+/*
 .header {
   padding: 15px 0px;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 }
+*/
 
 .menu-userProfile {
   margin-left: 15px;
