@@ -24,6 +24,6 @@ mongoimport -h $host --port $port -d $database -c userStats --authenticationData
 
 mongoimport -h $host --port $port -d $database -c zipCodes --authenticationDatabase admin --file zipCodes_export.json
 
-mongo --eval 'printjson(db.getCollection("streetSegments").createIndex( { "geodata.geometry" : "2dsphere" } ))'
+mongo 'notinphilly' --eval 'printjson(db.getCollection("streetSegments").createIndex( { "geodata.geometry" : "2dsphere" } ))'
 
 echo "Finished importing db..." 
