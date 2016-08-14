@@ -24,7 +24,8 @@
 
           $http.put('/api/users/' + userId, $scope.userProfile).
             success(function(data) {
-              // Successfully updated user
+              // Collapse edit form after updating user
+              $scope.userProfile.editForm = false;
             }).error(function(err) {
               // Update user error
               $scope.errorMessage = err;
