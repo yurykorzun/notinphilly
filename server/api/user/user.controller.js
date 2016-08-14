@@ -42,9 +42,6 @@ exports.create = function(req, res, next) {
       res.status(409).send('User with this email alreay has an account');
       return "User already exists";
     }
-    console.log(settings.EMAIL_API_KEY);
-    console.log(settings.EMAIL_DOMAIN);
-
      errorMessage = checkForErrors(req.body);
     if (!errorMessage) {
       UserModel.create(
@@ -120,8 +117,6 @@ var sendConfirmationEmail = function(req, user) {
   };
 
   mailgun.messages().send(data, function (error, body) {
-    console.log(error);
-    console.log(body);
   });
 }
 
