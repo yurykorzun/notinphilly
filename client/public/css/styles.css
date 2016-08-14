@@ -156,6 +156,10 @@ body{
 	background-color: #f4f4f4;
 }
 
+.row-buffer--top {
+  margin-top: 0.5em;
+}
+
 @media (max-width: 999px) {
   .cfp-logo
   {
