@@ -2,19 +2,43 @@ var passport      = require('passport');
 var crypto        = require('bcrypt-nodejs');
 var LocalStrategy = require('passport-local').Strategy;
 var UserModel     = require('../api/user/user.model');
+var flash         = require('connect-flash');
 
 module.exports = function(app) {
+  console.log("init passport");
+
+  app.use(passport.initialize());
+  app.use(flash());
+  app.use(passport.session());
+
+  // Passport needs to be able to serialize and deserialize users to support persistent login sessions
+  passport.serializeUser(function(user, done) {
+      done(null, user.userInfo);
+  });
+
+  passport.deserializeUser(function(user, done) {
+      UserModel.findById(user._id, function(err, user) {
+          if(err || !user)
+          {
+            done(err, false, {
+                message: 'Your account is not found.'
+            });
+          }
+          else {
+            done(null, user.userInfo);
+          }
+      });
+  });
+
   passport.use(new LocalStrategy({
           usernameField: 'email',
           passwordField: 'password' // this is the virtual field on the model
       },
       function(email, password, done) {
-          console.log('Authenticating user ' + email);
           UserModel.findOne({
               email: email.toLowerCase()
           }, function(err, user) {
               if (err) {
-                console.log(err);
                 return done(err);
               }
               else if (!user) {
@@ -37,25 +61,6 @@ module.exports = function(app) {
           });
       }
   ));
-
-  // Passport needs to be able to serialize and deserialize users to support persistent login sessions
-  passport.serializeUser(function(user, done) {
-      done(null, user.userInfo);
-  });
-
-  passport.deserializeUser(function(user, done) {
-      UserModel.findById(user._id, function(err, user) {
-          if(err || !user)
-          {
-            done(err, false, {
-                message: 'Your account is not found.'
-            });
-          }
-          else {
-            done(null, user.userInfo);
-          }
-      });
-  });
 
   // Generates hash using bCrypt
   var createHash = function(password){

@@ -31,19 +31,25 @@ exports.logout = function (req, res) {
 
   if(req.user) {
     req.logout();
+    req.session.save(function (err) {
+        if (err) { return next(err); }
+    });
+
     res.send(200);
   } else {
-    res.send(400, "Not logged in");
+    res.send(400, "Logout failed, wasn't logged in");
   }
 };
+
 
 /**
  *  Login
  *  requires: {email, password}
  */
 exports.login = function (req, res, next) {
-  console.log("Login successfully");
-  if (req.isAuthenticated()) {
-    return res.json({ _id: req.user._id, email: req.user.email });
-  }
+    if (req.isAuthenticated() && req.user) {
+      return res.json({ _id: req.user._id, email: req.user.email });
+    }
+
+    res.send(400, "Logout failed");
 }

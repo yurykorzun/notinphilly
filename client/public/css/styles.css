@@ -1,293 +1,187 @@
-body {
-  padding: 0;
-  margin: 0;
-}
-html, body, #cityMap {
-  height: 100%;
-}
-p{
-    margin: 0;
-}
-ul{
-    margin: 0;
-}
-li{
-    margin-bottom: 10px;
-}
-li:last-child{
-    margin-bottom: 0;
-}
-.form-control{
-    border-radius: 0;
-}
-input[type*=submit], .btn, .btn-default {
-    vertical-align: inherit;
-    padding: 5px;
-    border-radius: 0;
-}
-.root-container {
-  padding: 0;
-}
-#cityMap {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
-    z-index: 1;
-}
-.screen {
-  position: absolute;
-  width: 100vw;
-  height: 100vh;
-  z-index: 50;
-  background-color: rgba(0,0,0,.5);
-}
-.side-container {
-    z-index: 100;
-    padding-right: 0;
-    overflow-y: scroll;
-    overflow-x: hidden;
-    max-height: 100vh;
-}
-.side {
-    border-right: 1px solid #BDB9BB;
-    background-color: white;
-    box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.2);
-    margin-left: -10px;
-    z-index: 100;
-}
-.offset {
-    margin-top: 20px;
-}
-.offset-small {
-    margin-top: 10px;
-}
-.navbar-offset {
-    margin-top: 40px;
-}
-.min-padding-left{
-  padding-left: 2px;
-}
-.min-padding-right{
-  padding-right: 2px;
-}
-.no-padding
-{
-  padding: 0;
-}
-.form-textbox
-{
-  padding-top: 15px;
-  padding-bottom: 17px;
-  font-size: 14px;
+body{
+  font-family: Tahoma, Helvetica, Geneva, sans-serif;
 }
 
-.logo{
-    margin: 0 0 10px 0;
-    padding: 20px 10px 10px 10px;
-    box-sizing: border-box;
-    display: block;
+.top-bar {
+    background: #fdfdfd;
+    background-color: #F2F8FF;
+    color: #999;
+    padding: 6px 0px;
+    font-size: 15px;
+    line-height: 25px;
+    border-bottom: 1px solid #f5f5f5;
+}
+
+ .pac-container {
+    z-index: 1050;
     width: 100%;
 }
-.sideItemsColumn {
-    z-index: 100;
-    padding: 0;
-    margin-top: 10px;
-    max-width: 45px;
+
+.social-icons a {
+  color: #1FA2DC;
 }
-.sideItemsColumnSection {
-    border: 1px solid #BDB9BB;
-    border-left: none;
-    background-color: #FFFFFF;
+
+.header-title {
+  color:#939CA0;
+  font-size:14px;
 }
-.sideItem {
-    width: 70%;
-    margin: 5px auto;
-    cursor: pointer;
+
+.email-contact a {
+  color: #999;
 }
-.menu-link {
-    color: white;
+.donate {
+  width: 69px;
+  margin-left: 10px;
 }
-.menu-profile {
-  background: #1fa2dc;
-  color: black;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  padding: 10px 10px 10px 20px;
-  margin: 0 10px 0 10px;
+
+.header {
+  padding: 15px 0px;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
 }
+
 .menu-userProfile {
   margin-left: 15px;
 }
+
 .menu-userProfile-logout {
   margin-top: 10px;
   margin-left: 5px;
 }
-.menu-well {
-  margin-bottom: -1px;
+
+.tab-contents
+{
+    border: 1px solid #ddd;
 }
-.menu-body {
-    background: white;
-    width: 100%;
-    padding: 5px 15px;
+
+.tab-inner
+{
+  background-color: #F2F8FF;
 }
-.menu-info{
-    background: #7ECFF2;
-    color: white;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    padding: 10px 10px 10px 20px;
-    margin: 0 10px;
-    border-bottom: 1px solid white;
+
+.address-search-form
+{
+  margin: 20px 10px 20px 10px;
 }
-.menu-instagram {
-  margin: 10px 10px 5px 10px;
+
+.street-item-block
+{
+    border:1px solid #E6E6E6;
+    margin-bottom:5px;
+    border-color:#80cde5;
+    background-color: white;
 }
-.how-it-works{
-    background-color: #1fa2dc;
+
+.street-item-block .street-marker-icon
+{
+    margin-right:22px;
+    text-align:center!important;
 }
-.menu-tag-line{
-    background: #fad308;
-    padding: 10px 10px 10px 20px;
-    margin: 0 10px;
-    cursor: pointer;
-    border-bottom: 1px solid white;
+
+.street-item-block .street-marker-icon img
+{
+
 }
+
+.view-onstreet-section
+{
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+
 .menu-login {
-    transition: all 0.3s ease;
     padding: 8px 8px 8px 16px;
     margin: 0 10px;
 }
-.menu-get-started img{
-    float: right;
-    margin-top: 3px;
-    width: 8px;
+
+.faq {
+  width: 80%;
+  padding: 5px;
+  margin-left: auto;
+  margin-right: auto;
 }
-.get-started-btn{
-    color: white;
+
+.faq-section
+{
+  margin-bottom: 0;
+  border-color: #ddd;
 }
-.get-started-btn:hover{
-    text-decoration: none;
+
+.faq-heading
+{
+  color: #333;
+  background-color: #f5f5f5;
+  border-color: #ddd;
+  padding: 10px 15px;
+  margin-top: 0;
+  margin-bottom: 0;
 }
-.faq .panel-group{
-    margin-bottom: 0;
+
+.faq-body
+{
+  border-top: 1px solid #ddd;
+  padding: 15px;
 }
-.faq .panel{
-    border: none;
-    box-shadow: none;
+
+.prc-logo
+{
+  width: 250px;
+  padding-bottom: 15px;
 }
-.faq .panel-group .panel-heading + .panel-collapse > .panel-body,.faq .panel-group .panel-heading + .panel-collapse > .list-group{
-    border-top: none;
+
+.thb-logo
+{
+  padding-bottom: 15px;
 }
-.faq .panel-default > .panel-heading, .faq .panel-body{
-    background-color: transparent;
-    background-image: none;
-    padding: 2px 15px;
+
+
+#cityMap {
+    height:700px;
+    z-index: 1;
 }
-.faq a{
-    outline: none;
-    color: #337ab7;
-}
-.faq h4{
-    font-size: 14px;
-}
-#user-auth{
-    display:none;
-    padding: 10px;
-}
-.tooltip-layer{
-    position: fixed;
-    border-radius: 20px;
-    border: 1px solid #BDB9BB;
-    background-color: white;
-    box-shadow: 5px 0 10px -2px rgba(0, 0, 0, 0.2);
-    z-index: 11;
-    padding: 5px 10px;
-}
-.tooltip-layer p {
-    margin: 10px;
-}
-.partners{
-    display: inline-block;
-    vertical-align: bottom;
-    margin: 10px 0 15px 0;
-    padding: 0 10px;
-    box-sizing: border-box;
-}
-.partners p{
-    margin-bottom: 20px;
-    color:#0691CF;
-}
-.partners a{
-    vertical-align: middle;
-    transition: 0.3s ease all;
-}
-.partners a:hover{
-    transform: translateY(0.5em);
-}
-.partners a:last-child{
-    margin: 0;
-}
-.partners a img{
-    width: 60%;
-    margin-right: 10%;
-}
-.partners img[src*='brownstone']{
-    width: 100%;
-}
-.social, .social:hover,.social:active,.social:focus {
-    display: block;
-    color: #333;
-}
-.arrow {
-    width: 0;
-    height: 0;
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-top: 8px solid #999999;
-    border-bottom: none;
-    margin-left: 5px;
-}
-.tooltip-zooming{
-    bottom: 15px;
-    right: 15px;
-    max-width: 260px;
-    background-color: #0691CF;
-    color: white;
-}
-.tooltip-zooming a{
-    color: #fad308;
-}
-/*styles for index.html page*/
-.launching {
-    z-index: 100;
-    position: fixed;
-    right: 0;
-    border-left: 1px solid #BDB9BB;
-    border-bottom: 1px solid #BDB9BB;
-    padding: 10px;
-}
-.launching p {
-  text-decoration: underline;
-  cursor: pointer;
-  font-size: 1.1em;
-}
-.street-popup {
-  text-align: center;
-}
-.street-popup-address {
+
+.map-control {
+  background-color: white;
+  font-size: 16px;
+	cursor: pointer;
+  border: 1px solid black;
   padding: 2px;
 }
-.leaflet-label-overlay {;
-    position: absolute;
-    margin-right: 40px;
-    z-index: -1;
+
+.map-control-text {
+  color: black;
 }
-/* Styles for screen 420px and less*/
-@media (max-width: 768px){
-    .tooltip-zooming{
-        display: none;
-    }
+
+.map-control a:hover {
+	background-color: #f4f4f4;
+}
+
+@media (max-width: 999px) {
+  .cfp-logo
+  {
+    width: 90px;
+    padding-bottom: 15px;
+  }
+  .logo-container
+  {
+    float: none;
+  }
+  .logo-main {
+    width: 150px;
+  }
+}
+
+@media (min-width: 1000px) {
+  .cfp-logo
+  {
+    width: 120px;
+    padding-left: 40px;
+    padding-bottom: 15px;
+  }
+
+  .logo-main {
+    width: 250px;
+    border-right: 1px solid #f5f5f5;
+    padding-right: 5px;
+  }
 }

@@ -43,8 +43,7 @@ exports.create = function(req, res, next) {
     }
 
      errorMessage = checkForErrors(req.body);
-     console.log('errorMessage' + errorMessage);
-    if (errorMessage === "false") {
+    if (!errorMessage) {
       UserModel.create(
         {
           firstName: req.body.firstName,
@@ -55,8 +54,7 @@ exports.create = function(req, res, next) {
           email: req.body.email,
           role: [1],
           businessName: req.body.businessName,
-          houseNumber: req.body.houseNumber,
-          streetName: req.body.streetName,
+          addressName: req.body.addressName,
           apartmentNumber: req.body.aptNumber,
           active: true,
           city: req.body.city,
@@ -68,17 +66,17 @@ exports.create = function(req, res, next) {
           if (err) {
             console.log(err);
             res.status(500).send('There was an issue. Please try again later');
-          };
-
-          UserModel.findOne({email: req.body.email}, function(err, user) {
-            //sendConfirmationEmail(req, user);
-          });
+          }
+          else {
+            UserModel.findOne({email: req.body.email}, function(err, user) {
+              sendConfirmationEmail(req, user);
+              res.status(200).send('Successfully Sent Confirmation Email');
+            });
+          }
           console.log('Finished adding the user');
-          res.status(200).send('Successfully Added the user');
         }
       );
 
-      res.status(200).send('Successfully Sent Confirmation Email');
     } else {
       res.status(409).send(errorMessage);
     }
@@ -101,7 +99,7 @@ var checkForErrors = function(userInfo) {
   if (userInfo.password !== userInfo.passwordConfirm) {
     return "Your passwords do not match";
   }
-  return "false";
+  return undefined;
 }
 
 /**
@@ -191,18 +189,18 @@ exports.resetPassword = function(req, res) {
     var confirmId = req.params.activationId;
     var password = req.params.password;
     var confirmPassword = req.params.confirmPassword;
-    
+
     if (password == confirmPassword) {
        UserModel.findOne({activationHash: confirmId}, function(err, user){
            if (err) return next(err);
            if (!user) return res.status(401).send('Could not find the user with activation Tag' + req.param.confirmId);
-            
+
        });
     } else {
-        
+
     }
 }
- 
+
 exports.activate = function(req, res) {
   var confirmId = req.params.activationId;
   UserModel.findOne({activationHash: confirmId}, function(err, user){

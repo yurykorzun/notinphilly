@@ -1,6 +1,8 @@
 var path = require('path');
 
 module.exports = function(app) {
+    console.log("init routes");
+
     // Insert routes below
     app.use('/api/users', require('./api/user'));
     app.use('/api/neighborhoods', require('./api/neighborhood'));
