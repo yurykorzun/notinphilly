@@ -19,6 +19,6 @@ module.exports = function(app) {
     app.route('/*')
     .get(function(req, res) {
         var pathToIndex = path.resolve(app.get('clientPath') + '/index.html');
-        res.sendfile(pathToIndex);
+        res.sendFile(pathToIndex);
     });
 };

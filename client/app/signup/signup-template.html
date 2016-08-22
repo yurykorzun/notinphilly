@@ -16,57 +16,58 @@
         </div>
       </div>
     </div>
-    <form id="signinForm" role="form" ng-show="!isRegisterSuccess">
+    <form name="signinForm" ng-show="!isRegisterSuccess" novalidate>
       <div class="row">
-        <div class="col-xs-6 form-group">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.firstName.$invalid && !signinForm.firstName.$pristine }]">
           <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-          <input id="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name" type="text" required>
+          <input name="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name" type="text" required="">
+          <p ng-show="signinForm.firstName.$invalid && !signinForm.firstName.$pristine" class="help-block">First Name is required.</p>
         </div>
-        <div class="col-xs-6 form-group">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.lastName.$invalid && !signinForm.lastName.$pristine }]">
           <label for="lastName" class="control-label">Last Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-          <input id="lastName" ng-model="User.lastName" class="form-control input-sm" placeholder="Last Name" type="text" required>
+          <input name="lastName" ng-model="User.lastName" ng-class="['form-control', 'input-sm', { 'has-error': signinForm.lastName.$error.required }]" placeholder="Last Name" type="text" required="">
+          <p ng-show="signinForm.lastName.$invalid && !signinForm.lastName.$pristine" class="help-block">Last Name is required.</p>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6 form-group">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.email.$invalid && !signinForm.email.$pristine }]">
           <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-          <input id="email" ng-model="User.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+          <input name="email" ng-model="User.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+          <p ng-show="signinForm.email.$invalid && !signinForm.email.$pristine" class="help-block">Email is required.</p>
         </div>
         <div class="col-md-6 form-group">
           <label for="phone" class="control-label">Phone Number</label>
-          <input id="phone" class="form-control input-sm" name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel"/>
-          <small>Only used to see if you will renew after 6 months</small>
+          <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel"/>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12 form-group">
-          <label for="organizationName" class="control-label">Business/Organization</label>
-          <input id="organizationName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+          <label for="businessName" class="control-label">Business/Organization</label>
+          <input name="businessName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
         </div>
       </div>
       <div class="row">
         <div class="col-md-6 form-group">
-          <label for="addressName" class="control-label">Address</label> (to get the grabber to you)
-          <div ng-controller="searchAddressController">
-              <input id="addressName" search-autocomplete ng-model="User.addressName" options="options" details="details" class="form-control input-sm" placeholder="Enter your street address..." type="text">
-          </div>
+          <label for="fullAddress" class="control-label">Address</label>
+          <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text"/>
         </div>
         <div class="col-md-6 form-group">
-          <label for="apartmentNum" class="control-label">Apartment Number</label>
-          <input id="apartmentNum" ng-model="User.aptNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+          <label for="apartmentNumber" class="control-label">Apartment Number</label>
+          <input name="apartmentNumber" ng-model="User.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
         </div>
       </div>
       <div class="row">
-        <div class="col-xs-6">
-          <div class="form-group">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.password.$invalid && !signinForm.password.$pristine }]">
             <label for="password" class="control-label">Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-            <input type="password" id="password" ng-model="User.password" class="form-control input-sm" placeholder="Password" required>
-          </div>
+            <input type="password" name="password" ng-model="User.password" class="form-control input-sm" placeholder="Password" required>
+            <p ng-show="signinForm.password.$invalid && !signinForm.password.$pristine" class="help-block">Password is required.</p>
         </div>
-        <div class="col-xs-6">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.passwordConfirm.$invalid && !signinForm.passwordConfirm.$pristine }]">
           <div class="form-group">
             <label for="passwordConfirm" class="control-label">Confirm Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-            <input type="password" id="passwordConfirm" ng-model="User.passwordConfirm" class="form-control input-sm" placeholder="Confirm password" required>
+            <input type="password" name="passwordConfirm" ng-model="User.passwordConfirm" class="form-control input-sm" placeholder="Confirm password" required equal="{{User.password}}">
+            <p ng-show="signinForm.passwordConfirm.$error.required && !signinForm.passwordConfirm.$pristine" class="help-block">Password confirmation is required.</p>
+            <p ng-show="signinForm.passwordConfirm.$error.equal && !signinForm.passwordConfirm.$pristine" class="help-block">Password must match.</p>
           </div>
         </div>
       </div>
@@ -79,7 +80,7 @@
       </div>
       <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
-          <button class="btn btn-success btn-lg btn-block" ng-click="register()" type="button"><i class="fa fa-check" aria-hidden="true"></i> Register now</button>
+          <button class="btn btn-success btn-lg btn-block" ng-click="register()" type="submit" ng-disabled="signinForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i> Register now</button>
         </div>
       </div>
       <div class="row row-buffer--top">
