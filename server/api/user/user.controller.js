@@ -53,7 +53,7 @@ exports.create = function(req, res, next) {
           birthDate: req.body.birthDate,
           phoneNumber: req.body.phoneNumber,
           email: req.body.email,
-          role: [4],
+          roles: [4],
           businessName: req.body.businessName,
           fullAddress: req.body.fullAddress,
           addressLocation: req.body.addressLocation,
