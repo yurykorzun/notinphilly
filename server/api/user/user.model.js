@@ -23,7 +23,7 @@ var userSchema = new Schema({
     ref: 'State'
   },
   email: { type : String, default: '', required: [true, 'Email is requred'] },
-  role: [{
+  roles: [{
     type: Number,
     ref: 'Role'
   }],
@@ -80,7 +80,7 @@ userSchema
         'fullname': this.firstName + ' ' + this.lastName,
         'email': this.email,
         'roles': this.roles,
-        'isAdmin': this.roles.indexOf(1) > -1
+        'isAdmin': this.roles.length > 0 && this.roles.indexOf(1) > -1
       };
     });
 
@@ -93,7 +93,7 @@ userSchema
 userSchema
     .virtual('isAdmin')
     .get(function () {
-      return this.roles.indexOf(1) > -1;
+      return this.roles.length > 0 && this.roles.indexOf(1) > -1;
     });
 
 /*userSchema.path('email').validate(function(value, respond) {
@@ -110,7 +110,7 @@ userSchema
   .get(function() {
       return {
           '_id': this._id,
-          'role': this.role
+          'roles': this.roles
       };
   });
 
