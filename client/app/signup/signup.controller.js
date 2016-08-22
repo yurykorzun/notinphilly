@@ -1,46 +1,74 @@
 (function () {
   angular.module('notinphillyServerApp')
     .controller('SignupController', [ '$scope', '$location', '$http', "$uibModalInstance", function($scope, $location, $http, $uibModalInstance) {
-      $scope.zipCodes = [];
-      $scope.zipCode = undefined;
-
-      $scope.streetNames = [];
-      $scope.streetName = undefined;
+      $scope.addressOptions = { country: 'us'};
       $scope.User = {};
-      $scope.refreshZipCodes = function(search) {
-        if(search)
-        {
-          return $http.get('/api/streets/lookupZipcodes/' + search + "/" + 10)
-                      .then(function(response) {
-                          $scope.zipCodes = response.data;
-                      });
-        }
-      };
+      $scope.addressDetails = undefined;
 
-      $scope.refreshStreetNames = function(search) {
-        if(search)
-        {
-          return $http.get('/api/streets/lookupNames/' + search + "/" + 10)
-                      .then(function(response) {
-                          $scope.streetNames = response.data;
-                      });
-        }
-      };
+      $scope.$watch(function() { return $scope.addressDetails; }, function(searchDetails) {
+
+      });
 
       $scope.register = function(){
-        $http.post('/api/users/', $scope.User).
-                success(function(data) {
-                    $scope.isRegisterFailed = false;
-                    $scope.isRegisterSuccess = true;
-                    $location.path('/');
-                }).error(function(err) {
-                    $scope.errorMessage = err;
-                    $scope.isRegisterFailed = true;
-                    $scope.isRegisterSuccess = false;
-                });
+        if(!$scope.signinForm.$invalid)
+        {
+          if ($scope.addressDetails && $scope.addressDetails.address_components)
+          {
+            var address = extractAddress($scope.addressDetails);
+
+            $scope.User.zip = address.postalCode;
+            $scope.User.city = address.city;
+            $scope.User.stateName = address.state;
+            $scope.User.streetName = address.streetName;
+            $scope.User.streetNumber = address.streetNumber;
+            $scope.User.addressLocation = address.location;
+          }
+
+          $http.post('/api/users/', $scope.User).
+                  success(function(data) {
+                      $scope.isRegisterFailed = false;
+                      $scope.isRegisterSuccess = true;
+                      $location.path('/');
+                  }).error(function(err) {
+                      $scope.errorMessage = err;
+                      $scope.isRegisterFailed = true;
+                      $scope.isRegisterSuccess = false;
+                  });
+        }
       }
+
       $scope.close = function(){
         $uibModalInstance.dismiss('cancel');
+      }
+
+      function extractAddress(addressDetails)
+      {
+        var location = {
+          lat: $scope.addressDetails.geometry.location.lat(),
+          lng: $scope.addressDetails.geometry.location.lng()
+        };
+        var address = {
+          streetNumber: getAddressComponent(addressDetails, 'street_number', 'short'),
+          streetName: getAddressComponent(addressDetails, 'route', 'short'),
+          city: getAddressComponent(addressDetails, 'locality', 'short'),
+          state: getAddressComponent(addressDetails, 'administrative_area_level_1', 'short'),
+          postalCode: getAddressComponent(addressDetails, 'postal_code', 'short'),
+          country: getAddressComponent(addressDetails, 'country', 'short'),
+          location: location
+        };
+
+        return address;
+      }
+
+      function getAddressComponent(address, component, type) {
+        var element = null;
+        angular.forEach(address.address_components, function (address_component) {
+          if (address_component.types[0] == component) {
+            element = (type == 'short') ? address_component.short_name : address_component.long_name;
+          }
+        });
+
+        return element;
       }
     }]);
 })();

@@ -1,17 +1,19 @@
-var mongoose = require('mongoose');
-var crypto   = require('bcrypt-nodejs');
-var uuid = require('uuid');
-var Schema = mongoose.Schema;
+var mongoose      = require('mongoose');
+var crypto        = require('bcrypt-nodejs');
+var uuid          = require('uuid');
+var StateModel    = require('../state/state.model');
+var Schema        = mongoose.Schema;
 
 // define our user schema
 var userSchema = new Schema({
-  firstName: { type : String, default: '' },
+  firstName: { type : String, default: '', required: [true, 'First name is requred'] },
   middleName: { type : String, default: '' },
-  lastName: { type : String, default: '' },
+  lastName: { type : String, default: '', required: [true, 'Last name is requred'] },
   birthDate: { type : Date, default: '' },
   phoneNumber: { type : String, default: '' },
   businessName: { type : String, default: '' },
-  addressName: { type : String, default: '' },
+  fullAddress: { type : String, default: '' },
+  addressLocation: {},
   apartmentNumber: { type : String, default: '' },
   zip: { type : String, default: '' },
   city: { type : String, default: '' },
@@ -20,11 +22,13 @@ var userSchema = new Schema({
     type: Number,
     ref: 'State'
   },
-  email: { type : String, default: '' },
-  roles: [{
+  email: { type : String, default: '', required: [true, 'Email is requred'] },
+  role: [{
     type: Number,
     ref: 'Role'
   }],
+  streetNumber: { type : String, default: '' },
+  streetName: { type : String, default: '' },
   hashedPassword: { type: String, default: '' },
   activationHash: String,
   salt: { type: String, default: '' },
@@ -43,15 +47,26 @@ var userSchema = new Schema({
 });
 
 userSchema
+    .virtual('stateName')
+    .set(function(stateName) {
+      StateModel.findOne({ abbrev: new RegExp('^'+stateName+'$', "i") }, function(err, foundState) {
+        if(err) throw err;
+
+        if(foundState)
+        {
+          this.state = foundState._id;
+        }
+      });
+    });
+
+userSchema
     .virtual('password')
     .set(function(password) {
         this._password = password;
         this.salt = this.makeSalt();
         this.hashedPassword = this.encryptPassword(password);
-
         //also store an activation hash and remove any "/", so we can pass it as parameter into URL for activation
         this.activationHash = uuid.v4();
-        console.log("activationHash " + this.activationHash);
     })
     .get(function() {
         return this._password;
@@ -72,7 +87,7 @@ userSchema
 userSchema
     .virtual('address')
     .get(function () {
-      return this.addressName + " " + this.apartmentNumber;
+      return this.fullAddress + " " + this.apartmentNumber;
     });
 
 userSchema

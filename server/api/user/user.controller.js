@@ -44,6 +44,7 @@ exports.create = function(req, res, next) {
     }
      errorMessage = checkForErrors(req.body);
     if (!errorMessage) {
+
       UserModel.create(
         {
           firstName: req.body.firstName,
@@ -54,12 +55,15 @@ exports.create = function(req, res, next) {
           email: req.body.email,
           role: [4],
           businessName: req.body.businessName,
-          addressName: req.body.addressName,
-          apartmentNumber: req.body.aptNumber,
+          fullAddress: req.body.fullAddress,
+          addressLocation: req.body.addressLocation,
+          apartmentNumber: req.body.apartmentNumber,
           active: false,
           city: req.body.city,
-          state: req.body.state,
+          stateName: req.body.stateName,
           zip: req.body.zip,
+          streetNumber: req.body.streetNumber,
+          streetName: req.body.streetName,
           password: req.body.password,
           isDistributer: req.body.distributer
         }, function(err, thor){
@@ -197,7 +201,6 @@ exports.resetPassword = function(req, res) {
        UserModel.findOne({activationHash: confirmId}, function(err, user){
            if (err) return next(err);
            if (!user) return res.status(401).send('Could not find the user with activation Tag' + req.param.confirmId);
-
        });
     } else {
 
