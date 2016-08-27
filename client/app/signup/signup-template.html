@@ -20,7 +20,7 @@
       <div class="row">
         <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.firstName.$invalid && !signinForm.firstName.$pristine }]">
           <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-          <input name="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name" type="text" required="">
+          <input name="firstName" ng-model="User.firstName" ng-class="['form-control', 'input-sm', { 'has-error': signinForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
           <p ng-show="signinForm.firstName.$invalid && !signinForm.firstName.$pristine" class="help-block">First Name is required.</p>
         </div>
         <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.lastName.$invalid && !signinForm.lastName.$pristine }]">

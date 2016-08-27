@@ -1,4 +1,5 @@
 var mongoose      = require('mongoose');
+var timestamps    = require('mongoose-timestamp');
 var crypto        = require('bcrypt-nodejs');
 var uuid          = require('uuid');
 var StateModel    = require('../state/state.model');
@@ -39,25 +40,13 @@ var userSchema = new Schema({
   google: {},
   adoptedStreets: [{
     type: Schema.Types.ObjectId,
-    ref: 'StreetSegment'}],
-  createDate: { type : Date, default: Date.now }
+    ref: 'StreetSegment'}]
 },
 {
   collection: 'userProfiles'
 });
 
-userSchema
-    .virtual('stateName')
-    .set(function(stateName) {
-      StateModel.findOne({ abbrev: new RegExp('^'+stateName+'$', "i") }, function(err, foundState) {
-        if(err) throw err;
-
-        if(foundState)
-        {
-          this.state = foundState._id;
-        }
-      });
-    });
+userSchema.plugin(timestamps);
 
 userSchema
     .virtual('password')
@@ -87,7 +76,14 @@ userSchema
 userSchema
     .virtual('address')
     .get(function () {
-      return this.fullAddress + " " + this.apartmentNumber;
+      return (
+              (this.streetNumber ? this.streetNumber + " " : "" )
+              + (this.streetName ? this.streetName + ", " : "" )
+              + (this.city ? this.city + " " : "")
+              + (this.state ? this.state.abbrev + " " : "")
+              + (this.zip ? this.zip + " " : "")
+              + (this.apartmentNumber ? this.apartmentNumber : "")
+            );
     });
 
 userSchema

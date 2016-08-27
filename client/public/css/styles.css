@@ -40,24 +40,25 @@ body{
   border-bottom: 1px solid #ddd;
 }
 
-.menu-userProfile {
-  margin-left: 15px;
+.user-profile {
+  padding: 30px 0;
 }
 
-.userprofile-name
-{
-  display: inline-block;
+.user-profile .heading {
+  margin-top: 0;
 }
 
-.userName-logout
-{
-  display: inline-block;
-  margin-left: 5px;
+.user-profile .edit-form,
+.street-list-header {
+  margin-bottom: 15px;
 }
 
-.menu-userProfile-logout {
-  margin-top: 10px;
-  margin-left: 5px;
+.user-profile .form-actions {
+  margin-top: 15px;
+}
+
+.user-profile .btn-cancel {
+  margin-right: 15px;
 }
 
 .tab-contents
@@ -72,14 +73,14 @@ body{
 
 .address-search-form
 {
-  margin: 20px 10px 20px 10px;
+  margin: 20px 10px;
 }
 
 .street-item-block
 {
-    border:1px solid #E6E6E6;
-    margin-bottom:5px;
-    border-color:#80cde5;
+    border: 1px solid #E6E6E6;
+    margin-bottom: 15px;
+    border-color: #80cde5;
     background-color: white;
 }
 
@@ -87,11 +88,6 @@ body{
 {
     margin-right:22px;
     text-align:center!important;
-}
-
-.street-item-block .street-marker-icon img
-{
-
 }
 
 .view-onstreet-section
