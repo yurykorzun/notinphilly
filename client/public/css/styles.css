@@ -44,6 +44,17 @@ body{
   margin-left: 15px;
 }
 
+.userprofile-name
+{
+  display: inline-block;
+}
+
+.userName-logout
+{
+  display: inline-block;
+  margin-left: 5px;
+}
+
 .menu-userProfile-logout {
   margin-top: 10px;
   margin-left: 5px;
