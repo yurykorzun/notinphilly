@@ -190,7 +190,25 @@ exports.me = function(req, res, next) {
 };
 
 exports.update = function(req, res) {
+  var userId = req.body._id;
 
+  // Find user based on ID from request
+  UserModel.findOne({_id: userId}, '-salt -hashedPassword -__v', function(err, user) {
+    if (err) return next(err);
+    if (!user) return res.status(401).send('Unauthorized');
+    if (user.active != true) return res.status(401).send('Please activate your user');
+    
+    // TODO: Add updates for street address on UserModel
+    user.email = req.body.email;
+    user.apartmentNumber = req.body.aptNumber;
+
+    user.modified = new Date();
+    user.save(function (err) {
+      if (err) console.err(err);
+      // Successfully updated user
+      res.json(user);
+    });
+  });
 };
 
 exports.resetPassword = function(req, res) {
