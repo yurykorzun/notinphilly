@@ -74,6 +74,12 @@ userSchema
     });
 
 userSchema
+    .virtual('fullName')
+    .get(function () {
+      return (this.firstName ? this.firstName + " " : "" ) + (this.lastName ? this.lastName : "" );
+    });
+
+userSchema
     .virtual('address')
     .get(function () {
       return (

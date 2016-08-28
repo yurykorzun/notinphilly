@@ -141,6 +141,10 @@ body{
   padding-bottom: 15px;
 }
 
+.partner-logo
+{
+  display: inline-block;
+}
 
 #cityMap {
     height:700px;
@@ -185,8 +189,7 @@ body{
 @media (min-width: 1000px) {
   .cfp-logo
   {
-    width: 120px;
-    padding-left: 40px;
+    width: 85px;
     padding-bottom: 15px;
   }
 

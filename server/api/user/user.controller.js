@@ -20,7 +20,7 @@ exports.getAllPaged = function(req, res) {
   var skip = req.params.pageSize;
   var itemsToSkip = (page - 1) * skip;
 
-  UserModel.count({}, function( err, count){
+  UserModel.count({}, function( err, count) {
       UserModel.find({}, '-salt -hashedPassword -_v -authToken -__v',   {skip:itemsToSkip, limit: skip })
                 .populate('state')
                 .populate('adoptedStreets')
@@ -30,7 +30,7 @@ exports.getAllPaged = function(req, res) {
                       var data = { users: users, count: count};
                       res.status(200).json(data);
                   });
-  });
+                });
 
 };
 
@@ -41,7 +41,7 @@ exports.create = function(req, res, next) {
   UserModel.findOne({email: req.body.email}, function(err, user) {
     if(err) throw err;
 
-    if(user) {
+    if (user) {
       console.log('user already registred ' + user._id);
       res.status(409).send('User with this email alreay has an account');
     }
@@ -104,6 +104,42 @@ exports.create = function(req, res, next) {
     }
   });
 };
+
+exports.update = function(req, res) {
+  var userId = req.body._id.toString();
+  if(!userId)
+  {
+    userId = req.user._id;
+  }
+
+  // Find user based on ID from request
+  UserModel.findById(userId, function(err, user) {
+    if (err) return next(err);
+    if (!user) return res.status(401).send('Unauthorized');
+    if (user.active != true) return res.status(401).send('Please activate your user');
+
+    if(req.body.firstName) user.firstName = req.body.firstName;
+    if(req.body.lastName) user.lastName = req.body.lastName;
+
+    user.phoneNumber = req.body.phoneNumber;
+    user.businessName = req.body.businessName;
+    user.apartmentNumber = req.body.apartmentNumber;
+
+    if(req.body.city) user.city = req.body.city;
+    if(req.body.zip) user.zip = req.body.zip;
+    if(req.body.streetNumber) user.streetNumber = req.body.streetNumber;
+    if(req.body.streetName) user.streetName = req.body.streetName;
+
+    if(req.body.distributer != undefined) user.isDistributer = req.body.distributer;
+
+    user.save(function (err) {
+      if (err) console.err(err);
+      // Successfully updated user
+      res.status(200).send('User was successfully updated');
+    });
+  });
+};
+
 
 var checkForErrors = function(userInfo) {
   if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
@@ -228,46 +264,6 @@ exports.resetPassword = function(req, res) {
     }
 }
 
-exports.update = function(req, res) {
-  var userId = req.body._id;
-  if(!userId)
-  {
-    userId = req.user._id;
-  }
-
-  // Find user based on ID from request
-  UserModel.findOne({_id: userId}, function(err, user) {
-    if (err) return next(err);
-    if (!user) return res.status(401).send('Unauthorized');
-    if (user.active != true) return res.status(401).send('Please activate your user');
-
-    if(req.body.firstName) user.firstName = req.body.firstName;
-    if(req.body.middleName) user.middleName = req.body.middleName;
-    if(req.body.lastName) user.lastName = req.body.lastName;
-    if(req.body.birthDate) user.birthDate = req.body.birthDate;
-    if(req.body.phoneNumber) user.phoneNumber = req.body.phoneNumber;
-    if(req.body.businessName) user.businessName = req.body.businessName;
-    if(req.body.apartmentNumber) user.apartmentNumber = req.body.apartmentNumber;
-    if(req.body.city) user.city = req.body.city;
-    if(req.body.zip) user.zip = req.body.zip;
-    if(req.body.streetNumber) user.streetNumber = req.body.streetNumber;
-    if(req.body.streetName) user.streetName = req.body.streetName;
-    if(req.body.distributer != undefined) user.isDistributer = req.body.distributer;
-
-    }, function(err, thor) {
-        if (err) {
-          console.log(err);
-          res.status(500).send('There was an issue. Please try again later');
-        }
-    });
-
-    user.save(function (err) {
-      if (err) console.err(err);
-      // Successfully updated user
-      res.status(200).send('User was successfully updated');
-    });
-};
-
 exports.activate = function(req, res) {
   var confirmId = req.params.activationId;
   UserModel.findOne({activationHash: confirmId}, function(err, user){
@@ -285,11 +281,4 @@ exports.activate = function(req, res) {
         }
       })
   });
-};
-
-/**
- * Authentication callback
- */
-exports.authCallback = function(req, res, next) {
-    res.redirect('/');
 };

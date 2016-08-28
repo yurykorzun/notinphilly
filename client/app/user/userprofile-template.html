@@ -1,83 +1,79 @@
 <div class="user-profile" ng-controller="UserProfileController">
  <div class="row">
    <div class="col-xs-12">
-     <div class="row">
-       <div class="col-xs-12">
-        <p>Welcome back! Here's the information we have on file for you:</p>
-       </div>
-     </div>
-
     <div class="row">
       <div class="col-xs-6">
-        <h4 class="heading">{{userProfile.fullName}}</h4>
+        <div>
+           <h4 class="heading"><i class="fa fa-user" aria-hidden="true"></i> {{user.fullName}}</h4>
+        </div>
         <div>
           <ul class="list-inline user-profile-actions">
-            <li ng-hide="userProfile.isEditing"><a href="" ng-click="userProfile.toggleEdit()">Edit profile <i class="fa fa-pencil"></i></a></li>
-            <li><a href="" ng-click="userProfile.logout()">Log out <i class="fa fa-sign-out"></i></a></li>
+            <li ng-hide="userProfile.isEditing"><a href="" ng-click="toggleEdit()">Edit profile <i class="fa fa-pencil"></i></a></li>
+            <li><a href="" ng-click="logout()">Log out <i class="fa fa-sign-out"></i></a></li>
           </ul>
         </div>
       </div>
     </div>
 
-    <address>
-      <i class="fa fa-map-pin" aria-hidden="true"></i> {{userProfile.address}}<br>
-      <span ng-show="userProfile.aptNumber"><i class="fa fa-building" aria-hidden="true"></i> Apt. {{userProfile.aptNumber}}<br></span>
-      <i class="fa fa-envelope" aria-hidden="true"></i> {{userProfile.email}}
+    <address ng-show="!userProfile.isEditing">
+      <i class="fa fa-map-pin" aria-hidden="true"></i> {{user.address}}<br>
+      <span ng-show="user.aptNumber"><i class="fa fa-building" aria-hidden="true"></i> Apt. {{user.aptNumber}}<br></span>
+      <i class="fa fa-envelope" aria-hidden="true"></i> {{user.email}}
     </address>
 
     <form class="edit-form" name="editForm" ng-show="userProfile.isEditing" novalidate>
       <div class="row">
-        <div class="col-xs-6 form-group">
-          <label for="addressName" class="control-label">First Name</label>
-          <input name="firstName" ng-model="userProfile.firstName" ng-class="['form-control', 'input-sm', { 'has-error': editForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.firstName.$invalid && !editForm.firstName.$pristine }]">
+          <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="firstName" ng-model="user.firstName" ng-class="['form-control', 'input-sm', { 'has-error': editForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
           <p ng-show="editForm.firstName.$invalid && !editForm.firstName.$pristine" class="help-block">First Name is required.</p>
         </div>
-        <div class="col-xs-6 form-group">
-          <label for="addressName" class="control-label">Last Name</label>
-          <input name="lastName" ng-model="userProfile.lastName" ng-class="['form-control', 'input-sm', { 'has-error': editForm.lastName.$error.required }]" placeholder="Last Name" type="text" required="">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.lastName.$invalid && !editForm.lastName.$pristine }]">
+          <label for="lastName" class="control-label">Last Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="lastName" ng-model="user.lastName" ng-class="['form-control', 'input-sm', { 'has-error': editForm.lastName.$error.required }]" placeholder="Last Name" type="text" required="">
           <p ng-show="editForm.lastName.$invalid && !editForm.lastName.$pristine" class="help-block">Last Name is required.</p>
         </div>
       </div>
       <div class="row">
-        <div class="col-md-8 form-group">
-          <label for="fullAddress" class="control-label">Address</label>
-          <input name="fullAddress" search-autocomplete ng-model="userProfile.fullAddress" details="addressDetails" options="addressOptions" ng-class="['form-control', 'input-sm', { 'has-error': editForm.fullAddress.$error.required }]" type="text" required=""/>
-          <p ng-show="editForm.lastName.$invalid && !editForm.lastName.$pristine" class="help-block">Last Name is required.</p>
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.email.$invalid && !editForm.email.$pristine }]">
+          <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="email" ng-model="user.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+          <p ng-show="editForm.email.$invalid && !editForm.email.$pristine" class="help-block">Email is required.</p>
         </div>
-        <div class="col-md-4 form-group">
-          <label for="apartmentNumber" class="control-label">Apartment Number</label>
-          <input name="apartmentNumber" ng-model="User.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+        <div class="col-md-6 form-group">
+          <label for="phone" class="control-label">Phone Number</label>
+          <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="user.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel"/>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-12 form-group">
           <label for="businessName" class="control-label">Business/Organization</label>
-          <input name="businessName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
-      </div>
+          <input name="businessName" ng-model="user.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+        </div>
       </div>
       <div class="row">
-        <div class="col-md-6 form-group">
-          <label for="phone" class="control-label">Phone Number</label>
-          <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel"/>
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.fullAddress.$invalid && !signinForm.fullAddress.$pristine }]">
+          <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="fullAddress" search-autocomplete ng-model="user.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required=""/>
+          <p ng-show="editForm.fullAddress.$invalid && !editForm.fullAddress.$pristine" class="help-block">Address is required.</p>
         </div>
         <div class="col-md-6 form-group">
-         <label for="email">Email address</label>
-         <input name="email" ng-model="User.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
-         <p ng-show="editForm.email.$invalid && !editForm.email.$pristine" class="help-block">Email is required.</p>
-       </div>
+          <label for="apartmentNumber" class="control-label">Apartment Number</label>
+          <input name="apartmentNumber" ng-model="user.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+        </div>
       </div>
       <div class="row">
         <div class="col-xs-12">
           <div class="form-group">
-            <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="User.distributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+            <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="user.distributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
           </div>
         </div>
       </div>
       <div class="row">
         <div class="col-sm-offset-6 col-sm-6">
           <div class="form-actions form-group pull-right">
-            <button type="submit" class="btn btn-primary" ng-click="userProfile.update()">Update profile</button>
-            <button type="button" class="btn btn-default btn-cancel pull-left" ng-click="userProfile.toggleEdit()">Cancel</button>
+            <button type="submit" class="btn btn-primary" ng-click="update()">Update profile</button>
+            <button type="button" class="btn btn-default btn-cancel pull-left" ng-click="toggleEdit()">Cancel</button>
           </div>
         </div>
       </div>
@@ -90,8 +86,16 @@
           <ul class="list-inline user-profile-actions pull-right">
             <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
           </ul>
+        </div>
+        <streetslist streets-all="user.adoptedStreets" streets-show="user.adoptedStreets" />
       </div>
-        <streetslist streets="userProfile.adoptedStreets"/>
+    </div>
+    <div class="row" ng-show="!hasStreets()">
+      <div class="col-xs-12">
+        <div class="street-list-header">
+          You currently don't participate in any streets. Find your block in the search page.
+        </div>
+        <streetslist streets="user.adoptedStreets"/>
       </div>
     </div>
 </div>

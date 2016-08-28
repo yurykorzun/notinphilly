@@ -3,34 +3,10 @@
   .controller('UserProfileController', [ '$scope', '$http', '$rootScope', 'sessionService', 'mapService', 'APP_EVENTS',
     function($scope, $http, $rootScope, sessionService, mapService, APP_EVENTS) {
       $scope.userProfile = {
-        logout: function() {
-          $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
-          sessionService.logout().then(function(response){
-            $rootScope.$broadcast(APP_EVENTS.LOGOUT);
-            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
-          },
-          function(err) {
-            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
-          });
-        },
-        adoptedStreets: [],
-        isEditing: false,
-        toggleEdit: function () {
-          $scope.userProfile.isEditing = !$scope.userProfile.isEditing;
-        },
-        update: function () {
-          var userId = $rootScope.currentUser._id;
-          $scope.userProfile._id = userId;
-
-          $http.put('/api/users/', $scope.userProfile).
-            success(function(data) {
-              // Collapse edit form after updating user
-              $scope.userProfile.isEditing = false;
-            }).error(function(err) {
-              // Update user error
-              $scope.errorMessage = err;
-            });
-        }
+        isEditing: false
+      };
+      $scope.user = {
+        adoptedStreets: []
       };
 
       function SetupCurrentUser()
@@ -38,19 +14,17 @@
         if($rootScope.currentUser)
         {
           $http.get("api/users/current/").success(function(data, status) {
-            $scope.userProfile = data;
-
+            $scope.user = data;
             SetupUserStreets();
           },
           function(err) {
-
           });
         }
       }
 
       function SetupUserStreets(){
         mapService.getStreetsForCurrentUser().then(function(response){
-          $scope.userProfile.adoptedStreets = response;
+          $scope.user.adoptedStreets = response;
         },
         function(err) {
 
@@ -81,12 +55,41 @@
 
       $scope.hasStreets = function ()
       {
-        return $scope.userProfile.adoptedStreets.length > 0
+        return $scope.user.adoptedStreets.length > 0
       };
 
       $scope.switchToMap = function() {
-        mapService.showStreets($scope.userProfile.adoptedStreets);
+        mapService.showStreets($scope.user.adoptedStreets);
         $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+      };
+
+      $scope.toggleEdit = function () {
+        $scope.userProfile.isEditing = !$scope.userProfile.isEditing;
+      };
+
+      $scope.update = function () {
+        if($scope.user)
+        {
+          $http.put('/api/users/', $scope.user).
+            success(function(data) {
+              // Collapse edit form after updating user
+              $scope.userProfile.isEditing = false;
+            }).error(function(err) {
+              // Update user error
+              $scope.errorMessage = err;
+            });
+        }    
+      };
+
+      $scope.logout = function() {
+        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
+        sessionService.logout().then(function(response){
+          $rootScope.$broadcast(APP_EVENTS.LOGOUT);
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+        },
+        function(err) {
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+        });
       };
 
       SetupCurrentUser();
