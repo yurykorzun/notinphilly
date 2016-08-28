@@ -15,6 +15,7 @@
     "mailgun-js": "^0.7.12",
     "method-override": "~2.0.2",
     "mongoose": "^4.5.6",
+    "mongoose-timestamp": "^0.6.0",
     "nodemailer": "~2.0.0",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",

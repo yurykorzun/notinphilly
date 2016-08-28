@@ -20,7 +20,7 @@
       <div class="row">
         <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.firstName.$invalid && !signinForm.firstName.$pristine }]">
           <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-          <input name="firstName" ng-model="User.firstName" class="form-control input-sm" placeholder="First Name" type="text" required="">
+          <input name="firstName" ng-model="User.firstName" ng-class="['form-control', 'input-sm', { 'has-error': signinForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
           <p ng-show="signinForm.firstName.$invalid && !signinForm.firstName.$pristine" class="help-block">First Name is required.</p>
         </div>
         <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.lastName.$invalid && !signinForm.lastName.$pristine }]">
@@ -47,9 +47,10 @@
         </div>
       </div>
       <div class="row">
-        <div class="col-md-6 form-group">
-          <label for="fullAddress" class="control-label">Address</label>
-          <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text"/>
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.fullAddress.$invalid && !signinForm.fullAddress.$pristine }]">
+          <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required=""/>
+          <p ng-show="signinForm.fullAddress.$invalid && !signinForm.fullAddress.$pristine" class="help-block">Address is required.</p>
         </div>
         <div class="col-md-6 form-group">
           <label for="apartmentNumber" class="control-label">Apartment Number</label>

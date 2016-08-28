@@ -9,7 +9,7 @@
     <div class="address-search-form">
       <div class="input-group col-md-12">
         <div ng-show="hasAddress()" class="input-group-addon" ng-click="findStreet()"><i class="fa fa-search"></i></div>
-        <input id="address-search" search-autocomplete ng-model="autocomplete" options="options" details="details" type="text" class="form-control input-lg" placeholder="Enter your address..." />
+        <input id="address-search" search-autocomplete ng-model="autocomplete" options="autocompleteOptions" details="addressDetails" type="text" class="form-control input-lg" placeholder="Enter your address..." />
         <div ng-show="hasAddress()" class="input-group-addon" ng-click="clearSearch()"><i class="fa fa-close"></i></div>
       </div>
     </div>
@@ -24,8 +24,8 @@
       </div>
     </div>
     <div class="found-streets-items col-md-12 clearfix">
-       <streetslist streets="pagedStreets" location="location"/>
-       <div ng-show="hasMoreStreets">
+       <streetslist streets-show="searchAddress.pagedStreets" streets-all="searchAddress.streets"/>
+       <div ng-show="searchAddress.hasMoreStreets">
            <div class="col-md-2">
            </div>
            <div class="col-md-7">

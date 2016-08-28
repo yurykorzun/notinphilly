@@ -22,7 +22,8 @@ angular.module('notinphillyServerApp')
        { name: 'address', enableSorting: false },
        { name: 'phoneNumber', enableSorting: false },
        { name: 'isDistributer', enableSorting: false },
-       { name: 'isAdmin', enableSorting: false }
+       { name: 'isAdmin', enableSorting: false },
+       { field: '_id', name: '', cellTemplate: 'app/admin/delete-button.html', width: 34, enableSorting: false}
      ],
      onRegisterApi: function(gridApi) {
        $scope.gridApi = gridApi;
@@ -32,6 +33,20 @@ angular.module('notinphillyServerApp')
          getPage();
        });
      }
+   };
+
+   $scope.deleteUser = function (grid, row) {
+     var id = row.entity._id;
+     var url = "/api/users/" + id;
+
+     $http.delete(url)
+       .success(function (data) {
+         getPage(1, 25);
+       })
+       .error(function (error) {
+         // TODO: Probably give better info
+         console.error('error:', error);
+       });
    };
 
    var getPage = function(pageNumber, pageSize) {
