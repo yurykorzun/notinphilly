@@ -93,7 +93,7 @@ exports.create = function(req, res, next) {
            );
         }
         else {
-           res.status(500).send('Invalid state code was provided');
+           res.status(500).send('Invalid state code was provided ' + req.body.stateName);
         }
       });
 
@@ -116,10 +116,11 @@ exports.update = function(req, res) {
   UserModel.findById(userId, function(err, user) {
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');
-    if (user.active != true) return res.status(401).send('Please activate your user');
+    if (user.active != true) return res.status(401).send('User is not active');
 
     if(req.body.firstName) user.firstName = req.body.firstName;
     if(req.body.lastName) user.lastName = req.body.lastName;
+    if(req.body.email) user.email = req.body.email;
 
     user.phoneNumber = req.body.phoneNumber;
     user.businessName = req.body.businessName;
@@ -132,10 +133,14 @@ exports.update = function(req, res) {
 
     if(req.body.distributer != undefined) user.isDistributer = req.body.distributer;
 
-    user.save(function (err) {
-      if (err) console.err(err);
+    user.save(function (err, user) {
+      if (err)
+      {
+        console.err(err);
+        res.status(500).send('There was an issue. Please try again later');
+      }
       // Successfully updated user
-      res.status(200).send('User was successfully updated');
+      res.status(200).send('Your profile was updated Successfully');
     });
   });
 };
