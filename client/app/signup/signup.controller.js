@@ -12,9 +12,9 @@
       $scope.register = function(){
         if(!$scope.signinForm.$invalid)
         {
-          if ($scope.addressDetails && $scope.addressDetails.address_components)
+          if ($scope.addressDetails)
           {
-            var address = extractAddress($scope.addressDetails);
+            var address = $scope.addressDetails;
 
             $scope.User.zip = address.postalCode;
             $scope.User.city = address.city;
@@ -39,36 +39,6 @@
 
       $scope.close = function(){
         $uibModalInstance.dismiss('cancel');
-      }
-
-      function extractAddress(addressDetails)
-      {
-        var location = {
-          lat: $scope.addressDetails.geometry.location.lat(),
-          lng: $scope.addressDetails.geometry.location.lng()
-        };
-        var address = {
-          streetNumber: getAddressComponent(addressDetails, 'street_number', 'short'),
-          streetName: getAddressComponent(addressDetails, 'route', 'short'),
-          city: getAddressComponent(addressDetails, 'locality', 'short'),
-          state: getAddressComponent(addressDetails, 'administrative_area_level_1', 'short'),
-          postalCode: getAddressComponent(addressDetails, 'postal_code', 'short'),
-          country: getAddressComponent(addressDetails, 'country', 'short'),
-          location: location
-        };
-
-        return address;
-      }
-
-      function getAddressComponent(address, component, type) {
-        var element = null;
-        angular.forEach(address.address_components, function (address_component) {
-          if (address_component.types[0] == component) {
-            element = (type == 'short') ? address_component.short_name : address_component.long_name;
-          }
-        });
-
-        return element;
       }
     }]);
 })();

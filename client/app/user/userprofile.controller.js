@@ -70,15 +70,28 @@
       $scope.update = function () {
         if($scope.user)
         {
+          if($scope.addressDetails)
+          {
+            var address = $scope.addressDetails;
+
+            $scope.user.zip = address.postalCode;
+            $scope.user.city = address.city;
+            $scope.user.stateName = address.state;
+            $scope.user.streetName = address.streetName;
+            $scope.user.streetNumber = address.streetNumber;
+            $scope.user.addressLocation = address.location;
+          }
+
           $http.put('/api/users/', $scope.user).
             success(function(data) {
+              SetupCurrentUser();
               // Collapse edit form after updating user
               $scope.userProfile.isEditing = false;
             }).error(function(err) {
               // Update user error
               $scope.errorMessage = err;
             });
-        }    
+        }
       };
 
       $scope.logout = function() {

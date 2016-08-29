@@ -43,11 +43,9 @@ angular.module('notinphillyServerApp')
     $scope.findStreet = function() {
       $scope.searchAddress.pagedStreets = [];
       var addressDetails = $scope.addressDetails;
-      if(addressDetails && addressDetails.geometry)
+      if(addressDetails && addressDetails.location)
       {
-        $scope.searchAddress.location = addressDetails.geometry.location;
-        $scope.searchAddress.location = { lat: $scope.searchAddress.location.lat(), lng: $scope.searchAddress.location.lng() };
-
+        $scope.searchAddress.location = addressDetails.location;
         mapService.findStreetsNear($scope.searchAddress.location).then(function(searchResults)
         {
           $scope.searchAddress.streets = searchResults;
