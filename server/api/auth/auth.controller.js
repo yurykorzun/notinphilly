@@ -10,7 +10,7 @@ exports.session = function (req, res) {
     return res.json(req.user);
   }
   else {
-    return res.send(400, "Not logged in");
+    return res.sendStatus(400, "Not logged in");
   }
 };
 
@@ -35,9 +35,9 @@ exports.logout = function (req, res) {
         if (err) { return next(err); }
     });
 
-    res.send(200);
+    res.sendStatus(200);
   } else {
-    res.send(400, "Logout failed, wasn't logged in");
+    res.sendStatus(400, "Logout failed, wasn't logged in");
   }
 };
 
@@ -51,5 +51,5 @@ exports.login = function (req, res, next) {
       return res.json({ _id: req.user._id, email: req.user.email });
     }
 
-    res.send(400, "Logout failed");
+    res.sendStatus(400, "Logout failed");
 }

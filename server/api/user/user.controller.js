@@ -131,7 +131,7 @@ exports.update = function(req, res) {
     if(req.body.streetNumber) user.streetNumber = req.body.streetNumber;
     if(req.body.streetName) user.streetName = req.body.streetName;
 
-    if(req.body.distributer != undefined) user.isDistributer = req.body.distributer;
+    user.isDistributer = req.body.isDistributer;
 
     user.save(function (err, user) {
       if (err)
