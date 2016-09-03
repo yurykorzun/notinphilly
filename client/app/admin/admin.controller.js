@@ -8,12 +8,5 @@ angular.module('notinphillyServerApp')
                   function() {
                     $scope.isUserAdmin = false;
                   });
-
-    $scope.addUser = function () {
-      $uibModal.open({
-        templateUrl: 'app/signup/signup-template.html',
-        controller: 'SignupController'
-      });
-    }
   }]);
 })();

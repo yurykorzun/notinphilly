@@ -1,0 +1,67 @@
+<div>
+  <div class="modal-header">
+  </div>
+</div>
+<div class="modal-body">
+  <form name="userForm" ng-show="!isRegisterSuccess" novalidate>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.firstName.$invalid && !userForm.firstName.$pristine }]">
+        <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="firstName" ng-model="User.firstName" ng-class="['form-control', 'input-sm', { 'has-error': userForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
+        <p ng-show="userForm.firstName.$invalid && !userForm.firstName.$pristine" class="help-block">First Name is required.</p>
+      </div>
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.lastName.$invalid && !userForm.lastName.$pristine }]">
+        <label for="lastName" class="control-label">Last Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="lastName" ng-model="User.lastName" ng-class="['form-control', 'input-sm', { 'has-error': userForm.lastName.$error.required }]" placeholder="Last Name" type="text" required="">
+        <p ng-show="userForm.lastName.$invalid && !userForm.lastName.$pristine" class="help-block">Last Name is required.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.email.$invalid && !userForm.email.$pristine }]">
+        <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="email" ng-model="User.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+        <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Email is required.</p>
+      </div>
+      <div class="col-xs-6 form-group">
+        <label for="phone" class="control-label">Phone Number</label>
+        <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 form-group">
+        <label for="businessName" class="control-label">Business/Organization</label>
+        <input name="businessName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.fullAddress.$invalid && !userForm.fullAddress.$pristine }]">
+        <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required=""/>
+        <p ng-show="userForm.fullAddress.$invalid && !userForm.fullAddress.$pristine" class="help-block">Address is required.</p>
+      </div>
+      <div class="col-xs-6 form-group">
+        <label for="apartmentNumber" class="control-label">Apartment Number</label>
+        <input name="apartmentNumber" ng-model="User.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="form-group">
+          <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="User.distributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-3 col-sm-offset-3">
+        <button class="btn btn-success btn-lg btn-block" ng-click="save()" type="submit" ng-disabled="userForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+      </div>
+      <div class="col-xs-3 col-sm-offset-3">
+       <button class="btn btn-danger btn-md btn-block" ng-click="close()" type="button"><i class="fa fa-ban" aria-hidden="true"></i> Nope</button>
+     </div>
+    </div>
+  </form>
+</div>
+<div class="modal-footer">
+   <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
+   <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+</div>

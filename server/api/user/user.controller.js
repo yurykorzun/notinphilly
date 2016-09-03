@@ -228,7 +228,12 @@ exports.get = function(req, res, next) {
  */
 exports.destroy = function(req, res) {
   var userId = req.params.id;
-  // TODO: actually delete the user with this id
+  if(userId) {
+    UserModel.remove({ _id: userId }, function(err) {
+      console.log("Error while deleting " + err);
+      if (err) return next(err);
+    });
+  }
 };
 
 /**
