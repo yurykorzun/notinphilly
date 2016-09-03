@@ -1,9 +1,10 @@
 (function () {
   angular.module('notinphillyServerApp')
-  .controller('UserProfileController', [ '$scope', '$http', '$rootScope', 'sessionService', 'mapService', 'APP_EVENTS',
-    function($scope, $http, $rootScope, sessionService, mapService, APP_EVENTS) {
+  .controller('UserProfileController', [ '$scope', '$http', '$rootScope', '$location', 'sessionService', 'mapService', 'APP_EVENTS',
+    function($scope, $http, $rootScope, $location, sessionService, mapService, APP_EVENTS) {
       $scope.userProfile = {
-        isEditing: false
+        isEditing: false,
+        isAdmin: false
       };
       $scope.user = {
         adoptedStreets: []
@@ -13,11 +14,15 @@
       {
         if($rootScope.currentUser)
         {
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
+          $scope.userProfile.isAdmin = $rootScope.currentUser.isAdmin;
           $http.get("api/users/current/").success(function(data, status) {
             $scope.user = data;
             SetupUserStreets();
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
           },
           function(err) {
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
           });
         }
       }
@@ -63,11 +68,20 @@
         $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
       };
 
+      $scope.navigateToAdmin = function ()
+      {
+        if($rootScope.currentUser && $rootScope.currentUser.isAdmin)
+        {
+          $location.path("/admin");
+        }
+      }
+
       $scope.toggleEdit = function () {
         $scope.userProfile.isEditing = !$scope.userProfile.isEditing;
       };
 
       $scope.update = function () {
+        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
         if($scope.user)
         {
           if($scope.addressDetails)
@@ -87,9 +101,11 @@
               SetupCurrentUser();
               // Collapse edit form after updating user
               $scope.userProfile.isEditing = false;
+              $rootScope.$broadcast(APP_EVENTS.SPINNER_END)
             }).error(function(err) {
               // Update user error
               $scope.errorMessage = err;
+              $rootScope.$broadcast(APP_EVENTS.SPINNER_END)
             });
         }
       };

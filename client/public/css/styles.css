@@ -46,6 +46,16 @@ body{
 
 .user-profile .heading {
   margin-top: 0;
+  display: inline-block;
+}
+
+.user-profile .info {
+  margin-top: 10px;
+}
+
+.user-profile .profile-actions {
+  display: inline-block;
+  margin-right: 12px;
 }
 
 .user-profile .edit-form,

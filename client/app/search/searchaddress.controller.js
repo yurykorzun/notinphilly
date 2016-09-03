@@ -14,10 +14,6 @@ angular.module('notinphillyServerApp')
     $scope.autocomplete = undefined;
     $scope.addressDetails = undefined;
 
-    $scope.$on('$locationChangeStart', function(ev) {
-      ev.preventDefault();
-    });
-
     $scope.$watch(function() { return $scope.addressDetails; }, function(searchDetails) {
       if(searchDetails)
       {
@@ -41,6 +37,7 @@ angular.module('notinphillyServerApp')
     };
 
     $scope.findStreet = function() {
+      $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
       $scope.searchAddress.pagedStreets = [];
       var addressDetails = $scope.addressDetails;
       if(addressDetails && addressDetails.location)
@@ -50,6 +47,7 @@ angular.module('notinphillyServerApp')
         {
           $scope.searchAddress.streets = searchResults;
           setPagedStreets($scope.searchAddress.streets, $scope.searchAddress.streetsPage, $scope.searchAddress.streetsPageSize);
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
         });
       }
     };
