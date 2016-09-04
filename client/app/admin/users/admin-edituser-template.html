@@ -35,7 +35,7 @@
     </div>
     <div class="row">
       <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.fullAddress.$invalid && !userForm.fullAddress.$pristine }]">
-        <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <label for="fullAddress" class="control-label">Full Address (google autocomplete)<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
         <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required=""/>
         <p ng-show="userForm.fullAddress.$invalid && !userForm.fullAddress.$pristine" class="help-block">Address is required.</p>
       </div>
@@ -45,23 +45,63 @@
       </div>
     </div>
     <div class="row">
-      <div class="col-xs-12">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.city.$invalid && !userForm.city.$pristine }]">
+        <label for="city" class="control-label">City<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="city" ng-model="User.city" class="form-control input-sm" type="text" required>
+        <p ng-show="userForm.city.$invalid && !userForm.city.$pristine" class="help-block">Address is required.</p>
+      </div>
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.zip.$invalid && !userForm.zip.$pristine }]">
+        <label for="zip" class="control-label">Zip<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="zip" ng-model="User.zip" class="form-control input-sm" type="text" required>
+        <p ng-show="userForm.zip.$invalid && !userForm.zip.$pristine" class="help-block">Zip is required.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.streetName.$invalid && !userForm.streetName.$pristine }]">
+        <label for="streetName" class="control-label">Street name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="streetName" ng-model="User.streetName" class="form-control input-sm" type="text" required>
+        <p ng-show="userForm.streetName.$invalid && !userForm.streetName.$pristine" class="help-block">Street name is required.</p>
+      </div>
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.streetNumber.$invalid && !userForm.streetNumber.$pristine }]">
+        <label for="streetNumber" class="control-label">Street number<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="streetNumber" ng-model="User.streetNumber" class="form-control input-sm" type="text" required>
+        <p ng-show="userForm.streetNumber.$invalid && !userForm.streetNumber.$pristine" class="help-block">Street number is required.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
         <div class="form-group">
-          <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="User.distributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+          <label for="isAdminCheckbox"><input type="checkbox" id="isAdminCheckbox" ng-model="User.isAdmin">&nbsp;&nbsp;<small>Admin?</small></label>
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="isActiveCheckbox"><input type="checkbox" id="isActiveCheckbox" ng-model="User.active">&nbsp;&nbsp;<small>Active?</small></label>
         </div>
       </div>
     </div>
     <div class="row">
-      <div class="col-xs-3 col-sm-offset-3">
-        <button class="btn btn-success btn-lg btn-block" ng-click="save()" type="submit" ng-disabled="userForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i> Save</button>
+      <div class="col-xs-12">
+        <div class="form-group">
+          <label for="distributeCheckbox"><input type="checkbox" name="distributeCheckbox" id="distributeCheckbox" ng-model="User.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+        </div>
       </div>
-      <div class="col-xs-3 col-sm-offset-3">
-       <button class="btn btn-danger btn-md btn-block" ng-click="close()" type="button"><i class="fa fa-ban" aria-hidden="true"></i> Nope</button>
-     </div>
     </div>
   </form>
+  <div class="row">
+    <div class="col-md-9">
+      Adopted streets: {{User.adoptedStreets.length}}
+    </div>
+  </div>
+  <div ng-repeat="street in User.adoptedStreets">
+    <div class="row">
+      <div class="col-md-9">
+        <p>{{street.leftHundred}} {{street.streetName}} {{street.type}} Zip: {{street.zipLeft}} Participants: {{street.totalAdopters}}</p>
+      </div>
+    </div>
+  </div>
 </div>
 <div class="modal-footer">
-   <button class="btn btn-primary" type="button" ng-click="ok()">OK</button>
-   <button class="btn btn-warning" type="button" ng-click="cancel()">Cancel</button>
+   <button class="btn btn-primary" type="submit" ng-click="save()">Save</button>
+   <button class="btn btn-warning" type="button" ng-click="close()">Cancel</button>
 </div>

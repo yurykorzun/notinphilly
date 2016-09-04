@@ -1,12 +1,14 @@
 <div ng-controller="AdminUsersController">
-  <div class="row">
-    <div class="col-md-6">
-      <button ng-click="addUser()">Add User</button>
+  <treasure-overlay-spinner active='spinnerActive'>
+    <div class="row">
+      <div class="col-md-2" ng-show="false">
+        <button ng-click="addUser()">Add User</button>
+      </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="col-md-12">
-      <div ui-grid="gridOptions" ui-grid-pagination class="grid"></div>
+    <div class="row">
+      <div class="col-md-11 pull-left">
+        <div ui-grid="gridOptions" ui-grid-pagination class="admin-users-grid"></div>
+      </div>
     </div>
-  </div>
+  </treasure-overlay-spinner>
 </div>

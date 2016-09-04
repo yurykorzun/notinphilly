@@ -1,6 +1,8 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('AdminUsersController', [ '$scope', '$http', '$uibModal', 'sessionService', function($scope, $http, $uibModal, sessionService) {
+  .controller('AdminUsersController', [ '$scope', '$http', '$uibModal', 'uiGridConstants', 'sessionService', function($scope, $http, $uibModal, uiGridConstants, sessionService) {
+    $scope.spinnerActive = false;
+
     var paginationOptions = {
      pageNumber: 1,
      pageSize: 25,
@@ -13,44 +15,48 @@ angular.module('notinphillyServerApp')
      useExternalPagination: true,
      useExternalSorting: true,
      columnDefs: [
-       { name: 'firstName', enableSorting: false },
-       { name: 'lastName', enableSorting: false },
-       { name: 'email', enableSorting: false },
-       { name: 'businessName', enableSorting: false },
-       { name: 'createDate', enableSorting: false },
-       { name: 'zip', enableSorting: false },
-       { name: 'address', enableSorting: false },
-       { name: 'phoneNumber', enableSorting: false },
-       { name: 'isDistributer', enableSorting: false },
-       { name: 'isAdmin', enableSorting: false },
-       { field: '_id', name: '', cellTemplate: 'app/admin/users/user-edit-column.html', width: 34, enableSorting: false},
-       { field: '_id', name: '', cellTemplate: 'app/admin/users/user-delete-column.html', width: 34, enableSorting: false}
+       { name: 'firstName', displayName: 'First Name', enableSorting: false, width:130  },
+       { name: 'lastName', displayName: 'Last Name', enableSorting: false,  width:130  },
+       { name: 'address',  displayName: 'Address', enableSorting: false },
+       { name: 'zip', displayName: 'ZipCode',  enableSorting: false, width:80 },
+       { name: 'email', displayName: 'Email', enableSorting: false, width:250 },
+       { name: 'businessName', displayName: 'Organization', enableSorting: false, width:120 },
+       { name: 'phoneNumber', displayName: 'Phone', enableSorting: false, width:100 },
+       { name: 'createdAt', displayName: 'Created', enableSorting: false, type: 'date', width:110 },
+       { name: 'isDistributer', displayName: 'Distributer?',  enableSorting: false, width:100 },
+       { name: 'isAdmin', displayName: 'Admin?', enableSorting: false, width:80 },
+       { name: 'active', displayName: 'Active?', enableSorting: false, width:80 },
+       { name: 'editColumn', cellTemplate: 'app/admin/users/user-edit-column.html', width: 34, enableSorting: false},
+       { name: 'deleteColumn', cellTemplate: 'app/admin/users/user-delete-column.html', width: 34, enableSorting: false}
      ],
      onRegisterApi: function(gridApi) {
        $scope.gridApi = gridApi;
        gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
          paginationOptions.pageNumber = newPage;
          paginationOptions.pageSize = pageSize;
-         getPage();
+
+         getPage(newPage, pageSize);
        });
      }
    };
 
+   $scope.loadUsers = function ()
+   {
+     getPage(paginationOptions.pageNumber, paginationOptions.pageSize);
+   }
+
    var getPage = function(pageNumber, pageSize) {
-     var url = "/api/users/paged?pageNumber=" + pageNumber + "&pageSize=" + pageSize;
+     $scope.spinnerActive = true;
+     var url = "/api/users/paged/" + pageNumber + "/" + pageSize;
 
      $http.get(url).success(function (data) {
          $scope.gridOptions.totalItems = data.count;
          $scope.gridOptions.data = data.users;
+         $scope.spinnerActive = false;
        });
    };
 
-   $scope.loadUsers = function ()
-   {
-     getPage(1, 25);
-   }
-
-   $scope.addUser = function () {
+   $scope.addUser = function (grid, row) {
      var modalInstance = $uibModal.open({
        templateUrl: 'app/admin/users/admin-edituser-template.html',
        controller: 'AdminEditUserController'
@@ -63,20 +69,33 @@ angular.module('notinphillyServerApp')
                            });
    };
 
-  $scope.editUser = function () {
+  $scope.editUser = function (grid, row) {
     var modalInstance = $uibModal.open({
       templateUrl: 'app/admin/users/admin-edituser-template.html',
-      controller: 'AdminEditUserController'
+      controller: 'AdminEditUserController',
+      resolve: {
+          user: function () {
+              return row.entity;
+          }
+      }
     });
+
+    modalInstance.result.then(function () {
+                            $scope.loadUsers();
+                          },
+                          function () {
+                            $scope.loadUsers();
+                          });
   };
 
   $scope.deleteUser = function (grid, row) {
    var modalInstance = $uibModal.open({
      templateUrl: 'app/admin/users/admin-confirm-template.html',
-     controller: 'AdminConfirmController'
+     controller: 'AdminConfirmController',
+     size: 'sm'
    });
 
-   modalInstance.result.then(function (selectedItem) {
+   modalInstance.result.then(function () {
                            var id = row.entity._id;
                            var url = "/api/users/" + id;
 
@@ -84,10 +103,10 @@ angular.module('notinphillyServerApp')
                              $scope.loadUsers();
                            })
                            .error(function (error) {
-                               console.error('error:', error);
+                               console.error('user deletion error:', error);
                            });
-                         }, function () {
-
+                         },
+                         function () {
                          });
   };
 
