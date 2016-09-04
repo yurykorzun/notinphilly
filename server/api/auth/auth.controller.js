@@ -48,7 +48,7 @@ exports.logout = function (req, res) {
  */
 exports.login = function (req, res, next) {
     if (req.isAuthenticated() && req.user) {
-      return res.json({ _id: req.user._id, email: req.user.email });
+      return res.json(req.user);
     }
 
     res.sendStatus(400, "Logout failed");

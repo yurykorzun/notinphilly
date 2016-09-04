@@ -6,9 +6,10 @@ var settings      = require('../../config/settings');
 var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
 
 exports.index = function(req, res) {
-  UserModel.find({}, '-salt -hashedPassword -_v -authToken -__v')
+  UserModel.find({})
           .populate('state')
           .populate('adoptedStreets')
+          .select('-salt -hashedPassword -_v -authToken -__v')
           .exec(function (err, users) {
             if (err) return res.status(500).send(err);
             res.status(200).json(users);
@@ -21,9 +22,12 @@ exports.getAllPaged = function(req, res) {
   var itemsToSkip = (page - 1) * skip;
 
   UserModel.count({}, function( err, count) {
-      UserModel.find({}, '-salt -hashedPassword -_v -authToken -__v',   {skip:itemsToSkip, limit: skip })
+      UserModel.find({})
+                .skip(itemsToSkip).limit(skip)
                 .populate('state')
                 .populate('adoptedStreets')
+                .select('-salt -hashedPassword -_v -authToken -__v')
+                .sort({ firstName: 'asc', lastName: 'asc' })
                 .exec(function(err, users) {
                       if (err) return res.status(500).send(err);
 
@@ -116,7 +120,6 @@ exports.update = function(req, res) {
   UserModel.findById(userId, function(err, user) {
     if (err) return next(err);
     if (!user) return res.status(401).send('Unauthorized');
-    if (user.active != true) return res.status(401).send('User is not active');
 
     if(req.body.firstName) user.firstName = req.body.firstName;
     if(req.body.lastName) user.lastName = req.body.lastName;
@@ -130,6 +133,20 @@ exports.update = function(req, res) {
     if(req.body.zip) user.zip = req.body.zip;
     if(req.body.streetNumber) user.streetNumber = req.body.streetNumber;
     if(req.body.streetName) user.streetName = req.body.streetName;
+    if(req.body.active != undefined) user.active = req.body.active;
+    if(req.body.isAdmin != undefined)
+    {
+      var hasAdminRole = user.roles.length > 0 && user.roles.indexOf(1) > -1;
+      if(req.body.isAdmin === true && !hasAdminRole)
+      {
+        user.roles.push(1);
+      }
+      else if (req.body.isAdmin === false && hasAdminRole)
+      {
+        var adminIndex = user.roles.indexOf(1);
+        user.roles.splice(adminIndex, 1);
+      }
+    }
 
     user.isDistributer = req.body.isDistributer;
 
@@ -173,7 +190,7 @@ var checkForErrors = function(userInfo) {
 var sendConfirmationEmail = function(req, user) {
   var data = {
     from: 'noreply <noreply@notinphilly.org>',
-    cc: 'notinphilly@gmail.com',
+    //cc: 'notinphilly@gmail.com',
     to: req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
     subject: "NotInPhilly. Confirm registration.",
     text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
@@ -211,9 +228,10 @@ exports.get = function(req, res, next) {
 
     if (!userId) throw new Error('Required userId needs to be set');
 
-    UserModel.findById(userId, '-salt -hashedPassword -_v -authToken -__v')
+    UserModel.findById(userId)
             .populate('state')
             .populate('adoptedStreets')
+            .select('-salt -hashedPassword -_v -authToken -__v')
             .exec(function(err, user) {
                 if (err) return next(err);
                 if (!user) return res.status(401).send('User not found');
@@ -228,7 +246,18 @@ exports.get = function(req, res, next) {
  */
 exports.destroy = function(req, res) {
   var userId = req.params.id;
-  // TODO: actually delete the user with this id
+  if(userId) {
+    UserModel.remove({ _id: userId }, function(err, user) {
+      if (err) {
+        console.log("Error while deleting user " + err);
+        return next(err);
+
+        res.status(500).send('There was an issue. Please try again later');
+      }
+
+      res.status(200).send();
+    });
+  }
 };
 
 /**

@@ -81,7 +81,6 @@
       };
 
       $scope.update = function () {
-        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
         if($scope.user)
         {
           if($scope.addressDetails)
@@ -101,11 +100,9 @@
               SetupCurrentUser();
               // Collapse edit form after updating user
               $scope.userProfile.isEditing = false;
-              $rootScope.$broadcast(APP_EVENTS.SPINNER_END)
             }).error(function(err) {
               // Update user error
               $scope.errorMessage = err;
-              $rootScope.$broadcast(APP_EVENTS.SPINNER_END)
             });
         }
       };

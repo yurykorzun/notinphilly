@@ -176,7 +176,7 @@
 
           return element;
         }
-        
+
         controller.$render = function () {
           var location = controller.$viewValue;
           element.val(location);
