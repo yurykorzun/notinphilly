@@ -1,7 +1,7 @@
 (function () {
   angular.module('notinphillyServerApp')
-  .controller('UserProfileController', [ '$scope', '$http', '$rootScope', '$location', 'sessionService', 'mapService', 'APP_EVENTS',
-    function($scope, $http, $rootScope, $location, sessionService, mapService, APP_EVENTS) {
+  .controller('UserProfileController', [ '$scope', '$http', '$rootScope', '$location', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS',
+    function($scope, $http, $rootScope, $location, placeSearchService, sessionService, mapService, APP_EVENTS) {
       $scope.userProfile = {
         isEditing: false,
         isAdmin: false
@@ -18,6 +18,8 @@
           $scope.userProfile.isAdmin = $rootScope.currentUser.isAdmin;
           $http.get("api/users/current/").success(function(data, status) {
             $scope.user = data;
+
+            if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
             SetupUserStreets();
             $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
           },
@@ -62,6 +64,32 @@
       {
         return $scope.user.adoptedStreets.length > 0
       };
+
+      $scope.showBlock = function() {
+
+        if ($scope.user.addressLocation)
+        {
+          showBlockStreets($scope.user.addressLocation);
+        }
+        else if($scope.user.fullAddress) {
+          placeSearchService.getLocationByText($scope.user.fullAddress)
+                            .then(function(location) {
+                              $scope.user.addressLocation = location;
+                              $scope.update();
+
+                              showBlockStreets(location);
+                            });
+        }
+      };
+
+      var showBlockStreets = function(addressLocation)
+      {
+        mapService.findStreetsNear(addressLocation).then(function(searchResults)
+        {
+          mapService.showStreets(searchResults, addressLocation);
+          $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+        });
+      }
 
       $scope.switchToMap = function() {
         mapService.showStreets($scope.user.adoptedStreets);

@@ -8,11 +8,14 @@
            <div class="heading"><a href="" ng-click="logout()">Log out <i class="fa fa-sign-out"></i></a></div>
         </div>
         <div>
+          <div class="profile-actions">
+            <button class="btn btn-success" ng-show="user.fullAddress || user.addressLocation" ng-click="showBlock()"><i class="fa fa-map-o"></i> Your block</button>
+          </div>
           <div ng-hide="userProfile.isEditing" class="profile-actions">
-            <a href="" ng-click="toggleEdit()">Edit profile <i class="fa fa-pencil"></i></a>
+            <button class="btn btn-primary" ng-click="toggleEdit()"><i class="fa fa-pencil"></i> Edit profile</button>
           </div>
           <div ng-show="userProfile.isAdmin" class="profile-actions">
-            <a href="" ng-click="navigateToAdmin()">Admin <i class="fa fa-gears"></i></a>
+            <button class="btn btn-primary" ng-click="navigateToAdmin()"><i class="fa fa-gears"></i> Admin</button>
           </div>
         </div>
       </div>
@@ -96,7 +99,7 @@
     <div class="row" ng-show="!hasStreets()">
       <div class="col-xs-12">
         <div class="street-list-header">
-          You currently don't participate in any streets. Find your block in the search page.
+          You currently don't participate in any streets. Find <a href="" ng-click="showBlock()">streets in your block</a>.
         </div>
         <streetslist streets="user.adoptedStreets"/>
       </div>
