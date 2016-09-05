@@ -134,6 +134,7 @@ exports.update = function(req, res) {
     if(req.body.streetNumber) user.streetNumber = req.body.streetNumber;
     if(req.body.streetName) user.streetName = req.body.streetName;
     if(req.body.active != undefined) user.active = req.body.active;
+    if(req.body.fullAddress) user.fullAddress = req.body.fullAddress;
     if(req.body.isAdmin != undefined)
     {
       var hasAdminRole = user.roles.length > 0 && user.roles.indexOf(1) > -1;

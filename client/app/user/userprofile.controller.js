@@ -93,6 +93,7 @@
             $scope.user.streetName = address.streetName;
             $scope.user.streetNumber = address.streetNumber;
             $scope.user.addressLocation = address.location;
+            $scope.user.fullAddress = address.fullAddress;
           }
 
           $http.put('/api/users/', $scope.user).
