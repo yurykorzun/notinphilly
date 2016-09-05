@@ -1,6 +1,6 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$anchorScroll', '$location', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $anchorScroll, $location, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
+  .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $cookies, mapService, APP_EVENTS, APP_CONSTS) {
     $scope.searchAddress = {
       streets: [],
       pagedStreets: [],
@@ -42,6 +42,8 @@ angular.module('notinphillyServerApp')
       var addressDetails = $scope.addressDetails;
       if(addressDetails && addressDetails.location)
       {
+        $cookies.putObject(APP_CONSTS.FOUND_STREET, {placeId: addressDetails.placeId, fullAddress: addressDetails.fullAddress});
+
         $scope.searchAddress.location = addressDetails.location;
         mapService.findStreetsNear($scope.searchAddress.location).then(function(searchResults)
         {

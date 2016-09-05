@@ -27,7 +27,7 @@
  *    }
 **/
 (function () {
-  angular.module('notinphillyServerApp').directive('searchAutocomplete', function() {
+  angular.module('notinphillyServerApp').directive('searchAutocomplete', ['placeSearchService', function (placeSearchService)  {
     return {
       require: 'ngModel',
       scope: {
@@ -89,7 +89,7 @@
 
               scope.$apply(function() {
 
-                scope.details = extractAddress(result);
+                scope.details = placeSearchService.parseAddressResult(result);
 
                 controller.$setViewValue(element.val());
               });
@@ -130,7 +130,7 @@
                           controller.$setViewValue(detailsResult.formatted_address);
                           element.val(detailsResult.formatted_address);
 
-                          scope.details = extractAddress(detailsResult);
+                          scope.details = placeSearchService.parseAddressResult(detailsResult);
 
                           //on focusout the value reverts, need to set it again.
                           var watchFocusOut = element.on('focusout', function(event) {
@@ -145,36 +145,6 @@
                 }
               });
           }
-        }
-
-        var extractAddress = function (addressDetails)
-        {
-          var location = {
-            lat: addressDetails.geometry.location.lat(),
-            lng: addressDetails.geometry.location.lng()
-          };
-          var address = {
-            streetNumber: getAddressComponent(addressDetails, 'street_number', 'short'),
-            streetName: getAddressComponent(addressDetails, 'route', 'short'),
-            city: getAddressComponent(addressDetails, 'locality', 'short'),
-            state: getAddressComponent(addressDetails, 'administrative_area_level_1', 'short'),
-            postalCode: getAddressComponent(addressDetails, 'postal_code', 'short'),
-            country: getAddressComponent(addressDetails, 'country', 'short'),
-            location: location
-          };
-
-          return address;
-        }
-
-        function getAddressComponent(address, component, type) {
-          var element = null;
-          angular.forEach(address.address_components, function (address_component) {
-            if (address_component.types[0] == component) {
-              element = (type == 'short') ? address_component.short_name : address_component.long_name;
-            }
-          });
-
-          return element;
         }
 
         controller.$render = function () {
@@ -192,5 +162,5 @@
 
       }
     };
-  });
+   }]);
 })();
