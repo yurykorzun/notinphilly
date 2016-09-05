@@ -2,6 +2,7 @@
   angular.module('notinphillyServerApp')
     .service('placeSearchService', ['$http', '$rootScope', '$q', function($http, $rootScope, $q) {
       var placeService = new google.maps.places.PlacesService(document.createElement('div'));
+      var geoCoderService = new google.maps.Geocoder();
 
       this.getAddressByPlaceId = function(placeId) {
         var deferred = $q.defer();
@@ -13,21 +14,37 @@
         return deferred.promise;
       }
 
+      this.getLocationByText = function(fullAddress) {
+        var deferred = $q.defer();
+        var request = {
+               address: fullAddress
+           };
+
+        geoCoderService.geocode(request, function(geoCodeResults, status) {
+          if(status === "OK" && geoCodeResults && geoCodeResults.length > 0)
+          {
+            var foundAddress = geoCodeResults[0];
+            var location = { lat: foundAddress.geometry.location.lat(), lng: foundAddress.geometry.location.lng() };
+            deferred.resolve(location);
+          }
+        });
+
+        return deferred.promise;
+      }
+
       this.getAddressByText = function(fullAddress) {
         var deferred = $q.defer();
         var request = {
                query: fullAddress
            };
 
-        placeService.textSearch(request, function(textSearchResult, status) {
-          if(status === "OK" && textSearchResult && textSearchResult.length > 0)
-          {
-            var foundAddress = textSearchResult[0];
-            getByPlaceId(foundAddress.place_id).then(function(addressDetails) {
-              deferred.resolve(addressDetails);
-            });
-          }
-        });
+         geoCoderService.geocode(request, function(geoCodeResults, status) {
+           if(status === "OK" && geoCodeResults && geoCodeResults.length > 0)
+           {
+             var foundAddress = geoCodeResults[0];
+             deferred.resolve(foundAddress);
+           }
+         });
 
         return deferred.promise;
       }
