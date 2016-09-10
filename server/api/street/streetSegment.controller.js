@@ -12,31 +12,6 @@ exports.index = function(req, res, next) {
     res.json([]);
 };
 
-function convertStreetsData(user, streetsResult)
-{
-  var geoList = new Array();
-  for(var nIndex = 0, length = streetsResult.length; nIndex < length; nIndex++)
-  {
-    var street = streetsResult[nIndex];
-    var geoItem = street.geodata;
-
-    geoItem.properties = {
-      id: street._id,
-      parentId: street.neighborhood,
-      name: street.streetName,
-      hundred: street.leftHundred === 0 ? (street.rightHundred === 0 ? undefined : street.rightHundred) : street.leftHundred,
-      zipCode: street.zipLeft,
-      type: street.type,
-      totalAdopters: street.totalAdopters,
-      isAdoptedByUser: isStreetAdoptedByUser(user, street),
-      active: street.active
-    };
-    geoList.push(geoItem);
-  }
-
-  return geoList;
-}
-
 exports.get = function(req, res, next) {
     var streetId = req.params.sid;
 
@@ -153,6 +128,76 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
         res.status(200).json(convertedResult);
     });
 };
+
+exports.reconcileAdoptedStreets = function(req, res, next) {
+  UserModel.find({}, function(err, users) {
+    if (err) return next(err);
+
+    var streetAdopterNumbers = {};
+    var streetIds = [];
+    for (var userIndex = 0; userIndex < users.length; userIndex++)
+    {
+      var user = users[userIndex];
+      var adoptedStreetsIds = user.adoptedStreets;
+      if (adoptedStreetsIds)
+      {
+        for (var streetIndex = 0; streetIndex < adoptedStreetsIds.length; streetIndex++ )
+        {
+          var adoptedStreetId = adoptedStreetsIds[streetIndex];
+          streetIds.push( mongoose.Types.ObjectId(adoptedStreetId));
+          if(!streetAdopterNumbers[adoptedStreetId])
+          {
+            streetAdopterNumbers[adoptedStreetId] = 0;
+          }
+
+          streetAdopterNumbers[adoptedStreetId]++;
+        }
+      }
+    }
+
+    StreetModel.update({}, { $set: { totalAdopters : 0 } }, {multi: true}, function(err, streets) {
+      if (err) return next(err);
+
+      for (var property in streetAdopterNumbers) {
+        if (streetAdopterNumbers.hasOwnProperty(property))
+        {
+          StreetModel.update({_id: mongoose.Types.ObjectId(property) }, { $set: { totalAdopters : streetAdopterNumbers[property] } }, {multi: true}, function(err, streets) {
+            if (err) return next(err);
+
+          });
+        }
+      }
+
+      res.status(200).json({ result : streetAdopterNumbers });
+    });
+  });
+}
+
+function convertStreetsData(user, streetsResult)
+{
+  var geoList = new Array();
+  for(var nIndex = 0, length = streetsResult.length; nIndex < length; nIndex++)
+  {
+    var street = streetsResult[nIndex];
+    var geoItem = street.geodata;
+
+    geoItem.properties = {
+      id: street._id,
+      parentId: street.neighborhood,
+      name: street.streetName,
+      hundred: street.leftHundred === 0 ? (street.rightHundred === 0 ? undefined : street.rightHundred) : street.leftHundred,
+      zipCode: street.zipLeft,
+      type: street.type,
+      totalAdopters: street.totalAdopters,
+      isAdoptedByUser: isStreetAdoptedByUser(user, street),
+      active: street.active
+    };
+    geoList.push(geoItem);
+  }
+
+  return geoList;
+}
+
 
 var isStreetAdoptedByUser = function(user, street) {
   if (typeof user.adoptedStreets !== 'undefined' && user.adoptedStreets.indexOf(street._id) == -1 && street.totalAdopters <=5) {
