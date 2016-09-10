@@ -193,7 +193,7 @@ var checkForErrors = function(userInfo) {
 var sendConfirmationEmail = function(req, user) {
   var data = {
     from: 'noreply <noreply@notinphilly.org>',
-    //cc: 'notinphilly@gmail.com',
+    cc: 'notinphilly@gmail.com',
     to: req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
     subject: "NotInPhilly. Confirm registration.",
     text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
