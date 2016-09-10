@@ -1,6 +1,7 @@
 var mongoose      = require('mongoose');
 var UserModel     = require('./user.model');
 var StateModel    = require('../state/state.model');
+var StreetModel   = require('../street/streetSegment.model');
 var uuid          = require('uuid');
 var settings      = require('../../config/settings');
 var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
@@ -248,16 +249,47 @@ exports.get = function(req, res, next) {
  */
 exports.destroy = function(req, res) {
   var userId = req.params.id;
-  if(userId) {
-    UserModel.remove({ _id: userId }, function(err, user) {
-      if (err) {
-        console.log("Error while deleting user " + err);
-        return next(err);
+  if (userId) {
+    UserModel.findById(userId).exec(function(err, user) {
+        if (err) return next(err);
 
-        res.status(500).send('There was an issue. Please try again later');
-      }
+        if (user.adoptedStreets && user.adoptedStreets.length > 0)
+        {
+          StreetModel.find({ _id: { $in: user.adoptedStreets }}, function(err, streets) {
+            if (err) return next(err);
 
-      res.status(200).send();
+            for (var streetIndex = 0; streetIndex < streets.length; streetIndex++ )
+            {
+              var street = streets[streetIndex];
+              if (street.totalAdopters)
+              {
+                street.totalAdopters--;
+              }
+              else {
+                street.totalAdopters = 0;
+              }
+              street.save(function(err, thor) {
+                if (err) {
+                  console.log("Error while deleting user " + err);
+                  return next(err);
+                }
+              });
+            }
+          });
+        }
+
+        UserModel.remove({ _id: user._id }, function(err, user) {
+          if (err) {
+            console.log("Error while deleting user " + err);
+            return next(err);
+
+            res.status(500).send('There was an issue. Please try again later');
+          }
+
+          res.status(200).send();
+        });
+
+        res.json(user);
     });
   }
 };
