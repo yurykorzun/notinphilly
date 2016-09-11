@@ -109,6 +109,8 @@ exports.create = function(req, res, next) {
               streetName: req.body.streetName,
               password: req.body.password,
               isDistributer: req.body.distributer,
+              grabberRequested: false,
+              grabberDelivered: false,
               adoptedStreets: []
           });
           newUser.save(function(err, thor){
@@ -179,6 +181,9 @@ exports.update = function(req, res) {
         user.roles.splice(adminIndex, 1);
       }
     }
+
+    if (req.body.grabberRequested != undefined) user.grabberRequested = req.body.grabberRequested;
+    if (req.body.grabberDelivered != undefined) user.grabberDelivered = req.body.grabberDelivered;
 
     user.isDistributer = req.body.isDistributer;
 

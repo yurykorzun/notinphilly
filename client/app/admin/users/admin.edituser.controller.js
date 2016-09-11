@@ -21,21 +21,6 @@ angular.module('notinphillyServerApp')
       }
     });
 
-    /*var placeService= new google.maps.places.PlacesService(document.createElement('div'));
-    var request = {
-           query: $scope.User.fullAddress
-       };
-
-    placeService.textSearch(request, function(textSearchResult, status) {
-      if(status === "OK" && textSearchResult && textSearchResult.length > 0)
-      {
-        var foundAddress = textSearchResult[0];
-        $scope.User.fullAddress = foundAddress.formatted_address;
-        placeService.getDetails({ placeId: foundAddress.place_id }, function(detailsResult, status) {
-          $scope.addressDetails = detailsResult;
-        });
-      }
-    });*/
     $scope.save = function(){
       if(!$scope.userForm.$invalid)
       {

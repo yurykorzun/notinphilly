@@ -19,6 +19,8 @@ var userSchema = new Schema({
   zip: { type : String, default: '' },
   city: { type : String, default: '' },
   isDistributer: {  type: Boolean, default: false },
+  grabberRequested: {  type: Boolean, default: false },
+  grabberDelivered: {  type: Boolean, default: false },
   state: {
     type: Number,
     ref: 'State'
