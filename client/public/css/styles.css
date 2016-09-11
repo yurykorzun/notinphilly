@@ -12,7 +12,12 @@ body{
     border-bottom: 1px solid #f5f5f5;
 }
 
- .pac-container {
+.site-message {
+  margin-left: 2%;
+  margin-right: 2%;
+}
+
+.pac-container {
     z-index: 1050;
     width: 100%;
 }
