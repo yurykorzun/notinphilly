@@ -21,22 +21,50 @@ exports.index = function(req, res) {
 exports.getAllPaged = function(req, res) {
   var page = req.params.pageNumber;
   var skip = req.params.pageSize;
+  var sortColumn = req.params.sortColumn;
+  var sortDirection = req.params.sortDirection;
+
   var itemsToSkip = (page - 1) * skip;
 
   UserModel.count({}, function( err, count) {
-      UserModel.find({})
-                .skip(itemsToSkip).limit(skip)
-                .populate('state')
-                .populate('adoptedStreets')
-                .select('-salt -hashedPassword -_v -authToken -__v')
-                .sort({ firstName: 'asc', lastName: 'asc' })
-                .exec(function(err, users) {
-                      if (err) return res.status(500).send(err);
+      var query = UserModel.find({})
+                  .skip(itemsToSkip).limit(skip)
+                  .populate('state')
+                  .populate('adoptedStreets')
+                  .select('-salt -hashedPassword -_v -authToken -__v');
 
-                      var data = { users: users, count: count};
-                      res.status(200).json(data);
-                  });
-                });
+      switch(sortColumn)
+      {
+        case "firstName":
+          query = query.sort({ firstName: sortDirection });
+          break;
+        case "lastName":
+          query = query.sort({ lastName: sortDirection });
+          break;
+        case "address":
+          query = query.sort({ streetNumber: sortDirection, streetName: sortDirection, city: sortDirection, state: sortDirection, zip: sortDirection, apartmentNumber: sortDirection});
+          break;
+        case "zip":
+          query = query.sort({ zip: sortDirection });
+          break;
+        case "email":
+          query = query.sort({ email: sortDirection });
+          break;
+        case "createdAt":
+          query = query.sort({ createdAt: sortDirection });
+          break;
+        case "active":
+          query = query.sort({ active: sortDirection });
+          break;
+      }
+
+      query.exec(function(err, users) {
+              if (err) return res.status(500).send(err);
+
+              var data = { users: users, count: count};
+              res.status(200).json(data);
+          });
+  });
 
 };
 
