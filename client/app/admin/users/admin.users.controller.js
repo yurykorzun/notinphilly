@@ -6,7 +6,8 @@ angular.module('notinphillyServerApp')
     var paginationOptions = {
      pageNumber: 1,
      pageSize: 25,
-     sort: null
+     sortColumn: "firstName",
+     sortDirection: "asc"
    };
 
    $scope.gridOptions = {
@@ -14,18 +15,19 @@ angular.module('notinphillyServerApp')
      paginationPageSize: 25,
      useExternalPagination: true,
      useExternalSorting: true,
+     enableColumnMenus: false,
      columnDefs: [
-       { name: 'firstName', displayName: 'First Name', enableSorting: false, width:130  },
-       { name: 'lastName', displayName: 'Last Name', enableSorting: false,  width:130  },
-       { name: 'address',  displayName: 'Address', enableSorting: false },
-       { name: 'zip', displayName: 'ZipCode',  enableSorting: false, width:80 },
-       { name: 'email', displayName: 'Email', enableSorting: false, width:250 },
+       { name: 'firstName', displayName: 'First Name', enableSorting: true, width:130  },
+       { name: 'lastName', displayName: 'Last Name', enableSorting: true,  width:130  },
+       { name: 'address',  displayName: 'Address', enableSorting: true },
+       { name: 'zip', displayName: 'ZipCode',  enableSorting: true, width:80 },
+       { name: 'email', displayName: 'Email', enableSorting: true, width:250 },
        { name: 'businessName', displayName: 'Organization', enableSorting: false, width:120 },
        { name: 'phoneNumber', displayName: 'Phone', enableSorting: false, width:100 },
-       { name: 'createdAt', displayName: 'Created', enableSorting: false, type: 'date', width:110 },
+       { name: 'createdAt', displayName: 'Created', enableSorting: true, type: 'date', width:110 },
        { name: 'isDistributer', displayName: 'Distributer?',  enableSorting: false, width:100 },
        { name: 'isAdmin', displayName: 'Admin?', enableSorting: false, width:80 },
-       { name: 'active', displayName: 'Active?', enableSorting: false, width:80 },
+       { name: 'active', displayName: 'Active?', enableSorting: true, width:80 },
        { name: 'editColumn', cellTemplate: 'app/admin/users/user-edit-column.html', width: 34, enableSorting: false},
        { name: 'deleteColumn', cellTemplate: 'app/admin/users/user-delete-column.html', width: 34, enableSorting: false}
      ],
@@ -37,17 +39,26 @@ angular.module('notinphillyServerApp')
 
          getPage(newPage, pageSize);
        });
+       $scope.gridApi.core.on.sortChanged( $scope, $scope.sortChanged );
      }
    };
 
-   $scope.loadUsers = function ()
+   $scope.refresh = function ()
    {
-     getPage(paginationOptions.pageNumber, paginationOptions.pageSize);
+     paginationOptions.sortColumn = "firstName";
+     paginationOptions.sortDirection = "asc";
+
+     $scope.loadUsers();
    }
 
-   var getPage = function(pageNumber, pageSize) {
+   $scope.loadUsers = function ()
+   {
+     getPage(paginationOptions.pageNumber, paginationOptions.pageSize, paginationOptions.sortColumn, paginationOptions.sortDirection);
+   }
+
+   var getPage = function(pageNumber, pageSize, sortColumn, sortDirection) {
      $scope.spinnerActive = true;
-     var url = "/api/users/paged/" + pageNumber + "/" + pageSize;
+     var url = "/api/users/paged/" + pageNumber + "/" + pageSize + "/" + sortColumn + "/" + sortDirection;
 
      $http.get(url).success(function (data) {
          $scope.gridOptions.totalItems = data.count;
@@ -110,6 +121,21 @@ angular.module('notinphillyServerApp')
                          });
   };
 
-   $scope.loadUsers();
+  $scope.sortChanged = function ( grid, sortColumns ) {
+     if (sortColumns.length === 0)
+     {
+       $scope.refresh();
+     }
+     else
+     {
+       var sortColumn = sortColumns[0];
+       paginationOptions.sortColumn = sortColumn.name;
+       paginationOptions.sortDirection = sortColumn.sort.direction;
+
+       $scope.loadUsers();
+     }
+  };
+
+  $scope.loadUsers();
   }]);
 })();
