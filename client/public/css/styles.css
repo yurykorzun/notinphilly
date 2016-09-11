@@ -65,7 +65,10 @@ body{
 
 .user-profile .edit-form,
 .street-list-header {
+  margin-top: 15px;
   margin-bottom: 15px;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
 }
 
 .user-profile .form-actions {

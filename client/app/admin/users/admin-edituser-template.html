@@ -81,6 +81,18 @@
       </div>
     </div>
     <div class="row">
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="grabberRequested"><input type="checkbox" id="grabberRequested" ng-model="User.grabberRequested">&nbsp;&nbsp;<small>Grabber requested?</small></label>
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="grabberDelivered"><input type="checkbox" id="grabberDelivered" ng-model="User.grabberDelivered">&nbsp;&nbsp;<small>Grabber delivered?</small></label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
       <div class="col-xs-12">
         <div class="form-group">
           <label for="distributeCheckbox"><input type="checkbox" name="distributeCheckbox" id="distributeCheckbox" ng-model="User.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
@@ -102,6 +114,6 @@
   </div>
 </div>
 <div class="modal-footer">
-   <button class="btn btn-primary" type="submit" ng-click="save()">Save</button>
+   <button class="btn btn-primary" type="submit" ng-disabled="!userForm.$dirty || userForm.$invalid" ng-click="save()">Save</button>
    <button class="btn btn-warning" type="button" ng-click="close()">Cancel</button>
 </div>
