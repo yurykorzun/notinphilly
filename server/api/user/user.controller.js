@@ -2,6 +2,7 @@ var mongoose      = require('mongoose');
 var UserModel     = require('./user.model');
 var StateModel    = require('../state/state.model');
 var StreetModel   = require('../street/streetSegment.model');
+var NeighborhoodModel = require('../neighborhood/neighborhood.model');
 var uuid          = require('uuid');
 var settings      = require('../../config/settings');
 var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
@@ -268,11 +269,26 @@ exports.destroy = function(req, res) {
               else {
                 street.totalAdopters = 0;
               }
-              street.save(function(err, thor) {
+              street.save(function(err, savedStreet) {
                 if (err) {
                   console.log("Error while deleting user " + err);
                   return next(err);
                 }
+
+                NeighborhoodModel.findById(savedStreet.neighborhood, function(err, neighborhood) {
+                  if (err) res.status(500).json(err);
+
+                  if(neighborhood.totalAdoptedStreets > 0) {
+                    neighborhood.totalAdoptedStreets -= 1;
+                    neighborhood.percentageAdoptedStreets =  Math.round((neighborhood.totalAdoptedStreets / neighborhood.totalStreets) * 100);
+                  }
+                  else {
+                    neighborhood.percentageAdoptedStreets = 0;
+                  }
+
+                  neighborhood.save(function(err, savedNeighborhood){});
+
+                });
               });
             }
           });
