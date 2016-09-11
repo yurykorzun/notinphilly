@@ -9,7 +9,8 @@
       'ui.mask',
       'ngSanitize',
       'ui.grid',
-      'ui.grid.pagination'
+      'ui.grid.pagination',
+      'ui.grid.resizeColumns'
     ])
 
     app.constant("APP_EVENTS", {
