@@ -4,13 +4,10 @@
       <div class="col-md-2" ng-show="false">
         <button ng-click="addUser()">Add User</button>
       </div>
-      <div class="col-md-2">
-        <button ng-click="refresh()">Refresh</button>
-      </div>
     </div>
     <div class="row">
       <div class="col-md-11 pull-left">
-        <div ui-grid="gridOptions" ui-grid-pagination class="admin-users-grid"></div>
+        <div ui-grid="gridOptions" ui-grid-pagination class="admin-users-grid" ui-grid-resize-columns></div>
       </div>
     </div>
   </treasure-overlay-spinner>

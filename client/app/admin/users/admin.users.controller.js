@@ -16,6 +16,7 @@ angular.module('notinphillyServerApp')
      useExternalPagination: true,
      useExternalSorting: true,
      enableColumnMenus: false,
+     enableColumnResizing: true,
      columnDefs: [
        { name: 'firstName', displayName: 'First Name', enableSorting: true, width:130  },
        { name: 'lastName', displayName: 'Last Name', enableSorting: true,  width:130  },
