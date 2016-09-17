@@ -4,6 +4,9 @@
 </div>
 <div class="modal-body">
   <form name="userForm" ng-show="!isRegisterSuccess" novalidate>
+    <div class="bg-danger" ng-show="errorMessage">
+      {{errorMessage}}
+    </div>
     <div class="row">
       <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.firstName.$invalid && !userForm.firstName.$pristine }]">
         <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
@@ -68,52 +71,67 @@
         <p ng-show="userForm.streetNumber.$invalid && !userForm.streetNumber.$pristine" class="help-block">Street number is required.</p>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xs-6">
-        <div class="form-group">
-          <label for="isAdminCheckbox"><input type="checkbox" id="isAdminCheckbox" ng-model="User.isAdmin">&nbsp;&nbsp;<small>Admin?</small></label>
-        </div>
+    <div class="row" ng-show="!isExistingUser">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.password.$invalid && !userForm.password.$pristine }]">
+          <label for="password" class="control-label">Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input type="password" name="password" ng-model="User.password" class="form-control input-sm" placeholder="Password" ng-required="!isExistingUser">
+          <p ng-show="userForm.password.$invalid && !userForm.password.$pristine" class="help-block">Password is required.</p>
       </div>
-      <div class="col-xs-6">
-        <div class="form-group">
-          <label for="isActiveCheckbox"><input type="checkbox" id="isActiveCheckbox" ng-model="User.active">&nbsp;&nbsp;<small>Active?</small></label>
-        </div>
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-xs-6">
-        <div class="form-group">
-          <label for="grabberRequested"><input type="checkbox" id="grabberRequested" ng-model="User.grabberRequested">&nbsp;&nbsp;<small>Grabber requested?</small></label>
-        </div>
-      </div>
-      <div class="col-xs-6">
-        <div class="form-group">
-          <label for="grabberDelivered"><input type="checkbox" id="grabberDelivered" ng-model="User.grabberDelivered">&nbsp;&nbsp;<small>Grabber delivered?</small></label>
-        </div>
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.passwordConfirm.$invalid && !userForm.passwordConfirm.$pristine }]">
+          <label for="passwordConfirm" class="control-label">Confirm Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input type="password" name="passwordConfirm" ng-model="User.passwordConfirm" class="form-control input-sm" placeholder="Confirm password" ng-required="!isExistingUser" equal="{{User.password}}">
+          <p ng-show="userForm.passwordConfirm.$error.required && !userForm.passwordConfirm.$pristine" class="help-block">Password confirmation is required.</p>
+          <p ng-show="userForm.passwordConfirm.$error.equal && !userForm.passwordConfirm.$pristine" class="help-block">Password must match.</p>
       </div>
     </div>
-    <div class="row">
-      <div class="col-xs-12">
-        <div class="form-group">
-          <label for="distributeCheckbox"><input type="checkbox" name="distributeCheckbox" id="distributeCheckbox" ng-model="User.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+    <div ng-show="isExistingUser">
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label for="isAdminCheckbox"><input type="checkbox" id="isAdminCheckbox" ng-model="User.isAdmin">&nbsp;&nbsp;<small>Admin?</small></label>
+          </div>
+        </div>
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label for="isActiveCheckbox"><input type="checkbox" id="isActiveCheckbox" ng-model="User.active">&nbsp;&nbsp;<small>Active?</small></label>
+          </div>
         </div>
       </div>
-    </div>
-  </form>
-  <div class="row">
-    <div class="col-md-9">
-      Adopted streets: {{User.adoptedStreets.length}}
-    </div>
-  </div>
-  <div ng-repeat="street in User.adoptedStreets">
+      <div class="row">
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label for="grabberRequested"><input type="checkbox" id="grabberRequested" ng-model="User.grabberRequested">&nbsp;&nbsp;<small>Grabber requested?</small></label>
+          </div>
+        </div>
+        <div class="col-xs-6">
+          <div class="form-group">
+            <label for="grabberDelivered"><input type="checkbox" id="grabberDelivered" ng-model="User.grabberDelivered">&nbsp;&nbsp;<small>Grabber delivered?</small></label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="distributeCheckbox"><input type="checkbox" name="distributeCheckbox" id="distributeCheckbox" ng-model="User.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+          </div>
+        </div>
+      </div>
+    </form>
     <div class="row">
       <div class="col-md-9">
-        <p>{{street.leftHundred}} {{street.streetName}} {{street.type}} Zip: {{street.zipLeft}} Participants: {{street.totalAdopters}}</p>
+        Adopted streets: {{User.adoptedStreets.length}}
+      </div>
+    </div>
+    <div ng-repeat="street in User.adoptedStreets">
+      <div class="row">
+        <div class="col-md-9">
+          <p>{{street.leftHundred}} {{street.streetName}} {{street.type}} Zip: {{street.zipLeft}} Participants: {{street.totalAdopters}}</p>
+        </div>
       </div>
     </div>
   </div>
 </div>
 <div class="modal-footer">
-   <button class="btn btn-primary" type="submit" ng-disabled="!userForm.$dirty || userForm.$invalid" ng-click="save()">Save</button>
+   <button class="btn btn-primary" type="submit" ng-disabled="userForm.$invalid" ng-click="save()">Save</button>
    <button class="btn btn-warning" type="button" ng-click="close()">Cancel</button>
 </div>

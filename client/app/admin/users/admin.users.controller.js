@@ -71,7 +71,12 @@ angular.module('notinphillyServerApp')
    $scope.addUser = function (grid, row) {
      var modalInstance = $uibModal.open({
        templateUrl: 'app/admin/users/admin-edituser-template.html',
-       controller: 'AdminEditUserController'
+       controller: 'AdminEditUserController',
+       resolve: {
+           user: function () {
+               return {};
+           }
+         }
      });
 
      modalInstance.result.then(function (selectedItem) {

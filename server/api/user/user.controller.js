@@ -33,29 +33,12 @@ exports.getAllPaged = function(req, res) {
                   .populate('adoptedStreets')
                   .select('-salt -hashedPassword -_v -authToken -__v');
 
-      switch(sortColumn)
+      if (sortColumn == "address")
       {
-        case "firstName":
-          query = query.sort({ firstName: sortDirection });
-          break;
-        case "lastName":
-          query = query.sort({ lastName: sortDirection });
-          break;
-        case "address":
-          query = query.sort({ streetNumber: sortDirection, streetName: sortDirection, city: sortDirection, state: sortDirection, zip: sortDirection, apartmentNumber: sortDirection});
-          break;
-        case "zip":
-          query = query.sort({ zip: sortDirection });
-          break;
-        case "email":
-          query = query.sort({ email: sortDirection });
-          break;
-        case "createdAt":
-          query = query.sort({ createdAt: sortDirection });
-          break;
-        case "active":
-          query = query.sort({ active: sortDirection });
-          break;
+        query = query.sort({ streetNumber: sortDirection, streetName: sortDirection, city: sortDirection, state: sortDirection, zip: sortDirection, apartmentNumber: sortDirection});
+      }
+      else {
+        query = query.sort([[sortColumn, sortDirection === 'asc' ? 1 : -1]]);
       }
 
       query.exec(function(err, users) {
@@ -72,6 +55,8 @@ exports.getAllPaged = function(req, res) {
  * Creates a new user
  */
 exports.create = function(req, res, next) {
+  var sendConfirmationEmail = req.body.confirmationEmailRequired;
+
   UserModel.findOne({email: req.body.email}, function(err, user) {
     if(err) throw err;
 
@@ -119,10 +104,16 @@ exports.create = function(req, res, next) {
                  res.status(500).send('There was an issue. Please try again later');
                }
                else {
-                 UserModel.findOne({email: req.body.email}, function(err, user) {
-                   sendConfirmationEmail(req, user);
-                   res.status(200).send('Successfully Sent Confirmation Email');
-                 });
+                 if (sendConfirmationEmail)
+                 {
+                   UserModel.findOne({email: req.body.email}, function(err, user) {
+                     sendConfirmationEmail(req, user);
+                     res.status(200).send('Successfully Sent Confirmation Email');
+                   });
+                 }
+                 else {
+                   res.status(200).send('Successfully added user');
+                 }
                }
                console.log('Finished adding the user');
              }
