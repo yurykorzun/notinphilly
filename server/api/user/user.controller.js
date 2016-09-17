@@ -55,7 +55,7 @@ exports.getAllPaged = function(req, res) {
  * Creates a new user
  */
 exports.create = function(req, res, next) {
-  var sendConfirmationEmail = req.body.confirmationEmailRequired;
+  var isEmailRequired = req.body.confirmationEmailRequired;
 
   UserModel.findOne({email: req.body.email}, function(err, user) {
     if(err) throw err;
@@ -104,7 +104,7 @@ exports.create = function(req, res, next) {
                  res.status(500).send('There was an issue. Please try again later');
                }
                else {
-                 if (sendConfirmationEmail)
+                 if (isEmailRequired)
                  {
                    UserModel.findOne({email: req.body.email}, function(err, user) {
                      sendConfirmationEmail(req, user);
@@ -215,10 +215,6 @@ exports.changePassword = function(req, res, next) {
   else {
     res.status(403).send('Password change is forbidden');
   }
-};
-
-exports.create = function(req, res, next) {
-    if (err) return next(err);
 };
 
 var checkForErrors = function(userInfo) {
