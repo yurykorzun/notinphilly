@@ -38,7 +38,7 @@ angular.module('notinphillyServerApp')
          paginationOptions.pageNumber = newPage;
          paginationOptions.pageSize = pageSize;
 
-         getPage(newPage, pageSize);
+         getPage(paginationOptions.pageNumber, paginationOptions.pageSize, paginationOptions.sortColumn, paginationOptions.sortDirection);
        });
        $scope.gridApi.core.on.sortChanged( $scope, $scope.sortChanged );
      }
