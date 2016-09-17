@@ -33,29 +33,12 @@ exports.getAllPaged = function(req, res) {
                   .populate('adoptedStreets')
                   .select('-salt -hashedPassword -_v -authToken -__v');
 
-      switch(sortColumn)
+      if (sortColumn == "address")
       {
-        case "firstName":
-          query = query.sort({ firstName: sortDirection });
-          break;
-        case "lastName":
-          query = query.sort({ lastName: sortDirection });
-          break;
-        case "address":
-          query = query.sort({ streetNumber: sortDirection, streetName: sortDirection, city: sortDirection, state: sortDirection, zip: sortDirection, apartmentNumber: sortDirection});
-          break;
-        case "zip":
-          query = query.sort({ zip: sortDirection });
-          break;
-        case "email":
-          query = query.sort({ email: sortDirection });
-          break;
-        case "createdAt":
-          query = query.sort({ createdAt: sortDirection });
-          break;
-        case "active":
-          query = query.sort({ active: sortDirection });
-          break;
+        query = query.sort({ streetNumber: sortDirection, streetName: sortDirection, city: sortDirection, state: sortDirection, zip: sortDirection, apartmentNumber: sortDirection});
+      }
+      else {
+        query = query.sort([[sortColumn, sortDirection === 'asc' ? 1 : -1]]);
       }
 
       query.exec(function(err, users) {
@@ -72,6 +55,8 @@ exports.getAllPaged = function(req, res) {
  * Creates a new user
  */
 exports.create = function(req, res, next) {
+  var sendConfirmationEmail = req.body.confirmationEmailRequired;
+
   UserModel.findOne({email: req.body.email}, function(err, user) {
     if(err) throw err;
 
@@ -119,10 +104,16 @@ exports.create = function(req, res, next) {
                  res.status(500).send('There was an issue. Please try again later');
                }
                else {
-                 UserModel.findOne({email: req.body.email}, function(err, user) {
-                   sendConfirmationEmail(req, user);
-                   res.status(200).send('Successfully Sent Confirmation Email');
-                 });
+                 if (sendConfirmationEmail)
+                 {
+                   UserModel.findOne({email: req.body.email}, function(err, user) {
+                     sendConfirmationEmail(req, user);
+                     res.status(200).send('Successfully Sent Confirmation Email');
+                   });
+                 }
+                 else {
+                   res.status(200).send('Successfully added user');
+                 }
                }
                console.log('Finished adding the user');
              }
@@ -199,6 +190,36 @@ exports.update = function(req, res) {
   });
 };
 
+exports.changePassword = function(req, res, next) {
+  if(req.isAuthenticated() && req.user) {
+    var userId = req.user._id;
+    if (!userId) return res.status(401).send('Unauthorized');
+
+    var oldPass = req.body.oldPassword;
+    var newPass = req.body.newPassword;
+
+    UserModel.findById(userId, function(err, user) {
+        if (user.authenticate(oldPass)) {
+            user.activationHash = uuid.v4();
+            user.password = newPass;
+            user.save(function(err) {
+                if (err) return next(err);
+
+                res.status(200).send('Successfully changed password');
+            });
+        } else {
+            res.status(403).send('Password change failed');
+        }
+    });
+  }
+  else {
+    res.status(403).send('Password change is forbidden');
+  }
+};
+
+exports.create = function(req, res, next) {
+    if (err) return next(err);
+};
 
 var checkForErrors = function(userInfo) {
   if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
@@ -341,29 +362,6 @@ exports.destroy = function(req, res) {
         res.json(user);
     });
   }
-};
-
-/**
- * Change a users password
- */
-exports.changePassword = function(req, res, next) {
-  var confirmId = req.params.confirmId;
-  UserModel.findOne({activationHash: confirmId}, function(err, user){
-    if (err) return next(err);
-    if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
-      user.activationHash = uuid.v4();
-      user.password = req.body.password;
-      user.save(function (err) {
-        if (err) {
-          console.log("Error while saving user" + err);
-        } else {
-          res.statusCode = 302;
-          res.setHeader("Location", "/");
-          res.end();
-          console.log("Password has been changed");
-        }
-      })
-  });
 };
 
 exports.resetPassword = function(req, res) {

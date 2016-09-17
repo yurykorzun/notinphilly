@@ -34,6 +34,7 @@
             $scope.User.fullAddress = address.fullAddress;
           }
 
+          $scope.User.confirmationEmailRequired = true;
           $http.post('/api/users/', $scope.User).
                   success(function(data) {
                       $scope.isRegisterFailed = false;

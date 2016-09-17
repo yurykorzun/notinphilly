@@ -38,7 +38,7 @@ angular.module('notinphillyServerApp')
          paginationOptions.pageNumber = newPage;
          paginationOptions.pageSize = pageSize;
 
-         getPage(newPage, pageSize);
+         getPage(paginationOptions.pageNumber, paginationOptions.pageSize, paginationOptions.sortColumn, paginationOptions.sortDirection);
        });
        $scope.gridApi.core.on.sortChanged( $scope, $scope.sortChanged );
      }
@@ -71,7 +71,12 @@ angular.module('notinphillyServerApp')
    $scope.addUser = function (grid, row) {
      var modalInstance = $uibModal.open({
        templateUrl: 'app/admin/users/admin-edituser-template.html',
-       controller: 'AdminEditUserController'
+       controller: 'AdminEditUserController',
+       resolve: {
+           user: function () {
+               return {};
+           }
+         }
      });
 
      modalInstance.result.then(function (selectedItem) {

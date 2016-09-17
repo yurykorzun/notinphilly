@@ -6,9 +6,12 @@
         isEditing: false,
         isAdmin: false
       };
+      $scope.passwordChange = {
+      };
       $scope.user = {
         adoptedStreets: []
       };
+      $scope.errorMessage = undefined;
 
       function SetupCurrentUser()
       {
@@ -106,9 +109,33 @@
 
       $scope.toggleEdit = function () {
         $scope.userProfile.isEditing = !$scope.userProfile.isEditing;
+        $scope.userProfile.isChangingPassword = false;
+      };
+
+      $scope.toggleChangePassword = function () {
+        $scope.passwordChange = {};
+        $scope.userProfile.isChangingPassword = !$scope.userProfile.isChangingPassword;
+        $scope.userProfile.isEditing = false;
+      };
+
+      $scope.changePassword = function () {
+        $scope.errorMessage = undefined;
+
+        if($scope.passwordChange)
+        {
+          $http.post('/api/users/changePassword/', $scope.passwordChange).
+            success(function(data) {
+              $scope.toggleChangePassword();
+            }).error(function(err) {
+              // Update user error
+              $scope.errorMessage = err;
+            });
+        }
       };
 
       $scope.update = function () {
+        $scope.errorMessage = undefined;
+        
         if($scope.user)
         {
           if($scope.addressDetails)

@@ -2,6 +2,7 @@
 angular.module('notinphillyServerApp')
   .controller('AdminEditUserController', [ '$scope', '$http', '$uibModalInstance', function($scope, $http, $uibModalInstance) {
     $scope.User = $scope.$resolve.user;
+    $scope.isExistingUser = ($scope.User["_id"] != undefined);
 
     if (!$scope.User.fullAddress)
     {
@@ -22,14 +23,28 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.save = function(){
+      $scope.errorMessage = undefined;
+
       if(!$scope.userForm.$invalid)
       {
-        $http.put('/api/users/' + $scope.User._id, $scope.User).
-                success(function(data) {
-                  $uibModalInstance.close();
-                }).error(function(err) {
-
-                });
+        if ($scope.isExistingUser)
+        {
+          $http.put('/api/users/' + $scope.User._id, $scope.User).
+                  success(function(data) {
+                    $uibModalInstance.close();
+                  }).error(function(err) {
+                    $scope.errorMessage = err;
+                  });
+        }
+        else {
+          $scope.User.confirmationEmailRequired = false;
+          $http.post('/api/users/', $scope.User).
+                  success(function(data) {
+                    $uibModalInstance.close();
+                  }).error(function(err) {
+                    $scope.errorMessage = err;
+                  });
+        }
       }
     }
 
