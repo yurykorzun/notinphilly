@@ -7,13 +7,25 @@
     </div>
   </div>
   <div ng-if="isUserAdmin">
-    <div class="row">
-      <div class="col-md-3">
-        <a href=""><h4>Users</h4></a>
+    <div class="row top-menu">
+      <div class="col-xs-6">
+        <div ng-class="['col-xs-2', 'text-center', { 'active-tab': tabs.isUsersActive }, { 'inactive-tab': !tabs.isUsersActive }]">
+          <a href="" ng-click="tabs.showUsers()"><h4>Users</h4></a>
+        </div>
+        <div ng-class="['col-xs-2', 'text-center', { 'active-tab': tabs.isInventoryActive }, { 'inactive-tab': !tabs.isInventoryActive }]">
+          <a href="" ng-click="tabs.showInventory()"><h4>Inventory</h4></a>
+        </div>
       </div>
     </div>
-    <div class="row offset">
-      <div ng-include src="'app/admin/users/admin-users-template.html'"></div>
+    <div class="row offset" ng-show="tabs.isUsersActive">
+      <div class="col-md-12">
+        <div ng-include src="'app/admin/users/admin-users-template.html'"></div>
+      </div>
+    </div
+    <div class="row offset" ng-show="tabs.isInventoryActive">
+      <div class="col-md-12">
+
+      </div>
     </div>
   </div>
 </div>
