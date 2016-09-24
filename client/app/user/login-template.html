@@ -1,11 +1,18 @@
 <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
   <fieldset class="form-group menu-login">
-    <legend>Member Login</legend>
-
     <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">We couldn't log you in. Please check that you entered your email address and password correctly.</div>
 
     <div class="row">
       <div class="col-md-offset-1 col-md-8 col-xs-12 col-sm-offset-3 col-sm-7">
+        <div class="row">
+          <div class="col-md-12"> New members, please <a href="#" ng-click="loginForm.signup()"> Sign up for an account</a></div>
+        </div>
+        <div class="login-or">
+          <hr class="hr-or">
+        </div>
+        <div class="row">
+          <div class="col-md-12"> <h4>Returing members</h4></div>
+        </div>
         <div class="row">
           <div class="col-md-12 form-group">
             <label for="login-email">Email Address</label>
@@ -20,7 +27,7 @@
         </div>
         <div class="row">
           <div class="col-md-12 form-group">
-            <button type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)">Log Me In</button> or <a href="#" ng-click="loginForm.signup()">Sign up for an account</a>
+            <button type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)">Log me in</button>
           </div>
         </div>
       </div>

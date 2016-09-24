@@ -35,7 +35,7 @@ body{
 }
 
 .header-title {
-  color:#939CA0;
+  color:#788387;
   font-size:14px;
 }
 
@@ -68,7 +68,12 @@ body{
 
 .user-profile .profile-actions {
   display: inline-block;
-  margin-right: 12px;
+  margin-right: 5px;
+}
+
+.edit-form
+{
+  margin-left: 5px;
 }
 
 .user-profile .edit-form,
@@ -162,10 +167,7 @@ body{
 }
 
 .faq {
-  width: 80%;
   padding: 5px;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .faq-section
