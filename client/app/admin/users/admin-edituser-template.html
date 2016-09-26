@@ -1,0 +1,107 @@
+<div>
+  <div class="modal-header">
+  </div>
+</div>
+<div class="modal-body">
+  <form name="userForm" ng-show="!isRegisterSuccess" novalidate>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.firstName.$invalid && !userForm.firstName.$pristine }]">
+        <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="firstName" ng-model="User.firstName" ng-class="['form-control', 'input-sm', { 'has-error': userForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
+        <p ng-show="userForm.firstName.$invalid && !userForm.firstName.$pristine" class="help-block">First Name is required.</p>
+      </div>
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.lastName.$invalid && !userForm.lastName.$pristine }]">
+        <label for="lastName" class="control-label">Last Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="lastName" ng-model="User.lastName" ng-class="['form-control', 'input-sm', { 'has-error': userForm.lastName.$error.required }]" placeholder="Last Name" type="text" required="">
+        <p ng-show="userForm.lastName.$invalid && !userForm.lastName.$pristine" class="help-block">Last Name is required.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.email.$invalid && !userForm.email.$pristine }]">
+        <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="email" ng-model="User.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+        <p ng-show="userForm.email.$invalid && !userForm.email.$pristine" class="help-block">Email is required.</p>
+      </div>
+      <div class="col-xs-6 form-group">
+        <label for="phone" class="control-label">Phone Number</label>
+        <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel"/>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12 form-group">
+        <label for="businessName" class="control-label">Business/Organization</label>
+        <input name="businessName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.fullAddress.$invalid && !userForm.fullAddress.$pristine }]">
+        <label for="fullAddress" class="control-label">Full Address (google autocomplete)<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required=""/>
+        <p ng-show="userForm.fullAddress.$invalid && !userForm.fullAddress.$pristine" class="help-block">Address is required.</p>
+      </div>
+      <div class="col-xs-6 form-group">
+        <label for="apartmentNumber" class="control-label">Apartment Number</label>
+        <input name="apartmentNumber" ng-model="User.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+      </div>
+    </div>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.city.$invalid && !userForm.city.$pristine }]">
+        <label for="city" class="control-label">City<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="city" ng-model="User.city" class="form-control input-sm" type="text" required>
+        <p ng-show="userForm.city.$invalid && !userForm.city.$pristine" class="help-block">Address is required.</p>
+      </div>
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.zip.$invalid && !userForm.zip.$pristine }]">
+        <label for="zip" class="control-label">Zip<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="zip" ng-model="User.zip" class="form-control input-sm" type="text" required>
+        <p ng-show="userForm.zip.$invalid && !userForm.zip.$pristine" class="help-block">Zip is required.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.streetName.$invalid && !userForm.streetName.$pristine }]">
+        <label for="streetName" class="control-label">Street name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="streetName" ng-model="User.streetName" class="form-control input-sm" type="text" required>
+        <p ng-show="userForm.streetName.$invalid && !userForm.streetName.$pristine" class="help-block">Street name is required.</p>
+      </div>
+      <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.streetNumber.$invalid && !userForm.streetNumber.$pristine }]">
+        <label for="streetNumber" class="control-label">Street number<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+        <input name="streetNumber" ng-model="User.streetNumber" class="form-control input-sm" type="text" required>
+        <p ng-show="userForm.streetNumber.$invalid && !userForm.streetNumber.$pristine" class="help-block">Street number is required.</p>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="isAdminCheckbox"><input type="checkbox" id="isAdminCheckbox" ng-model="User.isAdmin">&nbsp;&nbsp;<small>Admin?</small></label>
+        </div>
+      </div>
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="isActiveCheckbox"><input type="checkbox" id="isActiveCheckbox" ng-model="User.active">&nbsp;&nbsp;<small>Active?</small></label>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-12">
+        <div class="form-group">
+          <label for="distributeCheckbox"><input type="checkbox" name="distributeCheckbox" id="distributeCheckbox" ng-model="User.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+        </div>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-md-9">
+      Adopted streets: {{User.adoptedStreets.length}}
+    </div>
+  </div>
+  <div ng-repeat="street in User.adoptedStreets">
+    <div class="row">
+      <div class="col-md-9">
+        <p>{{street.leftHundred}} {{street.streetName}} {{street.type}} Zip: {{street.zipLeft}} Participants: {{street.totalAdopters}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+   <button class="btn btn-primary" type="submit" ng-click="save()">Save</button>
+   <button class="btn btn-warning" type="button" ng-click="close()">Cancel</button>
+</div>

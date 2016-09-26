@@ -1,13 +1,19 @@
-var mongoose = require('mongoose');
-var UserModel = require('./user.model');
-var mailer = require('../../components/mailer');
-var uuid = require('uuid');
+var mongoose      = require('mongoose');
+var UserModel     = require('./user.model');
+var StateModel    = require('../state/state.model');
+var uuid          = require('uuid');
+var settings      = require('../../config/settings');
+var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
 
 exports.index = function(req, res) {
-    UserModel.find({}, '-salt -hashedPassword -_v -authToken -__v', function(err, users) {
-        if (err) return res.status(500).send(err);
-        res.status(200).json(users);
-    });
+  UserModel.find({})
+          .populate('state')
+          .populate('adoptedStreets')
+          .select('-salt -hashedPassword -_v -authToken -__v')
+          .exec(function (err, users) {
+            if (err) return res.status(500).send(err);
+            res.status(200).json(users);
+          });
 };
 
 exports.getAllPaged = function(req, res) {
@@ -15,17 +21,20 @@ exports.getAllPaged = function(req, res) {
   var skip = req.params.pageSize;
   var itemsToSkip = (page - 1) * skip;
 
-  UserModel.count({}, function( err, count){
-      UserModel.find({},
-                    '-salt -hashedPassword -_v -authToken -__v',
-                    {skip:itemsToSkip, limit: skip },
-                    function(err, users) {
+  UserModel.count({}, function( err, count) {
+      UserModel.find({})
+                .skip(itemsToSkip).limit(skip)
+                .populate('state')
+                .populate('adoptedStreets')
+                .select('-salt -hashedPassword -_v -authToken -__v')
+                .sort({ firstName: 'asc', lastName: 'asc' })
+                .exec(function(err, users) {
                       if (err) return res.status(500).send(err);
 
                       var data = { users: users, count: count};
                       res.status(200).json(data);
                   });
-  });
+                });
 
 };
 
@@ -36,54 +45,123 @@ exports.create = function(req, res, next) {
   UserModel.findOne({email: req.body.email}, function(err, user) {
     if(err) throw err;
 
-    if(user) {
-      console.log('user already registred');
+    if (user) {
+      console.log('user already registred ' + user._id);
       res.status(409).send('User with this email alreay has an account');
-      return "User already exists";
     }
+    else {
+      errorMessage = checkForErrors(req.body);
+      if (!errorMessage) {
 
-     errorMessage = checkForErrors(req.body);
-     console.log('errorMessage' + errorMessage);
-    if (errorMessage === "false") {
-      UserModel.create(
+      StateModel.findOne({ abbrev: new RegExp('^'+req.body.stateName+'$', "i") }, function(err, foundState) {
+        if(err) throw err;
+
+        if(foundState)
         {
-          firstName: req.body.firstName,
-          middleName: req.body.middleName,
-          lastName: req.body.lastName,
-          birthDate: req.body.birthDate,
-          phoneNumber: req.body.phoneNumber,
-          email: req.body.email,
-          role: [1],
-          businessName: req.body.businessName,
-          houseNumber: req.body.houseNumber,
-          streetName: req.body.streetName,
-          apartmentNumber: req.body.aptNumber,
-          active: true,
-          city: req.body.city,
-          state: req.body.state,
-          zip: req.body.zip,
-          password: req.body.password,
-          isDistributer: req.body.distributer
-        }, function(err, thor){
-          if (err) {
-            console.log(err);
-            res.status(500).send('There was an issue. Please try again later');
-          };
-
-          UserModel.findOne({email: req.body.email}, function(err, user) {
-            //sendConfirmationEmail(req, user);
+          var User = mongoose.model('User', UserModel);
+          var newUser = new User({
+              firstName: req.body.firstName,
+              middleName: req.body.middleName,
+              lastName: req.body.lastName,
+              birthDate: req.body.birthDate,
+              phoneNumber: req.body.phoneNumber,
+              email: req.body.email,
+              roles: [4],
+              businessName: req.body.businessName,
+              fullAddress: req.body.fullAddress,
+              addressLocation: req.body.addressLocation,
+              apartmentNumber: req.body.apartmentNumber,
+              active: false,
+              city: req.body.city,
+              state: foundState._id,
+              zip: req.body.zip,
+              streetNumber: req.body.streetNumber,
+              streetName: req.body.streetName,
+              password: req.body.password,
+              isDistributer: req.body.distributer,
+              adoptedStreets: []
           });
-          console.log('Finished adding the user');
-          res.status(200).send('Successfully Added the user');
+          newUser.save(function(err, thor){
+               if (err) {
+                 console.log(err);
+                 res.status(500).send('There was an issue. Please try again later');
+               }
+               else {
+                 UserModel.findOne({email: req.body.email}, function(err, user) {
+                   sendConfirmationEmail(req, user);
+                   res.status(200).send('Successfully Sent Confirmation Email');
+                 });
+               }
+               console.log('Finished adding the user');
+             }
+           );
         }
-      );
+        else {
+           res.status(500).send('Invalid state code was provided ' + req.body.stateName);
+        }
+      });
 
-      res.status(200).send('Successfully Sent Confirmation Email');
-    } else {
-      res.status(409).send(errorMessage);
+     }
+     else {
+       res.status(409).send(errorMessage);
+     }
     }
   });
 };
+
+exports.update = function(req, res) {
+  var userId = req.body._id.toString();
+  if(!userId)
+  {
+    userId = req.user._id;
+  }
+
+  // Find user based on ID from request
+  UserModel.findById(userId, function(err, user) {
+    if (err) return next(err);
+    if (!user) return res.status(401).send('Unauthorized');
+
+    if(req.body.firstName) user.firstName = req.body.firstName;
+    if(req.body.lastName) user.lastName = req.body.lastName;
+    if(req.body.email) user.email = req.body.email;
+
+    user.phoneNumber = req.body.phoneNumber;
+    user.businessName = req.body.businessName;
+    user.apartmentNumber = req.body.apartmentNumber;
+
+    if(req.body.city) user.city = req.body.city;
+    if(req.body.zip) user.zip = req.body.zip;
+    if(req.body.streetNumber) user.streetNumber = req.body.streetNumber;
+    if(req.body.streetName) user.streetName = req.body.streetName;
+    if(req.body.active != undefined) user.active = req.body.active;
+    if(req.body.isAdmin != undefined)
+    {
+      var hasAdminRole = user.roles.length > 0 && user.roles.indexOf(1) > -1;
+      if(req.body.isAdmin === true && !hasAdminRole)
+      {
+        user.roles.push(1);
+      }
+      else if (req.body.isAdmin === false && hasAdminRole)
+      {
+        var adminIndex = user.roles.indexOf(1);
+        user.roles.splice(adminIndex, 1);
+      }
+    }
+
+    user.isDistributer = req.body.isDistributer;
+
+    user.save(function (err, user) {
+      if (err)
+      {
+        console.err(err);
+        res.status(500).send('There was an issue. Please try again later');
+      }
+      // Successfully updated user
+      res.status(200).send('Your profile was updated Successfully');
+    });
+  });
+};
+
 
 var checkForErrors = function(userInfo) {
   if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
@@ -101,7 +179,7 @@ var checkForErrors = function(userInfo) {
   if (userInfo.password !== userInfo.passwordConfirm) {
     return "Your passwords do not match";
   }
-  return "false";
+  return undefined;
 }
 
 /**
@@ -110,14 +188,37 @@ var checkForErrors = function(userInfo) {
 
 //Use tempaltes instead of TEXT
 var sendConfirmationEmail = function(req, user) {
-  var mailOptions = { from: "noreply <noreply@notinphilly.org>",
-                      to:  req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
-                      subject: "NotInPhilly. Confirm registration.",
-                      text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
-                    };
-  //Send confirmation email
-  mailer.sendMail(mailOptions);
+  var data = {
+    from: 'noreply <noreply@notinphilly.org>',
+    //cc: 'notinphilly@gmail.com',
+    to: req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
+    subject: "NotInPhilly. Confirm registration.",
+    text: "Hi " + req.body.firstName + ", \n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
+  };
+
+  mailgun.messages().send(data, function (error, body) {
+  });
 }
+
+
+/**
+ * Get my info
+ */
+exports.me = function(req, res, next) {
+    var userId = req.user._id;
+
+    if (!userId) throw new Error('Required userId needs to be set');
+
+    UserModel.findById(userId, '-salt -hashedPassword -_v -authToken -__v')
+              .populate('state')
+              .populate('adoptedStreets')
+              .exec(function(err, user) {
+                  if (err) return next(err);
+                  if (!user) return res.status(401).send('Unauthorized');
+                  if (user.active != true) return res.status(401).send('Please activate your user');
+                  res.json(user);
+              });
+};
 
 /**
  * Get a single user
@@ -127,12 +228,16 @@ exports.get = function(req, res, next) {
 
     if (!userId) throw new Error('Required userId needs to be set');
 
-    UserModel.findById(userId, function(err, user) {
-        if (err) return next(err);
-        if (!user) return res.status(401).send('Incorrect username or password');
-        if (user.active === false) return res.status(401).send('Please confirm the user. Check your email.');
-        res.json(user);
-    });
+    UserModel.findById(userId)
+            .populate('state')
+            .populate('adoptedStreets')
+            .select('-salt -hashedPassword -_v -authToken -__v')
+            .exec(function(err, user) {
+                if (err) return next(err);
+                if (!user) return res.status(401).send('User not found');
+                if (user.active === false) return res.status(401).send('Please confirm the user. Check your email.');
+                res.json(user);
+            });
 };
 
 /**
@@ -140,7 +245,19 @@ exports.get = function(req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function(req, res) {
+  var userId = req.params.id;
+  if(userId) {
+    UserModel.remove({ _id: userId }, function(err, user) {
+      if (err) {
+        console.log("Error while deleting user " + err);
+        return next(err);
 
+        res.status(500).send('There was an issue. Please try again later');
+      }
+
+      res.status(200).send();
+    });
+  }
 };
 
 /**
@@ -166,43 +283,21 @@ exports.changePassword = function(req, res, next) {
   });
 };
 
-
-/**
- * Get my info
- */
-exports.me = function(req, res, next) {
-    var userId = req.user._id;
-
-    if (!userId) throw new Error('Required userId needs to be set');
-
-    UserModel.findOne({_id: userId}, '-salt -hashedPassword -__v', function(err, user) { // don't ever give out the password or salt
-        if (err) return next(err);
-        if (!user) return res.status(401).send('Unauthorized');
-        if (user.active != true) return res.status(401).send('Please activate your user');
-        res.json(user);
-    });
-};
-
-exports.update = function(req, res) {
-
-};
-
 exports.resetPassword = function(req, res) {
     var confirmId = req.params.activationId;
     var password = req.params.password;
     var confirmPassword = req.params.confirmPassword;
-    
+
     if (password == confirmPassword) {
        UserModel.findOne({activationHash: confirmId}, function(err, user){
            if (err) return next(err);
            if (!user) return res.status(401).send('Could not find the user with activation Tag' + req.param.confirmId);
-            
        });
     } else {
-        
+
     }
 }
- 
+
 exports.activate = function(req, res) {
   var confirmId = req.params.activationId;
   UserModel.findOne({activationHash: confirmId}, function(err, user){
@@ -220,11 +315,4 @@ exports.activate = function(req, res) {
         }
       })
   });
-};
-
-/**
- * Authentication callback
- */
-exports.authCallback = function(req, res, next) {
-    res.redirect('/');
 };

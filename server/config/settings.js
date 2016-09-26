@@ -1,10 +1,9 @@
 module.exports.serverSettings = {
-  EMAIL_TRASPORT_URL: (process.env.OS_EMAIL_ADDR && process.env.OS_EMAIL_PASSWD) ?
-                                      "smtps://" + process.env.OS_EMAIL_ADDR +':'+ process.env.OS_EMAIL_PASSWD + '@host244.hostmonster.com' :
-                                      "smtps://notinphilly%40antsdesigns.net:Test123!@host244.hostmonster.com",
+  EMAIL_API_KEY: 'key-34e81d2e85be02da39a91933b7907c01',
+  EMAIL_DOMAIN: 'mail.notinphilly.org',
   HTTP_IP: process.env.OPENSHIFT_NODEJS_IP || "0.0.0.0",
   HTTP_PORT: process.env.PORT || process.env.OPENSHIFT_NODEJS_PORT || 8080,
-  DB_CONNECTION_STRING: process.env.OPENSHIFT_MONGODB_DB_URL || process.env.AWS_MONGO_DB_URL || "mongodb://localhost/notinphilly"
+  DB_CONNECTION_STRING: process.env.OPENSHIFT_MONGODB_DB_URL + process.env.OPENSHIFT_APP_NAME || process.env.AWS_MONGO_DB_URL || "mongodb://localhost/notinphilly"
 };
 
 module.exports.clientSettings = {

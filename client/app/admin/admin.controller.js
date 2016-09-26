@@ -1,6 +1,6 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('AdminController', [ '$scope', 'sessionService', function($scope, sessionService) {
+  .controller('AdminController', [ '$scope', 'sessionService', '$uibModal', function($scope, sessionService, $uibModal) {
     sessionService.checkLoggedin()
                   .then(function() {
                     $scope.isUserAdmin = sessionService.isAdmin();
@@ -8,6 +8,5 @@ angular.module('notinphillyServerApp')
                   function() {
                     $scope.isUserAdmin = false;
                   });
-
   }]);
 })();

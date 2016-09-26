@@ -1,83 +1,77 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('mainController', [ '$scope', '$http', '$rootScope', '$uibModal', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $uibModal, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
-
-    $scope.bugTooltip = false;
-
-    $scope.sideMenu = {
+  .controller('mainController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS',
+                              function($scope, $http, $rootScope, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
+    $scope.main = {
       isUserProfileVisible: false,
-      isUserProfileOpen: false,
       isLoginVisible: false,
-      isLoginOpen: false,
-      spinnerActive: false,
-      onMapReturn: function() {
-        $rootScope.$broadcast(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL);
-        mapService.setNeighborhoodLayers();
-      },
-      mapZoomIn: function() {
-        mapService.zoomIn(1);
-      },
-      mapZoomOut: function() {
-        mapService.zoomOut(1);
+      activeTabIndex: 0,
+      spinnerActive: false
+    };
+
+    function ShowUserProfile(isActive) {
+      $scope.main.isUserProfileVisible = true;
+      if(isActive)
+      {
+        $scope.main.activeTabIndex = 2;
       }
-  };
-
-  var foundStreet = $cookies.get(APP_CONSTS.FOUND_STREET);
-  if (!foundStreet) {
-    var modalInstance = $uibModal.open({
-                          templateUrl: 'app/main/start-popup-template.html',
-                          controller: 'StartPopupController',
-                          resolve: {}
-                        });
-  }
-
-
-    function ShowUserProfile() {
-      $scope.sideMenu.isUserProfileVisible = true;
-      $scope.sideMenu.isUserProfileOpen = true;
-      $scope.sideMenu.isLoginVisible = false;
-      $scope.sideMenu.isLoginOpen = false;
+      $scope.main.isLoginVisible = false;
     }
 
-    function ShowLoginForm() {
-      $scope.sideMenu.isUserProfileVisible = false;
-      $scope.sideMenu.isUserProfileOpen = false;
-      $scope.sideMenu.isLoginVisible = true;
+    function ShowLoginForm(isActive) {
+      $scope.main.isUserProfileVisible = false;
+      $scope.main.isLoginVisible = true;
+      if(isActive)
+      {
+        $scope.main.activeTabIndex = 3;
+      }
     }
 
-    $scope.sideMenu.spinnerActive = true;
+    $scope.spinnerActive = true;
     $scope.$on(APP_EVENTS.SPINNER_START, function(event) {
-      $scope.sideMenu.spinnerActive = true;
+      $scope.main.spinnerActive = true;
     });
     $scope.$on(APP_EVENTS.SPINNER_END, function(event) {
-      $scope.sideMenu.spinnerActive = false;
+      $scope.main.spinnerActive = false;
     });
     $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
-      ShowUserProfile();
+      ShowUserProfile(true);
     });
     $scope.$on(APP_EVENTS.LOGIN_FAILED, function(event) {
-      ShowLoginForm();
+      ShowLoginForm(true);
     });
     $scope.$on(APP_EVENTS.LOGOUT, function(event) {
-      ShowLoginForm();
+      ShowLoginForm(true);
     });
-    $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event) {
-      $scope.bugTooltip = true;
+    $scope.$on(APP_EVENTS.OPEN_SEARCH, function(event) {
+      $scope.main.activeTabIndex = 0;
     });
-    $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event) {
-      $scope.bugTooltip = false;
+    $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
+      $scope.main.activeTabIndex = 1;
     });
+
+    $scope.main.onSearchSelect = function() {
+      $rootScope.$broadcast(APP_EVENTS.OPENED_SEARCH);
+    }
+
+    $scope.main.onExploreSelect = function() {
+      $rootScope.$broadcast(APP_EVENTS.OPENED_EXPLORE);
+    }
+
+    $scope.main.onExploreLeave = function() {
+      $rootScope.$broadcast(APP_EVENTS.CLOSED_EXPLORE);
+    }
 
     sessionService.checkLoggedin()
                   .then(function() {
                     ShowUserProfile();
-                    $scope.sideMenu.spinnerActive = false;
                     $rootScope.$broadcast(APP_EVENTS.LOGIN_SUCCESS);
+                    $scope.main.spinnerActive = false;
                   },
                   function() {
-                    $scope.sideMenu.spinnerActive = false;
-                    $rootScope.$broadcast(APP_EVENTS.LOGOUT);
+                    $scope.main.isSearchOpen = true;
+                    ShowLoginForm(false);
+                    $scope.main.spinnerActive = false;
                   });
-
   }]);
 })();
