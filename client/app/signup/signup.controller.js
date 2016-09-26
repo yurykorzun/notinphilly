@@ -1,13 +1,22 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('SignupController', [ '$scope', '$location', '$http', "$uibModalInstance", function($scope, $location, $http, $uibModalInstance) {
+    .controller('SignupController', [ '$scope', '$location', '$http', '$cookies', '$uibModalInstance', 'placeSearchService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $location, $http, $cookies, $uibModalInstance, placeSearchService, APP_EVENTS, APP_CONSTS) {
       $scope.addressOptions = { country: 'us'};
       $scope.User = {};
       $scope.addressDetails = undefined;
 
-      $scope.$watch(function() { return $scope.addressDetails; }, function(searchDetails) {
+      var foundStreet = $cookies.getObject(APP_CONSTS.FOUND_STREET);
+      if (foundStreet && foundStreet.placeId)
+      {
+        placeSearchService.getAddressByPlaceId(foundStreet.placeId).then(function (addressDetails) {
+          $scope.User.fullAddress = foundStreet.fullAddress;
+          $scope.addressDetails = addressDetails;
+        });
+      }
 
-      });
+      /*$scope.$watch(function() { return $scope.addressDetails; }, function(searchDetails) {
+
+      });*/
 
       $scope.register = function(){
         if(!$scope.signinForm.$invalid)
@@ -22,8 +31,10 @@
             $scope.User.streetName = address.streetName;
             $scope.User.streetNumber = address.streetNumber;
             $scope.User.addressLocation = address.location;
+            $scope.User.fullAddress = address.fullAddress;
           }
 
+          $scope.User.confirmationEmailRequired = true;
           $http.post('/api/users/', $scope.User).
                   success(function(data) {
                       $scope.isRegisterFailed = false;
