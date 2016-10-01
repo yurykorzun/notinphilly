@@ -1,7 +1,7 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('mainController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS',
-                              function($scope, $http, $rootScope, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
+  .controller('mainController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', '$window', '$location', '$anchorScroll',
+                              function($scope, $http, $rootScope, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS, $window, $location, $anchorScroll) {
     $scope.main = {
       isUserProfileVisible: false,
       isLoginVisible: false,
@@ -60,6 +60,38 @@ angular.module('notinphillyServerApp')
 
     $scope.main.onExploreLeave = function() {
       $rootScope.$broadcast(APP_EVENTS.CLOSED_EXPLORE);
+    }
+
+    $scope.main.topNav = function(tabIndex) {
+
+      switch (tabIndex){
+          case 0: // Search
+            $scope.main.activeTabIndex = 0;
+            $scope.main.onSearchSelect();
+          break;
+          case 1: // Explore
+            $scope.main.activeTabIndex = 1;
+            $scope.main.onExploreSelect();
+          break;
+          case 2: // Login
+            ShowLoginForm(true);
+          break;
+          case 3: // Account
+            ShowUserProfile(true);
+          break;
+          case 4: // About
+            $scope.main.activeTabIndex = 4;
+          break;
+          default: $scope.main.activeTabIndex = 0;
+      }
+
+      // Jump down to the tab area
+      $scope.main.goToTab();
+    }
+
+    $scope.main.goToTab = function() {
+      $anchorScroll.yOffset = 40;
+      $anchorScroll('bodyContent');
     }
 
     sessionService.checkLoggedin()

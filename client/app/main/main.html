@@ -2,38 +2,40 @@
   <div class="header container-fluid homepage-hero">
     <div class="container padding-y--small">
       <div class="row">
-        <div class="col-sm-2">
+        <div class="col-xs-6 col-xs-offset-3 col-sm-3 col-sm-offset-0 col-md-2">
           <a href="/" class="main-logo"><img ng-src="/public/img/logo-not-in-philly.png" alt="Description" class="img-responsive" /></a>
         </div>
         <div class="col-sm-9 pull-right main-nav">
-          <a href="#">Find My Block</a>
-          <a href="#">Explore the Map</a>
-          <a href="#">Member Login</a>
-          <a href="#">About Us</a>
-          <a href="#">Donate</a>
+          <a href="#bodyContent" ng-click="main.topNav(0)">Find My Block</a>
+          <a href="#bodyContent" ng-click="main.topNav(1)">Explore the Map</a>
+          <a href="#bodyContent" ng-click="main.topNav(2)" disable="!main.isLoginVisible" ng-show="main.isLoginVisible">Member Login</a>
+          <a href="#bodyContent" ng-click="main.topNav(3)" disable="!main.isUserProfileVisible" ng-show="main.isUserProfileVisible">My Account</a>
+          <a href="#bodyContent" ng-click="main.topNav(4)">About Us</a>
+          <a href="http://prc.org/donate/">Donate</a>
         </div>
       </div>
       <!-- Hero -->
-      <div class="row">
-        <div class="col-md-9 padding-y--large">
+      <div class="row main-hero">
+        <div class="introduction col-md-8 col-md-offset-2 padding-y--large">
           <div class="center-block">
-            <div class="header-title">
+            <div class="header-title text-center">
               <h2 class="headline-l text-white">Litter? <span class="text-yellow">Not in Philly!</span></h2>
               <p class="text-white">Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
             </div>
-            <div class="cta-btns">
-              <a href="#" class="btn bg-yellow">Learn More</a>
-              <a href="#" class="btn bg-blue">Find My Block</a>
+            <div class="cta-btns text-center padding-top--small">
+              <a href="#" class="btn bg-yellow" ng-click="main.topNav(4)">Learn More</a>
+              <a href="#" class="btn bg-blue" ng-click="main.topNav(0)">Find My Block</a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+<!-- Possibly replace Tab format with Slide Format? -->
   <div class="main-block">
     <div class="container-fluid padding-y--large">
       <div class="container">
-        <div class="row tab-contents">
+        <div id="bodyContent" class="row tab-contents">
           <uib-tabset active="main.activeTabIndex">
           <uib-tab index="0" heading="Search" select="main.onSearchSelect()">
           <div class="col-md-12 tab-inner">
@@ -88,50 +90,51 @@
       </div>
     </div>
   </div>
+  <!--// main-block -->
 </treasure-overlay-spinner>
 <!-- PARTNERS -->
 <div class="partners container-fluid bg-gray">
   <div class="container padding-y--large">
     <div class="row">
       <div class="padding-bottom">
-        <h3 class="text-center">Meet our partners:</h3>
+        <h3 class="headline-m text-center">Meet our partners:</h3>
       </div>
     </div>
     <div class="row row-buffer">
       <div class="col-sm-4">
-        <a href="http://prc.org" class="partner-logo img-responsive center-block">
+        <a href="http://prc.org" target="_blank" class="partner-logo img-responsive center-block">
           <img src="public/img/PRC-LOGO.jpg">
         </a>
       </div>
       <div class="col-sm-4">
-        <a href="http://codeforphilly.org" class="partner-logo">
+        <a href="http://codeforphilly.org" target="_blank" class="partner-logo">
           <img src="public/img/partner-cfp.png" class="tall-logo">
         </a>
       </div>
       <div class="col-sm-4">
-        <a href="http://thinkbrownstone.com" class="partner-logo img-responsive center-block">
+        <a href="http://thinkbrownstone.com" target="_blank" class="partner-logo img-responsive center-block">
           <img src="public/img/partner-thinkbrownstone.png">
         </a>
       </div>
     </div>
   </div>
 </div>
-<div class="footer padding-y bg-black-70">
+<div class="footer padding-y bg-black-90">
   <div class="container">
     <div class="row">
-      <div class="footer-logo col-sm-4">
-      <h3 class="headline-s text-white"><span class="text-yellow">Not</span> In Philly</h3>
+      <div class="footer-logo padding-y--small col-sm-4">
+        <h3 class="headline-s text-white"><span class="text-yellow">Not</span> In Philly</h3>
       </div>
-      <div class="social-icons col-sm-4">
+      <div class="social-icons padding-y--small col-sm-4">
         <a href="https://www.facebook.com/groups/1625723617652503/"><i class="fa fa-2x fa-facebook square-2 rounded-1"></i></a>
         <a href="https://www.instagram.com/notinphilly/"><i class="fa fa-2x fa-instagram square-2 rounded-1"></i></a>
         <a href="https://twitter.com/NotinPhilly"><i class="fa fa-2x fa-twitter square-2 rounded-1"></i></a>
       </div>
-      <div class="text-right pull-right col-sm-4">
-        <a href="mailto:notinphilly@gmail.com" class="text-white headline-s text-right">notinphilly@gmail.com</a>
+      <div class="footer-contact padding-y--small col-sm-4">
+        <a href="mailto:notinphilly@gmail.com" class="footer-contact headline-s text-right">notinphilly@gmail.com</a>
       </div>
     </div>
   </div>
-  </div>
-  <footer>
-    </foot>
+</div>
+<footer>
+  </foot>
