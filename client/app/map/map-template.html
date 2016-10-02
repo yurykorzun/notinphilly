@@ -1,14 +1,16 @@
-<div ng-controller="MapController">
-  <!--Leaflet map of Philadelphia with layers-->
-  <div class="row">
-    <div class="col-md-3">
+<div ng-controller="MapController" class="padding-top--large padding-bottom--small">
+  <div class="container">
+    <!--Leaflet map of Philadelphia with layers-->
+    <div class="row">
+      <div class="text-center">
+        <h3 class="headline-m">Explore the Map</h3>
+        <p>Double-click/tap to zoom, pinch to zoom in and out, click/tap to view a neighborhood.</p>
+      </div>
     </div>
-    <div class="col-md-5">
-      <p class="bg-warning"><i class="fa fa-info-circle center-block"></i>Explore the map by clicking on neighborhoods and streets</p>
+    <div class="row padding-top">
+      <div class="col-xs-12">
+        <leaflet id="cityMap" width="100%"></leaflet>
+      </div>
     </div>
   </div>
-  <div>
-    <leaflet id="cityMap" width="100%"></leaflet>
-  </div>
-
 </div>

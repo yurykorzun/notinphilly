@@ -90,7 +90,7 @@ angular.module('notinphillyServerApp')
     }
 
     $scope.main.goToTab = function() {
-      $anchorScroll.yOffset = 40;
+      $anchorScroll.yOffset = 60;
       $anchorScroll('bodyContent');
     }
 

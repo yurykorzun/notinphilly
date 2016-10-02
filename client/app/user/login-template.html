@@ -1,10 +1,23 @@
 <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
+<div class="padding-y--large">
   <div class="form-group menu-login">
     <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Login failed. Please check your username or password.</div>
+
+    <h3 class="headline-m">Member Login</h3>
+
+<div class="padding-y--small">
     <label>Email</label>
     <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
+</div>
+<div class="padding-y--small">
     <label>Password</label>
     <input type="password" class="form-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input><br/>
-    <input type="submit" class="btn btn-default" ng-click="loginForm.login(loginForm)" value="Login"/> Or <a href="" ng-click="loginForm.signup()">Sign up</a>
+</div>
+<div class="actions">
+    <input type="submit" class="btn btn--yellow margin-none" ng-click="loginForm.login(loginForm)" value="Login"/>
+    <span class="padding-x--small">Or</span>
+    <a href="" ng-click="loginForm.signup()" class="btn btn--blue">Sign up</a>
+</div>
   </div>
+</div>
 </ng-form>

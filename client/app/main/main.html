@@ -1,19 +1,23 @@
 <treasure-overlay-spinner active='main.spinnerActive'>
+  <div class="sticky-header padding-y--small">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-2 col-md-2">
+        <a href="/" class="main-logo"><img ng-src="/public/img/logo-not-in-philly.png" alt="Description" class="img-responsive" /></a>
+      </div>
+      <div class="col-sm-10 text-center main-nav">
+        <a href="#bodyContent" ng-click="main.topNav(0)">Find My Block</a>
+        <a href="#bodyContent" ng-click="main.topNav(1)">Explore the Map</a>
+        <a href="#bodyContent" ng-click="main.topNav(2)" disable="!main.isLoginVisible" ng-show="main.isLoginVisible">Member Login</a>
+        <a href="#bodyContent" ng-click="main.topNav(3)" disable="!main.isUserProfileVisible" ng-show="main.isUserProfileVisible">My Account</a>
+        <a href="#bodyContent" ng-click="main.topNav(4)">About Us</a>
+        <a href="http://prc.org/donate/">Donate</a>
+      </div>
+    </div>
+    </div>
+  </div>
   <div class="header container-fluid homepage-hero">
     <div class="container padding-y--small">
-      <div class="row">
-        <div class="col-xs-6 col-xs-offset-3 col-sm-3 col-sm-offset-0 col-md-2">
-          <a href="/" class="main-logo"><img ng-src="/public/img/logo-not-in-philly.png" alt="Description" class="img-responsive" /></a>
-        </div>
-        <div class="col-sm-9 pull-right main-nav">
-          <a href="#bodyContent" ng-click="main.topNav(0)">Find My Block</a>
-          <a href="#bodyContent" ng-click="main.topNav(1)">Explore the Map</a>
-          <a href="#bodyContent" ng-click="main.topNav(2)" disable="!main.isLoginVisible" ng-show="main.isLoginVisible">Member Login</a>
-          <a href="#bodyContent" ng-click="main.topNav(3)" disable="!main.isUserProfileVisible" ng-show="main.isUserProfileVisible">My Account</a>
-          <a href="#bodyContent" ng-click="main.topNav(4)">About Us</a>
-          <a href="http://prc.org/donate/">Donate</a>
-        </div>
-      </div>
       <!-- Hero -->
       <div class="row main-hero">
         <div class="introduction col-md-8 col-md-offset-2 padding-y--large">
@@ -23,15 +27,14 @@
               <p class="text-white">Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
             </div>
             <div class="cta-btns text-center padding-top--small">
-              <a href="#" class="btn bg-yellow" ng-click="main.topNav(4)">Learn More</a>
-              <a href="#" class="btn bg-blue" ng-click="main.topNav(0)">Find My Block</a>
+              <a href="#" class="btn btn--yellow" ng-click="main.topNav(4)">Learn More</a>
+              <a href="#" class="btn btn--blue text-black" ng-click="main.topNav(0)">Find My Block</a>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-<!-- Possibly replace Tab format with Slide Format? -->
   <div class="main-block">
     <div class="container-fluid padding-y--large">
       <div class="container">
@@ -39,12 +42,7 @@
           <uib-tabset active="main.activeTabIndex">
           <uib-tab index="0" heading="Search" select="main.onSearchSelect()">
           <div class="col-md-12 tab-inner">
-            <div class="row">
-              <div class="col-md-3"></div>
-              <div class="col-md-6">
                 <div ng-include src="'app/search/searchaddress-template.html'"></div>
-              </div>
-            </div>
           </div>
           </uib-tab>
           <uib-tab index="1" heading="Map" select="main.onExploreSelect()" deselect="main.onExploreLeave()">
@@ -78,7 +76,7 @@
           </uib-tab>
           <uib-tab index="4" heading="About us">
           <div class="container">
-            <div class="row tab-contents">
+            <div class="row tab-contents tab-inner">
               <div class="col-md-10">
                 <div ng-include src="'app/faq/faq-template.html'"></div>
               </div>
@@ -100,19 +98,19 @@
         <h3 class="headline-m text-center">Meet our partners:</h3>
       </div>
     </div>
-    <div class="row row-buffer">
+    <div class="row">
       <div class="col-sm-4">
-        <a href="http://prc.org" target="_blank" class="partner-logo img-responsive center-block">
+        <a href="http://prc.org" target="_blank" class="partner-logo img-responsive center-block margin-y--small">
           <img src="public/img/PRC-LOGO.jpg">
         </a>
       </div>
       <div class="col-sm-4">
-        <a href="http://codeforphilly.org" target="_blank" class="partner-logo">
+        <a href="http://codeforphilly.org" target="_blank" class="partner-logo partner-logo--tall margin-y--small">
           <img src="public/img/partner-cfp.png" class="tall-logo">
         </a>
       </div>
       <div class="col-sm-4">
-        <a href="http://thinkbrownstone.com" target="_blank" class="partner-logo img-responsive center-block">
+        <a href="http://thinkbrownstone.com" target="_blank" class="partner-logo partner-logo--tall img-responsive center-block margin-y--small">
           <img src="public/img/partner-thinkbrownstone.png">
         </a>
       </div>

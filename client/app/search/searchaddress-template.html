@@ -1,16 +1,16 @@
-<div ng-controller="searchAddressController">
-  <div>
-    <div class="col-md-12">
-      <h4>Welcome to notinphilly.org!</h4>
+<div ng-controller="searchAddressController" class="padding-y--large">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2 text-center">
+      <h3 class="headline-m">Welcome to notinphilly.org!</h3>
       <p>Let's begin with finding your block and participating streets nearby:</p>
     </div>
   </div>
-  <div class="row">
-    <div class="address-search-form">
-      <div class="input-group col-md-12">
-        <div ng-show="hasAddress()" class="input-group-addon" ng-click="findStreet()"><i class="fa fa-search"></i></div>
+  <div class="row padding-top">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="input-group">
         <input id="address-search" search-autocomplete ng-model="autocomplete" options="options" details="details" type="text" class="form-control input-lg" placeholder="Enter your address..." />
         <div ng-show="hasAddress()" class="input-group-addon" ng-click="clearSearch()"><i class="fa fa-close"></i></div>
+        <div class="input-group-addon btn btn--blue" ng-click="findStreet()">Go!</div>
       </div>
     </div>
   </div>
@@ -30,7 +30,7 @@
            </div>
            <div class="col-md-7">
              <a class="btn bth-sm btn-default btn-block" href="" ng-click="loadMore()">
-               Load more>>
+               Load more &raquo;
              </a>
            </div>
        </div>
