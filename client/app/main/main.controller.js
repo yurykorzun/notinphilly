@@ -4,7 +4,7 @@ angular.module('notinphillyServerApp')
                               function($scope, $http, $rootScope, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS, $window, $location, $anchorScroll) {
     $scope.main = {
       isUserProfileVisible: false,
-      isLoginVisible: false,
+      isLoginVisible: true,
       activeTabIndex: 0,
       spinnerActive: false
     };
@@ -90,9 +90,22 @@ angular.module('notinphillyServerApp')
     }
 
     $scope.main.goToTab = function() {
-      $anchorScroll.yOffset = 60;
+      $anchorScroll.yOffset = 80;
       $anchorScroll('bodyContent');
+      console.log($window.pageYOffset);
     }
+
+    // Toggle class for sticky nav on scroll
+    angular.element($window).bind("scroll", function() {
+      var mainNav = angular.element( document.querySelector( '#mainNav' ) );
+      var offset = $window.pageYOffset;
+        
+      if (offset >= 10) {
+        mainNav.addClass('is-sticky');
+      } else {
+        mainNav.removeClass('is-sticky');
+      }
+    });
 
     sessionService.checkLoggedin()
                   .then(function() {

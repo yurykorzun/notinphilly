@@ -10,6 +10,8 @@ html, body {
   font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;
 }
 
+body * { transition: all 500ms; }
+
 h1,h2,h3,h4,h5,h6 { 
   font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
   line-height: 1.2;
@@ -102,8 +104,6 @@ p { font-size: 1.2em; line-height: 1.4;  }
 .row-buffer--small { margin-top:10px; }
 .row-buffer--large { margin-top:40px; }
 
-.sticky-header { display:block; position: fixed; overflow:hidden; z-index:9999; width:100%; background: rgba(0,0,0,0.9); }
-
 /* Components ##################### */
 .btn { 
   border-radius: 0; 
@@ -139,11 +139,35 @@ p { font-size: 1.2em; line-height: 1.4;  }
 
 /* HEADER ##################### */
 
+.sticky-header { 
+  display:block; 
+  position: fixed; 
+  overflow:hidden; 
+  z-index:9999; 
+  width:100%; 
+}
+.is-sticky {
+  background: rgba(0,0,0,0.9); 
+}
+
+.header-logo {
+  margin: 10px 0;
+}
 .main-logo {
   display: inline-block;
-  overflow: hidden;
+  /*overflow: hidden;*/
   width: 100%;
-
+}
+.main-logo:hover, .main-logo:active {
+  text-decoration: none;
+}
+.main-logo h3 {
+  margin-bottom:0;
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  font-size: 1.2em;
+  text-transform: uppercase; 
+  text-align: center; 
+  text-decoration: none;
 }
 .main-logo img {
   display: block;
@@ -154,17 +178,20 @@ p { font-size: 1.2em; line-height: 1.4;  }
 /* MAIN NAV ################### */
 .main-nav a { 
   display: inline-block;
-  padding: 10px; 
+  padding: 5px 10px; 
+  margin: 2px 5px;
   color: #fff; 
   text-transform: uppercase; 
   text-align: center;
   font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
-  font-size: 14px; 
+  font-size: 12px; 
   font-weight: bold;
   text-decoration:none; 
 }
 .main-nav a:hover {
+  color: #000;
   text-decoration:none; 
+  background: rgba(253, 196, 66, 0.8);
 }
 
 
@@ -173,7 +200,7 @@ p { font-size: 1.2em; line-height: 1.4;  }
 /* -- HERO ------------------ */
 
 .homepage-hero {
-  padding-top: 50px;
+  padding-top: 90px;
   background: 
   linear-gradient(
     rgba(0, 0, 0, 0.7), 
@@ -399,20 +426,17 @@ h3.faq-heading {
   margin-bottom: 0;
 }
 
-.faq-body
-{
+.faq-body {
   border-top: 1px solid #ddd;
   padding: 15px;
 }
 
-.prc-logo
-{
+.prc-logo {
   width: 250px;
   padding-bottom: 15px;
 }
 
-.thb-logo
-{
+.thb-logo {
   padding-bottom: 15px;
 }
 
@@ -460,6 +484,22 @@ h3.faq-heading {
 
 }
 
+/* Tablet or higher */
+@media (min-width: 760px) {
+  .header-logo {
+    margin: 0;
+  }
+
+  .main-nav {
+   margin-top: 10px; 
+  }
+
+.homepage-hero {
+  padding-top: 60px;
+}
+
+}
+
 @media (min-width: 1000px) {
   .cfp-logo
   {
@@ -479,8 +519,9 @@ h3.faq-heading {
   }
 
   .main-nav a {
-    padding: 20px 10px;
-    margin: 0 15px;
+    font-size: 1em;
+    padding: 10px;
+    margin: 0 10px;
   }
 
   /* Footer */
