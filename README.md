@@ -9,9 +9,10 @@ Email you questions to notinphilly@gmail.com
 
 To run the app locally:
 
-1. Git clone the solution
-2. Install nodejs, npm, bower, mongodb
-3. Run `npm install` in the folder
-4. Run `bower install`
+1. Git clone the solution.
+2. Install *nodejs*, *npm*, *bower*, and *mongodb*.
+3. Run `npm install` in the local project folder.
+4. Run `bower install`.
 5. Run db_import\import_db.sh to create and seed the database. 
-6. Run `node server`, you can now access the server at `http://localhost:8080`.
+6. In a separate terminal, run the database server with `mongo --dbpath=db_import`.
+7. Run `node server`, you can now access the server at `http://localhost:8080`.
