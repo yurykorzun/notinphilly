@@ -12,6 +12,7 @@ module.exports = function(app) {
     app.use('/api/settings', require('./api/settings'));
     app.use('/api/userstats', require('./api/userstats'));
     app.use('/api/inventory', require('./api/inventory'));
+    app.use('/api/toolrequests', require('./api/toolRequests'));
 
     //misc stuff for development purposes
     app.use('/api/test', require('./api/test'));
