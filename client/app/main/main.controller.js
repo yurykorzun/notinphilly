@@ -109,13 +109,13 @@ angular.module('notinphillyServerApp')
     sessionService.checkLoggedin()
       .then(function() {
         ShowUserProfile();
-        $scope.main.spinnerActive = false;
         $rootScope.$broadcast(APP_EVENTS.LOGIN_SUCCESS);
+        $scope.main.spinnerActive = false;
       },
       function() {
-        $scope.main.spinnerActive = false;
         $scope.main.isSearchOpen = true;
         ShowLoginForm(false);
+        $scope.main.spinnerActive = false;
       });
   }]);
 })();
