@@ -5,14 +5,17 @@
     return {
       restrict: 'E',
       scope: {
-        streets: '='
+        streetsAll: '=',
+        streetsShow: '='
       },
       controller: function($scope) {
         $scope.chooseStreet = function(streetId) {
-          mapService.showStreets($scope.streets);
+          mapService.showStreets($scope.streetsAll);
           mapService.selectStreet(streetId);
           $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
         };
+      },
+      link: function(scope, element, attributes){
       },
       templateUrl: "app/components/streetslist/streetslist-template.html"
     }

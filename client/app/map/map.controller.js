@@ -41,7 +41,7 @@ angular.module('notinphillyServerApp')
 
         var newScope = $scope.$new();
         newScope.totalAdopters = properties.totalAdopters;
-        newScope.address = (properties.hundred ? properties.hundred : '')  + ' ' + properties.name + ' ' + properties.zipCode;
+        newScope.address = (properties.hundred ? properties.hundred + ' block of ' : '')  + ' ' + properties.name + ' ' + properties.zipCode;
         newScope.streetId = properties.id;
         newScope.imageSrc = properties.imageSrc;
 

@@ -1,23 +1,30 @@
 <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
-<div class="padding-y--large">
-  <div class="form-group menu-login">
-    <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Login failed. Please check your username or password.</div>
-
-    <h3 class="headline-m">Member Login</h3>
-
-<div class="padding-y--small">
-    <label>Email</label>
-    <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
-</div>
-<div class="padding-y--small">
-    <label>Password</label>
-    <input type="password" class="form-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input><br/>
-</div>
-<div class="actions">
-    <input type="submit" class="btn btn--yellow margin-none" ng-click="loginForm.login(loginForm)" value="Login"/>
-    <span class="padding-x--small">Or</span>
-    <a href="" ng-click="loginForm.signup()" class="btn btn--blue">Sign up</a>
-</div>
-  </div>
+<div class="row padding-y--large">
+  <fieldset>
+  <legend class="accessibly-hidden">Member Login Form</legend>
+    <div class="col-sm-10 col-sm-offset-1">
+      <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">
+        <p>We couldn't log you in. Please check that you entered your email address and password correctly.</p>
+      </div>
+      <div class="row">
+        <p>New members, please <a href="#" ng-click="loginForm.signup()">Sign up for an account</a></p>
+        <hr class="margin-y"/>
+      </div>
+      <div class="row">
+        <h4 class="headline-s">Returning Members</h4>
+        <div class="padding-y--small">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-control login-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
+        </div>
+        <div class="padding-y--small">
+          <label for="login-pass">Password</label>
+          <input type="password" id="login-pass" class="form-control login-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input>
+        </div>
+        <div class="padding-top">
+          <button type="submit" class="btn btn--yellow" ng-click="loginForm.login(loginForm)">Log Me In</button>
+        </div>
+      </div>
+    </div>
+  </fieldset>
 </div>
 </ng-form>

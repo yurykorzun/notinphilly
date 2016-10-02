@@ -1,20 +1,45 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('UserProfileController', [ '$scope', '$http', '$rootScope', 'sessionService', 'mapService', 'APP_EVENTS',
-    function($scope, $http, $rootScope, sessionService, mapService, APP_EVENTS) {
+  .controller('UserProfileController', [ '$scope', '$http', '$rootScope', '$location', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS',
+    function($scope, $http, $rootScope, $location, placeSearchService, sessionService, mapService, APP_EVENTS) {
       $scope.userProfile = {
-        logout: function() {
-          $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
-          sessionService.logout().then(function(response){
-                                  $rootScope.$broadcast(APP_EVENTS.LOGOUT);
-                                  $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
-                                },
-                                function(err) {
-                                  $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
-                                });
-        },
+        isEditing: false,
+        isAdmin: false
+      };
+      $scope.passwordChange = {
+      };
+      $scope.user = {
         adoptedStreets: []
       };
+      $scope.errorMessage = undefined;
+
+      function SetupCurrentUser()
+      {
+        if($rootScope.currentUser)
+        {
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
+          $scope.userProfile.isAdmin = $rootScope.currentUser.isAdmin;
+          $http.get("api/users/current/").success(function(data, status) {
+            $scope.user = data;
+
+            if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
+            SetupUserStreets();
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+          },
+          function(err) {
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+          });
+        }
+      }
+
+      function SetupUserStreets(){
+        mapService.getStreetsForCurrentUser().then(function(response){
+          $scope.user.adoptedStreets = response;
+        },
+        function(err) {
+
+        });
+      }
 
       $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
         SetupCurrentUser();
@@ -40,40 +65,115 @@
 
       $scope.hasStreets = function ()
       {
-        return $scope.userProfile.adoptedStreets.length > 0
+        return $scope.user.adoptedStreets.length > 0
       };
 
-      $scope.switchToMap = function() {
-        mapService.showStreets($scope.userProfile.adoptedStreets);
-        $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+      $scope.showBlock = function() {
+
+        if ($scope.user.addressLocation)
+        {
+          showBlockStreets($scope.user.addressLocation);
+        }
+        else if($scope.user.fullAddress) {
+          placeSearchService.getLocationByText($scope.user.fullAddress)
+                            .then(function(location) {
+                              $scope.user.addressLocation = location;
+                              $scope.update();
+
+                              showBlockStreets(location);
+                            });
+        }
+      };
+
+      var showBlockStreets = function(addressLocation)
+      {
+        mapService.findStreetsNear(addressLocation).then(function(searchResults)
+        {
+          mapService.showStreets(searchResults, addressLocation);
+          $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+        });
       }
 
-      SetupCurrentUser();
+      $scope.switchToMap = function() {
+        mapService.showStreets($scope.user.adoptedStreets);
+        $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+      };
 
-      function SetupCurrentUser()
+      $scope.navigateToAdmin = function ()
       {
-        if($rootScope.currentUser)
+        if($rootScope.currentUser && $rootScope.currentUser.isAdmin)
         {
-          $http.get("api/users/current/").success(function(data, status) {
-            $scope.userProfile.fullName = data.firstName + ' ' + data.lastName;
-            $scope.userProfile.address = data.houseNumber + " " + data.streetName + " " + data.zip;
-            $scope.userProfile.email = data.email;
-
-            SetupUserStreets();
-          },
-          function(err) {
-
-          });
+          $location.path("/admin");
         }
       }
 
-      function SetupUserStreets(){
-        mapService.getStreetsForCurrentUser().then(function(response){
-                                                    $scope.userProfile.adoptedStreets = response;
-                                                  },
-                                                  function(err) {
+      $scope.toggleEdit = function () {
+        $scope.userProfile.isEditing = !$scope.userProfile.isEditing;
+        $scope.userProfile.isChangingPassword = false;
+      };
 
-                                                  });
-      }
+      $scope.toggleChangePassword = function () {
+        $scope.passwordChange = {};
+        $scope.userProfile.isChangingPassword = !$scope.userProfile.isChangingPassword;
+        $scope.userProfile.isEditing = false;
+      };
+
+      $scope.changePassword = function () {
+        $scope.errorMessage = undefined;
+
+        if($scope.passwordChange)
+        {
+          $http.post('/api/users/changePassword/', $scope.passwordChange).
+            success(function(data) {
+              $scope.toggleChangePassword();
+            }).error(function(err) {
+              // Update user error
+              $scope.errorMessage = err;
+            });
+        }
+      };
+
+      $scope.update = function () {
+        $scope.errorMessage = undefined;
+        
+        if($scope.user)
+        {
+          if($scope.addressDetails)
+          {
+            var address = $scope.addressDetails;
+
+            $scope.user.zip = address.postalCode;
+            $scope.user.city = address.city;
+            $scope.user.stateName = address.state;
+            $scope.user.streetName = address.streetName;
+            $scope.user.streetNumber = address.streetNumber;
+            $scope.user.addressLocation = address.location;
+            $scope.user.fullAddress = address.fullAddress;
+          }
+
+          $http.put('/api/users/', $scope.user).
+            success(function(data) {
+              SetupCurrentUser();
+              // Collapse edit form after updating user
+              $scope.userProfile.isEditing = false;
+            }).error(function(err) {
+              // Update user error
+              $scope.errorMessage = err;
+            });
+        }
+      };
+
+      $scope.logout = function() {
+        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
+        sessionService.logout().then(function(response){
+          $rootScope.$broadcast(APP_EVENTS.LOGOUT);
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+        },
+        function(err) {
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+        });
+      };
+
+      SetupCurrentUser();
     }]);
 })();

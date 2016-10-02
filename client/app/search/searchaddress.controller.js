@@ -1,20 +1,20 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$anchorScroll', '$location', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $anchorScroll, $location, mapService, sessionService, APP_EVENTS, APP_CONSTS) {
-    $scope.options = { country: 'us'};
-    $scope.streets = [];
-    $scope.pagedStreets = [];
+  .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $cookies, mapService, APP_EVENTS, APP_CONSTS) {
+    $scope.searchAddress = {
+      streets: [],
+      pagedStreets: [],
+      streetsPage: 1,
+      streetsPageSize: 4,
+      hasMoreStreets: false,
+      location: undefined
+    };
 
-    $scope.streetsPage = 1;
-    $scope.streetsPageSize = 4;
-    $scope.hasMoreStreets = false;
-    $scope.location = undefined;
+    $scope.autocompleteOptions = { country: 'us'};
+    $scope.autocomplete = undefined;
+    $scope.addressDetails = undefined;
 
-    $scope.$on('$locationChangeStart', function(ev) {
-      ev.preventDefault();
-    });
-
-    $scope.$watch(function() { return $scope.details; }, function(searchDetails) {
+    $scope.$watch(function() { return $scope.addressDetails; }, function(searchDetails) {
       if(searchDetails)
       {
         $scope.findStreet();
@@ -25,44 +25,47 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.switchToMap = function() {
-      mapService.showStreets($scope.streets, $scope.location);
+      mapService.showStreets($scope.searchAddress.streets, $scope.searchAddress.location);
       $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
     }
 
     $scope.clearSearch = function() {
-      $scope.details = $scope.autocomplete = undefined;
-      $scope.pagedStreets = $scope.streets = [];
-      $scope.streetsPage = 1;
+      $scope.addressDetails = $scope.autocomplete = undefined;
+      $scope.searchAddresspagedStreets = $scope.searchAddress.streets = [];
+      $scope.searchAddress.streetsPage = 1;
       mapService.setNeighborhoodLayers();
     };
 
     $scope.findStreet = function() {
-      var addressDetails = $scope.details;
-      if(addressDetails && addressDetails.geometry)
+      $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
+      $scope.searchAddress.pagedStreets = [];
+      var addressDetails = $scope.addressDetails;
+      if(addressDetails && addressDetails.location)
       {
-        $scope.location = addressDetails.geometry.location;
-        $scope.location = { lat: $scope.location.lat(), lng: $scope.location.lng() };
+        $cookies.putObject(APP_CONSTS.FOUND_STREET, {placeId: addressDetails.placeId, fullAddress: addressDetails.fullAddress});
 
-        mapService.findStreetsNear($scope.location).then(function(searchResults)
+        $scope.searchAddress.location = addressDetails.location;
+        mapService.findStreetsNear($scope.searchAddress.location).then(function(searchResults)
         {
-          $scope.streets = searchResults;
-          setPagedStreets($scope.streets, $scope.streetsPage, $scope.streetsPageSize);
+          $scope.searchAddress.streets = searchResults;
+          setPagedStreets($scope.searchAddress.streets, $scope.searchAddress.streetsPage, $scope.searchAddress.streetsPageSize);
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
         });
       }
     };
 
     $scope.loadMore = function() {
-      $scope.streetsPage++;
-      setPagedStreets($scope.streets, $scope.streetsPage, $scope.streetsPageSize);
+      $scope.searchAddress.streetsPage++;
+      setPagedStreets($scope.searchAddress.streets, $scope.searchAddress.streetsPage, $scope.searchAddress.streetsPageSize);
     }
 
     $scope.hasAddress = function() {
-      var addressDetails = $scope.details;
+      var addressDetails = $scope.addressDetails;
       return addressDetails != undefined;
     };
 
     $scope.hasStreets = function(){
-      return $scope.streets.length > 0;
+      return $scope.searchAddress.streets.length > 0;
     };
 
     var setPagedStreets = function(streets, page, pageSize)
@@ -73,8 +76,8 @@ angular.module('notinphillyServerApp')
 
         var pagedStreets = streets.slice(startIndex, endIndex);
 
-        $scope.pagedStreets = $scope.pagedStreets.concat(pagedStreets);
-        $scope.hasMoreStreets = endIndex < streets.length;
+        $scope.searchAddress.pagedStreets = $scope.searchAddress.pagedStreets.concat(pagedStreets);
+        $scope.searchAddress.hasMoreStreets = endIndex < streets.length;
     }
   }]);
 })();

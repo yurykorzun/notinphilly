@@ -10,7 +10,7 @@ exports.session = function (req, res) {
     return res.json(req.user);
   }
   else {
-    return res.send(400, "Not logged in");
+    return res.sendStatus(400, "Not logged in");
   }
 };
 
@@ -27,7 +27,7 @@ exports.checkAuthenticated = function (req, res) {
  * returns nothing
  */
 exports.logout = function (req, res) {
-  res.clearCookie('notinphilly.sid');
+  res.clearCookie('notinphillytoken.sid');
 
   if(req.user) {
     req.logout();
@@ -35,9 +35,9 @@ exports.logout = function (req, res) {
         if (err) { return next(err); }
     });
 
-    res.send(200);
+    res.sendStatus(200);
   } else {
-    res.send(400, "Logout failed, wasn't logged in");
+    res.sendStatus(400, "Logout failed, wasn't logged in");
   }
 };
 
@@ -48,8 +48,8 @@ exports.logout = function (req, res) {
  */
 exports.login = function (req, res, next) {
     if (req.isAuthenticated() && req.user) {
-      return res.json({ _id: req.user._id, email: req.user.email });
+      return res.json(req.user);
     }
 
-    res.send(400, "Logout failed");
+    res.sendStatus(400, "Logout failed");
 }

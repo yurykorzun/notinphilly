@@ -140,15 +140,15 @@
 
           var LeafIcon = L.Icon.extend({
             options: {
-              iconSize:     [32, 32], // size of the icon
-              iconAnchor:   [16, 32], // point of the icon which will correspond to marker's location
-              popupAnchor:  [16, 0] // point from which the popup should open relative to the iconAnchor
+              iconSize:     [40, 40], // size of the icon
+              iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
+              popupAnchor:  [20, 0] // point from which the popup should open relative to the iconAnchor
             }
           });
 
           if(addressLocation)
           {
-            var addressIcon = new LeafIcon({iconUrl: 'public/img/address_house.png'});
+            var addressIcon = new LeafIcon({iconUrl: 'public/img/home.png'});
             var addressMarker = L.marker(addressLocation, {icon: addressIcon});
             mapLayerGroup.addLayer(addressMarker);
             addressMarker.addTo(map);
@@ -162,7 +162,7 @@
 
           map.setView(addressLocation, 17, { animate: false });
 
-          var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
+          var markerIcon = new LeafIcon({iconUrl: 'public/img/broom.png'});
 
           var streetLayer = createStreetLayer(streets);
           mapStreetLayer = streetLayer;
@@ -362,8 +362,7 @@
 
             var nhoodCenter = layerBounds.getCenter();
             nhoodCenter.lng = nhoodCenter.lng - 0.001;
-            map.panTo(nhoodCenter);
-            map.setZoom(16, { animate: false });
+            map.setView( nhoodCenter, 16, { animate: true });
             map.invalidateSize();
 
             loadStreets(properties.id, map);

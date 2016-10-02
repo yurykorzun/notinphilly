@@ -10,7 +10,6 @@ html, body {
   font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;
 }
 
-body * { transition: all 500ms; }
 
 h1,h2,h3,h4,h5,h6 { 
   font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
@@ -20,11 +19,21 @@ h1,h2,h3,h4,h5,h6 {
 }
 
 /* Set primary Typeface  */
-p, li, label, input, textarea, legend, select, option { 
+p, ul li, ol li, dl dt, dl dd, label, input, textarea, legend, select, option { 
   font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;  
 }
 
-p { font-size: 1.2em; line-height: 1.4;  }
+p, ul, ol, dl { font-size: 1.1em; line-height: 1.4;  }
+
+hr {
+  display: block; 
+  clear: both;
+  height: 1px;
+  background: #ccc;
+  margin: 10px 0;
+  border: none;
+}
+
 
 /* Typography ----------------*/
 .headline-l { font-size:50px; }
@@ -36,7 +45,7 @@ p { font-size: 1.2em; line-height: 1.4;  }
   display: none!important;
 }
 
-.block { display: block; }
+.block { display: block!important; overflow:hidden; }
 
 .accessibly-hidden {
   position: absolute !important;
@@ -62,6 +71,7 @@ p { font-size: 1.2em; line-height: 1.4;  }
 .text-yellow { color: #fdc442!important; }
 .text-blue { color: #18a0dc!important; }
 .text-black { color: #000!important; }
+.text-disclaimer { font-size:0.9em; line-height:1.1; font-style: italic;  }
 
 .padding-none { padding: 0!important; }
 .padding-20 { padding: 20px; }
@@ -145,6 +155,7 @@ p { font-size: 1.2em; line-height: 1.4;  }
   overflow:hidden; 
   z-index:9999; 
   width:100%; 
+  transition: all 500ms;
 }
 .is-sticky {
   background: rgba(0,0,0,0.9); 
@@ -240,7 +251,7 @@ p { font-size: 1.2em; line-height: 1.4;  }
 .faq {
   width:95%;
 }
-h3.faq-heading {
+.faq-heading {
   font-size: 1.1em;
   line-height: 1.4;
 }
@@ -281,7 +292,6 @@ h3.faq-heading {
   text-align: center; 
 }
 
-
 .social-icons {
   text-align: center;
 }
@@ -310,7 +320,16 @@ h3.faq-heading {
   text-decoration: none;
 }
 
+
+/* Component Styles   */
+
+.modal-dialog {
+  margin-top: 80px; /* Accommodate for sticky header */
+}
+
+
 /* Existing Styles ############################################## */
+
 .top-bar {
     background: #fdfdfd;
     background-color: #F2F8FF;
@@ -327,7 +346,7 @@ h3.faq-heading {
 }
 
 .header-title {
-  color:#939CA0;
+  color:#788387;
   font-size:14px;
 }
 
@@ -347,38 +366,64 @@ h3.faq-heading {
 }
 */
 
-.menu-userProfile {
-  margin-left: 15px;
+.user-profile {
+  padding: 30px 0;
 }
 
-.menu-userProfile-logout {
+.user-profile .heading {
+  margin-top: 0;
+  display: inline-block;
+}
+
+.user-profile .info {
   margin-top: 10px;
+}
+
+.user-profile .profile-actions {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.edit-form
+{
   margin-left: 5px;
 }
 
-.tab-content
-{
+.user-profile .edit-form,
+.street-list-header {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  border-top: 1px solid #e5e5e5;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.user-profile .form-actions {
+  margin-top: 15px;
+}
+
+.user-profile .btn-cancel {
+  margin-left: 15px;
+}
+
+.tab-content {
   display:block;
   overflow:hidden;
     border: 1px solid #ddd;
     border-top: none;
 }
 
-.tab-inner
-{
+.tab-inner {
   background-color: #F2F8FF;
 }
 
-.address-search-form
-{
-  margin: 20px 10px 20px 10px;
+.address-search-form {
+  margin: 20px 10px;
 }
 
-.street-item-block
-{
-    border:1px solid #E6E6E6;
-    margin-bottom:5px;
-    border-color:#80cde5;
+.street-item-block {
+    border: 1px solid #E6E6E6;
+    margin-bottom: 15px;
+    border-color: #80cde5;
     background-color: white;
 }
 
@@ -388,20 +433,49 @@ h3.faq-heading {
     text-align:center!important;
 }
 
-.street-item-block .street-marker-icon img
-{
-
-}
-
 .view-onstreet-section
 {
   padding-top: 30px;
   padding-bottom: 30px;
 }
 
+.street-popup-address
+{
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
 .menu-login {
     padding: 8px 8px 8px 16px;
     margin: 0 10px;
+}
+
+/*.login-or {
+    position: relative;
+    font-size: 18px;
+    color: #aaa;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+.hr-or {
+    background-color: #cdcdcd;
+    height: 1px;
+    margin-top: 0px !important;
+    margin-bottom: 0px !important;
+}*/
+
+.span-or {
+    display: block;
+    position: absolute;
+    left: 50%;
+    top: -2px;
+    margin-left: -25px;
+    background-color: #fff;
+    width: 50px;
+    text-align: center;
 }
 
 .faq {
@@ -410,14 +484,12 @@ h3.faq-heading {
   margin-right: auto;
 }
 
-.faq-section
-{
+.faq-section {
   margin-bottom: 0;
   border-color: #ddd;
 }
 
-.faq-heading
-{
+.faq-heading {
   color: #333;
   background-color: #fff;
   border-color: #ddd;
@@ -439,7 +511,6 @@ h3.faq-heading {
 .thb-logo {
   padding-bottom: 15px;
 }
-
 
 #cityMap {
   height:700px;
@@ -464,7 +535,15 @@ h3.faq-heading {
 	background-color: #f4f4f4;
 }
 
+.row-buffer--top {
+  margin-top: 0.5em;
+}
+
 @media (max-width: 999px) {
+  .login-control
+  {
+    max-width: 300px;
+  }
   .cfp-logo
   {
     width: 90px;
@@ -503,8 +582,7 @@ h3.faq-heading {
 @media (min-width: 1000px) {
   .cfp-logo
   {
-    width: 120px;
-    padding-left: 40px;
+    width: 85px;
     padding-bottom: 15px;
   }
 

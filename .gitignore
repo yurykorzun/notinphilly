@@ -1,0 +1,8 @@
+# Node Dependency Directory
+node_modules
+
+# Bower Dependency Directory
+client/public/libs
+
+# openshift stuff
+.openshift
