@@ -75,6 +75,7 @@ exports.update = function(req, res) {
       existingInventoryRecord.code = req.body.code;
       existingInventoryRecord.name = req.body.name;
       existingInventoryRecord.description = req.body.description;
+      existingInventoryRecord.totalAvailable = req.body.totalAvailable;
 
       existingInventoryRecord.save(function (err, inventoryRecord) {
         if (err)

@@ -4,7 +4,12 @@
     function($scope, $http, $rootScope, $location, placeSearchService, sessionService, mapService, APP_EVENTS) {
       $scope.userProfile = {
         isEditing: false,
-        isAdmin: false
+        isAdmin: false,
+        enableToolRequest: false,
+        toolRequestAvailable: false,
+        toolRequestIsPending: false,
+        toolRequestWasApproved: false,
+        toolRequestWasDelivered: false
       };
       $scope.passwordChange = {
       };
@@ -19,16 +24,22 @@
         {
           $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
           $scope.userProfile.isAdmin = $rootScope.currentUser.isAdmin;
+          $scope.userProfile.enableToolRequest = $scope.userProfile.isAdmin;
           $http.get("api/users/current/").success(function(data, status) {
             $scope.user = data;
 
             if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
             SetupUserStreets();
+            SetupToolRequest();
+
             $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
           },
           function(err) {
             $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
           });
+        }
+        else {
+          $scope.errorMessage = "You aren't authorized";
         }
       }
 
@@ -38,6 +49,23 @@
         },
         function(err) {
 
+        });
+      }
+
+      function SetupToolRequest() {
+        $http.get("api/toolrequests/current/count").success(function(countResponse) {
+          if (countResponse.count > 0)
+          {
+            $http.get("api/toolrequests/current").success(function(request) {
+              if (request.pending.length > 0) $scope.userProfile.toolRequestIsPending = true;
+              else if (request.approved.length > 0) $scope.userProfile.toolRequestWasApproved = true;
+              else if (request.delivered.length > 0) $scope.userProfile.toolRequestWasDelivered = true;
+            });
+          }
+          else {
+            $scope.userProfile.toolRequestAvailable = true;
+            $scope.userProfile.toolRequestIsPending = $scope.userProfile.toolRequestWasApproved = $scope.userProfile.toolRequestWasDelivered = false;
+          }
         });
       }
 
@@ -53,6 +81,20 @@
       $scope.$on(APP_EVENTS.STREET_LEFT, function(event) {
         SetupUserStreets();
       });
+
+      $scope.makeToolRequest = function ()
+      {
+        if(!$scope.userProfile.hasRequests && $rootScope.currentUser)
+        {
+          var userId = $rootScope.currentUser._id;
+          $http.post("api/toolrequests", { code: "grabber" }).success(function(response) {
+            SetupToolRequest();
+          },
+          function(err) {
+              $scope.errorMessage = "Something went wrong, please try later";
+          });
+        }
+      }
 
       $scope.locateStreet = function (streetId)
       {
@@ -135,7 +177,7 @@
 
       $scope.update = function () {
         $scope.errorMessage = undefined;
-        
+
         if($scope.user)
         {
           if($scope.addressDetails)

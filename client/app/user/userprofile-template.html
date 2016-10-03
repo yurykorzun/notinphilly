@@ -129,14 +129,30 @@
 </div>
 
   <div class="row" ng-show="hasStreets()">
-    <div class="col-xs-offset-1 col-xs-12">
-      <div class="street-list-header">
-        <i class="fa fa-check-circle-o"></i> You are participating in picking up trash in following streets:
-        <ul class="list-inline user-profile-actions pull-right">
-          <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
-        </ul>
+    <div class="row tool-request" ng-if="userProfile.enableToolRequest">
+      <div class="col-xs-offset-1 col-xs-5 tool-request-status" ng-if="userProfile.toolRequestAvailable">
+        <button class="btn btn-success" ng-click="makeToolRequest()">Claim your trash grabber!</button>
       </div>
-      <streetslist streets-all="user.adoptedStreets" streets-show="user.adoptedStreets" />
+      <div class="col-xs-offset-1 col-xs-8 tool-request-status" ng-if="userProfile.toolRequestIsPending">
+        Your trash grabber request is being reviewed!
+      </div>
+      <div class="col-xs-offset-1 col-xs-8 tool-request-status" ng-if="userProfile.toolRequestWasApproved">
+        Your request was approved and a grabber is on its way!
+      </div>
+      <div class="col-xs-offset-1 col-xs-8 tool-request-status" ng-if="userProfile.toolRequestWasDelivered">
+        Congratulations! Your trash grabber was delivered!
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-offset-1 col-xs-12">
+        <div class="street-list-header">
+          <i class="fa fa-check-circle-o"></i> You are participating in picking up trash in following streets:
+          <ul class="list-inline user-profile-actions pull-right">
+            <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
+          </ul>
+        </div>
+        <streetslist streets-all="user.adoptedStreets" streets-show="user.adoptedStreets" />
+      </div>
     </div>
   </div>
   <div class="row" ng-show="!hasStreets()">

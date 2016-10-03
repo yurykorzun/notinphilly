@@ -77,24 +77,23 @@ angular.module('notinphillyServerApp')
        enableColumnResizing: true,
        columnDefs: [
          { name: 'tool', displayName: 'Tool', field: "tool.name", width:100 },
-         { name: 'status', displayName: 'Status', field: "tool.name", width:100 },
-         { name: 'createdAt', displayName: 'Created', field: "createdAt", width:110 },
-         { name: 'updatedAt', displayName: 'Created', field: "updatedAt", width:110 },
+         { name: 'status', displayName: 'Status', field: "status.name", width:100 },
+         { name: 'updatedAt', displayName: 'Updated', field: "updatedAt", width:110 },
          { name: 'firstName', displayName: 'First Name', field: "user.firstName", width:130 },
          { name: 'lastName', displayName: 'Last Name', field: "user.lastName", width:130 },
          { name: 'address',  displayName: 'Address', field: "user.address"},
          { name: 'zip', displayName: 'ZipCode', field: "user.zip", width:80 },
          { name: 'email', displayName: 'Email', field: "user.email", width:250 },
-         { name: 'phoneNumber', displayName: 'Phone', field: "user.phoneNumber", width:100 }
+         { name: 'phoneNumber', displayName: 'Phone', field: "user.phoneNumber", width:100 },
+         { name: 'editColumn', cellTemplate: 'app/admin/inventory/request-edit-column.html', width: 34}
        ],
        onRegisterApi: function(gridApi) {
          $scope.gridToolRequestApi = gridApi;
          gridApi.pagination.on.paginationChanged($scope, function (newPage, pageSize) {
            paginationOptions.pageNumber = newPage;
            paginationOptions.pageSize = pageSize;
-
-          $scope.loadRequests();
          });
+         $scope.loadRequests();
          $scope.gridToolRequestApi.core.on.sortChanged( $scope, $scope.sortChanged );
        }
      };
@@ -106,6 +105,18 @@ angular.module('notinphillyServerApp')
            $scope.gridToolRequestOptions.totalItems = data.count;
            $scope.gridToolRequestOptions.data = data.requests;
          });
+     };
+
+     $scope.editRequest = function (grid, row) {
+       var modalInstance = $uibModal.open({
+         templateUrl: 'app/admin/inventory/admin-editrequest-template.html',
+         controller: 'AdminEditRequestController',
+         resolve: {
+             request: function () {
+                 return row.entity;
+             }
+           }
+       });
      };
 
      $scope.loadRequests = function ()

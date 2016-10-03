@@ -1,7 +1,9 @@
 (function () {
 angular.module('notinphillyServerApp')
   .controller('AdminEditRequestController', [ '$scope', '$http', '$uibModalInstance', function($scope, $http, $uibModalInstance) {
-    $scope.Inventory = $scope.$resolve.request;
+    $scope.inventory = $scope.$resolve.request;
+    $scope.statuses = [];
+
     $scope.save = function(){
       $scope.errorMessage = undefined;
 
@@ -15,6 +17,10 @@ angular.module('notinphillyServerApp')
 
     $scope.close = function(){
       $uibModalInstance.dismiss('cancel');
+    }
+
+    $scope.onStatusChange = function(item, model) {
+
     }
   }]);
 })();

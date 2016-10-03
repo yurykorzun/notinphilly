@@ -71,6 +71,16 @@ body{
   margin-right: 5px;
 }
 
+.user-profile .tool-request {
+  margin-bottom: 10px;
+}
+
+.user-profile .tool-request-status {
+  background-color: #D5E7E8;
+  padding: 5px 5px 5px 5px;
+  text-align: center;
+}
+
 .edit-form
 {
   margin-left: 5px;
