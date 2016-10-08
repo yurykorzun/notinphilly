@@ -8,7 +8,7 @@ var ToolRequestSchema = new Schema({
     ref: 'User'
   },
   tool: {
-    type: Schema.Types.ObjectId,
+    type: Number,
     ref: 'ToolsInventory'
   },
   status: {

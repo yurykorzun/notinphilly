@@ -11,6 +11,7 @@ var ToolsInventorySchema = new Schema({
   description: { type: String },
   totalAvailable: { type: Number, required: true, default: 0, min: [0, 'Cannot accept negative amout'] },
   totalPending: { type: Number, required: true, default: 0, min: [0, 'Cannot accept negative amout'] },
+  totalApproved: { type: Number, required: true, default: 0, min: [0, 'Cannot accept negative amout'] },
   totalDelivered: { type: Number, required: true, default: 0, min: [0, 'Cannot accept negative amout'] }
 },
 { collection: 'toolsInventory' });

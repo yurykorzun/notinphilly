@@ -4,10 +4,10 @@
       'ui.bootstrap',
       'ngAnimate',
       'treasure-overlay-spinner',
-      'ui.select',
       'ngCookies',
       'ui.mask',
       'ngSanitize',
+      'selectize',
       'ui.grid',
       'ui.grid.pagination',
       'ui.grid.resizeColumns'

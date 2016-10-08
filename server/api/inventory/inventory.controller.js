@@ -38,7 +38,7 @@ exports.create = function(req, res, next) {
     if (err) return res.status(500).send('There was an issue. Please try again later');
 
     if (existingInventoryRecord) {
-      console.log('inventory already registred ' + inventoryRecord.code);
+      console.log('inventory already registred ' + existingInventoryRecord.code);
       res.status(409).send('inventory record with this code already exists');
     }
     else {
@@ -75,6 +75,7 @@ exports.update = function(req, res) {
       existingInventoryRecord.code = req.body.code;
       existingInventoryRecord.name = req.body.name;
       existingInventoryRecord.description = req.body.description;
+      existingInventoryRecord.totalAvailable = req.body.totalAvailable;
 
       existingInventoryRecord.save(function (err, inventoryRecord) {
         if (err)

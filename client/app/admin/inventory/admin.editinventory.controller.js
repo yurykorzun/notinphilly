@@ -1,15 +1,15 @@
 (function () {
 angular.module('notinphillyServerApp')
   .controller('AdminEditInventoryController', [ '$scope', '$http', '$uibModalInstance', function($scope, $http, $uibModalInstance) {
-    $scope.Inventory = $scope.$resolve.user;
-    $scope.isExisting = ($scope.Inventory["_id"] != undefined);
+    $scope.Inventory = $scope.$resolve.tool;
+    $scope.isExistingTool = ($scope.Inventory["_id"] != undefined);
 
     $scope.save = function(){
       $scope.errorMessage = undefined;
 
-      if(!$scope.inventoryForm.$invalid)
+      if (!$scope.inventoryForm.$invalid)
       {
-        if ($scope.isExisting)
+        if ($scope.isExistingTool)
         {
           $http.put('/api/inventory/', $scope.Inventory).
                   success(function(data) {
