@@ -2,7 +2,8 @@ var mongoose      = require('mongoose');
 var UserModel     = require('./user.model');
 var StateModel    = require('../state/state.model');
 var StreetModel   = require('../street/streetSegment.model');
-var NeighborhoodModel = require('../neighborhood/neighborhood.model');
+var NeighborhoodModel       = require('../neighborhood/neighborhood.model');
+var toolRequestController   = require('../toolRequests/toolRequest.controller');
 var uuid          = require('uuid');
 var settings      = require('../../config/settings');
 var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
@@ -343,6 +344,8 @@ exports.destroy = function(req, res) {
             }
           });
         }
+
+        toolRequestController.removeForUser(user._id);
 
         UserModel.remove({ _id: user._id }, function(err, user) {
           if (err) {
