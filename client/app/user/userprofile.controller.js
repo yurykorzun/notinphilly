@@ -53,6 +53,8 @@
       }
 
       function SetupToolRequest() {
+        $scope.userProfile.toolRequestAvailable = false;
+
         $http.get("api/toolrequests/current/count").success(function(countResponse) {
           if (countResponse.count > 0)
           {
@@ -60,6 +62,7 @@
               if (request.pending.length > 0) $scope.userProfile.toolRequestIsPending = true;
               else if (request.approved.length > 0) $scope.userProfile.toolRequestWasApproved = true;
               else if (request.delivered.length > 0) $scope.userProfile.toolRequestWasDelivered = true;
+              else $scope.userProfile.toolRequestAvailable = true;
             });
           }
           else {

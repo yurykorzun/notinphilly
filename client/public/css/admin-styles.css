@@ -26,6 +26,11 @@
   height: 250px;
 }
 
+.grid-highlighted-cell {
+  font-weight: bold;
+}
+
+
 .inventory-section {
   margin: 10px 10px 10px 10px;
 }

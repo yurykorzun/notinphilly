@@ -21,6 +21,7 @@ exports.get = function(req, res, next) {
           });
 };
 
+
 exports.countForCurrentUser = function(req, res, next) {
   if (req.user)
   {
@@ -112,7 +113,7 @@ exports.create = function(req, res, next) {
     var userId = req.user._id.toString();
     var requestCode = req.body.code;
 
-    ToolRequestModel.findOne({ code: requestCode }, function(err, existingToolRequest) {
+    ToolRequestModel.findOne({ code: requestCode, user: mongoose.Types.ObjectId(userId), "status": {"$ne": stateConsts.REJECTED}  }, function(err, existingToolRequest) {
       if (err) {
         console.log(err);
         return res.status(500).send('There was an issue. Please try again later');
@@ -133,6 +134,8 @@ exports.create = function(req, res, next) {
               console.log(err);
               return res.status(500).send('There was an issue. Please try again later');
             }
+
+            recalculateInventoryTotal(toolRequest.tool, undefined, toolRequest.status);
 
             res.status(200).send('Tool request was created successfully');
           });
@@ -155,6 +158,9 @@ exports.update = function(req, res, next) {
       return res.status(500).send('Tool request you trying to update does not exist');
     }
     else {
+      var oldStatus = existingToolRequest.status;
+      var newStatus = req.body.status._id;
+
       existingToolRequest.user = req.body.user._id;
       existingToolRequest.tool = req.body.tool._id;
       existingToolRequest.status = req.body.status._id;
@@ -162,10 +168,77 @@ exports.update = function(req, res, next) {
       existingToolRequest.save(function (err, toolRequest) {
         if (err) return res.status(500).send('There was an issue. Please try again later');
 
+        recalculateInventoryTotal(toolRequest.tool, oldStatus, newStatus);
+
         res.status(200).send('Tool request was updated successfully');
       });
     }
   });
+};
+
+var recalculateInventoryTotal = function (toolId, oldStatus, newStatus)
+{
+  ToolsInventoryModel.findById(toolId, function(err, inventoryRecord) {
+    if (err) return;
+
+    if (inventoryRecord) {
+      if ((oldStatus == undefined || oldStatus == stateConsts.REJECTED) && inventoryRecord.totalAvailable > 0)
+      {
+        inventoryRecord.totalAvailable--;
+      }
+      else if (oldStatus == stateConsts.PENDING && inventoryRecord.totalPending > 0) {
+        inventoryRecord.totalPending--;
+      }
+      else if (oldStatus == stateConsts.APPROVED && inventoryRecord.totalApproved > 0) {
+        inventoryRecord.totalApproved--;
+      }
+      else if (oldStatus == stateConsts.DELIVERED && inventoryRecord.totalDelivered > 0) {
+        inventoryRecord.totalDelivered--;
+      }
+
+      if (newStatus == stateConsts.PENDING) {
+        inventoryRecord.totalPending++;
+      }
+      else if (newStatus == stateConsts.APPROVED) {
+        inventoryRecord.totalApproved++;
+      }
+      else if (newStatus == stateConsts.REJECTED) {
+        inventoryRecord.totalAvailable++;
+      }
+      else if (newStatus == stateConsts.DELIVERED) {
+        inventoryRecord.totalDelivered++;
+      }
+
+      inventoryRecord.save(function (err, inventoryRecord) {
+        if (err) return;
+
+      });
+    }
+  });
+}
+
+exports.destroy = function(req, res) {
+  var requestId = req.params.id;
+  if (requestId) {
+    ToolRequestModel.findById(requestId).exec(function(err, existingToolRequest) {
+      if (err) return next(err);
+      var oldStatus = existingToolRequest.status;
+      var toolId = existingToolRequest.tool;
+
+      ToolRequestModel.remove({ _id: existingToolRequest._id }, function(err, toolRequest) {
+        if (err) {
+          console.log("Error while deleting tool request " + err);
+          return next(err);
+
+          res.status(500).send('There was an issue. Please try again later');
+        }
+
+        recalculateInventoryTotal(toolId, oldStatus, undefined);
+
+        res.status(200).send();
+      });
+    });
+  }
 };
 
 exports.changeStatus = function(req, res, next) {
@@ -178,10 +251,15 @@ exports.changeStatus = function(req, res, next) {
       return res.status(500).send('Tool request you trying to update does not exist');
     }
     else {
+      var oldStatus = existingToolRequest.status;
+      var newStatus = req.body.status;
+
       existingToolRequest.status = req.body.status;
 
       existingToolRequest.save(function (err, toolRequest) {
         if (err) return res.status(500).send('There was an issue. Please try again later');
+
+        recalculateInventoryTotal(toolRequest.tool, oldStatus, newStatus);
 
         res.status(200).send('Tool request status was updated successfully');
       });

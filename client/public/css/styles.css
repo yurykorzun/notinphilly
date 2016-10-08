@@ -78,7 +78,6 @@ body{
 .user-profile .tool-request-status {
   background-color: #D5E7E8;
   padding: 5px 5px 5px 5px;
-  text-align: center;
 }
 
 .edit-form
@@ -200,6 +199,11 @@ body{
 {
   border-top: 1px solid #ddd;
   padding: 15px;
+}
+
+.grabber-image
+{
+  width: 85px;
 }
 
 .prc-logo

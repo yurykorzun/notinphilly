@@ -1,16 +1,32 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('AdminEditRequestController', [ '$scope', '$http', '$uibModalInstance', function($scope, $http, $uibModalInstance) {
-    $scope.Inventory = $scope.$resolve.request;
+  .controller('AdminEditInventoryController', [ '$scope', '$http', '$uibModalInstance', function($scope, $http, $uibModalInstance) {
+    $scope.Inventory = $scope.$resolve.tool;
+    $scope.isExistingTool = ($scope.Inventory["_id"] != undefined);
+
     $scope.save = function(){
       $scope.errorMessage = undefined;
 
-      $http.put('/api/toolrequests/status/' + $scope.Inventory.user._id + '/' + $scope.Inventory.status._id).
-              success(function(data) {
-                $uibModalInstance.close();
-              }).error(function(err) {
-                $scope.errorMessage = err;
-              });
+      if (!$scope.inventoryForm.$invalid)
+      {
+        if ($scope.isExistingTool)
+        {
+          $http.put('/api/inventory/', $scope.Inventory).
+                  success(function(data) {
+                    $uibModalInstance.close();
+                  }).error(function(err) {
+                    $scope.errorMessage = err;
+                  });
+        }
+        else {
+          $http.post('/api/inventory/', $scope.Inventory).
+                  success(function(data) {
+                    $uibModalInstance.close();
+                  }).error(function(err) {
+                    $scope.errorMessage = err;
+                  });
+        }
+      }
     }
 
     $scope.close = function(){

@@ -10,6 +10,8 @@ router.get('/current', controller.getForUser);
 router.get('/current/count', controller.countForCurrentUser);
 router.post('/', controller.create);
 router.put('/', authService.isAdmin, controller.update);
-router.post('/status/:id/:status', authService.isAdmin, controller.changeStatus);
+router.delete('/:id', authService.isAdmin, controller.destroy);
+router.get('/statuses', controller.getStatuses);
+router.post('/status', authService.isAdmin, controller.changeStatus);
 
 module.exports = router;

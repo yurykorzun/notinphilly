@@ -6,8 +6,9 @@ angular.module('notinphillyServerApp')
         { name: 'name', displayName: 'Tool Name', width:120 },
         { name: 'code', displayName: 'Code', width:90 },
         { name: 'description',  displayName: 'Description'},
-        { name: 'totalAvailable', displayName: 'Available', type: 'number', width:90 },
+        { name: 'totalAvailable', displayName: 'Available', cellClass: 'grid-highlighted-cell', type: 'number', width:90 },
         { name: 'totalPending', displayName: 'Pending', type: 'number', width:90  },
+        { name: 'totalApproved', displayName: 'Approved', type: 'number', width:90  },
         { name: 'totalDelivered', displayName: 'Delivered', type: 'number', width:90  },
         { name: 'editColumn', cellTemplate: 'app/admin/inventory/inventory-edit-column.html', width: 34}
        ],
@@ -30,7 +31,7 @@ angular.module('notinphillyServerApp')
          templateUrl: 'app/admin/inventory/admin-editinventory-template.html',
          controller: 'AdminEditInventoryController',
          resolve: {
-             user: function () {
+             tool: function () {
                  return {};
              }
            }
@@ -48,7 +49,7 @@ angular.module('notinphillyServerApp')
          templateUrl: 'app/admin/inventory/admin-editinventory-template.html',
          controller: 'AdminEditInventoryController',
          resolve: {
-             user: function () {
+             tool: function () {
                  return row.entity;
              }
            }
@@ -77,7 +78,7 @@ angular.module('notinphillyServerApp')
        enableColumnResizing: true,
        columnDefs: [
          { name: 'tool', displayName: 'Tool', field: "tool.name", width:100 },
-         { name: 'status', displayName: 'Status', field: "status.name", width:100 },
+         { name: 'status', displayName: 'Status', cellClass: 'grid-highlighted-cell', field: "status.name", width:100 },
          { name: 'updatedAt', displayName: 'Updated', field: "updatedAt", width:110 },
          { name: 'firstName', displayName: 'First Name', field: "user.firstName", width:130 },
          { name: 'lastName', displayName: 'Last Name', field: "user.lastName", width:130 },
@@ -85,7 +86,8 @@ angular.module('notinphillyServerApp')
          { name: 'zip', displayName: 'ZipCode', field: "user.zip", width:80 },
          { name: 'email', displayName: 'Email', field: "user.email", width:250 },
          { name: 'phoneNumber', displayName: 'Phone', field: "user.phoneNumber", width:100 },
-         { name: 'editColumn', cellTemplate: 'app/admin/inventory/request-edit-column.html', width: 34}
+         { name: 'editColumn', cellTemplate: 'app/admin/inventory/request-edit-column.html', width: 34},
+         { name: 'deleteColumn', cellTemplate: 'app/admin/inventory/request-delete-column.html', width: 34}
        ],
        onRegisterApi: function(gridApi) {
          $scope.gridToolRequestApi = gridApi;
@@ -108,15 +110,49 @@ angular.module('notinphillyServerApp')
      };
 
      $scope.editRequest = function (grid, row) {
-       var modalInstance = $uibModal.open({
-         templateUrl: 'app/admin/inventory/admin-editrequest-template.html',
-         controller: 'AdminEditRequestController',
-         resolve: {
-             request: function () {
+       $http.get('/api/toolrequests/statuses').success(function(response) {
+         var modalInstance = $uibModal.open({
+           templateUrl: 'app/admin/inventory/admin-editrequest-template.html',
+           controller: 'AdminEditRequestController',
+           resolve: {
+               request: function () {
                  return row.entity;
+               },
+               statuses: function () {
+                 return response;
+               }
              }
+         });
+
+         modalInstance.result.then(function (selectedItem) {
+            $scope.loadRequests();
+            $scope.loadInventory();
            }
+         );
        });
+     };
+
+     $scope.deleteRequest = function (grid, row) {
+      var modalInstance = $uibModal.open({
+        templateUrl: 'app/admin/users/admin-confirm-template.html',
+        controller: 'AdminConfirmController',
+        size: 'sm'
+      });
+
+      modalInstance.result.then(function () {
+                              var id = row.entity._id;
+                              var url = "/api/toolrequests/" + id;
+
+                              $http.delete(url).success(function (data) {
+                                $scope.loadRequests();
+                                $scope.loadInventory();
+                              })
+                              .error(function (error) {
+                                  console.error('user deletion error:', error);
+                              });
+                            },
+                            function () {
+                            });
      };
 
      $scope.loadRequests = function ()
