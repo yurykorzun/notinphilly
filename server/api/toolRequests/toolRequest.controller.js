@@ -2,6 +2,7 @@ var mongoose            = require('mongoose');
 var ToolRequestModel    = require('./toolRequest.model');
 var RequestStatusModel  = require('./requestStatus.model');
 var ToolsInventoryModel = require('../inventory/toolsInventory.model');
+var UserModel           = require('../user/user.model');
 
 var stateConsts = {
   PENDING: 0,
@@ -137,6 +138,13 @@ exports.create = function(req, res, next) {
 
             recalculateInventoryTotal(toolRequest.tool, undefined, toolRequest.status);
 
+            UserModel.findById(userId, function(err, user) {
+              user.grabberRequested = true;
+
+              user.save(function (err, user) {
+              });
+            });
+
             res.status(200).send('Tool request was created successfully');
           });
         });
@@ -160,10 +168,11 @@ exports.update = function(req, res, next) {
     else {
       var oldStatus = existingToolRequest.status;
       var newStatus = req.body.status._id;
+      var userId = req.body.user._id;
 
-      existingToolRequest.user = req.body.user._id;
+      existingToolRequest.user = userId;
       existingToolRequest.tool = req.body.tool._id;
-      existingToolRequest.status = req.body.status._id;
+      existingToolRequest.status = newStatus;
 
       existingToolRequest.save(function (err, toolRequest) {
         if (err) return res.status(500).send('There was an issue. Please try again later');
@@ -241,6 +250,31 @@ exports.destroy = function(req, res) {
   }
 };
 
+exports.removeForUser = function(userId) {
+    ToolRequestModel.find({ user: mongoose.Types.ObjectId(userId) }).exec(function(err, requests) {
+      for(var index = 0; index < requests.length; index++)
+      {
+        var request = requests[index];
+
+        var oldStatus = request.status;
+        var toolId = request.tool;
+
+        ToolRequestModel.remove({ _id: request._id }, function(err, toolRequest) {
+          if (err) {
+            console.log("Error while deleting tool request " + err);
+            return next(err);
+
+            res.status(500).send('There was an issue. Please try again later');
+          }
+
+          recalculateInventoryTotal(toolId, oldStatus, undefined);
+
+          res.status(200).send();
+        });
+      }
+    });
+}
+
 exports.changeStatus = function(req, res, next) {
   var requestId = req.body.id;
 
@@ -253,6 +287,7 @@ exports.changeStatus = function(req, res, next) {
     else {
       var oldStatus = existingToolRequest.status;
       var newStatus = req.body.status;
+      var userId = existingToolRequest.user;
 
       existingToolRequest.status = req.body.status;
 
@@ -260,6 +295,16 @@ exports.changeStatus = function(req, res, next) {
         if (err) return res.status(500).send('There was an issue. Please try again later');
 
         recalculateInventoryTotal(toolRequest.tool, oldStatus, newStatus);
+
+        if (newStatus == stateConsts.DELIVERED)
+        {
+          UserModel.findById(userId, function(err, user) {
+            user.grabberDelivered = true;
+
+            user.save(function (err, user) {
+            });
+          });
+        }
 
         res.status(200).send('Tool request status was updated successfully');
       });
