@@ -7,6 +7,7 @@ module.exports = function(app) {
     app.use('/api/users', require('./api/user'));
     app.use('/api/neighborhoods', require('./api/neighborhood'));
     app.use('/api/streets', require('./api/street'));
+    app.use('/api/roles', require('./api/role'));
 
     app.use('/api/auth', require('./api/auth'));
     app.use('/api/settings', require('./api/settings'));

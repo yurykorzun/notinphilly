@@ -4,6 +4,14 @@ angular.module('notinphillyServerApp')
     $scope.User = $scope.$resolve.user;
     $scope.isExistingUser = ($scope.User["_id"] != undefined);
 
+    $scope.roles = $scope.$resolve.roles;
+    $scope.selectedRole = $scope.User.roles;
+    $scope.rolesConfig = {
+            valueField: '_id',
+            labelField: 'name',
+            placeholder: 'Select role'
+          };
+
     if (!$scope.User.fullAddress)
     {
       $scope.User.fullAddress = $scope.User.address;

@@ -201,11 +201,6 @@ body{
   padding: 15px;
 }
 
-.grabber-image
-{
-  width: 85px;
-}
-
 .prc-logo
 {
   width: 250px;
@@ -252,15 +247,24 @@ body{
   {
     max-width: 300px;
   }
+
   .cfp-logo
   {
     width: 90px;
     padding-bottom: 15px;
   }
+
+  .grabber-image
+  {
+    width: 50px;
+    padding-right: 10px;
+  }
+
   .logo-container
   {
     float: none;
   }
+
   .logo-main {
     width: 150px;
   }
@@ -271,6 +275,11 @@ body{
   {
     width: 85px;
     padding-bottom: 15px;
+  }
+
+  .grabber-image
+  {
+    width: 80px;
   }
 
   .logo-main {

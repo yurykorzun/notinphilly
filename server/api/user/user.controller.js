@@ -160,19 +160,7 @@ exports.update = function(req, res) {
     if(req.body.active != undefined) user.active = req.body.active;
     if(req.body.fullAddress) user.fullAddress = req.body.fullAddress;
     if(req.body.addressLocation) user.addressLocation = req.body.addressLocation;
-    if(req.body.isAdmin != undefined)
-    {
-      var hasAdminRole = user.roles.length > 0 && user.roles.indexOf(1) > -1;
-      if(req.body.isAdmin === true && !hasAdminRole)
-      {
-        user.roles.push(1);
-      }
-      else if (req.body.isAdmin === false && hasAdminRole)
-      {
-        var adminIndex = user.roles.indexOf(1);
-        user.roles.splice(adminIndex, 1);
-      }
-    }
+    if(req.body.roles != undefined) user.roles = req.body.roles;
 
     if (req.body.grabberRequested != undefined) user.grabberRequested = req.body.grabberRequested;
     if (req.body.grabberDelivered != undefined) user.grabberDelivered = req.body.grabberDelivered;

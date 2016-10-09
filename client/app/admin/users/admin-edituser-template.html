@@ -88,7 +88,7 @@
       <div class="row">
         <div class="col-xs-6">
           <div class="form-group">
-            <label for="isAdminCheckbox"><input type="checkbox" id="isAdminCheckbox" ng-model="User.isAdmin">&nbsp;&nbsp;<small>Admin?</small></label>
+            <selectize config='rolesConfig' options='roles' ng-model="User.roles" required='true'></selectize>
           </div>
         </div>
         <div class="col-xs-6">
