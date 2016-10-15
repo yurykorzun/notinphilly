@@ -11,22 +11,22 @@ html, body {
 }
 
 
-h1,h2,h3,h4,h5,h6 { 
-  font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
+h1,h2,h3,h4,h5,h6 {
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
   line-height: 1.2;
   font-weight: bold;
   margin: 0 0 10px 0;
 }
 
 /* Set primary Typeface  */
-p, ul li, ol li, dl dt, dl dd, label, input, textarea, legend, select, option { 
-  font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;  
+p, ul li, ol li, dl dt, dl dd, label, input, textarea, legend, select, option {
+  font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;
 }
 
 p, ul, ol, dl { font-size: 1.1em; line-height: 1.4;  }
 
 hr {
-  display: block; 
+  display: block;
   clear: both;
   height: 1px;
   background: #ccc;
@@ -72,6 +72,7 @@ hr {
 .text-blue { color: #18a0dc!important; }
 .text-black { color: #000!important; }
 .text-disclaimer { font-size:0.9em; line-height:1.1; font-style: italic;  }
+.text-link { font-size: 1.3em; }
 
 .padding-none { padding: 0!important; }
 .padding-20 { padding: 20px; }
@@ -115,11 +116,11 @@ hr {
 .row-buffer--large { margin-top:40px; }
 
 /* Components ##################### */
-.btn { 
-  border-radius: 0; 
-  color:#000; 
+.btn {
+  border-radius: 0;
+  color:#000;
   text-transform:uppercase;
-  font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
   font-size:16px;
   font-weight:bold;
   margin-right:10px;
@@ -149,16 +150,16 @@ hr {
 
 /* HEADER ##################### */
 
-.sticky-header { 
-  display:block; 
-  position: fixed; 
-  overflow:hidden; 
-  z-index:9999; 
-  width:100%; 
+.sticky-header {
+  display:block;
+  position: fixed;
+  overflow:hidden;
+  z-index:9999;
+  width:100%;
   transition: all 500ms;
 }
 .is-sticky {
-  background: rgba(0,0,0,0.9); 
+  background: rgba(0,0,0,0.9);
 }
 
 .header-logo {
@@ -176,8 +177,8 @@ hr {
   margin-bottom:0;
   font-family: "Open Sans", Helvetica, Geneva, sans-serif;
   font-size: 1.2em;
-  text-transform: uppercase; 
-  text-align: center; 
+  text-transform: uppercase;
+  text-align: center;
   text-decoration: none;
 }
 .main-logo img {
@@ -187,21 +188,21 @@ hr {
   height: auto;
 }
 /* MAIN NAV ################### */
-.main-nav a { 
+.main-nav a {
   display: inline-block;
-  padding: 5px 10px; 
+  padding: 5px 10px;
   margin: 2px 5px;
-  color: #fff; 
-  text-transform: uppercase; 
+  color: #fff;
+  text-transform: uppercase;
   text-align: center;
-  font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
-  font-size: 12px; 
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  font-size: 12px;
   font-weight: bold;
-  text-decoration:none; 
+  text-decoration:none;
 }
 .main-nav a:hover {
   color: #000;
-  text-decoration:none; 
+  text-decoration:none;
   background: rgba(253, 196, 66, 0.8);
 }
 
@@ -212,9 +213,9 @@ hr {
 
 .homepage-hero {
   padding-top: 90px;
-  background: 
+  background:
   linear-gradient(
-    rgba(0, 0, 0, 0.7), 
+    rgba(0, 0, 0, 0.7),
     rgba(0, 0, 0, 0.7)
   ),
   url(../img/homepage-hero.jpg);
@@ -223,14 +224,14 @@ hr {
 }
 
 .introduction p {
-  font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
   font-size: 1em;
   line-height: 1.4;
 }
 
 
 .nav-tabs li {
-  font-family: "Open Sans", Helvetica, Geneva, sans-serif; 
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
   font-size: 1.2em;
   font-weight: bold;
 }
@@ -264,15 +265,15 @@ hr {
   overflow: hidden;
   background: #ffffff;
 }
-.partner-logo img { 
+.partner-logo img {
   display: block;
   margin:0 auto;
   max-width: 100%;
-  height: auto; 
+  height: auto;
   max-height: 130px;
 }
 
-.partner-logo img.tall-logo { 
+.partner-logo img.tall-logo {
   width: auto;
   max-height:80px;
 }
@@ -288,8 +289,8 @@ hr {
 .footer-logo {
   margin-bottom:0;
   font-family: "Open Sans", Helvetica, Geneva, sans-serif;
-  text-transform: uppercase; 
-  text-align: center; 
+  text-transform: uppercase;
+  text-align: center;
 }
 
 .social-icons {
@@ -588,7 +589,7 @@ hr {
   }
 
   .main-nav {
-   margin-top: 10px; 
+   margin-top: 10px;
   }
 
 .homepage-hero {
@@ -627,7 +628,7 @@ hr {
 
   /* Footer */
   .footer-logo {
-    text-align: left; 
+    text-align: left;
   }
   .footer-contact {
     text-align: right;
