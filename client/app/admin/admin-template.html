@@ -8,11 +8,11 @@
   </div>
   <div ng-if="isUserAdmin">
     <div class="row top-menu">
-      <div class="col-xs-10 col-md-6">
-        <div ng-class="['col-xs-4 col-sm-3 col-md-2', 'text-center', { 'active-tab': tabs.isUsersActive }, { 'inactive-tab': !tabs.isUsersActive }]">
+      <div class="col-xs-6">
+        <div ng-class="['col-xs-2', 'text-center', { 'active-tab': tabs.isUsersActive }, { 'inactive-tab': !tabs.isUsersActive }]">
           <a href="" ng-click="tabs.showUsers()"><h4>Users</h4></a>
         </div>
-        <div ng-class="['col-xs-4 col-sm-3 col-md-2', 'text-center', { 'active-tab': tabs.isInventoryActive }, { 'inactive-tab': !tabs.isInventoryActive }]">
+        <div ng-class="['col-xs-2', 'text-center', { 'active-tab': tabs.isInventoryActive }, { 'inactive-tab': !tabs.isInventoryActive }]">
           <a href="" ng-click="tabs.showInventory()"><h4>Inventory</h4></a>
         </div>
       </div>
