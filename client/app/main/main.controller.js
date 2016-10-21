@@ -3,27 +3,35 @@ angular.module('notinphillyServerApp')
   .controller('mainController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', '$window', '$location', '$anchorScroll',
                               function($scope, $http, $rootScope, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS, $window, $location, $anchorScroll) {
     $scope.main = {
-      isUserProfileVisible: false,
-      isLoginVisible: false,
+      isUserProfileEnabled: false,
+      isLoginEnabled: false,
       activeTabIndex: 0,
       spinnerActive: false
     };
 
+    $scope.tabs = {
+      SEARCH_TAB: 0,
+      MAP_TAB: 1,
+      PROFILE_TAB: 2,
+      LOGIN_TAB: 3,
+      ABOUT_TAB: 4
+    }
+
     function ShowUserProfile(isActive) {
-      $scope.main.isUserProfileVisible = true;
+      $scope.main.isUserProfileEnabled = true;
       if(isActive)
       {
-        $scope.main.activeTabIndex = 2;
+        $scope.main.activeTabIndex = $scope.tabs.PROFILE_TAB;
       }
-      $scope.main.isLoginVisible = false;
+      $scope.main.isLoginEnabled = false;
     }
 
     function ShowLoginForm(isActive) {
-      $scope.main.isUserProfileVisible = false;
-      $scope.main.isLoginVisible = true;
+      $scope.main.isUserProfileEnabled = false;
+      $scope.main.isLoginEnabled = true;
       if(isActive)
       {
-        $scope.main.activeTabIndex = 3;
+        $scope.main.activeTabIndex = $scope.tabs.LOGIN_TAB;
       }
     }
 
@@ -44,49 +52,41 @@ angular.module('notinphillyServerApp')
       ShowLoginForm(true);
     });
     $scope.$on(APP_EVENTS.OPEN_SEARCH, function(event) {
-      $scope.main.activeTabIndex = 0;
+      $scope.main.activeTabIndex = $scope.tabs.SEARCH_TAB;
     });
     $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
-      $scope.main.activeTabIndex = 1;
+      $scope.main.activeTabIndex = $scope.tabs.MAP_TAB;
     });
 
-    $scope.main.onSearchSelect = function() {
-      $rootScope.$broadcast(APP_EVENTS.OPENED_SEARCH);
+    $scope.main.isTabOpen = function(tabIndex) {
+      return $scope.main.activeTabIndex === tabIndex;
     }
 
-    $scope.main.onExploreSelect = function() {
-      $rootScope.$broadcast(APP_EVENTS.OPENED_EXPLORE);
-    }
-
-    $scope.main.onExploreLeave = function() {
-      $rootScope.$broadcast(APP_EVENTS.CLOSED_EXPLORE);
-    }
-
-    $scope.main.topNav = function(tabIndex) {
+    $scope.main.openTab = function(tabIndex, goToTab) {
 
       switch (tabIndex){
           case 0: // Search
-            $scope.main.activeTabIndex = 0;
-            $scope.main.onSearchSelect();
+            $scope.main.activeTabIndex = $scope.tabs.SEARCH_TAB;
+            $rootScope.$broadcast(APP_EVENTS.OPENED_SEARCH);
           break;
           case 1: // Explore
-            $scope.main.activeTabIndex = 1;
-            $scope.main.onExploreSelect();
+            $scope.main.activeTabIndex = $scope.tabs.MAP_TAB;
+            $rootScope.$broadcast(APP_EVENTS.OPENED_EXPLORE);
           break;
-          case 2: // Login
-            ShowLoginForm(true);
+          case 2: // Profile
+            $scope.main.activeTabIndex = $scope.tabs.PROFILE_TAB;
           break;
-          case 3: // Account
-            ShowUserProfile(true);
+          case 3: // Login
+            $scope.main.activeTabIndex = $scope.tabs.LOGIN_TAB;
           break;
           case 4: // About
-            $scope.main.activeTabIndex = 4;
+            $scope.main.activeTabIndex = $scope.tabs.ABOUT_TAB;
           break;
-          default: $scope.main.activeTabIndex = 0;
+          default: $scope.main.activeTabIndex = $scope.tabs.SEARCH_TAB;
       }
 
       // Jump down to the tab area
-      $scope.main.goToTab();
+      if (goToTab) $scope.main.goToTab();
     }
 
     $scope.main.goToTab = function() {
@@ -98,7 +98,7 @@ angular.module('notinphillyServerApp')
     angular.element($window).bind("scroll", function() {
       var mainNav = angular.element( document.querySelector( '#mainNav' ) );
       var offset = $window.pageYOffset;
-        
+
       if (offset >= 10) {
         mainNav.addClass('is-sticky');
       } else {

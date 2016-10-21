@@ -229,13 +229,6 @@ hr {
   line-height: 1.4;
 }
 
-
-.nav-tabs li {
-  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
-  font-size: 1.2em;
-  font-weight: bold;
-}
-
 /* -- SEARCH Section ----------- */
 
 .input-group-addon {
@@ -413,6 +406,14 @@ hr {
 
 .user-profile .btn-cancel {
   margin-left: 15px;
+}
+
+
+.nav-tabs li {
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  font-size: 1.2em;
+  font-weight: bold;
+  border-top: 1px solid #ddd;
 }
 
 .tab-content {

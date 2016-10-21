@@ -23,7 +23,6 @@
         "OPENED_SEARCH": "openedSearch",
         "OPEN_EXPLORE": "openExplore",
         "OPENED_EXPLORE": "openedExplore",
-        "CLOSED_EXPLORE": "closedExplore",
         "ENTER_NEIGBORHOOD_LEVEL": "enterNeigborhoodLevel",
         "ENTER_STREET_LEVEL": "enterStreetLevel",
         "STREET_ADOPTED": "streetAdopted",

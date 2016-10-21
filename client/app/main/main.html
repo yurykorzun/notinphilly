@@ -9,11 +9,11 @@
           </a>
         </div>
         <div class="col-sm-10 text-center main-nav">
-          <a href="#bodyContent" ng-click="main.topNav(0)">Find My Block</a>
-          <a href="#bodyContent" ng-click="main.topNav(1)">Explore the Map</a>
-          <a href="#bodyContent" ng-click="main.topNav(2)" disable="!main.isLoginVisible" ng-show="main.isLoginVisible">Member Login</a>
-          <a href="#bodyContent" ng-click="main.topNav(3)" disable="!main.isUserProfileVisible" ng-show="main.isUserProfileVisible">My Account</a>
-          <a href="#bodyContent" ng-click="main.topNav(4)">About Us</a>
+          <a ng-click="main.openTab(tabs.SEARCH_TAB, true)">Find My Block</a>
+          <a ng-click="main.openTab(tabs.MAP_TAB, true)">Explore the Map</a>
+          <a ng-click="main.openTab(tabs.LOGIN_TAB, true)" disable="!main.isLoginEnabled" ng-show="main.isLoginEnabled">Member Login</a>
+          <a ng-click="main.openTab(tabs.PROFILE_TAB, true)" disable="!main.isUserProfileEnabled" ng-show="main.isUserProfileEnabled">My Account</a>
+          <a ng-click="main.openTab(tabs.ABOUT_TAB, true)">About Us</a>
           <a href="http://prc.org/donate/">Donate</a>
         </div>
       </div>
@@ -51,52 +51,71 @@
   <div class="main-block">
     <div class="container-fluid padding-y--large">
       <div class="container">
-        <div id="bodyContent" class="row tab-contents">
-          <uib-tabset active="main.activeTabIndex">
-          <uib-tab index="0" heading="Search" select="main.onSearchSelect()">
-          <div class="col-md-12 tab-inner">
-            <div ng-include src="'app/search/searchaddress-template.html'"></div>
-          </div>
-          </uib-tab>
-          <uib-tab index="1" heading="Map" select="main.onExploreSelect()" deselect="main.onExploreLeave()">
-          <div class="map-block">
-            <div class="container">
-              <div class="row tab-inner">
-                <div ng-include src="'app/map/map-template.html'"></div>
+        <div class="row">
+          <ul class="nav nav-tabs">
+            <li ng-class="[ { 'active' : main.isTabOpen(tabs.SEARCH_TAB) } ]">
+              <a href="" ng-click="main.openTab(tabs.SEARCH_TAB)" class="nav-link">Search</a>
+            </li>
+            <li ng-class="[ { 'active' : main.isTabOpen(tabs.MAP_TAB) } ]">
+              <a href="" ng-click="main.openTab(tabs.MAP_TAB)" class="nav-link">Map</a>
+            </li>
+            <li ng-class="[ { 'active' : main.isTabOpen(tabs.PROFILE_TAB) } ]" ng-show="main.isUserProfileEnabled">
+              <a href="" ng-click="main.openTab(tabs.PROFILE_TAB)" class="nav-link">Profile</a>
+            </li>
+            <li ng-class="[ { 'active' : main.isTabOpen(tabs.LOGIN_TAB) } ]" ng-show="main.isLoginEnabled">
+              <a href="" ng-click="main.openTab(tabs.LOGIN_TAB)" class="nav-link">Members</a>
+            </li>
+            <li ng-class="[ { 'active' : main.isTabOpen(tabs.ABOUT_TAB) } ]">
+              <a href="" ng-click="main.openTab(tabs.ABOUT_TAB)" class="nav-link">About us</a>
+            </li>
+          </ul>
+        </div>
+        <div class="row">
+          <div id="bodyContent" class="tab-contents">
+            <div class="search-block" ng-show="main.isTabOpen(tabs.SEARCH_TAB)">
+              <div class="container">
+                <div class="row tab-inner">
+                  <div ng-include src="'app/search/searchaddress-template.html'"></div>
+                </div>
+              </div>
+            </div>
+            <div class="map-block" ng-show="main.activeTabIndex == tabs.MAP_TAB">
+              <div class="container">
+                <div class="row tab-inner">
+                  <div ng-include src="'app/map/map-template.html'"></div>
+                </div>
+              </div>
+            </div>
+            <div class="profile-block" ng-show="main.isTabOpen(tabs.PROFILE_TAB)" ng-show="main.isUserProfileEnabled">
+              <div class="container">
+                <div class="row tab-contents tab-inner">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-6">
+                    <div ng-include="" src="'app/user/userprofile-template.html'"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="login-block" ng-show="main.isTabOpen(tabs.LOGIN_TAB)" ng-show="main.isLoginEnabled">
+              <div class="container">
+                <div class="row tab-contents tab-inner">
+                  <div class="col-md-3"></div>
+                  <div class="col-md-6">
+                    <div ng-include src="'app/user/login-template.html'"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="about-block" ng-show="main.isTabOpen(tabs.ABOUT_TAB)">
+              <div class="container">
+                <div class="row tab-contents tab-inner">
+                  <div class="col-md-10">
+                    <div ng-include src="'app/faq/faq-template.html'"></div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
-          </uib-tab>
-          <uib-tab index="2" heading="Profile" disable="!main.isUserProfileVisible" ng-show="main.isUserProfileVisible">
-          <div class="container">
-            <div class="row tab-contents tab-inner">
-              <div class="col-md-3"></div>
-              <div class="col-md-6">
-                <div ng-include="" src="'app/user/userprofile-template.html'"></div>
-              </div>
-            </div>
-          </div>
-          </uib-tab>
-          <uib-tab index="3" heading="Members" disable="!main.isLoginVisible" ng-show="main.isLoginVisible">
-          <div class="container">
-            <div class="row tab-contents tab-inner">
-              <div class="col-md-3"></div>
-              <div class="col-md-6">
-                <div ng-include src="'app/user/login-template.html'"></div>
-              </div>
-            </div>
-          </div>
-          </uib-tab>
-          <uib-tab index="4" heading="About us">
-          <div class="container">
-            <div class="row tab-contents tab-inner">
-              <div class="col-md-10">
-                <div ng-include src="'app/faq/faq-template.html'"></div>
-              </div>
-            </div>
-          </div>
-          </uib-tab>
-          </uib-tabset>
         </div>
       </div>
     </div>
