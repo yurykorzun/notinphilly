@@ -21,7 +21,7 @@ angular.module('notinphillyServerApp')
       $scope.main.isUserProfileEnabled = true;
       if(isActive)
       {
-        $scope.main.activeTabIndex = $scope.tabs.PROFILE_TAB;
+        $scope.main.openTab($scope.tabs.PROFILE_TAB);
       }
       $scope.main.isLoginEnabled = false;
     }
@@ -31,7 +31,7 @@ angular.module('notinphillyServerApp')
       $scope.main.isLoginEnabled = true;
       if(isActive)
       {
-        $scope.main.activeTabIndex = $scope.tabs.LOGIN_TAB;
+        $scope.main.openTab($scope.tabs.LOGIN_TAB);
       }
     }
 
@@ -52,10 +52,10 @@ angular.module('notinphillyServerApp')
       ShowLoginForm(true);
     });
     $scope.$on(APP_EVENTS.OPEN_SEARCH, function(event) {
-      $scope.main.activeTabIndex = $scope.tabs.SEARCH_TAB;
+      $scope.main.openTab($scope.tabs.SEARCH_TAB);
     });
     $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
-      $scope.main.activeTabIndex = $scope.tabs.MAP_TAB;
+      $scope.main.openTab($scope.tabs.MAP_TAB);
     });
 
     $scope.main.isTabOpen = function(tabIndex) {
