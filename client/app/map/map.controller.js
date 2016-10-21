@@ -2,9 +2,11 @@
 angular.module('notinphillyServerApp')
   .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$timeout', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, $timeout, mapService, APP_EVENTS) {
     $scope.$on(APP_EVENTS.OPENED_EXPLORE, function(event) {
+      $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
         $timeout(function() {
             mapService.resetSize();
-        }, 100);
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+        }, 400);
     });
 
     mapService.getMap().then(function(map) {
