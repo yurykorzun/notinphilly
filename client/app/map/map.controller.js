@@ -4,11 +4,7 @@ angular.module('notinphillyServerApp')
     $scope.$on(APP_EVENTS.OPENED_EXPLORE, function(event) {
         $timeout(function() {
             mapService.resetSize();
-        }, 30);
-    });
-
-    $scope.$on(APP_EVENTS.CLOSED_EXPLORE, function(event) {
-
+        }, 100);
     });
 
     mapService.getMap().then(function(map) {
