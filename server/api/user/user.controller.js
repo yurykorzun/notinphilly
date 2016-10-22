@@ -1,12 +1,12 @@
 var mongoose      = require('mongoose');
+var uuid          = require('uuid');
 var UserModel     = require('./user.model');
 var StateModel    = require('../state/state.model');
 var StreetModel   = require('../street/streetSegment.model');
 var NeighborhoodModel       = require('../neighborhood/neighborhood.model');
 var toolRequestController   = require('../toolRequests/toolRequest.controller');
-var uuid          = require('uuid');
-var settings      = require('../../config/settings');
-var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
+var apiSettings           = require('../../config/apiSettings');
+var mailgun               = require('mailgun-js')({apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN});
 
 exports.index = function(req, res) {
   UserModel.find({})
