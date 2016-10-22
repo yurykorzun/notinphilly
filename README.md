@@ -14,4 +14,5 @@ To run the app locally:
 3. Run `npm install` in the local project root folder.
 4. Run `bower install` in the local project root folder.
 5. Run `sh db_import/import_db.sh` in terminal to create and seed the database.
-6. Run `node server`, you can now access the server at `http://localhost:8080`.
+6. Populate api keys and server settings in server/config.
+7. Run `node server`, you can now access the server at `http://localhost:8080`.
