@@ -147,6 +147,10 @@ hr {
   background-color: #fdce64;
 }
 
+.btn--sm {
+  font-size: 12px;
+}
+
 
 /* HEADER ##################### */
 
