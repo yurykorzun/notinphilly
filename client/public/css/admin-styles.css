@@ -20,3 +20,22 @@
   margin: 10px 10px 10px 10px;
   height: 850px;
 }
+
+.admin-inventory-grid {
+  margin-top: 10px;
+  height: 250px;
+}
+
+.grid-highlighted-cell {
+  font-weight: bold;
+}
+
+
+.inventory-section {
+  margin: 10px 10px 10px 10px;
+}
+
+.admin-requests-grid {
+  margin: 10px 10px 10px 10px;
+  height: 650px;
+}

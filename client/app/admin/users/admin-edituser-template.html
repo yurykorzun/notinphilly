@@ -71,6 +71,14 @@
         <p ng-show="userForm.streetNumber.$invalid && !userForm.streetNumber.$pristine" class="help-block">Street number is required.</p>
       </div>
     </div>
+    <div class="row">
+      <div class="col-xs-6">
+        <div class="form-group">
+          <label for="rolesConfig" class="control-label">User roles<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <selectize name="rolesConfig" config='rolesConfig' options='roles' ng-model="User.roles" required='true'></selectize>
+        </div>
+      </div>
+    </div>
     <div class="row" ng-show="!isExistingUser">
       <div ng-class="['col-xs-6', 'form-group', { 'has-error': userForm.password.$invalid && !userForm.password.$pristine }]">
           <label for="password" class="control-label">Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
@@ -86,21 +94,14 @@
     </div>
     <div ng-show="isExistingUser">
       <div class="row">
-        <div class="col-xs-6">
-          <div class="form-group">
-            <label for="isAdminCheckbox"><input type="checkbox" id="isAdminCheckbox" ng-model="User.isAdmin">&nbsp;&nbsp;<small>Admin?</small></label>
-          </div>
-        </div>
-        <div class="col-xs-6">
-          <div class="form-group">
-            <label for="isActiveCheckbox"><input type="checkbox" id="isActiveCheckbox" ng-model="User.active">&nbsp;&nbsp;<small>Active?</small></label>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-3">
           <div class="form-group">
             <label for="grabberRequested"><input type="checkbox" id="grabberRequested" ng-model="User.grabberRequested">&nbsp;&nbsp;<small>Grabber requested?</small></label>
+          </div>
+        </div>
+        <div class="col-xs-3">
+          <div class="form-group">
+            <label for="isActiveCheckbox"><input type="checkbox" id="isActiveCheckbox" ng-model="User.active">&nbsp;&nbsp;<small>Active?</small></label>
           </div>
         </div>
         <div class="col-xs-6">
@@ -116,7 +117,6 @@
           </div>
         </div>
       </div>
-    </form>
     <div class="row">
       <div class="col-md-9">
         Adopted streets: {{User.adoptedStreets.length}}
@@ -130,6 +130,7 @@
       </div>
     </div>
   </div>
+  </form>
 </div>
 <div class="modal-footer">
    <button class="btn btn-primary" type="submit" ng-disabled="userForm.$invalid" ng-click="save()">Save</button>

@@ -1,0 +1,37 @@
+<div>
+  <div class="modal-header">
+  </div>
+</div>
+<div class="modal-body">
+  <form name="inventoryForm" novalidate>
+  <div class="bg-danger" ng-show="errorMessage">
+    {{errorMessage}}
+  </div>
+  <div class="row">
+    <div ng-class="['col-xs-4', 'form-group', { 'has-error': inventoryForm.code.$invalid && !inventoryForm.code.$pristine }]">
+      <label for="code" class="control-label">Short code<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+      <input name="code" ng-model="Inventory.code" ng-trim="true" ng-pattern="/^[a-z]+$/" ng-minlength="4" ng-minlength="10" ng-class="['form-control', 'input-sm', { 'has-error': inventoryForm.code.$error.required }]" placeholder="Tool code" type="text" required="">
+      <p ng-show="inventoryForm.code.$invalid && !inventoryForm.code.$pristine" class="help-block">Code is invalid (required and lowercase, exp. abcd)</p>
+    </div>
+    <div ng-class="['col-xs-6', 'form-group', { 'has-error': inventoryForm.name.$invalid && !inventoryForm.name.$pristine }]">
+      <label for="name" class="control-label">Tool name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+      <input name="name" ng-model="Inventory.name" ng-class="['form-control', 'input-sm', { 'has-error': inventoryForm.name.$error.required }]" placeholder="Tool name" type="text" required="">
+      <p ng-show="inventoryForm.name.$invalid && !inventoryForm.name.$pristine" class="help-block">Tool name is required.</p>
+    </div>
+  </div>
+  <div class="row">
+    <div ng-class="['col-xs-4', 'form-group', { 'has-error': inventoryForm.totalAvailable.$invalid && !inventoryForm.totalAvailable.$pristine }]">
+      <label for="totalAvailable" class="control-label">Total available<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+      <input name="totalAvailable" ng-model="Inventory.totalAvailable" ng-class="['form-control', 'input-sm', { 'has-error': inventoryForm.totalAvailable.$error.required }]" placeholder="Total itmes available" min="0" max="99999"  type="number" value="0" required="">
+      <p ng-show="inventoryForm.totalAvailable.$invalid && !inventoryForm.totalAvailable.$pristine" class="help-block">Total number is required.</p>
+    </div>
+    <div class="col-xs-6 form-group">
+      <label for="description" class="control-label">Description</label>
+      <input name="description" ng-model="Inventory.description" class="form-control input-sm" placeholder="Description" type="text">
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+   <button class="btn btn-primary" type="submit" ng-disabled="inventoryForm.$invalid" ng-click="save()">Save</button>
+   <button class="btn btn-warning" type="button" ng-click="close()">Cancel</button>
+</div>

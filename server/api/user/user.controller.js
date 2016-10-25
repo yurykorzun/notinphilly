@@ -1,11 +1,12 @@
 var mongoose      = require('mongoose');
+var uuid          = require('uuid');
 var UserModel     = require('./user.model');
 var StateModel    = require('../state/state.model');
 var StreetModel   = require('../street/streetSegment.model');
-var NeighborhoodModel = require('../neighborhood/neighborhood.model');
-var uuid          = require('uuid');
-var settings      = require('../../config/settings');
-var mailgun       = require('mailgun-js')({apiKey: settings.serverSettings.EMAIL_API_KEY, domain: settings.serverSettings.EMAIL_DOMAIN});
+var NeighborhoodModel       = require('../neighborhood/neighborhood.model');
+var toolRequestController   = require('../toolRequests/toolRequest.controller');
+var apiSettings           = require('../../config/apiSettings');
+var mailgun               = require('mailgun-js')({apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN});
 
 exports.index = function(req, res) {
   UserModel.find({})
@@ -159,19 +160,7 @@ exports.update = function(req, res) {
     if(req.body.active != undefined) user.active = req.body.active;
     if(req.body.fullAddress) user.fullAddress = req.body.fullAddress;
     if(req.body.addressLocation) user.addressLocation = req.body.addressLocation;
-    if(req.body.isAdmin != undefined)
-    {
-      var hasAdminRole = user.roles.length > 0 && user.roles.indexOf(1) > -1;
-      if(req.body.isAdmin === true && !hasAdminRole)
-      {
-        user.roles.push(1);
-      }
-      else if (req.body.isAdmin === false && hasAdminRole)
-      {
-        var adminIndex = user.roles.indexOf(1);
-        user.roles.splice(adminIndex, 1);
-      }
-    }
+    if(req.body.roles != undefined) user.roles = req.body.roles;
 
     if (req.body.grabberRequested != undefined) user.grabberRequested = req.body.grabberRequested;
     if (req.body.grabberDelivered != undefined) user.grabberDelivered = req.body.grabberDelivered;
@@ -343,6 +332,8 @@ exports.destroy = function(req, res) {
             }
           });
         }
+
+        toolRequestController.removeForUser(user._id);
 
         UserModel.remove({ _id: user._id }, function(err, user) {
           if (err) {

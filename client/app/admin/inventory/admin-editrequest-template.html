@@ -1,0 +1,31 @@
+<div>
+  <div class="modal-header">
+  </div>
+</div>
+<div class="modal-body">
+  <form name="requestForm" novalidate>
+  <div class="bg-danger" ng-show="errorMessage">
+    {{errorMessage}}
+  </div>
+  <div class="row">
+    <div class="col-xs-3">
+      <p>{{ user.fullName }}</p>
+    </div>
+    <div class="col-xs-3">
+      <p>{{ tool.name }}</p>
+    </div>
+    <div class="col-xs-6">
+      <p>{{ user.address }}</p>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-5 form-group">
+      <label for="description" class="control-label">Change status to:</label>
+      <selectize config='statusConfig' options='statuses' ng-model="selectedStatus" required='true'></selectize>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+   <button class="btn btn-primary" type="submit" ng-disabled="requestForm.$invalid && requestForm.$pristine" ng-click="save()">Save</button>
+   <button class="btn btn-warning" type="button" ng-click="close()">Cancel</button>
+</div>

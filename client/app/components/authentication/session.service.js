@@ -12,6 +12,7 @@
         }).then(function(response)
         {
           $rootScope.currentUser = response.data;
+          ga('set', 'userId', $rootScope.currentUser._id);
           deferred.resolve(response.data);
         },
         function(err)
@@ -58,6 +59,7 @@
           if(response.data.authenticated)
           {
             $rootScope.currentUser = response.data.user;
+            ga('set', 'userId', $rootScope.currentUser._id);
             deferred.resolve(response.data);
           }
           else {
