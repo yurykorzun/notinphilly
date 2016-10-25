@@ -69,21 +69,28 @@ angular.module('notinphillyServerApp')
    };
 
    $scope.addUser = function (grid, row) {
-     var modalInstance = $uibModal.open({
-       templateUrl: 'app/admin/users/admin-edituser-template.html',
-       controller: 'AdminEditUserController',
-       resolve: {
-           user: function () {
-               return {};
-           }
-         }
-     });
+       $http.get('/api/roles/').success(function(response) {
+         var modalInstance = $uibModal.open({
+           templateUrl: 'app/admin/users/admin-edituser-template.html',
+           controller: 'AdminEditUserController',
+           resolve: {
+               user: function () {
+                   return {
+                     roles: []
+                   };
+               },
+               roles: function () {
+                   return response;
+               }
+             }
+         });
 
-     modalInstance.result.then(function (selectedItem) {
+         modalInstance.result.then(function (selectedItem) {
 
-                           }, function () {
+                               }, function () {
 
-                           });
+                               });
+      });
    };
 
   $scope.editUser = function (grid, row) {
