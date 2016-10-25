@@ -1,12 +1,12 @@
 var express        = require('express');
 var mongoose       = require('mongoose');
-var settings       = require('./settings');
+var serverSettings       = require('./serverSettings');
 var argv          = require('boring')();
 
 module.exports = function(app) {
     console.log("init db");
 
-    var connectionString = settings.serverSettings.DB_CONNECTION_STRING;
+    var connectionString = serverSettings.DB_CONNECTION_STRING;
 
     var dbOptions = {
       server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },

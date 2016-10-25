@@ -7,7 +7,7 @@
          <div class="heading"><a href="" ng-click="logout()">Log out <i class="fa fa-sign-out"></i></a></div>
       </div>
       <div class="row">
-        <div class="col-md-9 col-sm-10 col-xs-12">
+        <div class="col-md-11 col-sm-10 col-xs-12">
           <div class="profile-actions">
             <button class="btn btn-success" ng-show="user.fullAddress || user.addressLocation" ng-click="showBlock()"><i class="fa fa-map-o"></i> Your block</button>
           </div>
@@ -129,14 +129,44 @@
 </div>
 
   <div class="row" ng-show="hasStreets()">
-    <div class="col-xs-offset-1 col-xs-12">
-      <div class="street-list-header">
-        <i class="fa fa-check-circle-o"></i> You are participating in picking up trash in following streets:
-        <ul class="list-inline user-profile-actions pull-right">
-          <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
-        </ul>
+    <div class="row tool-request" ng-if="userProfile.enableToolRequest">
+      <div class="col-xs-offset-1 col-xs-11" ng-if="userProfile.toolRequestAvailable">
+        <div class="row tool-request-status">
+          <div class="col-xs-2">
+            <img src="public/img/grabber.png" class="grabber-image"/>
+          </div>
+          <div class="col-xs-10">
+            <p>In order to help you keeping your block clean, we can provide you with a trash grabber.</p>
+            <div>It's an amazing tool that makes trash cleanup very simple!</div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4 col-xs-offset-3">
+              <button class="btn btn-success" ng-click="makeToolRequest()">Claim your trash grabber!</button>
+            </div>
+          </div>
+        </div>
       </div>
-      <streetslist streets-all="user.adoptedStreets" streets-show="user.adoptedStreets" />
+      <div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestIsPending">
+        <p>Your trash grabber request is being reviewed!</p>
+         We will keep you updated.
+      </div>
+      <div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestWasApproved">
+        <p>Your request was approved and a grabber is on its way!</p> We will keep you updated.
+      </div>
+      <div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestWasDelivered">
+        <p>Your trash grabber was delivered!</p> It is now much easier to keep your block clean.
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-offset-1 col-xs-12">
+        <div class="street-list-header">
+          <i class="fa fa-check-circle-o"></i> You are participating in picking up trash in following streets:
+          <ul class="list-inline user-profile-actions pull-right">
+            <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
+          </ul>
+        </div>
+        <streetslist streets-all="user.adoptedStreets" streets-show="user.adoptedStreets" />
+      </div>
     </div>
   </div>
   <div class="row" ng-show="!hasStreets()">

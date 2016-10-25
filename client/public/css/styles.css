@@ -1,12 +1,328 @@
-body{
-  font-family: Tahoma, Helvetica, Geneva, sans-serif;
+/* GLOBAL ################### */
+
+/* Color Key -----
+#18a0dc Blue
+#fdc442 Yellow
+#ebebeb Light Gray
+------------------ */
+
+html, body {
+  font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;
 }
 
-.center {
-	float: none;
-	margin: 0 auto;
-	text-align: center;
+
+h1,h2,h3,h4,h5,h6 {
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  line-height: 1.2;
+  font-weight: bold;
+  margin: 0 0 10px 0;
 }
+
+/* Set primary Typeface  */
+p, ul li, ol li, dl dt, dl dd, label, input, textarea, legend, select, option {
+  font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;
+}
+
+p, ul, ol, dl { font-size: 1.1em; line-height: 1.4;  }
+
+hr {
+  display: block;
+  clear: both;
+  height: 1px;
+  background: #ccc;
+  margin: 10px 0;
+  border: none;
+}
+
+
+/* Typography ----------------*/
+.headline-l { font-size:50px; }
+.headline-m { font-size:30px; }
+.headline-s { font-size:22px; }
+
+/* Helper Classes for Colors and Spacing  ############ */
+.is-hidden {
+  display: none!important;
+}
+
+.block { display: block!important; overflow:hidden; }
+
+.accessibly-hidden {
+  position: absolute !important;
+  display: block;
+  visibility: visible;
+  overflow: hidden;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  border: 0;
+  padding: 0;
+  clip: rect(0 0 0 0);
+}
+
+.bg-white { background-color: #ffffff!important;  }
+.bg-gray { background-color: #ebebeb!important;  }
+.bg-yellow { background-color: #fdc442!important; }
+.bg-blue { background-color: #18a0dc!important; }
+
+.bg-black-70 { background-color: rgba(0,0,0,0.7); }
+.bg-black-90 { background-color: rgba(0,0,0,0.9); }
+.text-white { color: #ffffff!important; }
+.text-yellow { color: #fdc442!important; }
+.text-blue { color: #18a0dc!important; }
+.text-black { color: #000!important; }
+.text-disclaimer { font-size:0.9em; line-height:1.1; font-style: italic;  }
+.text-link { font-size: 1.3em; }
+
+.padding-none { padding: 0!important; }
+.padding-20 { padding: 20px; }
+.padding-40 { padding: 40px; }
+.padding-top { padding-top: 20px; }
+.padding-bottom { padding-bottom: 20px; }
+.padding-top--small { padding-top: 10px; }
+.padding-bottom--small { padding-bottom: 10px; }
+.padding-top--large { padding-top: 40px; }
+.padding-bottom--large { padding-bottom: 40px; }
+
+/* Padding for just the vertical or horizontal axes */
+.padding-y { padding-top:20px; padding-bottom:20px; }
+.padding-y--small { padding-top:10px; padding-bottom:10px; }
+.padding-y--large { padding-top:40px; padding-bottom:40px; }
+.padding-x { padding-left:20px; padding-right:20px; }
+.padding-x--small { padding-left:10px; padding-right:10px; }
+.padding-x--large { padding-left:40px; padding-right:40px; }
+
+.margin-none { margin: 0!important; }
+.margin-20 { margin: 20px; }
+.margin-40 { margin: 40px; }
+.margin-top { margin-top: 20px; }
+.margin-bottom { margin-bottom: 20px; }
+.margin-top--small { margin-top: 10px; }
+.margin-bottom--small { margin-bottom: 10px; }
+.margin-top--large { margin-top: 40px; }
+.margin-bottom--large { margin-bottom: 40px; }
+
+/* Margins for just the vertical or horizontal axes */
+.margin-y { margin-top:20px; margin-bottom:20px; }
+.margin-y--small { margin-top:10px; margin-bottom:10px; }
+.margin-y--large { margin-top:40px; margin-bottom:40px; }
+.margin-x { margin-left:20px; margin-right:20px; }
+.margin-x--small { margin-left:10px; margin-right:10px; }
+.margin-x--large { margin-left:40px; margin-right:40px; }
+
+/* Add spacing above Bootstrap rows */
+.row-buffer { margin-top:20px; }
+.row-buffer--small { margin-top:10px; }
+.row-buffer--large { margin-top:40px; }
+
+/* Components ##################### */
+.btn {
+  border-radius: 0;
+  color:#000;
+  text-transform:uppercase;
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  font-size:16px;
+  font-weight:bold;
+  margin-right:10px;
+}
+
+.btn--gray {
+  background-color: #b0b0b0;
+}
+.btn--gray:hover {
+  background-color: #c1c1c1;
+}
+.btn--blue {
+  color: #fff;
+  background-color: #18a0dc;
+}
+.btn--blue:hover {
+  color: #fff;
+  background-color: #2eafe8;
+}
+.btn--yellow {
+  background-color: #fdc442;
+}
+.btn--yellow:hover {
+  background-color: #fdce64;
+}
+
+
+/* HEADER ##################### */
+
+.sticky-header {
+  display:block;
+  position: fixed;
+  overflow:hidden;
+  z-index:9999;
+  width:100%;
+  transition: all 500ms;
+}
+.is-sticky {
+  background: rgba(0,0,0,0.9);
+}
+
+.header-logo {
+  margin: 10px 0;
+}
+.main-logo {
+  display: inline-block;
+  /*overflow: hidden;*/
+  width: 100%;
+}
+.main-logo:hover, .main-logo:active {
+  text-decoration: none;
+}
+.main-logo h3 {
+  margin-bottom:0;
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  font-size: 1.2em;
+  text-transform: uppercase;
+  text-align: center;
+  text-decoration: none;
+}
+.main-logo img {
+  display: block;
+  margin:0 auto;
+  width: 50%;
+  height: auto;
+}
+/* MAIN NAV ################### */
+.main-nav a {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 2px 5px;
+  color: #fff;
+  text-transform: uppercase;
+  text-align: center;
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  font-size: 12px;
+  font-weight: bold;
+  text-decoration:none;
+}
+.main-nav a:hover {
+  color: #000;
+  text-decoration:none;
+  background: rgba(253, 196, 66, 0.8);
+}
+
+
+/* HOMEPAGE ################### */
+
+/* -- HERO ------------------ */
+
+.homepage-hero {
+  padding-top: 90px;
+  background:
+  linear-gradient(
+    rgba(0, 0, 0, 0.7),
+    rgba(0, 0, 0, 0.7)
+  ),
+  url(../img/homepage-hero.jpg);
+  background-size: cover;
+  background-position: center center;
+}
+
+.introduction p {
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  font-size: 1em;
+  line-height: 1.4;
+}
+
+/* -- SEARCH Section ----------- */
+
+.input-group-addon {
+  border-left: none;
+  border-right: none;
+}
+.input-group-addon:last-child {
+  border-right: 1px solid #ccc;
+  border-top-right-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+/* -- FAQ Section ----------- */
+.faq {
+  width:95%;
+}
+.faq-heading {
+  font-size: 1.1em;
+  line-height: 1.4;
+}
+
+/* -- PARTNERS Section ----------- */
+
+.partner-logo {
+  display: block;
+  padding: 20px;
+  overflow: hidden;
+  background: #ffffff;
+}
+.partner-logo img {
+  display: block;
+  margin:0 auto;
+  max-width: 100%;
+  height: auto;
+  max-height: 130px;
+}
+
+.partner-logo img.tall-logo {
+  width: auto;
+  max-height:80px;
+}
+
+.partner-logo--tall {
+  padding: 10px 20px;
+  min-height: 100px;
+}
+
+
+/* FOOTER ######################## */
+
+.footer-logo {
+  margin-bottom:0;
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+.social-icons {
+  text-align: center;
+}
+.social-icons a {
+  display:inline-block;
+  padding:10px;
+  margin:0 5px;
+  background: #727272;
+  color: #000;
+  text-align: center;
+  line-height: 1;
+  border-radius: 50%;
+}
+.social-icons i.fa {
+  width: 22px;
+  font-size: 22px;
+}
+
+.footer-contact {
+  text-align: center;
+}
+
+.footer-contact a,
+.footer-contact a:hover {
+  color:#fff;
+  text-decoration: none;
+}
+
+
+/* Component Styles   */
+
+.modal-dialog {
+  margin-top: 80px; /* Accommodate for sticky header */
+}
+
+
+/* Existing Styles ############################################## */
 
 .top-bar {
     background: #fdfdfd;
@@ -18,20 +334,9 @@ body{
     border-bottom: 1px solid #f5f5f5;
 }
 
-.site-info-message {
-  padding-left: 8px;
-  padding-right: 8px;
-  padding-top: 10px;
-  padding-bottom: 10px;
-}
-
 .pac-container {
     z-index: 1050;
     width: 100%;
-}
-
-.social-icons a {
-  color: #1FA2DC;
 }
 
 .header-title {
@@ -47,11 +352,13 @@ body{
   margin-left: 10px;
 }
 
+/*
 .header {
   padding: 15px 0px;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 }
+*/
 
 .user-profile {
   padding: 30px 0;
@@ -69,6 +376,15 @@ body{
 .user-profile .profile-actions {
   display: inline-block;
   margin-right: 5px;
+}
+
+.user-profile .tool-request {
+  margin-bottom: 10px;
+}
+
+.user-profile .tool-request-status {
+  background-color: #D5E7E8;
+  padding: 5px 5px 5px 5px;
 }
 
 .edit-form
@@ -92,23 +408,30 @@ body{
   margin-left: 15px;
 }
 
-.tab-contents
-{
-    border: 1px solid #ddd;
+
+.nav-tabs li {
+  font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+  font-size: 1.2em;
+  font-weight: bold;
+  border-top: 1px solid #ddd;
 }
 
-.tab-inner
-{
+.tab-content {
+  display:block;
+  overflow:hidden;
+    border: 1px solid #ddd;
+    border-top: none;
+}
+
+.tab-inner {
   background-color: #F2F8FF;
 }
 
-.address-search-form
-{
+.address-search-form {
   margin: 20px 10px;
 }
 
-.street-item-block
-{
+.street-item-block {
     border: 1px solid #E6E6E6;
     margin-bottom: 15px;
     border-color: #80cde5;
@@ -138,7 +461,7 @@ body{
     margin: 0 10px;
 }
 
-.login-or {
+/*.login-or {
     position: relative;
     font-size: 18px;
     color: #aaa;
@@ -153,7 +476,7 @@ body{
     height: 1px;
     margin-top: 0px !important;
     margin-bottom: 0px !important;
-}
+}*/
 
 .span-or {
     display: block;
@@ -167,65 +490,59 @@ body{
 }
 
 .faq {
-  padding: 5px;
+  width: 90%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.faq-section
-{
+.faq-section {
   margin-bottom: 0;
   border-color: #ddd;
 }
 
-.faq-heading
-{
+.faq-heading {
   color: #333;
-  background-color: #f5f5f5;
+  background-color: #fff;
   border-color: #ddd;
   padding: 10px 15px;
   margin-top: 0;
   margin-bottom: 0;
 }
 
-.faq-body
-{
+.faq-body {
   border-top: 1px solid #ddd;
   padding: 15px;
 }
 
-.prc-logo
-{
+.prc-logo {
   width: 250px;
   padding-bottom: 15px;
 }
 
-.thb-logo
-{
+.thb-logo {
   padding-bottom: 15px;
 }
 
-.partner-logo
-{
-  display: inline-block;
-}
-
 #cityMap {
-    height:700px;
-    z-index: 1;
+  height:700px;
+  z-index: 1;
 }
 
 .map-control {
   background-color: white;
   font-size: 16px;
 	cursor: pointer;
-  border: 1px solid black;
-  padding: 2px;
+  border: 1px solid #ccc;
+  padding: 5px;
+  margin-bottom:5px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
 .map-control-text {
   color: black;
 }
 
-.map-control a:hover {
+.map-control:hover {
 	background-color: #f4f4f4;
 }
 
@@ -238,18 +555,48 @@ body{
   {
     max-width: 300px;
   }
+
   .cfp-logo
   {
     width: 90px;
     padding-bottom: 15px;
   }
+
+  .grabber-image
+  {
+    width: 50px;
+    padding-right: 10px;
+  }
+
   .logo-container
   {
     float: none;
   }
+
   .logo-main {
     width: 150px;
   }
+  .main-logo img {
+    width: auto;
+    max-height: 65px;
+  }
+
+}
+
+/* Tablet or higher */
+@media (min-width: 760px) {
+  .header-logo {
+    margin: 0;
+  }
+
+  .main-nav {
+   margin-top: 10px;
+  }
+
+.homepage-hero {
+  padding-top: 60px;
+}
+
 }
 
 @media (min-width: 1000px) {
@@ -259,9 +606,32 @@ body{
     padding-bottom: 15px;
   }
 
+  .grabber-image
+  {
+    width: 80px;
+  }
+
   .logo-main {
     width: 250px;
     border-right: 1px solid #f5f5f5;
     padding-right: 5px;
+  }
+
+  .main-logo img {
+    width: 100%;
+  }
+
+  .main-nav a {
+    font-size: 1em;
+    padding: 10px;
+    margin: 0 10px;
+  }
+
+  /* Footer */
+  .footer-logo {
+    text-align: left;
+  }
+  .footer-contact {
+    text-align: right;
   }
 }

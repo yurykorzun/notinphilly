@@ -326,7 +326,7 @@
           var streetCenter = layerBounds.getCenter();
 
           street["streetCenter"] = streetCenter;
-          street["streetMapPreview"] = "https://api.mapbox.com/styles/v1/yurykorzun/cimv1ezcc00sqb8m7z8e3yeiz/static/" + streetCenter.lng + "," + streetCenter.lat + ",15/120x95?logo=false&access_token=pk.eyJ1IjoieXVyeWtvcnp1biIsImEiOiJjaWY2eTN2aHMwc3VncnptM3QxMzU3d3hxIn0.Mt0JldEMvvTdWW4GW2RSlQ";
+          street["streetMapPreview"] = "/api/external/mapbox-statcmap/" + streetCenter.lng + "/" + streetCenter.lat;
         }
 
         return streets;
@@ -372,8 +372,7 @@
 
       var openStreetLayerPopup = function(streetLongLat, properties) {
         deferredMap.promise.then(function(map) {
-            //https://maps.googleapis.com/maps/api/streetview?size=220x100&location=39.953798462302345,-75.19377532873054&fov=70&heading=170&pitch=10
-            var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=270x120&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&key=AIzaSyARRi6qzN2f_jQpkH_2nedCFpTY2ehOy4A";
+            var imageSrc = "/api/external/google-streetview-api/" + streetLongLat.lat + "/" + streetLongLat.lng;
 
             properties.imageSrc = imageSrc;
             var popup = L.popup({

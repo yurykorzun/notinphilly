@@ -17,14 +17,14 @@
         </div>
       </div>
     </div>
-    <div class="row offset" ng-show="tabs.isUsersActive">
+    <div class="row offset" ng-if="tabs.isUsersActive">
       <div class="col-md-12">
         <div ng-include src="'app/admin/users/admin-users-template.html'"></div>
       </div>
-    </div
-    <div class="row offset" ng-show="tabs.isInventoryActive">
+    </div>
+    <div class="row offset" ng-if="tabs.isInventoryActive">
       <div class="col-md-12">
-
+        <div ng-include src="'app/admin/inventory/admin-inventory-template.html'"></div>
       </div>
     </div>
   </div>

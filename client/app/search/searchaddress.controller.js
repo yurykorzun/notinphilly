@@ -48,6 +48,7 @@ angular.module('notinphillyServerApp')
         mapService.findStreetsNear($scope.searchAddress.location).then(function(searchResults)
         {
           $scope.searchAddress.streets = searchResults;
+
           setPagedStreets($scope.searchAddress.streets, $scope.searchAddress.streetsPage, $scope.searchAddress.streetsPageSize);
           $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
         });
