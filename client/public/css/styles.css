@@ -133,7 +133,7 @@ hr {
   background-color: #c1c1c1;
 }
 .btn--blue {
-  color: #fff;
+  color: #fff !important;
   background-color: #18a0dc;
 }
 .btn--blue:hover {
@@ -417,7 +417,16 @@ hr {
   font-family: "Open Sans", Helvetica, Geneva, sans-serif;
   font-size: 1.2em;
   font-weight: bold;
-  border-top: 1px solid #ddd;
+}
+
+.nav-tabs > li.active > a.nav-link
+{
+   background-color: #F2F8FF;
+}
+
+.nav-tabs > li:not(.active) > a.nav-link
+{
+   color:#717171;
 }
 
 .tab-content {
@@ -465,28 +474,11 @@ hr {
     margin: 0 10px;
 }
 
-/*.login-or {
-    position: relative;
-    font-size: 18px;
-    color: #aaa;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-.hr-or {
-    background-color: #cdcdcd;
-    height: 1px;
-    margin-top: 0px !important;
-    margin-bottom: 0px !important;
-}*/
-
 .span-or {
     display: block;
     position: absolute;
     left: 50%;
-    top: -2px;
+    top: 90px;
     margin-left: -25px;
     background-color: #fff;
     width: 50px;

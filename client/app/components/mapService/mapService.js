@@ -377,7 +377,7 @@
             properties.imageSrc = imageSrc;
             var popup = L.popup({
               keepInView: true,
-              minWidth: 240,
+              minWidth: 320,
               autoPan: false,
               properties: properties
             });

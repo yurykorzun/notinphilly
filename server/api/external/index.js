@@ -13,7 +13,7 @@ router.get('/google-streetview-api/:lat/:lng/',  function (req, res, next) {
   var lat = req.params.lat;
   var lng = req.params.lng;
 
-  res.redirect("https://maps.googleapis.com/maps/api/streetview?size=270x120&location=" +  lat + "," + lng  + "&key=" + settings.GOOGLE_API_KEY);
+  res.redirect("https://maps.googleapis.com/maps/api/streetview?size=300x120&location=" +  lat + "," + lng  + "&key=" + settings.GOOGLE_API_KEY);
 });
 
 router.get('/mapbox-statcmap/:lat/:lng/',  function (req, res, next) {
