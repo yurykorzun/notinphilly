@@ -10,11 +10,19 @@ angular.module('notinphillyServerApp')
       location: undefined
     };
 
-    $scope.autocompleteOptions = { country: 'us'};
+    $scope.autocompleteOptions = {
+      country: 'us',
+      bounds: new google.maps.LatLngBounds(new google.maps.LatLng(39.878320, -75.262921),
+                                           new google.maps.LatLng(40.137082, -75.014356))
+    };
     $scope.autocomplete = undefined;
     $scope.addressDetails = undefined;
 
+    $scope.noStreetsFound = false;
+
     $scope.$watch(function() { return $scope.addressDetails; }, function(searchDetails) {
+      $scope.noStreetsFound = false;
+
       if(searchDetails)
       {
         $scope.findStreet();
@@ -48,6 +56,7 @@ angular.module('notinphillyServerApp')
         mapService.findStreetsNear($scope.searchAddress.location).then(function(searchResults)
         {
           $scope.searchAddress.streets = searchResults;
+          $scope.noStreetsFound = searchResults.length === 0;
 
           setPagedStreets($scope.searchAddress.streets, $scope.searchAddress.streetsPage, $scope.searchAddress.streetsPageSize);
           $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
