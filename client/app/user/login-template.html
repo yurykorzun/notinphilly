@@ -7,7 +7,9 @@
         <p>We couldn't log you in. Please check that you entered your email address and password correctly.</p>
       </div>
       <div class="row">
-        <p>New members, please <a href="#" ng-click="loginForm.signup()">Sign up for an account</a></p>
+      <h4 class="headline-s">New Members</h4>
+        <p>New Members, please sign up for an account.</p>
+        <a href="#" class="btn btn--blue" ng-click="loginForm.signup()">Sign Me Up</a>
         <hr class="margin-y"/>
       </div>
       <div class="row">
@@ -21,7 +23,7 @@
           <input type="password" id="login-pass" class="form-control login-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input>
         </div>
         <div class="padding-top">
-          <button type="submit" class="btn btn--yellow" ng-click="loginForm.login(loginForm)">Log Me In</button>
+          <button type="submit" class="btn btn--yellow btn--sm" ng-click="loginForm.login(loginForm)">Log Me In</button>
         </div>
       </div>
     </div>

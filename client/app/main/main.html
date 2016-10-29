@@ -4,14 +4,13 @@
       <div class="row">
         <div class="col-sm-2 header-logo">
           <a href="/" class="main-logo">
-            <img ng-src="/public/img/logo-not-in-philly.png" alt="Description" class="img-responsive hidden-xs" />
-            <h3 class="headline-s text-white visible-xs"><span class="text-yellow">Not</span> In Philly</h3>
+            <img ng-src="/public/img/logo-not-in-philly.png" alt="Description" class="img-responsive" />
           </a>
         </div>
         <div class="col-sm-10 text-center main-nav">
           <a ng-click="main.openTab(tabs.SEARCH_TAB, true)">Find My Block</a>
           <a ng-click="main.openTab(tabs.MAP_TAB, true)">Explore the Map</a>
-          <a ng-click="main.openTab(tabs.LOGIN_TAB, true)" disable="!main.isLoginEnabled" ng-show="main.isLoginEnabled">Member Login</a>
+          <a ng-click="main.openTab(tabs.LOGIN_TAB, true)" disable="!main.isLoginEnabled" ng-show="main.isLoginEnabled">Sign Up / Log In</a>
           <a ng-click="main.openTab(tabs.PROFILE_TAB, true)" disable="!main.isUserProfileEnabled" ng-show="main.isUserProfileEnabled">My Account</a>
           <a ng-click="main.openTab(tabs.ABOUT_TAB, true)">About Us</a>
           <a href="http://prc.org/donate/">Donate</a>
@@ -63,7 +62,7 @@
               <a href="" ng-click="main.openTab(tabs.PROFILE_TAB)" class="nav-link">Profile</a>
             </li>
             <li ng-class="[ { 'active' : main.isTabOpen(tabs.LOGIN_TAB) } ]" ng-show="main.isLoginEnabled">
-              <a href="" ng-click="main.openTab(tabs.LOGIN_TAB)" class="nav-link">Members</a>
+              <a href="" ng-click="main.openTab(tabs.LOGIN_TAB)" class="nav-link">Sign Up / Log In</a>
             </li>
             <li ng-class="[ { 'active' : main.isTabOpen(tabs.ABOUT_TAB) } ]">
               <a href="" ng-click="main.openTab(tabs.ABOUT_TAB)" class="nav-link">About us</a>
