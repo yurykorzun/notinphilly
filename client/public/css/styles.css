@@ -542,6 +542,11 @@ hr {
 	background-color: #f4f4f4;
 }
 
+.map-label
+{
+  border-style: none;
+}
+
 .row-buffer--top {
   margin-top: 0.5em;
 }

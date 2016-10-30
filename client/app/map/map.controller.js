@@ -10,6 +10,16 @@ angular.module('notinphillyServerApp')
     });
 
     mapService.getMap().then(function(map) {
+      map.on('zoomend', function(zoomEvent) {
+        if (zoomEvent.target._zoom > 13)
+        {
+          mapService.showLabels();
+        }
+        else {
+          mapService.hideLabels();
+        }
+      });
+
       map.on('popupopen', function(popupEvent) {
 
         var setUpDefaultView = function(){

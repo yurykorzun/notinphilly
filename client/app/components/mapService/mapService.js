@@ -5,7 +5,9 @@
       var deferredMap = $q.defer();
 
       var mapLayerGroup = L.layerGroup();
+      var mapLabelsLayer = L.layerGroup();
       var mapStreetLayer = undefined;
+
       var mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
         neighborhoodMouseOutCallback : undefined,
@@ -46,13 +48,15 @@
         deferredMap.promise.then(function(map) {
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
             mapLayerGroup.clearLayers();
+            mapLabelsLayer.clearLayers();
+
             map.closePopup();
             setMapControls(map, false);
 
             var geoJsonLayer = L.geoJson(data, {
               onEachFeature: function (feature, layer){
                 layer.setStyle(setNeighborhoodColor(feature));
-                //setNeighborhoodLabel(feature, layer, map);
+                setNeighborhoodLabel(feature, layer, map);
                 layer.on({
                   mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
                   mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
@@ -135,6 +139,8 @@
 
         deferredMap.promise.then(function(map) {
           mapLayerGroup.clearLayers();
+          mapLabelsLayer.clearLayers();
+
           map.closePopup();
           setMapControls(map, true);
 
@@ -152,15 +158,18 @@
             var addressMarker = L.marker(addressLocation, {icon: addressIcon});
             mapLayerGroup.addLayer(addressMarker);
             addressMarker.addTo(map);
+
+            map.setView(addressLocation, 17, { animate: false });
           }
           else
           {
             var geoJsonLayer = L.geoJson(streets[0]);
             var layerBounds = geoJsonLayer.getBounds();
             addressLocation = layerBounds.getCenter();
+
+            map.setView(addressLocation, 17, { animate: false });
           }
 
-          map.setView(addressLocation, 17, { animate: false });
 
           var markerIcon = new LeafIcon({iconUrl: 'public/img/broom.png'});
 
@@ -240,11 +249,47 @@
         });
       };
 
+      self.zoomIn = function(zoomDelta) {
+        deferredMap.promise.then(function(map) {
+          map.zoomIn(zoomDelta);
+        });
+      };
+
+      self.showLabels = function() {
+        deferredMap.promise.then(function(map) {
+          if (!map.hasLayer(mapLabelsLayer))
+          {
+            mapLabelsLayer.addTo(map);
+          }
+        });
+      };
+
+      self.hideLabels = function() {
+        deferredMap.promise.then(function(map) {
+          if (map.hasLayer(mapLabelsLayer))
+          {
+            map.removeLayer(mapLabelsLayer);
+          }
+        });
+      };
+
+      var setNeighborhoodLabel = function(feature, layer, map)
+      {
+        var layerBounds = layer.getBounds();
+        var center = layerBounds.getCenter();
+
+        var myIcon = L.divIcon({html: '<div><h5>' + feature.properties.name + '<h5></div>', iconAnchor: [20, 15], className: 'map-label'});
+        var tooltipMarker = L.marker(center, {icon: myIcon, riseOnHover: true});
+        tooltipMarker.addTo(mapLabelsLayer);
+      }
+
       var loadStreets = function(neighborhoodId, map) {
         var deferredSetup = $q.defer();
 
         deferredMap.promise.then(function(map) {
           mapLayerGroup.clearLayers();
+          mapLabelsLayer.clearLayers();
+
           map.closePopup();
           setMapControls(map, true);
 
@@ -358,7 +403,7 @@
           deferredMap.promise.then(function(map) {
             var triggeredFeature = e.target.feature;
             var properties = triggeredFeature.properties;
-            var layerBounds = e.layer.getBounds();
+            var layerBounds = e.target.getBounds();
 
             var nhoodCenter = layerBounds.getCenter();
             nhoodCenter.lng = nhoodCenter.lng - 0.001;
