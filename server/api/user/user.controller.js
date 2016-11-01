@@ -236,7 +236,7 @@ var sendConfirmationEmail = function(req, user) {
     cc: 'notinphilly@gmail.com',
     to: req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
     subject: "NotInPhilly. Confirm registration.",
-    text: "Hi " + req.body.firstName + ", \n\n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
+    text: "Hi " + req.body.firstName + ", \n Just a reminder that have launched this project in the Walnut Hill neighborhood right now. Sign up wherever you live and we'll let you know when we expand to your neighborhood! \n\n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n \n #NotInPhilly Team"
   };
 
   mailgun.messages().send(data, function (error, body) {
