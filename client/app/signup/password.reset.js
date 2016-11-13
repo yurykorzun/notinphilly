@@ -11,7 +11,6 @@
                     success(function(data) {
                         $scope.isResetFailed = false;
                         $scope.isResetSuccess = true;
-                        $location.path('/');
                     }).error(function(err) {
                         $scope.errorMessage = err;
                         $scope.isResetFailed = true;
