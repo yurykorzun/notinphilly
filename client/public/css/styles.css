@@ -158,7 +158,7 @@ hr {
   display:block;
   position: fixed;
   overflow:hidden;
-  z-index:9999;
+  z-index:1049;
   width:100%;
   transition: all 500ms;
 }
@@ -594,9 +594,9 @@ hr {
    margin-top: 10px;
   }
 
-.homepage-hero {
-  padding-top: 60px;
-}
+  .homepage-hero {
+    padding-top: 60px;
+  }
 
 }
 

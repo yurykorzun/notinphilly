@@ -28,6 +28,18 @@
                                modalInstance.result.then(function (selectedItem) {
                                  $scope.selected = selectedItem;
                                 });
+        },
+        resetPassword: function()
+        {
+          var modalInstance = $uibModal.open({
+                                 templateUrl: 'app/signup/password-reset.html',
+                                 controller: 'ResetPasswordController',
+                                 resolve: {
+
+                                 }
+                               });
+                               modalInstance.result.then(function () {
+                               });
         }
       }
     }]);
