@@ -5,8 +5,9 @@ var StateModel    = require('../state/state.model');
 var StreetModel   = require('../street/streetSegment.model');
 var NeighborhoodModel       = require('../neighborhood/neighborhood.model');
 var toolRequestController   = require('../toolRequests/toolRequest.controller');
-var apiSettings           = require('../../config/apiSettings');
-var mailgun               = require('mailgun-js')({apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN});
+var apiSettings             = require('../../config/apiSettings');
+var passwordGenerator       = require('generate-password');
+var mailgun                 = require('mailgun-js')({apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN});
 
 exports.index = function(req, res) {
   UserModel.find({})
@@ -206,6 +207,55 @@ exports.changePassword = function(req, res, next) {
   }
 };
 
+exports.resetPassword = function(req, res, next) {
+    var userEmail = req.body.email;
+    var newPassword = passwordGenerator.generate({
+                                          length: 10,
+                                          numbers: true
+                                      });
+
+    UserModel.findOne({email: userEmail}, function(err, user) {
+      if (err) {
+        console.log(err);
+        res.status(500).send('There was an issue. Please try again later');
+      }
+      else if (!user)
+      {
+        res.status(200).send('Successfully completed');
+      }
+      else {
+        user.activationHash = uuid.v4();
+        console.log(newPassword);
+        user.password = newPassword;
+
+        user.save(function(err, updatedUser) {
+            if (err) {
+              console.log(err);
+              res.status(500).send('There was an issue. Please try again later');
+            }
+            else {
+              sendResetPasswordEmail(updatedUser, newPassword)
+              res.status(200).send('Successfully completed');
+            }
+        });
+      }
+    });
+};
+
+
+var sendResetPasswordEmail = function(user, newPassword) {
+  var data = {
+    from: 'noreply <noreply@notinphilly.org>',
+    cc: 'notinphilly@gmail.com',
+    to: user.firstName + " " + user.lastName + " " +"<"+ user.email +">",
+    subject: "NotInPhilly. Reset password confirmation.",
+    text: "Hi " + user.firstName + " \n Your temporary password for notinphilly.org is: " + newPassword + " \n Please don't forget to change your password after login. \n \n \n #NotInPhilly Team"
+  };
+
+  mailgun.messages().send(data, function (error, body) {
+  });
+}
+
 var checkForErrors = function(userInfo) {
   if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
     return "Please enter email address";
@@ -351,20 +401,6 @@ exports.destroy = function(req, res) {
   }
 };
 
-exports.resetPassword = function(req, res) {
-    var confirmId = req.params.activationId;
-    var password = req.params.password;
-    var confirmPassword = req.params.confirmPassword;
-
-    if (password == confirmPassword) {
-       UserModel.findOne({activationHash: confirmId}, function(err, user){
-           if (err) return next(err);
-           if (!user) return res.status(401).send('Could not find the user with activation Tag' + req.param.confirmId);
-       });
-    } else {
-
-    }
-}
 
 exports.activate = function(req, res) {
   var confirmId = req.params.activationId;

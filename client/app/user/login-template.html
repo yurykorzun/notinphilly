@@ -2,7 +2,7 @@
 <div class="row padding-y--large">
   <fieldset>
   <legend class="accessibly-hidden">Member Login Form</legend>
-    <div class="col-sm-10 col-sm-offset-1">
+    <div class="col-xs-11 col-sm-10 col-md-8 col-sm-offset-1">
       <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">
         <p>We couldn't log you in. Please check that you entered your email address and password correctly.</p>
       </div>
@@ -23,7 +23,12 @@
           <input type="password" id="login-pass" class="form-control login-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input>
         </div>
         <div class="padding-top">
-          <button type="submit" class="btn btn--yellow btn--sm" ng-click="loginForm.login(loginForm)">Log Me In</button>
+          <div>
+            <button type="submit" class="btn btn--yellow btn--sm" ng-click="loginForm.login(loginForm)">Log Me In</button>
+          </div>
+          <div class="margin-top--small">
+            <a href="" ng-click="loginForm.resetPassword()">Forgot password?</a>
+          </div>
         </div>
       </div>
     </div>
