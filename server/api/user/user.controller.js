@@ -225,7 +225,6 @@ exports.resetPassword = function(req, res, next) {
       }
       else {
         user.activationHash = uuid.v4();
-        console.log(newPassword);
         user.password = newPassword;
 
         user.save(function(err, updatedUser) {
