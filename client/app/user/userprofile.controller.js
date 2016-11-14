@@ -27,6 +27,7 @@
           $scope.userProfile.enableToolRequest = $scope.userProfile.isAdmin;
           $http.get("api/users/current/").success(function(data, status) {
             $scope.user = data;
+            $scope.errorMessage = undefined;
 
             if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
             SetupUserStreets();
@@ -35,11 +36,12 @@
             $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
           },
           function(err) {
+            $scope.errorMessage = 'Something went wrong. Please try again later.';
             $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
           });
         }
         else {
-          $scope.errorMessage = "You aren't authorized";
+          $scope.errorMessage = "You are not authorized to view or edit the user profile";
         }
       }
 
