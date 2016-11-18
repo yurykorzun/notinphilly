@@ -1,0 +1,19 @@
+<div ng-controller="AdminInventoryController">
+  <div class="inventory-section">
+    <div class="row">
+      <div class="col-md-2">
+        <button ng-click="addTool()">Add tool</button>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-11 col-md-6 pull-left">
+        <div ui-grid="gridInventoryOptions" class="admin-inventory-grid"></div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-11 col-md-12 pull-left">
+      <div ui-grid="gridToolRequestOptions" ui-grid-pagination class="admin-requests-grid" ui-grid-resize-columns></div>
+    </div>
+  </div>
+</div>

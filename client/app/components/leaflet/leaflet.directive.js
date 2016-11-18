@@ -7,18 +7,24 @@
       template: '<div></div>',
       controller: function($scope) {
 
-      },
-      link: function(scope, element, attributes){
-        settingsService.getSettings().then(function(settings) {
-          scope.mapId =  attributes.id;
-          $(element).attr("id", scope.mapId);
+    },
+    link: function(scope, element, attributes){
+      settingsService.getMapSettings().then(function(settings) {
+        scope.mapId =  attributes.id;
+        $(element).attr("id", scope.mapId);
 
-          var map =  L.mapbox.map(scope.mapId, settings.MAP_BOX_MAP_ID, {
-            accessToken: settings.MAP_BOX_API_KEY,
-            center: APP_CONSTS.MAP_CENTER,
-            zoom: 13,
-            zoomControl: false
-          });
+        var map = L.map(scope.mapId, {
+                          center: [settings.center.lng, settings.center.lat],
+                          zoom: 13,
+                          zoomControl: false
+                        });
+
+        L.tileLayer('https://{s}.tiles.mapbox.com/v4/{mapId}/{z}/{x}/{y}.png?access_token={accessToken}', {
+            attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
+            subdomains: ['a','b','c','d'],
+            mapId: settings.mapId,
+            accessToken: settings.accessToken
+        }).addTo(map);
 
           mapService.setMap(map);
         });

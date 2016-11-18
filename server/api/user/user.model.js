@@ -1,30 +1,37 @@
-var mongoose = require('mongoose');
-var crypto   = require('bcrypt-nodejs');
-var uuid = require('uuid');
-var Schema = mongoose.Schema;
+var mongoose      = require('mongoose');
+var timestamps    = require('mongoose-timestamp');
+var crypto        = require('bcrypt-nodejs');
+var uuid          = require('uuid');
+var StateModel    = require('../state/state.model');
+var Schema        = mongoose.Schema;
 
 // define our user schema
 var userSchema = new Schema({
-  firstName: { type : String, default: '' },
+  firstName: { type : String, default: '', required: [true, 'First name is requred'] },
   middleName: { type : String, default: '' },
-  lastName: { type : String, default: '' },
+  lastName: { type : String, default: '', required: [true, 'Last name is requred'] },
   birthDate: { type : Date, default: '' },
   phoneNumber: { type : String, default: '' },
   businessName: { type : String, default: '' },
-  addressName: { type : String, default: '' },
+  fullAddress: { type : String, default: '' },
+  addressLocation: {},
   apartmentNumber: { type : String, default: '' },
   zip: { type : String, default: '' },
   city: { type : String, default: '' },
   isDistributer: {  type: Boolean, default: false },
+  grabberRequested: {  type: Boolean, default: false },
+  grabberDelivered: {  type: Boolean, default: false },
   state: {
     type: Number,
     ref: 'State'
   },
-  email: { type : String, default: '' },
+  email: { type : String, default: '', required: [true, 'Email is requred'] },
   roles: [{
     type: Number,
     ref: 'Role'
   }],
+  streetNumber: { type : String, default: '' },
+  streetName: { type : String, default: '' },
   hashedPassword: { type: String, default: '' },
   activationHash: String,
   salt: { type: String, default: '' },
@@ -35,12 +42,13 @@ var userSchema = new Schema({
   google: {},
   adoptedStreets: [{
     type: Schema.Types.ObjectId,
-    ref: 'StreetSegment'}],
-  createDate: { type : Date, default: Date.now }
+    ref: 'StreetSegment'}]
 },
 {
   collection: 'userProfiles'
 });
+
+userSchema.plugin(timestamps);
 
 userSchema
     .virtual('password')
@@ -48,10 +56,8 @@ userSchema
         this._password = password;
         this.salt = this.makeSalt();
         this.hashedPassword = this.encryptPassword(password);
-
         //also store an activation hash and remove any "/", so we can pass it as parameter into URL for activation
         this.activationHash = uuid.v4();
-        console.log("activationHash " + this.activationHash);
     })
     .get(function() {
         return this._password;
@@ -65,20 +71,33 @@ userSchema
         'fullname': this.firstName + ' ' + this.lastName,
         'email': this.email,
         'roles': this.roles,
-        'isAdmin': this.roles.indexOf(1) > -1
+        'isAdmin': this.roles.length > 0 && this.roles.indexOf(1) > -1
       };
+    });
+
+userSchema
+    .virtual('fullName')
+    .get(function () {
+      return (this.firstName ? this.firstName + " " : "" ) + (this.lastName ? this.lastName : "" );
     });
 
 userSchema
     .virtual('address')
     .get(function () {
-      return this.addressName + " " + this.apartmentNumber;
+      return (
+              (this.streetNumber ? this.streetNumber + " " : "" )
+              + (this.streetName ? this.streetName + ", " : "" )
+              + (this.city ? this.city + " " : "")
+              + (this.state ? this.state.abbrev + " " : "")
+              + (this.zip ? this.zip + " " : "")
+              + (this.apartmentNumber ? this.apartmentNumber : "")
+            );
     });
 
 userSchema
     .virtual('isAdmin')
     .get(function () {
-      return this.roles.indexOf(1) > -1;
+      return this.roles.length > 0 && this.roles.indexOf(1) > -1;
     });
 
 /*userSchema.path('email').validate(function(value, respond) {
@@ -95,7 +114,7 @@ userSchema
   .get(function() {
       return {
           '_id': this._id,
-          'role': this.role
+          'roles': this.roles
       };
   });
 
