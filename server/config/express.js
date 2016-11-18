@@ -28,7 +28,7 @@ module.exports = function(app, secretToken) {
     secret: secretToken,
     cookie: {
       secure : false,
-      maxAge: 3600000
+      maxAge: 15 * 24 * 60 * 60 * 1000
     },
     store: new mongoStore({
         mongooseConnection: mongoose.connection,

@@ -4,11 +4,11 @@ exports.isAuthenticated = function (req, res, next) {
       next();
     }
     else {
-      res.send(400, "Not logged in");
+      res.sendStatus(400, "Not logged in");
     }
   }
   else {
-    res.send(401);
+    res.sendStatus(401);
   }
 };
 
@@ -34,6 +34,6 @@ exports.isAdmin = function (req, res, next) {
     }
   }
   else {
-    res.send(401);
+    res.sendStatus(401);
   }
 }

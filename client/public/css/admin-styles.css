@@ -1,7 +1,41 @@
 .root-admin {
-  margin: 10px;
+  margin: 10px 10px 10px 10px;
 }
-.grid {
-  margin: 10px;
-  width: 80%;
+
+.active-tab {
+  font-weight: bold;
+  background-color: #cccccc;
+}
+
+.top-menu {
+  margin-bottom: 10px;
+  border: 1px solid #8c8c8c;
+}
+
+.inactive-tab {
+  font-weight: bold;
+}
+
+.admin-users-grid {
+  margin: 10px 10px 10px 10px;
+  height: 850px;
+}
+
+.admin-inventory-grid {
+  margin-top: 10px;
+  height: 250px;
+}
+
+.grid-highlighted-cell {
+  font-weight: bold;
+}
+
+
+.inventory-section {
+  margin: 10px 10px 10px 10px;
+}
+
+.admin-requests-grid {
+  margin: 10px 10px 10px 10px;
+  height: 650px;
 }

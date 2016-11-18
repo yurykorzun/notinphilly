@@ -5,7 +5,9 @@
       var deferredMap = $q.defer();
 
       var mapLayerGroup = L.layerGroup();
+      var mapLabelsLayer = L.layerGroup();
       var mapStreetLayer = undefined;
+
       var mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
         neighborhoodMouseOutCallback : undefined,
@@ -46,13 +48,15 @@
         deferredMap.promise.then(function(map) {
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
             mapLayerGroup.clearLayers();
+            mapLabelsLayer.clearLayers();
+
             map.closePopup();
             setMapControls(map, false);
 
             var geoJsonLayer = L.geoJson(data, {
               onEachFeature: function (feature, layer){
                 layer.setStyle(setNeighborhoodColor(feature));
-                //setNeighborhoodLabel(feature, layer, map);
+                setNeighborhoodLabel(feature, layer, map);
                 layer.on({
                   mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
                   mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
@@ -135,34 +139,39 @@
 
         deferredMap.promise.then(function(map) {
           mapLayerGroup.clearLayers();
+          mapLabelsLayer.clearLayers();
+
           map.closePopup();
           setMapControls(map, true);
 
           var LeafIcon = L.Icon.extend({
             options: {
-              iconSize:     [32, 32], // size of the icon
-              iconAnchor:   [16, 32], // point of the icon which will correspond to marker's location
-              popupAnchor:  [16, 0] // point from which the popup should open relative to the iconAnchor
+              iconSize:     [40, 40], // size of the icon
+              iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
+              popupAnchor:  [20, 0] // point from which the popup should open relative to the iconAnchor
             }
           });
 
           if(addressLocation)
           {
-            var addressIcon = new LeafIcon({iconUrl: 'public/img/address_house.png'});
+            var addressIcon = new LeafIcon({iconUrl: 'public/img/home.png'});
             var addressMarker = L.marker(addressLocation, {icon: addressIcon});
             mapLayerGroup.addLayer(addressMarker);
             addressMarker.addTo(map);
+
+            map.setView(addressLocation, 17, { animate: false });
           }
           else
           {
             var geoJsonLayer = L.geoJson(streets[0]);
             var layerBounds = geoJsonLayer.getBounds();
             addressLocation = layerBounds.getCenter();
+
+            map.setView(addressLocation, 17, { animate: false });
           }
 
-          map.setView(addressLocation, 17, { animate: false });
 
-          var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
+          var markerIcon = new LeafIcon({iconUrl: 'public/img/broom.png'});
 
           var streetLayer = createStreetLayer(streets);
           mapStreetLayer = streetLayer;
@@ -240,11 +249,47 @@
         });
       };
 
+      self.zoomIn = function(zoomDelta) {
+        deferredMap.promise.then(function(map) {
+          map.zoomIn(zoomDelta);
+        });
+      };
+
+      self.showLabels = function() {
+        deferredMap.promise.then(function(map) {
+          if (!map.hasLayer(mapLabelsLayer))
+          {
+            mapLabelsLayer.addTo(map);
+          }
+        });
+      };
+
+      self.hideLabels = function() {
+        deferredMap.promise.then(function(map) {
+          if (map.hasLayer(mapLabelsLayer))
+          {
+            map.removeLayer(mapLabelsLayer);
+          }
+        });
+      };
+
+      var setNeighborhoodLabel = function(feature, layer, map)
+      {
+        var layerBounds = layer.getBounds();
+        var center = layerBounds.getCenter();
+
+        var myIcon = L.divIcon({html: '<div><h5>' + feature.properties.name + '<h5></div>', iconAnchor: [20, 15], className: 'map-label'});
+        var tooltipMarker = L.marker(center, {icon: myIcon, riseOnHover: true});
+        tooltipMarker.addTo(mapLabelsLayer);
+      }
+
       var loadStreets = function(neighborhoodId, map) {
         var deferredSetup = $q.defer();
 
         deferredMap.promise.then(function(map) {
           mapLayerGroup.clearLayers();
+          mapLabelsLayer.clearLayers();
+
           map.closePopup();
           setMapControls(map, true);
 
@@ -326,7 +371,7 @@
           var streetCenter = layerBounds.getCenter();
 
           street["streetCenter"] = streetCenter;
-          street["streetMapPreview"] = "https://api.mapbox.com/styles/v1/yurykorzun/cimv1ezcc00sqb8m7z8e3yeiz/static/" + streetCenter.lng + "," + streetCenter.lat + ",15/120x95?logo=false&access_token=pk.eyJ1IjoieXVyeWtvcnp1biIsImEiOiJjaWY2eTN2aHMwc3VncnptM3QxMzU3d3hxIn0.Mt0JldEMvvTdWW4GW2RSlQ";
+          street["streetMapPreview"] = "/api/external/mapbox-statcmap/" + streetCenter.lng + "/" + streetCenter.lat;
         }
 
         return streets;
@@ -358,7 +403,7 @@
           deferredMap.promise.then(function(map) {
             var triggeredFeature = e.target.feature;
             var properties = triggeredFeature.properties;
-            var layerBounds = e.layer.getBounds();
+            var layerBounds = e.target.getBounds();
 
             var nhoodCenter = layerBounds.getCenter();
             nhoodCenter.lng = nhoodCenter.lng - 0.001;
@@ -372,13 +417,12 @@
 
       var openStreetLayerPopup = function(streetLongLat, properties) {
         deferredMap.promise.then(function(map) {
-            //https://maps.googleapis.com/maps/api/streetview?size=220x100&location=39.953798462302345,-75.19377532873054&fov=70&heading=170&pitch=10
-            var imageSrc = "https://maps.googleapis.com/maps/api/streetview?size=270x120&location=" +  streetLongLat.lat + "," + streetLongLat.lng  + "&key=AIzaSyARRi6qzN2f_jQpkH_2nedCFpTY2ehOy4A";
+            var imageSrc = "/api/external/google-streetview-api/" + streetLongLat.lat + "/" + streetLongLat.lng;
 
             properties.imageSrc = imageSrc;
             var popup = L.popup({
               keepInView: true,
-              minWidth: 240,
+              minWidth: 320,
               autoPan: false,
               properties: properties
             });

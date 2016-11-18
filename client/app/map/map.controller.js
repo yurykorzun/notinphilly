@@ -2,16 +2,24 @@
 angular.module('notinphillyServerApp')
   .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$timeout', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, $timeout, mapService, APP_EVENTS) {
     $scope.$on(APP_EVENTS.OPENED_EXPLORE, function(event) {
+      $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
         $timeout(function() {
             mapService.resetSize();
-        }, 30);
-    });
-
-    $scope.$on(APP_EVENTS.CLOSED_EXPLORE, function(event) {
-
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+        }, 400);
     });
 
     mapService.getMap().then(function(map) {
+      map.on('zoomend', function(zoomEvent) {
+        if (zoomEvent.target._zoom > 13)
+        {
+          mapService.showLabels();
+        }
+        else {
+          mapService.hideLabels();
+        }
+      });
+
       map.on('popupopen', function(popupEvent) {
 
         var setUpDefaultView = function(){
@@ -41,7 +49,7 @@ angular.module('notinphillyServerApp')
 
         var newScope = $scope.$new();
         newScope.totalAdopters = properties.totalAdopters;
-        newScope.address = (properties.hundred ? properties.hundred : '')  + ' ' + properties.name + ' ' + properties.zipCode;
+        newScope.address = (properties.hundred ? properties.hundred + ' block of ' : '')  + ' ' + properties.name + ' ' + properties.zipCode;
         newScope.streetId = properties.id;
         newScope.imageSrc = properties.imageSrc;
 

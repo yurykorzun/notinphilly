@@ -1,27 +1,181 @@
-<div ng-controller="UserProfileController">
- <div class="row menu-userProfile">
-     <div class="col-sm-10 col-md-10">
-        <div class="row">
-          <div class="pull-left">
-            <h4>{{userProfile.fullName}}</h4>
+<div class="user-profile" ng-controller="UserProfileController">
+ <div class="row">
+   <div class="col-xs-offset-1 col-xs-11">
+    <div class="row">
+      <div>
+         <div class="heading"><h4><i class="fa fa-user" aria-hidden="true"></i> {{user.fullName}}</h4></div>
+         <div class="heading"><a href="" ng-click="logout()">Log out <i class="fa fa-sign-out"></i></a></div>
+      </div>
+      <div class="row">
+        <div class="col-md-11 col-sm-10 col-xs-12">
+          <div class="profile-actions">
+            <button class="btn btn-success" ng-show="user.fullAddress || user.addressLocation" ng-click="showBlock()"><i class="fa fa-map-o"></i> Your block</button>
           </div>
-          <div class="pull-left menu-userProfile-logout">
-            <a href ng-click="userProfile.logout()">Logout <i class="fa fa-sign-out"></i></a>
+          <div ng-hide="userProfile.isEditing" class="profile-actions">
+            <button class="btn btn-primary" ng-click="toggleEdit()"><i class="fa fa-pencil"></i> Edit profile</button>
+          </div>
+          <div ng-show="userProfile.isAdmin" class="profile-actions">
+            <button class="btn btn-primary" ng-click="navigateToAdmin()"><i class="fa fa-gears"></i> Admin</button>
           </div>
         </div>
-        <div class="row">
-         <small><i class="fa fa-map-marker"/> {{userProfile.address}}</small>
+      </div>
+    </div>
+
+    <address ng-show="!userProfile.isEditing">
+      <div ng-show="user.email"  class="info"><i class="fa fa-envelope" aria-hidden="true"></i> {{user.email}}</div>
+      <div ng-show="user.address" class="info"><i class="fa fa-map-pin" aria-hidden="true"></i> {{user.address}}</div>
+      <div ng-show="user.aptNumber" class="info"><i class="fa fa-building" aria-hidden="true"></i> Apt. {{user.aptNumber}}<br></div>
+    </address>
+
+    <form class="edit-form" name="passwordForm" ng-show="userProfile.isChangingPassword" novalidate>
+      <div class="row" ng-show="errorMessage">
+        <div class="alert alert-danger">{{ errorMessage }}</div>
+      </div>
+      <div class="row">
+        <div ng-class="['col-xs-4', 'form-group', { 'has-error': passwordForm.oldPassword.$invalid && !passwordForm.oldPassword.$pristine }]">
+          <label for="oldPassword" class="control-label">Old password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="oldPassword"  type="password" ng-model="passwordChange.oldPassword" ng-class="['form-control', 'input-sm', { 'has-error': passwordForm.oldPassword.$error.required }]" placeholder="First Name" type="text" required="">
+          <p ng-show="passwordForm.oldPassword.$invalid && !passwordForm.oldPassword.$pristine" class="help-block">Old password is required.</p>
         </div>
-        <div class="row">
-            <i class="fa fa-envelope"></i> {{userProfile.email}}
+        <div ng-class="['col-xs-4', 'form-group', { 'has-error': passwordForm.newPassword.$invalid && !passwordForm.newPassword.$pristine }]">
+          <label for="newPassword" class="control-label">New password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="newPassword"  type="password" ng-model="passwordChange.newPassword" ng-class="['form-control', 'input-sm', { 'has-error': passwordForm.newPassword.$error.required }]" placeholder="Last Name" type="text" required="">
+          <p ng-show="passwordForm.newPassword.$invalid && !passwordForm.newPassword.$pristine" class="help-block">Password is required.</p>
         </div>
-        <div class="row offset" ng-show="hasStreets()">
-            <i class="fa fa-check-circle-o"></i> Participating in streets:
-            <div class="col-md-3 pull-right">
-              <a href="" ng-click="switchToMap()">Veiw on map</a>
+        <div ng-class="['col-xs-4', 'form-group', { 'has-error': passwordForm.passwordConfirm.$invalid && !passwordForm.passwordConfirm.$pristine }]">
+            <label for="passwordConfirm" class="control-label">Confirm Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+            <input type="password" name="passwordConfirm" ng-model="User.passwordConfirm" class="form-control input-sm" placeholder="Confirm password" required equal="{{passwordChange.newPassword}}">
+            <p ng-show="passwordForm.passwordConfirm.$error.required && !passwordForm.passwordConfirm.$pristine" class="help-block">Password confirmation is required.</p>
+            <p ng-show="passwordForm.passwordConfirm.$error.equal && !passwordForm.passwordConfirm.$pristine" class="help-block">Password must match.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-actions form-group">
+            <button type="button" class="btn btn-default btn-cancel pull-right" ng-click="toggleChangePassword()">Cancel</button>
+            <button type="button" class="btn btn-default pull-right" ng-disabled="!passwordForm.$dirty || passwordForm.$invalid" ng-click="changePassword()">Change Password</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+ <div class="row">
+   <div class="col-xs-12 col-md-offset-1 col-md-11">
+    <form class="edit-form" name="editForm" ng-show="userProfile.isEditing" novalidate>
+      <div class="row" ng-show="errorMessage">
+        <div class="alert alert-danger">{{ errorMessage }}</div>
+      </div>
+      <div class="row">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.firstName.$invalid && !editForm.firstName.$pristine }]">
+          <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="firstName" ng-model="user.firstName" ng-class="['form-control', 'input-sm', { 'has-error': editForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
+          <p ng-show="editForm.firstName.$invalid && !editForm.firstName.$pristine" class="help-block">First Name is required.</p>
+        </div>
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.lastName.$invalid && !editForm.lastName.$pristine }]">
+          <label for="lastName" class="control-label">Last Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="lastName" ng-model="user.lastName" ng-class="['form-control', 'input-sm', { 'has-error': editForm.lastName.$error.required }]" placeholder="Last Name" type="text" required="">
+          <p ng-show="editForm.lastName.$invalid && !editForm.lastName.$pristine" class="help-block">Last Name is required.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.email.$invalid && !editForm.email.$pristine }]">
+          <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="email" ng-model="user.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+          <p ng-show="editForm.email.$invalid && !editForm.email.$pristine" class="help-block">Email is required.</p>
+        </div>
+        <div class="col-xs-6 form-group">
+          <label for="phone" class="control-label">Phone Number</label>
+          <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="user.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel"/>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12 form-group">
+          <label for="businessName" class="control-label">Business/Organization</label>
+          <input name="businessName" ng-model="user.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+        </div>
+      </div>
+      <div class="row">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.fullAddress.$invalid && !signinForm.fullAddress.$pristine }]">
+          <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+          <input name="fullAddress" search-autocomplete ng-model="user.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required=""/>
+          <p ng-show="editForm.fullAddress.$invalid && !editForm.fullAddress.$pristine" class="help-block">Address is required.</p>
+        </div>
+        <div class="col-xs-6 form-group">
+          <label for="apartmentNumber" class="control-label">Apartment Number</label>
+          <input name="apartmentNumber" ng-model="user.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="form-group">
+            <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="user.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+          <div class="form-actions form-group">
+            <div class="col-xs-4 col-md-5">
+              <button type="button" class="btn btn-default pull-left" ng-click="toggleChangePassword()">Change Password</button>
             </div>
-            <streetslist streets="userProfile.adoptedStreets"/>
+            <div class="col-xs-8 col-md-7">
+              <button type="button" class="btn btn-default btn-cancel pull-right" ng-click="toggleEdit()">Cancel</button>
+              <button type="submit" class="btn btn-primary pull-right" ng-disabled="!editForm.$dirty || editForm.$invalid" ng-click="update()">Update profile</button>
+            </div>
+          </div>
         </div>
-     </div>
- </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+  <div class="row" ng-show="hasStreets()">
+    <div class="row tool-request" ng-if="userProfile.enableToolRequest">
+      <div class="col-xs-offset-1 col-xs-11" ng-if="userProfile.toolRequestAvailable">
+        <div class="row tool-request-status">
+          <div class="col-xs-2">
+            <img src="public/img/grabber.png" class="grabber-image"/>
+          </div>
+          <div class="col-xs-10">
+            <p>In order to help you keeping your block clean, we can provide you with a trash grabber.</p>
+            <div>It's an amazing tool that makes trash cleanup very simple!</div>
+          </div>
+          <div class="row">
+            <div class="col-xs-4 col-xs-offset-3">
+              <button class="btn btn-success" ng-click="makeToolRequest()">Claim your trash grabber!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestIsPending">
+        <p>Your trash grabber request is being reviewed!</p>
+         We will keep you updated.
+      </div>
+      <div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestWasApproved">
+        <p>Your request was approved and a grabber is on its way!</p> We will keep you updated.
+      </div>
+      <div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestWasDelivered">
+        <p>Your trash grabber was delivered!</p> It is now much easier to keep your block clean.
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-offset-1 col-xs-12">
+        <div class="street-list-header">
+          <i class="fa fa-check-circle-o"></i> You are participating in picking up trash in following streets:
+          <ul class="list-inline user-profile-actions pull-right">
+            <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
+          </ul>
+        </div>
+        <streetslist streets-all="user.adoptedStreets" streets-show="user.adoptedStreets" />
+      </div>
+    </div>
+  </div>
+  <div class="row" ng-show="!hasStreets()">
+    <div class="col-xs-offset-1 col-xs-11">
+      <div class="street-list-header">
+        You currently don't participate in any streets. Find <a href="" ng-click="showBlock()">streets in your block</a>.
+      </div>
+      <streetslist streets="user.adoptedStreets"/>
+    </div>
+  </div>
+</div>
 </div>

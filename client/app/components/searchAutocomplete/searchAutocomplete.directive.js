@@ -27,7 +27,7 @@
  *    }
 **/
 (function () {
-  angular.module('notinphillyServerApp').directive('searchAutocomplete', function() {
+  angular.module('notinphillyServerApp').directive('searchAutocomplete', ['placeSearchService', function (placeSearchService)  {
     return {
       require: 'ngModel',
       scope: {
@@ -89,7 +89,7 @@
 
               scope.$apply(function() {
 
-                scope.details = result;
+                scope.details = placeSearchService.parseAddressResult(result);
 
                 controller.$setViewValue(element.val());
               });
@@ -130,7 +130,7 @@
                           controller.$setViewValue(detailsResult.formatted_address);
                           element.val(detailsResult.formatted_address);
 
-                          scope.details = detailsResult;
+                          scope.details = placeSearchService.parseAddressResult(detailsResult);
 
                           //on focusout the value reverts, need to set it again.
                           var watchFocusOut = element.on('focusout', function(event) {
@@ -162,5 +162,5 @@
 
       }
     };
-  });
+   }]);
 })();

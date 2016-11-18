@@ -1,16 +1,17 @@
 (function () {
   var  app = angular.module('notinphillyServerApp', [
-    'ngRoute',
-    'ui.bootstrap',
-    'ngAnimate',
-    'treasure-overlay-spinner',
-    'ui.select',
-    'ngCookies',
-    'ui.mask',
-    'ngSanitize',
-    'ui.grid',
-    'ui.grid.pagination'
-  ]);
+      'ngRoute',
+      'ui.bootstrap',
+      'ngAnimate',
+      'treasure-overlay-spinner',
+      'ngCookies',
+      'ui.mask',
+      'ngSanitize',
+      'selectize',
+      'ui.grid',
+      'ui.grid.pagination',
+      'ui.grid.resizeColumns'
+    ])
 
     app.constant("APP_EVENTS", {
         "SPINNER_START": "spinnerStart",
@@ -22,7 +23,6 @@
         "OPENED_SEARCH": "openedSearch",
         "OPEN_EXPLORE": "openExplore",
         "OPENED_EXPLORE": "openedExplore",
-        "CLOSED_EXPLORE": "closedExplore",
         "ENTER_NEIGBORHOOD_LEVEL": "enterNeigborhoodLevel",
         "ENTER_STREET_LEVEL": "enterStreetLevel",
         "STREET_ADOPTED": "streetAdopted",

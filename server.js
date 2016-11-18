@@ -2,15 +2,14 @@
 var express        = require('express');
 var mongoose       = require('mongoose');
 var app            = express();
-var settings       = require('./server/config/settings');
+var serverSettings = require('./server/config/serverSettings');
 
 // set our port
-var port = settings.serverSettings.HTTP_PORT;
-var ip = settings.serverSettings.HTTP_IP;
-var secretToken = 'notinphillynotinphilly';
+var port = serverSettings.HTTP_PORT;
+var ip = serverSettings.HTTP_IP;
 
 // configuration ===========================================
-require('./server/config/express')(app, secretToken);
+require('./server/config/express')(app, serverSettings.SECRET_TOKEN);
 require('./server/config/db')(app);
 require('./server/config/passport')(app);
 
