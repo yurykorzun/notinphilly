@@ -75,7 +75,7 @@ exports.create = function(req, res, next) {
 
         if(foundState)
         {
-          var User = mongoose.model('User', UserModel);
+          var User = mongoose.model('User');
           var newUser = new User({
               firstName: req.body.firstName,
               middleName: req.body.middleName,

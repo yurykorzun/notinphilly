@@ -6,3 +6,4 @@ client/public/libs
 
 # openshift stuff
 .openshift
+.vscode/

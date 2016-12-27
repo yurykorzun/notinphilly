@@ -14,9 +14,13 @@
         });
       }
 
-      /*$scope.$watch(function() { return $scope.addressDetails; }, function(searchDetails) {
+      $scope.$watch(function() { return $scope.addressDetails; }, function(searchDetails) {
 
-      });*/
+      });
+
+      $scope.addressChange = function() {
+        $scope.addressDetails = undefined;
+      }
 
       $scope.register = function(){
         if(!$scope.signinForm.$invalid)
@@ -32,19 +36,25 @@
             $scope.User.streetNumber = address.streetNumber;
             $scope.User.addressLocation = address.location;
             $scope.User.fullAddress = address.fullAddress;
-          }
-
-          $scope.User.confirmationEmailRequired = true;
-          $http.post('/api/users/', $scope.User).
-                  success(function(data) {
-                      $scope.isRegisterFailed = false;
-                      $scope.isRegisterSuccess = true;
-                      $location.path('/');
-                  }).error(function(err) {
-                      $scope.errorMessage = err;
-                      $scope.isRegisterFailed = true;
-                      $scope.isRegisterSuccess = false;
-                  });
+            
+            $scope.User.confirmationEmailRequired = true;
+            $http.post('/api/users/', $scope.User).
+                    success(function(data) {
+                        $scope.isRegisterFailed = false;
+                        $scope.isRegisterSuccess = true;
+                        $location.path('/');
+                    }).error(function(err) {
+                        $scope.errorMessage = err ? err : "Something went wrong, please try again later. ";
+                        $scope.isRegisterFailed = true;
+                        $scope.isRegisterSuccess = false;
+                    });
+            }
+            else
+            {
+              $scope.errorMessage = "Provided address is invalid, please make sure you use autocomplete";
+              $scope.isRegisterFailed = true;
+              $scope.isRegisterSuccess = false;
+            }
         }
       }
 
