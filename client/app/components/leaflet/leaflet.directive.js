@@ -1,11 +1,11 @@
 (function () {
   angular.module('notinphillyServerApp').directive('leaflet',  ['$window', '$rootScope', 'mapService', 'settingsService', 'APP_CONSTS', function ($window, $rootScope, mapService, settingsService, APP_CONSTS) {
-  return {
-    restrict: 'E',
-    scope: {},
-    replace: true,
-    template: '<div></div>',
-    controller: function($scope) {
+    return {
+      restrict: 'E',
+      scope: {},
+      replace: true,
+      template: '<div></div>',
+      controller: function($scope) {
 
     },
     link: function(scope, element, attributes){
@@ -26,9 +26,9 @@
             accessToken: settings.accessToken
         }).addTo(map);
 
-        mapService.setMap(map);
-      });
-    }
-  }
- }]);
+          mapService.setMap(map);
+        });
+      }
+    };
+  }]);
 })();
