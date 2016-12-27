@@ -1,7 +1,7 @@
 module.exports = {
-  EMAIL_API_KEY: process.env.EMAIL_API_KEY,
-  EMAIL_DOMAIN: process.env.EMAIL_DOMAIN,
-  MAP_BOX_API_KEY: process.env.MAP_BOX_API_KEY,
-  MAP_BOX_MAP_ID: process.env.MAP_BOX_MAP_ID,
-  GOOGLE_API_KEY: process.env.GOOGLE_API_KEY
+  EMAIL_API_KEY: 'key-9c7663b6947df059523a2c1081483fbc',
+  EMAIL_DOMAIN: 'mail.notinphilly.org',
+  MAP_BOX_API_KEY: "pk.eyJ1IjoieXVyeWtvcnp1biIsImEiOiJjaXVsbHBnOTgwMDc4MnlwazkxYWhoNnY2In0.iU-SAfTXEZSsTEJK74wfeA",
+  MAP_BOX_MAP_ID: "yurykorzun.nljndeg0",
+  GOOGLE_API_KEY: "AIzaSyAUptjRjLzbBPVOUu2PxQhOLQ5DSNAPEX8"
 };
