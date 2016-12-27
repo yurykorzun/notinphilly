@@ -47,10 +47,10 @@
         </div>
       </div>
       <div class="row">
-        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.fullAddress.$invalid && !signinForm.fullAddress.$pristine }]">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': (!addressDetails || signinForm.fullAddress.$invalid) && !signinForm.fullAddress.$pristine }]">
           <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-          <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required=""/>
-          <p ng-show="signinForm.fullAddress.$invalid && !signinForm.fullAddress.$pristine" class="help-block">Address is required.</p>
+          <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" ng-change="addressChange()" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required=""/>
+          <p ng-show="(!addressDetails || signinForm.fullAddress.$invalid) && !signinForm.fullAddress.$pristine" class="help-block">Valid address is required.</p>
         </div>
         <div class="col-xs-6 form-group">
           <label for="apartmentNumber" class="control-label">Apartment Number</label>
