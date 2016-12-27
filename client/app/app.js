@@ -30,9 +30,9 @@
     });
 
   app.constant("APP_CONSTS", {
-        "FOUND_STREET": "notinphilly.foundStreet",
-        "MAP_CENTER": {  lat: 39.931054,  lng: -75.204009 },
-    });
+    "FOUND_STREET": "notinphilly.foundStreet",
+    "MAP_CENTER": {  lat: 39.931054,  lng: -75.204009 },
+  });
 
     app.config(function ($httpProvider, $routeProvider, $locationProvider, $logProvider, $provide) {
       $httpProvider.defaults.withCredentials = true;
@@ -49,13 +49,13 @@
           redirectTo: '/'
         });
 
-        $provide.decorator('$exceptionHandler', ['$delegate',
-          function($delegate) {
-            return function(exception, cause) {
-              $delegate(exception, cause);
-            };
-          }
-        ]);
+    $provide.decorator('$exceptionHandler', ['$delegate',
+      function($delegate) {
+        return function(exception, cause) {
+          $delegate(exception, cause);
+        };
+      }
+    ]);
 
         $logProvider.debugEnabled(false);
 

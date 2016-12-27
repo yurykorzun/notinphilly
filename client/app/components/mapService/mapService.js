@@ -459,7 +459,7 @@
             fillOpacity: 0.4
           };
         } else {
-          if (properties.totalAdoptedStreets == 0) {
+          if (properties.totalAdoptedStreets === 0) {
             return {
               color: '#606264',
               weight: 2,
