@@ -478,11 +478,12 @@ hr {
     display: block;
     position: absolute;
     left: 50%;
-    top: 90px;
+    top: 80px;
     margin-left: -25px;
     background-color: #fff;
     width: 50px;
     text-align: center;
+    font-size: 14pt;
 }
 
 .faq {
