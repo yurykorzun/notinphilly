@@ -1,5 +1,6 @@
 var mongoose      = require('mongoose');
 var uuid          = require('uuid');
+var json2csv      = require('json2csv');
 var UserModel     = require('./user.model');
 var StateModel    = require('../state/state.model');
 var StreetModel   = require('../street/streetSegment.model');
@@ -26,11 +27,12 @@ exports.getAllPaged = function(req, res) {
   var sortColumn = req.params.sortColumn;
   var sortDirection = req.params.sortDirection;
 
-  var itemsToSkip = (page - 1) * skip;
+  var parsedSkip = parseInt(skip);
+  var itemsToSkip = (page - 1) * parsedSkip;
 
   UserModel.count({}, function( err, count) {
       var query = UserModel.find({})
-                  .skip(itemsToSkip).limit(skip)
+                  .skip(itemsToSkip).limit(parsedSkip)
                   .populate('state')
                   .populate('adoptedStreets')
                   .select('-salt -hashedPassword -_v -authToken -__v');
@@ -51,6 +53,48 @@ exports.getAllPaged = function(req, res) {
           });
   });
 
+};
+
+
+exports.exportUsersCSV = function(req, res) {
+  var sortColumn = req.params.sortColumn;
+  var sortDirection = req.params.sortDirection;
+
+  var query = UserModel.find({})
+                      .select('-salt -hashedPassword -_v -authToken -__v');
+  
+  if (sortColumn == "address") {
+    query = query.sort({ streetNumber: sortDirection, streetName: sortDirection, city: sortDirection, state: sortDirection, zip: sortDirection, apartmentNumber: sortDirection});
+  }
+  else {
+    query = query.sort([[sortColumn, sortDirection === 'asc' ? 1 : -1]]);
+  }
+
+  query.exec(function(err, users) {
+    var userList = new Array();
+    for (var i = 0; i < users.length; i++)
+    {
+      var user = users[i].toObject();
+      userList.push({
+        "firstName": user.firstName,
+        "lastName": user.lastName,
+        "address": user.address,
+        "zip": user.zip,
+        "email": user.email,
+        "businessName": user.businessName,
+        "phoneNumber": user.phoneNumber,
+        "createdAt": user.createdAt,
+        "isDistributer": user.isDistributer,
+        "isAdmin": user.isAdmin,
+        "active": user.active
+      });
+    }
+
+    var csv = json2csv({ data: userList });
+
+    res.attachment('userExport.csv');
+    res.status(200).send(csv);
+  });
 };
 
 /**
