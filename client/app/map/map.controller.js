@@ -1,6 +1,6 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$timeout', 'mapService', 'APP_EVENTS', function($scope, $compile, $http, $rootScope, $timeout, mapService, APP_EVENTS) {
+  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$timeout', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $compile, $http, $rootScope, $timeout, $cookies, mapService, APP_EVENTS, APP_CONSTS) {
     $scope.$on(APP_EVENTS.OPENED_EXPLORE, function(event) {
       $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
         $timeout(function() {
@@ -31,7 +31,10 @@ angular.module('notinphillyServerApp')
         };
 
         var initView = function() {
-          $scope.isAuthorized = ($rootScope.currentUser !== undefined);
+          if ($rootScope.currentUser)
+          {
+            $scope.isAuthorized = true;
+          }
 
           if ($scope.isAuthorized) {
             $scope.isAdoptedByUser = properties.isAdoptedByUser;
@@ -69,17 +72,25 @@ angular.module('notinphillyServerApp')
         });
 
         newScope.adoptStreet = function() {
-          $http.get("api/streets/adopt/" + properties.id).then(function(response) {
-            setUpDefaultView();
-            $scope.isShowAdoptedSuccess = true;
-            mapService.addNeigborhoodStreets(properties.parentId);
+          if ($scope.isAuthorized) {
+            $http.get("api/streets/adopt/" + properties.id).then(function(response) {
+              setUpDefaultView();
+              $scope.isShowAdoptedSuccess = true;
+              mapService.addNeigborhoodStreets(properties.parentId);
 
-            $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
-          },
-          function(err) {
+              $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
+            },
+            function(err) {
+              setUpDefaultView();
+              $scope.isShowError = true;
+            });
+          }
+          else
+          {
+            $cookies.putObject(APP_CONSTS.ADOPTED_STREET, {streetId: properties.id});
             setUpDefaultView();
-            $scope.isShowError = true;
-          });
+            $scope.isShowLogin = true;
+          }
         };
         
         newScope.leave = function() {
@@ -108,12 +119,7 @@ angular.module('notinphillyServerApp')
             $scope.isShowError = true;
           });
         };
-
-        newScope.showLogin = function() {
-          setUpDefaultView();
-          $scope.isShowLogin = true;
-        };
-
+        
         $compile(popupEvent.popup._contentNode)(newScope);
       });
     });

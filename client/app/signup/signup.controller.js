@@ -42,6 +42,7 @@
                     success(function(data) {
                         $scope.isRegisterFailed = false;
                         $scope.isRegisterSuccess = true;
+
                         $location.path('/');
                     }).error(function(err) {
                         $scope.errorMessage = err ? err : "Something went wrong, please try again later. ";
