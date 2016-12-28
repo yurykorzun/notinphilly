@@ -280,17 +280,20 @@ var checkForErrors = function(userInfo) {
 
 //Use tempaltes instead of TEXT
 var sendConfirmationEmail = function(req, user) {
+  var url = "http://notinphilly.org/api/users/confirm/" + user.activationHash;
+
+  var messageText =  "Hi " + req.body.firstName + ", \n Just a reminder that have launched this project in the Walnut Hill neighborhood right now. Sign up wherever you live and we'll let you know when we expand to your neighborhood! \n\n Please follow the link in order to finish the registration: \n " + url +  "\n \nBe sure to tag pictures of your cleaned blocks with @notinphilly and #notinphilly on Instagram to be entered for prizes! \n\n \n #NotInPhilly Team" ;
+
   var data = {
     from: 'noreply <noreply@notinphilly.org>',
     cc: 'notinphilly@gmail.com',
     to: req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
     subject: "NotInPhilly. Confirm registration.",
-    text: "Hi " + req.body.firstName + ", \n Just a reminder that have launched this project in the Walnut Hill neighborhood right now. Sign up wherever you live and we'll let you know when we expand to your neighborhood! \n\n Please follow the link in order to finish the registration: \n http://notinphilly.org/api/users/confirm/" + user.activationHash + "\n \n" +
-    + "Be sure to tag pictures of your cleaned blocks with @notinphilly and #notinphilly on Instagram to be entered for prizes! \n\n" 
-    + "\n #NotInPhilly Team"
+    text:  messageText 
   };
 
-  mailgun.messages().send(data, function (error, body) {
+    console.log(data.text);
+    mailgun.messages().send(data, function (error, body) {
   });
 }
 
