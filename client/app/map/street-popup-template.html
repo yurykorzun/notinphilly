@@ -13,7 +13,7 @@
         <h4 ng-show="totalAdopters == 0">Be the first one to participate in cleaning up this street!</h4>
         <h4 ng-show="totalAdopters > 0">Join others in cleaning up this street!</h4>
 
-        <button type='button' class='btn btn-success' ng-click='isAuthorized ? adoptStreet() : showLogin()'>Count me in!</button>
+        <button type='button' class='btn btn-success' ng-click='adoptStreet()'>Count me in!</button>
         <button type='button' class='btn btn-danger' ng-click='close()'>No, thanks</button>
       </div>
     </div>
@@ -42,7 +42,7 @@
         <div class="form-group menu-login">
           <div class="row">
             <div class="col-md-12">
-              <div><h4>New members, please:</h4></div>
+              <div><h5>Great! In order to complete, please:</h5></div>
               <a href="" class="btn btn--blue" ng-click="loginForm.signup()">sign up</a>
             </div>
           </div>
@@ -50,7 +50,7 @@
             <hr class="hr-or">
             <span class="span-or">or</span>
           </div>
-          <div><h4>Returning members login:</h4></div>
+          <div><h5>Returning members:</h5></div>
           <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Login failed. Please check your username or password.</div>
           <div class="row">
             <div class="col-md-12 form-group">
