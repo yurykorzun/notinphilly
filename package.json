@@ -13,6 +13,7 @@
     "express": "^4.14.0",
     "express-session": "^1.14.0",
     "generate-password": "^1.2.0",
+    "json2csv": "^3.7.3",
     "mailgun-js": "^0.7.12",
     "method-override": "~2.0.2",
     "mongoose": "^4.7.5",
@@ -23,7 +24,6 @@
     "passport-local": "^1.0.0",
     "uuid": "^2.0.1"
   },
-  
   "scripts": {
     "start": "node server.js",
     "postinstall": "export HOME=$HOME/app-root/runtime/repo;./node_modules/bower/bin/bower install;"

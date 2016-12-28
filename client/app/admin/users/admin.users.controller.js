@@ -10,6 +10,11 @@ angular.module('notinphillyServerApp')
      sortDirection: "asc"
    };
 
+   var setUsersExportUrl = function(sortColumn, sortDirection)
+   {
+      $scope.usersExportUrl = "api/users/exportcsv?sortColumn=" + sortColumn + "&sortDirection=" + sortDirection;
+   }
+
    $scope.gridOptions = {
      paginationPageSizes: [25, 50, 75],
      paginationPageSize: 25,
@@ -44,6 +49,8 @@ angular.module('notinphillyServerApp')
      }
    };
 
+   setUsersExportUrl(paginationOptions.sortColumn, paginationOptions.sortDirection);
+   
    $scope.refresh = function ()
    {
      paginationOptions.sortColumn = "firstName";
@@ -68,7 +75,7 @@ angular.module('notinphillyServerApp')
        });
    };
 
-   $scope.addUser = function (grid, row) {
+   $scope.addUser = function () {
        $http.get('/api/roles/').success(function(response) {
          var modalInstance = $uibModal.open({
            templateUrl: 'app/admin/users/admin-edituser-template.html',
@@ -150,7 +157,9 @@ angular.module('notinphillyServerApp')
        paginationOptions.sortColumn = sortColumn.name;
        paginationOptions.sortDirection = sortColumn.sort.direction;
 
-       $scope.loadUsers();
+        $scope.loadUsers();
+
+        setUsersExportUrl(paginationOptions.sortColumn, paginationOptions.sortDirection); 
      }
   };
 
