@@ -292,7 +292,6 @@ var sendConfirmationEmail = function(req, user) {
     text:  messageText 
   };
 
-    console.log(data.text);
     mailgun.messages().send(data, function (error, body) {
   });
 }
