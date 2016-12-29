@@ -34,6 +34,17 @@ exports.getAllGeojson = function(req, res) {
   });
 };
 
+exports.get = function(req, res, next) {
+  var neighborhoodId = req.params.id;
+
+  NeighborhoodModel.findById(neighborhoodId, function(err, neighborhood) {
+      if (err) return next(err);
+      var neighborhoodObject = neighborhood.toObject();
+      neighborhoodObject.id = neighborhoodObject._id;
+      res.json(neighborhoodObject);
+  });
+};
+
 exports.reconcileNeighborhoods = function(req, res, next) {
   NeighborhoodModel.find({ }, function(err, neighborhoods) {
       if (err) return next(err);
@@ -68,13 +79,5 @@ exports.reconcileNeighborhoods = function(req, res, next) {
 
       res.status(200).json({completed: true});
   });
-}
-
-exports.get = function(req, res, next) {
-  var neighborhoodId = req.params.id;
-
-  NeighborhoodModel.findById(neighborhoodId, function(err, neighborhood) {
-      if (err) return next(err);
-      res.json(neighborhood);
-  });
 };
+
