@@ -2,13 +2,13 @@
   angular.module('notinphillyServerApp')
     .service('mapService', ['$http', '$q', '$rootScope', 'APP_EVENTS', 'APP_CONSTS', function($http, $q, $rootScope, APP_EVENTS, APP_CONSTS) {
       var self = this;
-      var deferredMap = $q.defer();
+      var _deferredMap = $q.defer();
 
-      var mapLayerGroup = L.layerGroup();
-      var mapLabelsLayer = L.layerGroup();
-      var mapStreetLayer = undefined;
+      var _mapLayerGroup = L.layerGroup();
+      var _mapLabelsLayer = L.layerGroup();
+      var _mapStreetLayer = undefined;
 
-      var mapCallbacks = {
+      var _mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
         neighborhoodMouseOutCallback : undefined,
         neighborhoodMouseClickCallback : undefined,
@@ -16,51 +16,51 @@
         streetMouseOutCallback: undefined,
         pinClickCallback: undefined
       };
-      var mapControls = [];
+      var _mapControls = [];
 
       self.setMap = function(mapInstance) {
-        deferredMap.resolve(mapInstance);
+        _deferredMap.resolve(mapInstance);
       };
 
       self.getMap = function() {
-        return deferredMap.promise;
+        return _deferredMap.promise;
       };
 
       self.setMapCallbacks = function(callbacks) {
-        mapCallbacks = callbacks;
+        _mapCallbacks = callbacks;
       };
 
       self.resetSize = function()
       {
-          deferredMap.promise.then(function(map) {
+          _deferredMap.promise.then(function(map) {
               map.invalidateSize();
           });
       }
 
       self.destroy = function()
       {
-          deferredMap.promise.then(function(map) {
+          _deferredMap.promise.then(function(map) {
               map.remove();
           });
       }
 
       self.setNeighborhoodLayers = function() {
-        deferredMap.promise.then(function(map) {
+        _deferredMap.promise.then(function(map) {
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
-            mapLayerGroup.clearLayers();
-            mapLabelsLayer.clearLayers();
+            _mapLayerGroup.clearLayers();
+            _mapLabelsLayer.clearLayers();
 
             map.closePopup();
-            setMapControls(map, false);
+            createNeighborhoodControls(map);
 
             var geoJsonLayer = L.geoJson(data, {
               onEachFeature: function (feature, layer){
                 layer.setStyle(setNeighborhoodColor(feature));
                 setNeighborhoodLabel(feature, layer, map);
                 layer.on({
-                  mouseover: function(e) { highlightNeighborhood(e); mapCallbacks.neighborhoodMouseOverCallback(e); },
-                  mouseout: function(e) { resetHighlightNeighborhood(e); mapCallbacks.neighborhoodMouseOutCallback(e); },
-                  click: function(e) { onNeighborhoodLayerClick(e); mapCallbacks.neighborhoodMouseClickCallback(e);},
+                  mouseover: function(e) { highlightNeighborhood(e); _mapCallbacks.neighborhoodMouseOverCallback(e); },
+                  mouseout: function(e) { resetHighlightNeighborhood(e); _mapCallbacks.neighborhoodMouseOutCallback(e); },
+                  click: function(e) { onNeighborhoodLayerClick(e); _mapCallbacks.neighborhoodMouseClickCallback(e);},
                 });
               },
               style: {
@@ -72,9 +72,9 @@
             });
 
             map.setView(APP_CONSTS.MAP_CENTER, 13, { animate: false });
-            mapLayerGroup.addLayer(geoJsonLayer);
-            mapLayerGroup.addTo(map);
-            mapStreetLayer = undefined;
+            _mapLayerGroup.addLayer(geoJsonLayer);
+            _mapLayerGroup.addTo(map);
+            _mapStreetLayer = undefined;
 
             map.invalidateSize();
            });
@@ -82,7 +82,7 @@
       };
 
       self.showStreetPopup = function(streetFeature) {
-        deferredMap.promise.then(function(map) {
+        _deferredMap.promise.then(function(map) {
           var properties = streetFeature.properties;
           var geometry = streetFeature.geometry;
 
@@ -95,8 +95,10 @@
       };
 
       self.addNeigborhoodStreets = function(neighborhoodId) {
-        deferredMap.promise.then(function(map) {
-          loadStreets(neighborhoodId, map);
+        $http.get("api/neighborhoods/" + neighborhoodId).success(function(neighborhooData, status) {
+          _deferredMap.promise.then(function(map) {
+            loadStreets(neighborhooData, map);
+          });
         });
       };
 
@@ -119,7 +121,7 @@
       self.findStreetsNear = function(location) {
         var deferredStreets = $q.defer();
 
-        deferredMap.promise.then(function(map) {
+        _deferredMap.promise.then(function(map) {
           $http.post('api/streets/byloc', location).then(function(result) {
             var foundStreets = result.data;
             foundStreets = convertStreets(foundStreets);
@@ -137,12 +139,12 @@
       self.showStreets = function(streets, addressLocation) {
         if(streets.length == 0) return;
 
-        deferredMap.promise.then(function(map) {
-          mapLayerGroup.clearLayers();
-          mapLabelsLayer.clearLayers();
+        _deferredMap.promise.then(function(map) {
+          _mapLayerGroup.clearLayers();
+          _mapLabelsLayer.clearLayers();
 
           map.closePopup();
-          setMapControls(map, true);
+          createStreetControls(map);
 
           var LeafIcon = L.Icon.extend({
             options: {
@@ -152,11 +154,11 @@
             }
           });
 
-          if(addressLocation)
+          if (addressLocation)
           {
             var addressIcon = new LeafIcon({iconUrl: 'public/img/home.png'});
             var addressMarker = L.marker(addressLocation, {icon: addressIcon});
-            mapLayerGroup.addLayer(addressMarker);
+            _mapLayerGroup.addLayer(addressMarker);
             addressMarker.addTo(map);
 
             map.setView(addressLocation, 17, { animate: false });
@@ -174,8 +176,8 @@
           var markerIcon = new LeafIcon({iconUrl: 'public/img/broom.png'});
 
           var streetLayer = createStreetLayer(streets);
-          mapStreetLayer = streetLayer;
-          mapLayerGroup.addLayer(streetLayer);
+          _mapStreetLayer = streetLayer;
+          _mapLayerGroup.addLayer(streetLayer);
           streetLayer.addTo(map);
 
           for(var i = 0; i < streets.length; i++)
@@ -184,9 +186,9 @@
             var streetMarker = L.marker(street.streetCenter, {icon: markerIcon});
             streetMarker.street = street;
             streetMarker.on({
-            click: function(e) { mapCallbacks.pinClickCallback(e); }
+              click: function(e) { _mapCallbacks.pinClickCallback(e); }
             });
-            mapLayerGroup.addLayer(streetMarker);
+            _mapLayerGroup.addLayer(streetMarker);
             streetMarker.addTo(map);
           }
 
@@ -195,14 +197,14 @@
       }
 
       self.goToStreet = function(streetId) {
-        deferredMap.promise.then(function(map) {
+        _deferredMap.promise.then(function(map) {
           $http.get("api/streets/" + streetId).success(function(streetData, status) {
             $http.get("api/neighborhoods/" + streetData.neighborhood).success(function(neighborhooData, status) {
               var start = L.latLng(streetData.geodata.geometry.coordinates[0][1], streetData.geodata.geometry.coordinates[0][0]);
               var end = L.latLng(streetData.geodata.geometry.coordinates[1][1], streetData.geodata.geometry.coordinates[1][0]);
               var streetBounds = new L.LatLngBounds(start, end);
 
-              loadStreets(streetData.neighborhood, map).then(function(layers) {
+              loadStreets(neighborhooData, map).then(function(layers) {
                 var foundLayer = layers.filter(function(layer) {
                   return layer.feature.properties.id === streetData._id;
                 })[0];
@@ -221,8 +223,8 @@
       };
 
       self.selectStreet = function(streetId) {
-        deferredMap.promise.then(function(map) {
-          var layers = mapStreetLayer.getLayers();
+        _deferredMap.promise.then(function(map) {
+          var layers = _mapStreetLayer.getLayers();
           var foundLayer = layers.filter(function(layer) {
             return layer.feature.properties.id === streetId;
           })[0];
@@ -238,37 +240,37 @@
       }
 
       self.zoomIn = function(zoomDelta) {
-        deferredMap.promise.then(function(map) {
+        _deferredMap.promise.then(function(map) {
           map.zoomIn(zoomDelta);
         });
       };
 
       self.zoomOut = function(zoomDelta) {
-        deferredMap.promise.then(function(map) {
+        _deferredMap.promise.then(function(map) {
           map.zoomOut(zoomDelta);
         });
       };
 
       self.zoomIn = function(zoomDelta) {
-        deferredMap.promise.then(function(map) {
+        _deferredMap.promise.then(function(map) {
           map.zoomIn(zoomDelta);
         });
       };
 
       self.showLabels = function() {
-        deferredMap.promise.then(function(map) {
-          if (!map.hasLayer(mapLabelsLayer))
+        _deferredMap.promise.then(function(map) {
+          if (!map.hasLayer(_mapLabelsLayer))
           {
-            mapLabelsLayer.addTo(map);
+            _mapLabelsLayer.addTo(map);
           }
         });
       };
 
       self.hideLabels = function() {
-        deferredMap.promise.then(function(map) {
-          if (map.hasLayer(mapLabelsLayer))
+        _deferredMap.promise.then(function(map) {
+          if (map.hasLayer(_mapLabelsLayer))
           {
-            map.removeLayer(mapLabelsLayer);
+            map.removeLayer(_mapLabelsLayer);
           }
         });
       };
@@ -280,24 +282,24 @@
 
         var myIcon = L.divIcon({html: '<div><h5>' + feature.properties.name + '<h5></div>', iconAnchor: [20, 15], className: 'map-label'});
         var tooltipMarker = L.marker(center, {icon: myIcon, riseOnHover: true});
-        tooltipMarker.addTo(mapLabelsLayer);
+        tooltipMarker.addTo(_mapLabelsLayer);
       }
 
-      var loadStreets = function(neighborhoodId, map) {
+      var loadStreets = function(neighborhooData, map) {
         var deferredSetup = $q.defer();
 
-        deferredMap.promise.then(function(map) {
-          mapLayerGroup.clearLayers();
-          mapLabelsLayer.clearLayers();
+        _deferredMap.promise.then(function(map) {
+          _mapLayerGroup.clearLayers();
+          _mapLabelsLayer.clearLayers();
 
           map.closePopup();
-          setMapControls(map, true);
+          createStreetControls(map, neighborhooData);
 
-          $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(data, status) {
+          $http.get("api/streets/byparentgeo/" + neighborhooData.id).success(function(data, status) {
             var streetLayer = createStreetLayer(data);
 
-            mapLayerGroup.addLayer(streetLayer);
-            mapStreetLayer = streetLayer;
+            _mapLayerGroup.addLayer(streetLayer);
+            _mapStreetLayer = streetLayer;
             streetLayer.addTo(map);
 
             deferredSetup.resolve(streetLayer.getLayers());
@@ -309,24 +311,45 @@
         return deferredSetup.promise;
       };
 
-      var setMapControls = function(mapInstance, isStreetLevel)
+      var createNeighborhoodControls = function(mapInstance, neighborhooData) 
       {
-        for(var i = 0; i < mapControls.length; i++)
+        clearMapControls(mapInstance);
+        createZoomControls(mapInstance);
+        if (neighborhooData)
         {
-          var control = mapControls[i];
+          createNeighborhoodDetails(mapInstance, neighborhooData);
+        }
+      }
+
+      var createStreetControls = function(mapInstance, neighborhooData) 
+      {
+        clearMapControls(mapInstance);
+        createZoomControls(mapInstance);
+        createNavigationControls(mapInstance);
+        if (neighborhooData)
+        {
+          createNeighborhoodDetails(mapInstance, neighborhooData);
+        }
+      }
+
+      var clearMapControls = function(mapInstance) {
+        for (var i = 0; i < _mapControls.length; i++)
+        {
+          var control = _mapControls[i];
           mapInstance.removeControl(control);
         }
 
-        mapControls = [];
-        if(isStreetLevel)
-        {
-          var viewNeigborhoodsControl = L.Control.extend({
+        _mapControls = [];
+      }
+
+      var createNavigationControls = function(mapInstance) {
+        var viewNeigborhoodsControl = L.Control.extend({
             options: {
               position: 'topleft'
             },
             onAdd: function (map) {
               var container = L.DomUtil.create('div', 'map-control');
-              container.innerHTML = '<a class="map-control-text"><i class="fa fa-map-o"></i> Neighborhoods</a>';
+              container.innerHTML = '<a class="map-control-text"><i class="fa fa-map-o"></i> View Neighborhoods</a>';
 
               container.onclick = function(){
                 self.setNeighborhoodLayers();
@@ -336,16 +359,35 @@
           });
           viewNeigborhoodsControl = new viewNeigborhoodsControl();
           mapInstance.addControl(viewNeigborhoodsControl);
-          mapControls.push(viewNeigborhoodsControl);
-        }
+          _mapControls.push(viewNeigborhoodsControl);
+      }
 
+      var createNeighborhoodDetails = function(mapInstance, neighborhooData) {
+          var neighborhoodDetails = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function (map) {
+              var detailsContainer = L.DomUtil.create('div', 'map-control');
+              detailsContainer.innerHTML = '<div><h5>' + neighborhooData.name + '</h5></div>' 
+                                            + '<div>Total streets: ' + neighborhooData.totalStreets + '</h5></div>' 
+                                            + '<div>Participating streets: ' + neighborhooData.totalAdoptedStreets + '</h5></div>' ;
+              return detailsContainer;
+            }
+          });
+          neighborhoodDetails = new neighborhoodDetails();
+          mapInstance.addControl(neighborhoodDetails);
+          _mapControls.push(neighborhoodDetails);
+      }
+
+      var createZoomControls = function(mapInstance) {
         var zoomControl = L.Control.extend({
           options: {
             position: 'topleft'
           },
           onAdd: function (map) {
             var container = L.DomUtil.create('div');
-            container.innerHTML = '<div class="map-control"><a class="map-control-text"><i class="fa fa-2x fa-search-plus"></i></a></div><div class="map-control"><a class="map-control-text"><i class="fa fa-2x fa-search-minus"></i></a></div>';
+            container.innerHTML = '<div class="map-control map-control-inline"><a class="map-control-text"><i class="fa fa-2x fa-search-plus"></i></a></div><div class="map-control map-control-inline"><a class="map-control-text"><i class="fa fa-2x fa-search-minus"></i></a></div>';
             container.children[0].onclick = function(){
               self.zoomIn(1);
             }
@@ -357,9 +399,8 @@
         });
         zoomControl = new zoomControl();
         mapInstance.addControl(zoomControl);
-        mapControls.push(zoomControl);
+        _mapControls.push(zoomControl);
       }
-
 
       var convertStreets = function(streets)
       {
@@ -383,9 +424,9 @@
             layer.setStyle(getStreetStyle(feature));
             //setStreetLabel(feature, layer);
             layer.on({
-              mouseover: function(e) { mapCallbacks.streetMouseOverCallback(e); },
-              mouseout: function(e) { mapCallbacks.streetMouseOutCallback(e); },
-              click: function(e) { mapCallbacks.streetClickCallback(e); }
+              mouseover: function(e) { _mapCallbacks.streetMouseOverCallback(e); },
+              mouseout: function(e) { _mapCallbacks.streetMouseOutCallback(e); },
+              click: function(e) { _mapCallbacks.streetClickCallback(e); }
             });
           },
           style: {
@@ -400,7 +441,7 @@
 
       var onNeighborhoodLayerClick = function(e) {
         if (e.target.feature) {
-          deferredMap.promise.then(function(map) {
+          _deferredMap.promise.then(function(map) {
             var triggeredFeature = e.target.feature;
             var properties = triggeredFeature.properties;
             var layerBounds = e.target.getBounds();
@@ -410,13 +451,13 @@
             map.setView( nhoodCenter, 16, { animate: true });
             map.invalidateSize();
 
-            loadStreets(properties.id, map);
+            loadStreets(properties, map);
           });
         }
       };
 
       var openStreetLayerPopup = function(streetLongLat, properties) {
-        deferredMap.promise.then(function(map) {
+        _deferredMap.promise.then(function(map) {
             var imageSrc = "/api/external/google-streetview-api/" + streetLongLat.lat + "/" + streetLongLat.lng;
 
             properties.imageSrc = imageSrc;
@@ -495,6 +536,10 @@
         var layer = e.target;
         var properties = layer.feature.properties;
 
+        _deferredMap.promise.then(function(map) {
+          createNeighborhoodControls(map, properties);
+        });
+
         if(properties.active) {
           layer.setStyle({
             weight: 7,
@@ -511,6 +556,11 @@
       var resetHighlightNeighborhood = function(e) {
         var layer = e.target;
         var properties = layer.feature.properties;
+
+        _deferredMap.promise.then(function(map) {
+          clearMapControls(map);
+          createZoomControls(map);
+        });
 
         if(properties.active) {
           layer.setStyle({
