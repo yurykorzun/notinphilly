@@ -1,9 +1,10 @@
-var mongoose = require('mongoose');
-var StreetModel = require('./streetSegment.model');
+var mongoose            = require('mongoose');
+var streetService       = require('../../service/streetService');
+var StreetModel         = require('./streetSegment.model');
 var StreetZipcodesModel = require('../street/streetZipcodes.model');
-var StreetNamesModel = require('../street/streetNames.model');
-var UserModel = require('../user/user.model');
-var NeighborhoodModel = require('../neighborhood/neighborhood.model');
+var StreetNamesModel    = require('../street/streetNames.model');
+var UserModel           = require('../user/user.model');
+var NeighborhoodModel   = require('../neighborhood/neighborhood.model');
 
 
 var Schema = mongoose.Schema;
@@ -228,34 +229,22 @@ exports.adopt = function(req, res, next) {
     if (!user) throw new Error('Required userId needs to be set');
     if (!streetId) throw new Error('Required streetId needs to be set');
 
-    console.log(user._id);
-
     UserModel.findById(user._id, function(err, user) {
         if (err) return next(err);
         if(user.adoptedStreets.indexOf(streetId) == -1)
         {
-          console.log(streetId);
           user.adoptedStreets.push(mongoose.Types.ObjectId(streetId));
           user.save(function(err, user){
             if (err) res.status(500).json(err);
 
-            StreetModel.findById(streetId, function(err, street) {
-              if (err) res.status(500).json(err);
-
-              street.totalAdopters += 1;
-              street.save(function(err, savedstreet){
-              });
-
-              NeighborhoodModel.findById(street.neighborhood, function(err, neighborhood) {
-                if (err) res.status(500).json(err);
-
-                neighborhood.totalAdoptedStreets += 1;
-                neighborhood.percentageAdoptedStreets =  Math.round(((neighborhood.totalAdoptedStreets / neighborhood.totalStreets) * 100));
-                neighborhood.save(function(err, savedNeighborhood){});
-              });
-            });
-
-            res.json({ "_id": user._id, "adoptedStreets" : user.adoptedStreets });
+            streetService.incrementAdopters([streetId]).then(
+              function(result) {
+                 res.json({ "_id": user._id, "adoptedStreets" : user.adoptedStreets });
+              },
+              function(error) {
+                res.status(500).json(error);
+              }
+            )
           });
         }
         else {
@@ -274,45 +263,23 @@ exports.leave = function(req, res, next) {
     if (!user) throw new Error('Required userId needs to be set');
     if (!streetId) throw new Error('Required streetId needs to be set');
 
-    console.log(user._id);
     UserModel.findById(user._id, function(err, user) {
         if (err) return next(err);
         var adoptedStreetIndex = user.adoptedStreets.indexOf(streetId);
         if(adoptedStreetIndex > -1)
         {
-          console.log(streetId);
-
           user.adoptedStreets.splice(adoptedStreetIndex, 1);
           user.save(function(err, savedUser){
             if (err) return next(err);
 
-            StreetModel.findById(streetId, function(err, street) {
-              if (err) return next(err);
-
-              if(street.totalAdopters > 0)
-              {
-                street.totalAdopters -= 1;
-                street.save(function(err, savedstreet){
-                });
+            streetService.decrementAdopters([streetId]).then(
+              function(result) {
+                 res.json({ "_id": user._id, "adoptedStreets" : user.adoptedStreets });
+              },
+              function(error) {
+                res.status(500).json(error);
               }
-
-              NeighborhoodModel.findById(street.neighborhood, function(err, neighborhood) {
-                if (err) res.status(500).json(err);
-
-                if(neighborhood.totalAdoptedStreets > 0) {
-                  neighborhood.totalAdoptedStreets -= 1;
-                  neighborhood.percentageAdoptedStreets =  Math.round((neighborhood.totalAdoptedStreets / neighborhood.totalStreets) * 100);
-                }
-                else {
-                  neighborhood.percentageAdoptedStreets = 0;
-                }
-
-                neighborhood.save(function(err, savedNeighborhood){});
-
-              });
-            });
-
-            res.json({ "_id": savedUser._id, "adoptedStreets" : savedUser.adoptedStreets });
+            )
           });
         }
         else {
