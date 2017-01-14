@@ -1,7 +1,7 @@
-var express        = require('express');
-var mongoose       = require('mongoose');
-var serverSettings       = require('./serverSettings');
-var argv          = require('boring')();
+var express         = require('express');
+var mongoose        = require('mongoose');
+var promise         = require('promise');
+var serverSettings  = require('./serverSettings');
 
 module.exports = function(app) {
     console.log("init db");
@@ -12,16 +12,17 @@ module.exports = function(app) {
       server: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } },
       replset: { socketOptions: { keepAlive: 1, connectTimeoutMS: 30000 } }
     };
+    mongoose.Promise = promise;
     mongoose.connection.on('error', function(err) {
-    	console.error('MongoDB connection error: ' + err);
-    	process.exit(-1);
+        console.error('MongoDB connection error: ' + err);
+        process.exit(-1);
     	}
     );
     mongoose.connect(connectionString, dbOptions);
 
-    if (argv['seed-db']) {
+    /*if (argv['seed-db']) {
       console.log('Seeding DB');
       var dbseeder = require('../components/dbseeder');
       dbseeder();
-    }
+    }*/
 };

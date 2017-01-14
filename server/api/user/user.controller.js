@@ -1,469 +1,201 @@
-var mongoose      = require('mongoose');
-var uuid          = require('uuid');
-var json2csv      = require('json2csv');
-var UserModel     = require('./user.model');
-var StateModel    = require('../state/state.model');
-var StreetModel   = require('../street/streetSegment.model');
-var NeighborhoodModel       = require('../neighborhood/neighborhood.model');
-var toolRequestController   = require('../toolRequests/toolRequest.controller');
-var apiSettings             = require('../../config/apiSettings');
-var passwordGenerator       = require('generate-password');
-var mailgun                 = require('mailgun-js')({apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN});
+var mongoose = require('mongoose');
+var json2csv = require('json2csv');
+var userService = require('../../service/userService');
+
+var UserModel = require('./user.model');
+var StateModel = require('../state/state.model');
+var StreetModel = require('../street/streetSegment.model');
+var NeighborhoodModel = require('../neighborhood/neighborhood.model');
+var toolRequestController = require('../toolRequests/toolRequest.controller');
+var apiSettings = require('../../config/apiSettings');
+var mailgun = require('mailgun-js')({ apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN });
 
 exports.index = function(req, res) {
-  UserModel.find({})
-          .populate('state')
-          .populate('adoptedStreets')
-          .select('-salt -hashedPassword -_v -authToken -__v')
-          .exec(function (err, users) {
-            if (err) return res.status(500).send(err);
-            res.status(200).json(users);
-          });
+    userService.getAll().then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            res.status(500).send(err);
+        });
+};
+
+
+exports.me = function(req, res, next) {
+    var userId = req.user._id;
+
+    if (!userId) throw new Error('User id is missing');
+
+    userService.getUserById(userId).then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            res.status(500).send(err);
+        });
 };
 
 exports.getAllPaged = function(req, res) {
-  var page = req.params.pageNumber;
-  var skip = req.params.pageSize;
-  var sortColumn = req.params.sortColumn;
-  var sortDirection = req.params.sortDirection;
+    var page = req.params.pageNumber;
+    var pageSize = req.params.pageSize;
+    var sortColumn = req.params.sortColumn;
+    var sortDirection = req.params.sortDirection;
 
-  var parsedSkip = parseInt(skip);
-  var itemsToSkip = (page - 1) * parsedSkip;
+    var limit = parseInt(pageSize);
+    var itemsToSkip = (page - 1) * limit;
 
-  UserModel.count({}, function( err, count) {
-      var query = UserModel.find({})
-                  .skip(itemsToSkip).limit(parsedSkip)
-                  .populate('state')
-                  .populate('adoptedStreets')
-                  .select('-salt -hashedPassword -_v -authToken -__v');
-
-      if (sortColumn == "address")
-      {
-        query = query.sort({ streetNumber: sortDirection, streetName: sortDirection, city: sortDirection, state: sortDirection, zip: sortDirection, apartmentNumber: sortDirection});
-      }
-      else {
-        query = query.sort([[sortColumn, sortDirection === 'asc' ? 1 : -1]]);
-      }
-
-      query.exec(function(err, users) {
-              if (err) return res.status(500).send(err);
-
-              var data = { users: users, count: count};
-              res.status(200).json(data);
-          });
-  });
-
+    userService.getAllPagedSorted(sortColumn, sortDirection, itemsToSkip, limit).then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            res.status(500).send(err);
+        });
 };
 
 
 exports.exportUsersCSV = function(req, res) {
-  var sortColumn = req.params.sortColumn;
-  var sortDirection = req.params.sortDirection;
+    var sortColumn = req.params.sortColumn;
+    var sortDirection = req.params.sortDirection;
 
-  var query = UserModel.find({})
-                      .select('-salt -hashedPassword -_v -authToken -__v');
-  
-  if (sortColumn == "address") {
-    query = query.sort({ streetNumber: sortDirection, streetName: sortDirection, city: sortDirection, state: sortDirection, zip: sortDirection, apartmentNumber: sortDirection});
-  }
-  else {
-    query = query.sort([[sortColumn, sortDirection === 'asc' ? 1 : -1]]);
-  }
+    userService.getAllSorted(sortColumn, sortDirection).then(
+        function(result) {
+            var users = result.users;
+            var userList = new Array();
+            for (var i = 0; i < users.length; i++) {
+                var user = users[i].toObject();
+                userList.push({
+                    "firstName": user.firstName,
+                    "lastName": user.lastName,
+                    "address": user.address,
+                    "zip": user.zip,
+                    "email": user.email,
+                    "businessName": user.businessName,
+                    "phoneNumber": user.phoneNumber,
+                    "createdAt": user.createdAt,
+                    "isDistributer": user.isDistributer,
+                    "isAdmin": user.isAdmin,
+                    "active": user.active
+                });
+            }
 
-  query.exec(function(err, users) {
-    var userList = new Array();
-    for (var i = 0; i < users.length; i++)
-    {
-      var user = users[i].toObject();
-      userList.push({
-        "firstName": user.firstName,
-        "lastName": user.lastName,
-        "address": user.address,
-        "zip": user.zip,
-        "email": user.email,
-        "businessName": user.businessName,
-        "phoneNumber": user.phoneNumber,
-        "createdAt": user.createdAt,
-        "isDistributer": user.isDistributer,
-        "isAdmin": user.isAdmin,
-        "active": user.active
-      });
-    }
+            var csv = json2csv({ data: userList });
 
-    var csv = json2csv({ data: userList });
-
-    res.attachment('userExport.csv');
-    res.status(200).send(csv);
-  });
+            res.attachment('userExport.csv');
+            res.status(200).send(csv);
+        },
+        function(error) {
+            res.status(500).send(err);
+        });
 };
 
-/**
- * Creates a new user
- */
 exports.create = function(req, res, next) {
-  var isEmailRequired = req.body.confirmationEmailRequired;
+    var isEmailRequired = req.body.confirmationEmailRequired;
+    var user = req.body;
 
-  UserModel.findOne({email: req.body.email}, function(err, user) {
-    if(err) throw err;
-
-    if (user) {
-      console.log('user already registred ' + user._id);
-      res.status(409).send('User with this email alreay has an account');
-    }
-    else {
-      errorMessage = checkForErrors(req.body);
-      if (!errorMessage) {
-
-      StateModel.findOne({ abbrev: new RegExp('^'+req.body.stateName+'$', "i") }, function(err, foundState) {
-        if(err) throw err;
-
-        if(foundState)
-        {
-          var User = mongoose.model('User');
-          var newUser = new User({
-              firstName: req.body.firstName,
-              middleName: req.body.middleName,
-              lastName: req.body.lastName,
-              birthDate: req.body.birthDate,
-              phoneNumber: req.body.phoneNumber,
-              email: req.body.email,
-              roles: [4],
-              businessName: req.body.businessName,
-              fullAddress: req.body.fullAddress,
-              addressLocation: req.body.addressLocation,
-              apartmentNumber: req.body.apartmentNumber,
-              active: false,
-              city: req.body.city,
-              state: foundState._id,
-              zip: req.body.zip,
-              streetNumber: req.body.streetNumber,
-              streetName: req.body.streetName,
-              password: req.body.password,
-              isDistributer: req.body.distributer,
-              grabberRequested: false,
-              grabberDelivered: false,
-              adoptedStreets: []
-          });
-          newUser.save(function(err, thor){
-               if (err) {
-                 console.log(err);
-                 res.status(500).send('There was an issue. Please try again later');
-               }
-               else {
-                 if (isEmailRequired)
-                 {
-                   UserModel.findOne({email: req.body.email}, function(err, user) {
-                     sendConfirmationEmail(req, user);
-                     res.status(200).send('Successfully Sent Confirmation Email');
-                   });
-                 }
-                 else {
-                   res.status(200).send('Successfully added user');
-                 }
-               }
-               console.log('Finished adding the user');
-             }
-           );
-        }
-        else {
-           res.status(500).send('Invalid state code was provided ' + req.body.stateName);
-        }
-      });
-
-     }
-     else {
-       res.status(409).send(errorMessage);
-     }
-    }
-  });
+    userService.create(user, isEmailRequired).then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            res.status(500).send(error);
+        });
 };
 
 exports.update = function(req, res) {
-  var userId = req.body._id.toString();
-  if(!userId)
-  {
-    userId = req.user._id;
-  }
+    var userId = req.body._id.toString();
+    var currentUserId = req.user._id.toString();
 
-  // Find user based on ID from request
-  UserModel.findById(userId, function(err, user) {
-    if (err) return next(err);
-    if (!user) return res.status(401).send('Unauthorized');
+    if (!userId) return res.status(500).send("User id is missing. Update failed.");
+    else if (userId != currentUserId && !req.user.isAdmin) return res.status(401).send("Unauthorized");
 
-    if(req.body.firstName) user.firstName = req.body.firstName;
-    if(req.body.lastName) user.lastName = req.body.lastName;
-    if(req.body.email) user.email = req.body.email;
-
-    user.phoneNumber = req.body.phoneNumber;
-    user.businessName = req.body.businessName;
-    user.apartmentNumber = req.body.apartmentNumber;
-
-    if(req.body.city) user.city = req.body.city;
-    if(req.body.zip) user.zip = req.body.zip;
-    if(req.body.streetNumber) user.streetNumber = req.body.streetNumber;
-    if(req.body.streetName) user.streetName = req.body.streetName;
-    if(req.body.active != undefined) user.active = req.body.active;
-    if(req.body.fullAddress) user.fullAddress = req.body.fullAddress;
-    if(req.body.addressLocation) user.addressLocation = req.body.addressLocation;
-    if(req.body.roles != undefined) user.roles = req.body.roles;
-
-    if (req.body.grabberRequested != undefined) user.grabberRequested = req.body.grabberRequested;
-    if (req.body.grabberDelivered != undefined) user.grabberDelivered = req.body.grabberDelivered;
-
-    user.isDistributer = req.body.isDistributer;
-
-    user.save(function (err, user) {
-      if (err)
-      {
-        console.err(err);
-        res.status(500).send('There was an issue. Please try again later');
-      }
-      // Successfully updated user
-      res.status(200).send('Your profile was updated Successfully');
-    });
-  });
+    var user = req.body;
+    userService.update(user).then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            res.status(500).send(error);
+        });
 };
 
 exports.changePassword = function(req, res, next) {
-  if(req.isAuthenticated() && req.user) {
-    var userId = req.user._id;
-    if (!userId) return res.status(401).send('Unauthorized');
+    if (req.isAuthenticated() && req.user) {
+        var userId = req.user._id;
+        if (!userId) return res.status(401).send('Unauthorized');
 
-    var oldPass = req.body.oldPassword;
-    var newPass = req.body.newPassword;
+        var oldPass = req.body.oldPassword;
+        var newPass = req.body.newPassword;
 
-    UserModel.findById(userId, function(err, user) {
-        if (user.authenticate(oldPass)) {
-            user.activationHash = uuid.v4();
-            user.password = newPass;
-            user.save(function(err) {
-                if (err) return next(err);
-
+        userService.changePassword(userId, oldPass, newPass).then(
+            function(result) {
                 res.status(200).send('Successfully changed password');
+            },
+            function(error) {
+                res.status(403).send('Password change failed');
             });
-        } else {
-            res.status(403).send('Password change failed');
-        }
-    });
-  }
-  else {
-    res.status(403).send('Password change is forbidden');
-  }
+    } else {
+        res.status(403).send('Password change is forbidden');
+    }
 };
 
 exports.resetPassword = function(req, res, next) {
     var userEmail = req.body.email;
-    var newPassword = passwordGenerator.generate({
-                                          length: 10,
-                                          numbers: true
-                                      });
 
-    UserModel.findOne({email: userEmail}, function(err, user) {
-      if (err) {
-        console.log(err);
-        res.status(500).send('There was an issue. Please try again later');
-      }
-      else if (!user)
-      {
-        res.status(200).send('Successfully completed');
-      }
-      else {
-        user.activationHash = uuid.v4();
-        user.password = newPassword;
-
-        user.save(function(err, updatedUser) {
-            if (err) {
-              console.log(err);
-              res.status(500).send('There was an issue. Please try again later');
-            }
-            else {
-              sendResetPasswordEmail(updatedUser, newPassword)
-              res.status(200).send('Successfully completed');
-            }
+    userService.resetPassword(userEmail).then(
+        function(result) {
+            res.status(200).send('Successfully completed password reset');
+        },
+        function(error) {
+            res.status(500).send('There was an issue. Please try again later');
         });
-      }
-    });
 };
 
 
-var sendResetPasswordEmail = function(user, newPassword) {
-  var data = {
-    from: 'noreply <noreply@notinphilly.org>',
-    cc: 'notinphilly@gmail.com',
-    to: user.firstName + " " + user.lastName + " " +"<"+ user.email +">",
-    subject: "NotInPhilly. Reset password confirmation.",
-    text: "Hi " + user.firstName + " \n Your temporary password for notinphilly.org is: " + newPassword + " \n Please don't forget to change your password after login. \n \n \n #NotInPhilly Team"
-  };
-
-  mailgun.messages().send(data, function (error, body) {
-  });
-}
-
-var checkForErrors = function(userInfo) {
-  if (userInfo.email === '' || typeof userInfo.email === 'undefined'){
-    return "Please enter email address";
-  }
-  if (userInfo.fistName === '' || typeof userInfo.firstName === 'undefined'){
-    return "Please enter your First name";
-  }
-  if (userInfo.email === '' || typeof userInfo.lastName === 'undefined'){
-    return "Please enter your last name";
-  }
-  if (userInfo.password === '' || typeof userInfo.password === 'undefined'){
-    return "Please enter password and confirm your password";
-  }
-  if (userInfo.password !== userInfo.passwordConfirm) {
-    return "Your passwords do not match";
-  }
-  return undefined;
-}
-
-/**
- * Send confirmation email
- */
-
-//Use tempaltes instead of TEXT
-var sendConfirmationEmail = function(req, user) {
-  var url = "http://notinphilly.org/api/users/confirm/" + user.activationHash;
-
-  var messageText =  "Hi " + req.body.firstName + ", \n Just a reminder that have launched this project in the Walnut Hill neighborhood right now. Sign up wherever you live and we'll let you know when we expand to your neighborhood! \n\n Please follow the link in order to finish the registration: \n " + url +  "\n \nBe sure to tag pictures of your cleaned blocks with @notinphilly and #notinphilly on Instagram to be entered for prizes! \n\n \n #NotInPhilly Team" ;
-
-  var data = {
-    from: 'noreply <noreply@notinphilly.org>',
-    cc: 'notinphilly@gmail.com',
-    to: req.body.firstName + " " + req.body.lastName + " " +"<"+ req.body.email +">",
-    subject: "NotInPhilly. Confirm registration.",
-    text:  messageText 
-  };
-
-    mailgun.messages().send(data, function (error, body) {
-  });
-}
-
-
-/**
- * Get my info
- */
-exports.me = function(req, res, next) {
-    var userId = req.user._id;
-
-    if (!userId) throw new Error('Required userId needs to be set');
-
-    UserModel.findById(userId, '-salt -hashedPassword -_v -authToken -__v')
-              .populate('state')
-              .populate('adoptedStreets')
-              .exec(function(err, user) {
-                  if (err) return next(err);
-                  if (!user) return res.status(401).send('Unauthorized');
-                  if (user.active != true) return res.status(401).send('Please activate your user');
-                  res.json(user);
-              });
-};
-
-/**
- * Get a single user
- */
 exports.get = function(req, res, next) {
     var userId = req.params.id;
+    var currentUserId = req.user._id.toString();
 
-    if (!userId) throw new Error('Required userId needs to be set');
+    if (!userId) return res.status(500).send("User id is missing. Update failed.");
+    else if (userId != currentUserId && !req.user.isAdmin) return res.status(401).send("Unauthorized");
 
-    UserModel.findById(userId)
-            .populate('state')
-            .populate('adoptedStreets')
-            .select('-salt -hashedPassword -_v -authToken -__v')
-            .exec(function(err, user) {
-                if (err) return next(err);
-                if (!user) return res.status(401).send('User not found');
-                if (user.active === false) return res.status(401).send('Please confirm the user. Check your email.');
-                res.json(user);
-            });
+    userService.getUserById(userId).then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            res.status(500).send(err);
+        });
 };
 
-/**
- * Deletes a user
- * restriction: 'admin'
- */
 exports.destroy = function(req, res) {
-  var userId = req.params.id;
-  if (userId) {
-    UserModel.findById(userId).exec(function(err, user) {
-        if (err) return next(err);
+    var userId = req.params.id;
+    var currentUserId = req.user._id.toString();
 
-        if (user.adoptedStreets && user.adoptedStreets.length > 0)
-        {
-          StreetModel.find({ _id: { $in: user.adoptedStreets }}, function(err, streets) {
-            if (err) return next(err);
+    if (!userId) return res.status(500).send("User id is missing. Update failed.");
+    else if (userId != currentUserId && !req.user.isAdmin) return res.status(401).send("Unauthorized");
 
-            for (var streetIndex = 0; streetIndex < streets.length; streetIndex++ )
-            {
-              var street = streets[streetIndex];
-              if (street.totalAdopters)
-              {
-                street.totalAdopters--;
-              }
-              else {
-                street.totalAdopters = 0;
-              }
-              street.save(function(err, savedStreet) {
-                if (err) {
-                  console.log("Error while deleting user " + err);
-                  return next(err);
-                }
-
-                NeighborhoodModel.findById(savedStreet.neighborhood, function(err, neighborhood) {
-                  if (err) res.status(500).json(err);
-
-                  if(neighborhood.totalAdoptedStreets > 0) {
-                    neighborhood.totalAdoptedStreets -= 1;
-                    neighborhood.percentageAdoptedStreets =  Math.round((neighborhood.totalAdoptedStreets / neighborhood.totalStreets) * 100);
-                  }
-                  else {
-                    neighborhood.percentageAdoptedStreets = 0;
-                  }
-
-                  neighborhood.save(function(err, savedNeighborhood){});
-
-                });
-              });
-            }
-          });
-        }
-
-        toolRequestController.removeForUser(user._id);
-
-        UserModel.remove({ _id: user._id }, function(err, user) {
-          if (err) {
-            console.log("Error while deleting user " + err);
-            return next(err);
-
-            res.status(500).send('There was an issue. Please try again later');
-          }
-
-          res.status(200).send();
+    userService.delete(userId).then(
+        function(userId) {
+            toolRequestController.removeForUser(userId);
+            res.status(200).json(userId);
+        },
+        function(error) {
+            res.status(500).send(err);
         });
-
-        res.json(user);
-    });
-  }
 };
 
 
 exports.activate = function(req, res) {
-  var confirmId = req.params.activationId;
-  UserModel.findOne({activationHash: confirmId}, function(err, user){
-    if (err) return next(err);
-    if (!user) return res.status(401).send('Could not find the user with activation tag: ' + req.params.confirmId);
-      user.active = true;
-      user.save(function (err) {
-        if (err) {
-          console.log("Error while saving user" + err);
-        } else {
-          res.statusCode = 302;
-          res.setHeader("Location", "/confirm.html");
-          res.end();
-          console.log("Successfully Confirmed user(" + user.id +")");
-        }
-      })
-  });
+    var confirmId = req.params.activationId;
+
+    userService.activate(confirmId).then(
+        function(result) {
+            res.statusCode = 302;
+            res.setHeader("Location", "/confirm.html");
+            res.end();
+        },
+        function(error) {
+            res.status(500).send(err);
+        });
 };

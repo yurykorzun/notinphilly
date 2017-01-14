@@ -369,9 +369,9 @@
             },
             onAdd: function (map) {
               var detailsContainer = L.DomUtil.create('div', 'map-control');
-              detailsContainer.innerHTML = '<div><h5>' + neighborhooData.name + '</h5></div>' 
+              detailsContainer.innerHTML = '<div class="hidden-xs"><div><h5>' + neighborhooData.name + '</h5></div>' 
                                             + '<div>Total streets: ' + neighborhooData.totalStreets + '</h5></div>' 
-                                            + '<div>Participating streets: ' + neighborhooData.totalAdoptedStreets + '</h5></div>' ;
+                                            + '<div>Participating streets: ' + neighborhooData.totalAdoptedStreets + '</h5></div></div>' ;
               return detailsContainer;
             }
           });

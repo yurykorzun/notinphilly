@@ -1,7 +1,7 @@
 <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
 <div class="row padding-y--large">
   <fieldset>
-  <legend class="accessibly-hidden">Member Login Form</legend>
+    <legend class="accessibly-hidden">Member Login Form</legend>
     <div class="col-xs-11 col-sm-10 col-md-8 col-sm-offset-1">
       <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">
         <p>We couldn't log you in. Please check that you entered your email address and password correctly.</p>
@@ -11,6 +11,14 @@
         <p>New Members, please sign up for an account.</p>
         <a href="#" class="btn btn--blue" ng-click="loginForm.signup()">Sign Me Up</a>
         <hr class="margin-y"/>
+      </div>
+      <div class="row">
+          <div>
+              <a ng-href="/api/facebook/" class="btn btn-sm btn-block md-max-width btn-facebook position-center" target="_self">
+                  <span>Facebook login</span>
+              </a>
+          </div>
+          <hr class="margin-y"/>
       </div>
       <div class="row">
         <h4 class="headline-s">Returning Members</h4>

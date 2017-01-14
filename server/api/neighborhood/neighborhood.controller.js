@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var neighborhoodService = require('../../service/neighborhoodService');
 var NeighborhoodModel = require('./neighborhood.model');
 var StreetModel       = require('../street/streetSegment.model');
 
@@ -61,18 +62,14 @@ exports.reconcileNeighborhoods = function(req, res, next) {
           function(err, result) {
             if (err) return next(err);
 
-            NeighborhoodModel.findById(result[0]._id, function(err, neighborhoodUpdate) {
-                if (err) return next(err);
-
-                neighborhoodUpdate.totalAdoptedStreets = result[0].total;
-                neighborhoodUpdate.percentageAdoptedStreets =  Math.round(((neighborhood.totalAdoptedStreets / neighborhood.totalStreets) * 100));
-                neighborhoodUpdate.save(function(err, savedNeighborhood)
-                {
-                  if (err) return next(err);
-
-                  console.log(savedNeighborhood.code + " " + savedNeighborhood.totalAdoptedStreets);
-                });
-            });
+            neighborhoodService.setTotalAdoptedStreets(result[0]._id, result[0].total).then(
+              function(result) {
+                console.log(result.code + " " + result.totalAdoptedStreets);
+              },
+              function(error){
+                next(error);               
+              }
+            )
           }
         );
       }

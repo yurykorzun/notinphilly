@@ -1,8 +1,8 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('SignupController', [ '$scope', '$location', '$http', '$cookies', '$uibModalInstance', 'placeSearchService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $location, $http, $cookies, $uibModalInstance, placeSearchService, APP_EVENTS, APP_CONSTS) {
-      $scope.addressOptions = { country: 'us'};
-      $scope.User = {};
+    .controller('SignupIncompleteController', [ '$scope', '$http', '$rootScope', '$location', '$cookies', '$uibModalInstance', 'placeSearchService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', 
+                                            function($scope, $http, $rootScope, $location, $cookies, $uibModalInstance, placeSearchService, sessionService, APP_EVENTS, APP_CONSTS) {
+      $scope.User = $scope.$resolve.user;
       $scope.addressDetails = undefined;
 
       var foundStreet = $cookies.getObject(APP_CONSTS.FOUND_STREET);
@@ -18,7 +18,7 @@
         $scope.addressDetails = undefined;
       }
 
-      $scope.register = function(){
+      $scope.update = function(){
         if(!$scope.signinForm.$invalid)
         {
           if ($scope.addressDetails)
@@ -32,27 +32,29 @@
             $scope.User.streetNumber = address.streetNumber;
             $scope.User.addressLocation = address.location;
             $scope.User.fullAddress = address.fullAddress;
-            
+            $scope.User.needsCompletion = false;
             $scope.User.confirmationEmailRequired = true;
-            $http.post('/api/users/', $scope.User).
+            $http.put('/api/users/', $scope.User).
                     success(function(data) {
-                        $scope.isRegisterFailed = false;
-                        $scope.isRegisterSuccess = true;
-                        
+                        $scope.isUpdateFailed = false;
+                        $scope.isUpdateSuccess = true;
+
+                        if (foundStreet) $cookies.remove(APP_CONSTS.FOUND_STREET);
+
                         $location.path('/');
                     }).error(function(err) {
                         $scope.errorMessage = err ? err : "Something went wrong, please try again later. ";
-                        $scope.isRegisterFailed = true;
-                        $scope.isRegisterSuccess = false;
+                        $scope.isUpdateFailed = true;
+                        $scope.isUpdateSuccess = false;
                     });
             }
             else
             {
               $scope.errorMessage = "Provided address is invalid, please make sure you use autocomplete";
-              $scope.isRegisterFailed = true;
-              $scope.isRegisterSuccess = false;
+              $scope.isUpdateFailed = true;
+              $scope.isUpdateSuccess = false;
             }
-        }
+          }
       }
 
       $scope.close = function(){

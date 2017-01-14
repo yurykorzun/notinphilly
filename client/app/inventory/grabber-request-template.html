@@ -1,0 +1,26 @@
+<div class="col-xs-offset-1 col-xs-11" ng-if="userProfile.toolRequestAvailable">
+    <div class="row tool-request-status">
+        <div class="col-xs-2">
+            <img src="public/img/grabber.png" class="grabber-image" />
+        </div>
+        <div class="col-xs-10">
+            <p>In order to help you keeping your block clean, we can provide you with a trash grabber.</p>
+            <div>It's an amazing tool that makes trash cleanup very simple!</div>
+        </div>
+        <div class="row">
+            <div class="col-xs-4 col-xs-offset-3">
+                <button class="btn btn-success" ng-click="makeToolRequest()">Claim your trash grabber!</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestIsPending">
+    <p>Your trash grabber request is being reviewed!</p>
+    We will keep you updated.
+</div>
+<div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestWasApproved">
+    <p>Your request was approved and a grabber is on its way!</p> We will keep you updated.
+</div>
+<div class="col-xs-offset-1 col-xs-10 tool-request-status" ng-if="userProfile.toolRequestWasDelivered">
+    <p>Your trash grabber was delivered!</p> It is now much easier to keep your block clean.
+</div>
