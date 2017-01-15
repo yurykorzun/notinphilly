@@ -65,24 +65,20 @@ module.exports = function(app) {
         clientSecret: serverSettings.FACEBOOK_SECRET,
         callbackURL: serverSettings.FACEBOOK_CALLBACK_URL,
         profileFields: ['id', 'first_name', 'last_name', 'photos', 'emails']
-    }, function(accessToken, refreshToken, profile, done) {
+    }, 
+    function(accessToken, refreshToken, profile, done) {
         if (!profile) return done("Facebook login failed");
 
         var fbid = profile.id;
-        var email = profile.emails.length > 0 ? profile.emails[0].value : undefined;
+        var email = getUserEmail(profile);
 
         if (email)
         {
             userService.getUserByEmail(email).then(
                 function(foundUser) {
                     if (foundUser) {
-                        foundUser.profileImageUrl = profile.photos.length > 0 ? profile.photos[0].value : undefined;
-                        foundUser.facebook = {
-                                                id: profile.id,
-                                                accessToken: accessToken
-                                            };
-                        foundUser.needsCompletion = false;
 
+                        foundUser = updateFacebookUser(foundUser, profile, accessToken);
                         userService.update(foundUser).then(function(updatedUser) {
                             done(null, updatedUser);
                         },
@@ -93,7 +89,13 @@ module.exports = function(app) {
                     }
                     else
                     {
-                        createFacebookUser(fbid, email, profile, accessToken, done);
+                        createFacebookUser(fbid, email, profile, accessToken)
+                            .then(function(result) {
+                                done(null, result);
+                            },
+                            function(error) {
+                                done(error);
+                            });
                     }
                 },
                 function(error) {
@@ -103,43 +105,70 @@ module.exports = function(app) {
         }
         else
         {
-            createFacebookUser(fbid, email, profile, accessToken, done);
+            createFacebookUser(fbid, email, profile, accessToken)
+                            .then(function(result) {
+                                done(null, result);
+                            },
+                            function(error) {
+                                done(error);
+                            });
         }
 
        
     
     }));
 
-    var createFacebookUser = function(fbid, email, profile, accessToken, done) {
-        userService.getUserByFacebookId(fbid).then(
-                    function(result) {
-                        if (result) return done(null, result);
-                        else {
-                            var newFacebookUser = {
-                                firstName: profile.name.givenName,
-                                lastName: profile.name.familyName,
-                                facebook: {
-                                    id: profile.id,
-                                    accessToken: accessToken
-                                },
-                                email: email,
-                                profileImageUrl: profile.photos.length > 0 ? profile.photos[0].value : undefined,
-                                needsCompletion: true
-                            }
-                            userService.createSocial(newFacebookUser).then(
-                                function(result) {
-                                    done(null, result);
-                                },
-                                function(error) {
-                                    done(error);
+    var updateFacebookUser = function(user, profile, accessToken) {
+        user.profileImageUrl = getUserPhotoUrl(profile);
+        user.facebook = {
+                                id: profile.id,
+                                accessToken: accessToken
+                            };
+        user.needsCompletion = false;
+
+        return user;
+    }
+
+    var createFacebookUser = function(fbid, email, profile, accessToken) {
+        return new Promise(function (fulfill, reject){
+            userService.getUserByFacebookId(fbid).then(
+                        function(result) {
+                            if (result) fulfill(result);
+                            else {
+                                var newFacebookUser = {
+                                    firstName: profile.name.givenName,
+                                    lastName: profile.name.familyName,
+                                    facebook: {
+                                        id: profile.id,
+                                        accessToken: accessToken
+                                    },
+                                    email: email,
+                                    profileImageUrl: getUserPhotoUrl(profile),
+                                    needsCompletion: true
                                 }
-                            );
+                                userService.createSocial(newFacebookUser).then(
+                                    function(result) {
+                                        fulfill(result);
+                                    },
+                                    function(error) {
+                                        reject(error);
+                                    }
+                                );
+                            }
+                        },
+                        function(error) {
+                            reject(error);
                         }
-                    },
-                    function(error) {
-                        return done(error);
-                    }
-            )
+                )
+        });
+    }
+
+    var getUserPhotoUrl = function(profile) {
+        return profile.photos.length > 0 ? profile.photos[0].value : undefined;
+    }
+
+     var getUserEmail = function(profile) {
+        return profile.emails.length > 0 ? profile.emails[0].value : undefined;
     }
 
     // Generates hash using bCrypt
