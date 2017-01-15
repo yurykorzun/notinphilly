@@ -192,7 +192,7 @@ exports.activate = function(req, res) {
     userService.activate(confirmId).then(
         function(result) {
             res.statusCode = 302;
-            res.setHeader("Location", "/confirm.html");
+            res.setHeader("Location", "/public/pages/confirm-account.html");
             res.end();
         },
         function(error) {
