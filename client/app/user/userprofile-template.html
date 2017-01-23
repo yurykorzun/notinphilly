@@ -5,7 +5,7 @@
                 <div>
                     <div class="heading">
                         <h4>
-                            <img ng-if="user.profileImageUrl" src="{{user.profileImageUrl}}" />
+                            <img ng-if="user.profileImageUrl" class="user-profile-image" src="{{user.profileImageUrl}}" />
                             <i ng-if="!user.profileImageUrl" class="fa fa-user" aria-hidden="true"></i> {{user.fullName}}
                         </h4>
                     </div>
@@ -105,7 +105,7 @@
 
     <div class="row" ng-show="hasStreets()">
         <div class="row tool-request" ng-if="userProfile.enableToolRequest">
-            <div ng-include src="'app/invetory/grabber-request-template.html'"></div>
+            <div ng-include src="'app/inventory/grabber-request-template.html'"></div>
         </div>
         <div class="row">
             <div class="col-xs-offset-1 col-xs-12">
