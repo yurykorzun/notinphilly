@@ -155,6 +155,7 @@ exports.create = function(user, isEmailRequired) {
                                                 emailService.sendUserConfirmationEmail(savedUser.email, savedUser.firstName, savedUser.lastName, savedUser.activationHash);
                                             }
 
+                                            emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
                                             fulfill(savedUser);
                                         }
                                     });
@@ -188,7 +189,11 @@ exports.createSocial = function(user) {
                     } else {
                         newUser.save(function(err, savedUser) {
                             if (err) reject(err);
-                            else fulfill(savedUser);
+                            else {
+                                emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
+                                
+                                fulfill(savedUser);
+                            } 
                         });
                     }
                 });
