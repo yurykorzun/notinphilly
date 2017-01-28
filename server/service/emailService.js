@@ -5,8 +5,6 @@ var mailgun = require('mailgun-js')({ apiKey: apiSettings.EMAIL_API_KEY, domain:
 //common
 var emailFrom = "noreply <noreply@notinphilly.org>";
 
-var emailCopy = "notinphilly@gmail.com";
-
 var emailToTemplate = handlebarsEngine.compile("{{firstName}} {{lastName}} <{{email}}>");
 
 //confirmation email
@@ -25,6 +23,12 @@ var userPasswordResetPlainTemplate = handlebarsEngine.compile("Hi {{firstName}},
 
 var userPasswordResetHtmlTemplate = handlebarsEngine.compile("<p>Hi {{firstName}},</p><p>Your temporary password for notinphilly.org is: <p><b>{{newPassword}}</b></p></p><p>Please don't forget to change your password after login.</p> <p><b>#NotInPhilly Team</b></p>");
 
+//admin notify
+var adminEmail = "notinphilly@gmail.com";
+
+var userSignedUpNotificationPlainTemplate = handlebarsEngine.compile("Dear Admin,\nA new user just signed up!\n\nName: {{firstName}} {{lastName}} Email: {{email}} Address: {{address}}\n\n#NotInPhilly Team");
+var userSignedUpNotificationHtmlTemplate = handlebarsEngine.compile("<p>Dear Admin,<p> <p>A new user just signed up!</p> <p>Name: {{firstName}} {{lastName}} Email: {{email}} Address: {{address}}</p> <div><b>#NotInPhilly Team</b></div>");
+
 
 exports.sendUserConfirmationEmail = function(email, firstName, lastName, activationHash) {
     var emailTo = emailToTemplate({ firstName: firstName, lastName: lastName, email: email });
@@ -32,7 +36,6 @@ exports.sendUserConfirmationEmail = function(email, firstName, lastName, activat
 
     var data = {
         from: emailFrom,
-        // cc: emailCopy,
         to: emailTo,
         subject: userConfirmationSubject,
         text: userConfirmationEmailPlainTemplate({ firstName: firstName, url: url }),
@@ -47,11 +50,22 @@ exports.sendResetPasswordEmail = function(firstName, lastName, email, newPasswor
 
     var data = {
         from: emailFrom,
-        //cc: emailCopy,
         to: emailTo,
         subject: userPasswordResetSubjectTemplate,
         text: userPasswordResetPlainTemplate({ firstName: firstName, newPassword: newPassword }),
         html: userPasswordResetHtmlTemplate({ firstName: firstName, newPassword: newPassword })
+    };
+
+    mailgun.messages().send(data, function(error, body) {});
+};
+
+exports.sendUserNotificationEmail = function(firstName, lastName, email, address) {
+    var data = {
+        from: adminEmail,
+        to: adminEmail,
+        subject: "New user signed up!",
+        text: userSignedUpNotificationPlainTemplate({ firstName: firstName, lastName: lastName, email: email, address: address }),
+        html: userSignedUpNotificationHtmlTemplate({ firstName: firstName, lastName: lastName, email: email, address: address })
     };
 
     mailgun.messages().send(data, function(error, body) {});
