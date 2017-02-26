@@ -10,8 +10,10 @@ mappedRecords = []
 
 for properties in jsonParsed:
     record = {}
-    record["_id"] = properties["_id"]     
-    record["name"] = "{0} {1} {2}".format(properties["streetName"],properties["type"], properties["rightHundred"])   
+    record["_id"] = properties["_id"]   
+
+    blockNumber = properties["rightHundred"] if properties["rightHundred"] != 0 else "" 
+    record["name"] = "{0} {1} {2}".format(properties["streetName"],properties["type"], blockNumber  )   
     record["block"] =  properties["rightHundred"]
     record["zipCode"] = properties["zipLeft"] 
     record["neighborhood"] = ""

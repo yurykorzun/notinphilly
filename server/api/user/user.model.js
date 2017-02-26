@@ -34,7 +34,7 @@ var userSchema = new Schema({
     streetName: { type: String, default: '' },
     adoptedStreets: [{
         type: Schema.Types.ObjectId,
-        ref: 'StreetSegment'
+        ref: 'Street'
     }],
     hashedPassword: { type: String, default: '' },
     activationHash: String,

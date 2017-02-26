@@ -172,7 +172,6 @@
             map.setView(addressLocation, 17, { animate: false });
           }
 
-
           var markerIcon = new LeafIcon({iconUrl: 'public/img/broom.png'});
 
           var streetLayer = createStreetLayer(streets);
@@ -200,8 +199,8 @@
         _deferredMap.promise.then(function(map) {
           $http.get("api/streets/" + streetId).success(function(streetData, status) {
             $http.get("api/neighborhoods/" + streetData.neighborhood).success(function(neighborhooData, status) {
-              var start = L.latLng(streetData.geodata.geometry.coordinates[0][1], streetData.geodata.geometry.coordinates[0][0]);
-              var end = L.latLng(streetData.geodata.geometry.coordinates[1][1], streetData.geodata.geometry.coordinates[1][0]);
+              var start = L.latLng(streetData.geometry.coordinates[0][1], streetData.geometry.coordinates[0][0]);
+              var end = L.latLng(streetData.geometry.coordinates[1][1], streetData.geometry.coordinates[1][0]);
               var streetBounds = new L.LatLngBounds(start, end);
 
               loadStreets(neighborhooData, map).then(function(layers) {
@@ -295,7 +294,7 @@
           map.closePopup();
           createStreetControls(map, neighborhooData);
 
-          $http.get("api/streets/byparentgeo/" + neighborhooData.id).success(function(data, status) {
+          $http.get("api/streets/byparentgeo/" + neighborhooData._id).success(function(data, status) {
             var streetLayer = createStreetLayer(data);
 
             _mapLayerGroup.addLayer(streetLayer);
@@ -357,6 +356,7 @@
               return container;
             }
           });
+
           viewNeigborhoodsControl = new viewNeigborhoodsControl();
           mapInstance.addControl(viewNeigborhoodsControl);
           _mapControls.push(viewNeigborhoodsControl);
@@ -412,7 +412,7 @@
           var streetCenter = layerBounds.getCenter();
 
           street["streetCenter"] = streetCenter;
-          street["streetMapPreview"] = "/api/external/mapbox-statcmap/" + streetCenter.lng + "/" + streetCenter.lat;
+          street["streetMapPreview"] = "/api/external/mapbox-staticmap/" + streetCenter.lng + "/" + streetCenter.lat;
         }
 
         return streets;
