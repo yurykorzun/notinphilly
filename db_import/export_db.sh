@@ -17,15 +17,11 @@ mongoexport -h $host --port $port -u $user -p $password -d $database -c sessions
 
 mongoexport -h $host --port $port -u $user -p $password -d $database -c states --authenticationDatabase admin -o states_export.json
 
-mongoexport -h $host --port $port -u $user -p $password -d $database -c streetNames --authenticationDatabase admin -o streetNames_export.json
-
-mongoexport -h $host --port $port -u $user -p $password -d $database -c streetSegments --authenticationDatabase admin -o streetSegments_export.json
+mongoexport -h $host --port $port -u $user -p $password -d $database -c streets --authenticationDatabase admin -o streetSegments_export.json
 
 mongoexport -h $host --port $port -u $user -p $password -d $database -c userProfiles --authenticationDatabase admin -o userProfiles_export.json
 
-mongoexport -h $host --port $port -u $user -p $password -d $database -c userStats --authenticationDatabase admin -o userStats_export.json
-
-mongoexport -h $host --port $port -u $user -p $password -d $database -c zipCodes --authenticationDatabase admin -o zipCodes_export.json
+mongoexport -h $host --port $port -u $user -p $password -d $database -c zipcodes --authenticationDatabase admin -o zipCodes_export.json
 
 echo "Finished importing db..." 
 

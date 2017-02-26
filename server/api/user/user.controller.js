@@ -4,7 +4,7 @@ var userService = require('../../service/userService');
 
 var UserModel = require('./user.model');
 var StateModel = require('../state/state.model');
-var StreetModel = require('../street/streetSegment.model');
+var StreetModel = require('../street/street.model');
 var NeighborhoodModel = require('../neighborhood/neighborhood.model');
 var toolRequestController = require('../toolRequests/toolRequest.controller');
 var apiSettings = require('../../config/apiSettings');

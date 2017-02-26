@@ -51,9 +51,9 @@ angular.module('notinphillyServerApp')
         initView();
 
         var newScope = $scope.$new();
+        newScope.streetId = properties._id;
         newScope.totalAdopters = properties.totalAdopters;
-        newScope.address = (properties.hundred ? properties.hundred + ' block of ' : '')  + ' ' + properties.name + ' ' + properties.zipCode;
-        newScope.streetId = properties.id;
+        newScope.address = properties.name;
         newScope.imageSrc = properties.imageSrc;
 
         newScope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
@@ -76,7 +76,7 @@ angular.module('notinphillyServerApp')
             $http.get("api/streets/adopt/" + properties.id).then(function(response) {
               setUpDefaultView();
               $scope.isShowAdoptedSuccess = true;
-              mapService.addNeigborhoodStreets(properties.parentId);
+              mapService.addNeigborhoodStreets(properties.neighborhood);
 
               $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
             },
@@ -87,15 +87,15 @@ angular.module('notinphillyServerApp')
           }
           else
           {
-            $cookies.putObject(APP_CONSTS.ADOPTED_STREET, {streetId: properties.id});
+            $cookies.putObject(APP_CONSTS.ADOPTED_STREET, {streetId: properties._id});
             setUpDefaultView();
             $scope.isShowLogin = true;
           }
         };
         
         newScope.leave = function() {
-          $http.get("api/streets/leave/" + properties.id).then(function(response) {
-            mapService.addNeigborhoodStreets(properties.parentId);
+          $http.get("api/streets/leave/" + properties._id).then(function(response) {
+            mapService.addNeigborhoodStreets(properties.neighborhood);
             targetPopup._close();
 
             $rootScope.$broadcast(APP_EVENTS.STREET_LEFT);
@@ -111,7 +111,7 @@ angular.module('notinphillyServerApp')
         };
 
         newScope.checkin = function() {
-          $http.get("api/userstats/checkin?uid=" + $rootScope.currentUser._id +"&sid=" + properties.id).then(function(response){
+          $http.get("api/userstats/checkin?uid=" + $rootScope.currentUser._id +"&sid=" + properties._id).then(function(response){
             targetPopup._close();
           },
           function(err){

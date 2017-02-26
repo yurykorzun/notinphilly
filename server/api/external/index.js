@@ -20,7 +20,7 @@ router.get('/google-streetview-api/:lat/:lng/', function(req, res, next) {
     request(url).pipe(res);
 });
 
-router.get('/mapbox-statcmap/:lat/:lng/', function(req, res, next) {
+router.get('/mapbox-staticmap/:lat/:lng/', function(req, res, next) {
     var lat = req.params.lat;
     var lng = req.params.lng;
     var url = "https://api.mapbox.com/styles/v1/yurykorzun/cimv1ezcc00sqb8m7z8e3yeiz/static/" + lat + "," + lng + ",15/120x95?logo=false&access_token=" + settings.MAP_BOX_API_KEY;
