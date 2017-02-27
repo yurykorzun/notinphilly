@@ -4,11 +4,11 @@ from pymongo import MongoClient
 
 client = MongoClient('mongodb://localhost:27017/')
 
-db = client.notinphilly_new
+db = client.notinbaltimore
 collection = db.city
 
 currentDirPath = os.path.dirname(__file__)
-jsonFile = open(os.path.join(currentDirPath, 'Philadelphia.json'))
+jsonFile = open(os.path.join(currentDirPath, 'Baltimore.json'))
 jsonString = jsonFile.read()
 jsonParsed = json.loads(jsonString)
 

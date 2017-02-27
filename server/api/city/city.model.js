@@ -5,7 +5,7 @@ var CitySchema = new Schema({
   name: { type: String, default: '', required: [true, 'City name is requred'] },
   country:  { type: String, default: '', required: [true, 'Country is requred'] },
   state:  {  
-    type: Schema.Types.ObjectId,
+    type: Number,
     ref: 'State',
     required: [true, 'State is requred']
   },   

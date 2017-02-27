@@ -3,11 +3,9 @@ import json
 from pymongo import MongoClient
 from bson.objectid import ObjectId
 
-cityId = ObjectId('58ab61c60113252c4c3437fa')
-
 client = MongoClient('mongodb://localhost:27017/')
 
-db = client.notinphilly_new
+db = client.notinbaltimore
 
 collection = db.neighborhoods
 

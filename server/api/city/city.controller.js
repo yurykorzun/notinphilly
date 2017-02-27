@@ -1,6 +1,6 @@
 var mongoose            = require('mongoose');
-var CityModel           = require('./city.model');
 var lodash              = require('lodash');
+var CityModel           = require('./city.model');
 
 var Schema = mongoose.Schema;
 
