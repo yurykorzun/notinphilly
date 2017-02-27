@@ -71,12 +71,14 @@
               }
             });
 
-            map.setView(APP_CONSTS.MAP_CENTER, 13, { animate: false });
-            _mapLayerGroup.addLayer(geoJsonLayer);
-            _mapLayerGroup.addTo(map);
-            _mapStreetLayer = undefined;
+            var mapCenter = getMapCenter().then(function(mapCenter){
+               map.setView(mapCenter, 13, { animate: false });
+              _mapLayerGroup.addLayer(geoJsonLayer);
+              _mapLayerGroup.addTo(map);
+              _mapStreetLayer = undefined;
 
-            map.invalidateSize();
+              map.invalidateSize();
+            });
            });
         });
       };
@@ -272,6 +274,22 @@
             map.removeLayer(_mapLabelsLayer);
           }
         });
+      };
+
+      var getMapCenter = function() {
+        var defferedCenter = $q.defer();
+
+        $http.get("api/city/getGeoJSON").success(function(cityData, status) {
+          var geoJsonLayer = L.geoJson(cityData);
+          var layerBounds = geoJsonLayer.getBounds();
+          var mapCenter = layerBounds.getCenter();
+
+          defferedCenter.resolve(mapCenter);
+        }, function(err) {
+          defferedCenter.reject(err);
+        });
+
+        return defferedCenter.promise;
       };
 
       var setNeighborhoodLabel = function(feature, layer, map)

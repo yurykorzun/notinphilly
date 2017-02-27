@@ -31,8 +31,7 @@
 
   app.constant("APP_CONSTS", {
     "FOUND_STREET": "notinphilly.foundStreet",
-    "ADOPTED_STREET": "notinphilly.adoptedStreet",
-    "MAP_CENTER": {  lat: 39.931054,  lng: -75.204009 },
+    "ADOPTED_STREET": "notinphilly.adoptedStreet"
   });
 
     app.config(function ($httpProvider, $routeProvider, $locationProvider, $logProvider, $provide) {

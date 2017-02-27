@@ -1,0 +1,8 @@
+mongoimport -h localhost --port 27017 -d notinbaltimore -c blocks --file blocks_export.json
+mongoimport -h localhost --port 27017 -d notinbaltimore -c city --file city_export.json
+mongoimport -h localhost --port 27017 -d notinbaltimore -c neighborhoods --file neighborhoods_export.json
+mongoimport -h localhost --port 27017 -d notinbaltimore -c roles --file roles_export.json
+mongoimport -h localhost --port 27017 -d notinbaltimore -c states --file states_export.json
+mongoimport -h localhost --port 27017 -d notinbaltimore -c streets --file streets_export.json
+mongoimport -h localhost --port 27017 -d notinbaltimore -c userProfiles --file userProfiles_export.json
+mongoimport -h localhost --port 27017 -d notinbaltimore -c zipcodes --file zipcodes_export.json
