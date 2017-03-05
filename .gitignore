@@ -11,3 +11,6 @@ server/config/serverSettings.js
 # openshift stuff
 .openshift
 .vscode/
+
+# logs
+*.log

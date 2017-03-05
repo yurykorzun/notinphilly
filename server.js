@@ -3,6 +3,9 @@ var express        = require('express');
 var mongoose       = require('mongoose');
 var app            = express();
 var serverSettings = require('./server/config/serverSettings');
+var logger         = require('./server/components/logger');
+
+logger.level = "debug";
 
 // set our port
 var port = serverSettings.HTTP_PORT;
@@ -16,11 +19,14 @@ require('./server/config/passport')(app);
 // routes ==================================================
 require('./server/routes')(app);
 
+app.use(function (err, req, res, next) {
+  logger.error(err);
+});
+
 // start app ===============================================
 // startup our app at http://localhost:PORT
 app.listen(port, ip, function () {
-  console.log('Express server listening on %s  %d', ip, port);
+  logger.debug('Express server listening', { "ip" : ip, "port" : port });
 });
 
-// expose app
-exports = module.exports = app;
+module.exports = app;

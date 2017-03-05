@@ -1,7 +1,8 @@
-var path = require('path');
+var path    = require('path');
+var logger  = require('./components/logger');
 
 module.exports = function(app) {
-    console.log("init routes");
+    logger.debug("init routes");
 
     // Insert routes below
     app.use('/api/neighborhoods', require('./api/neighborhood'));

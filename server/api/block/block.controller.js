@@ -6,22 +6,35 @@ var Schema = mongoose.Schema;
 
 exports.index = function(req, res, next) {
     CityModel.findOne({}, function(err, city) {
-        if (err) return next(err);
-
-        res.status(200).json(city);
+        if (err) {
+            logger.error("blockController.index " + err);
+            next(err);
+        } 
+        else 
+        {
+           res.status(200).json(city);
+        }
     });
 };
 
 exports.getAllGeojson = function(req, res) {
      CityModel.findOne({}, function(err, city) {
-            var feature = {
-                "type" : "Feature",
-                "geometry": city["geometry"]
-            };
+            if (err) 
+            {
+                logger.error("blockController.getAllGeojson " + err);
+                next(err);
+            } 
+            else 
+            {
+                var feature = {
+                    "type" : "Feature",
+                    "geometry": city["geometry"]
+                };
 
-            city["geometry"] = undefined;
-            feature.properties = city;
+                city["geometry"] = undefined;
+                feature.properties = city;
 
-            res.status(200).json(feature);
+                res.status(200).json(feature);
+            }
      });
 };

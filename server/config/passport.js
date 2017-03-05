@@ -1,14 +1,15 @@
-var passport = require('passport');
-var crypto = require('bcrypt-nodejs');
-var LocalStrategy = require('passport-local').Strategy;
+var passport        = require('passport');
+var crypto          = require('bcrypt-nodejs');
+var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
-var flash = require('connect-flash');
-var serverSettings = require('./serverSettings');
-var UserModel = require('../api/user/user.model');
-var userService = require('../service/userService');
+var flash           = require('connect-flash');
+var serverSettings  = require('./serverSettings');
+var UserModel       = require('../api/user/user.model');
+var userService     = require('../service/userService');
+var logger          = require('../components/logger');
 
 module.exports = function(app) {
-    console.log("init passport");
+    logger.debug("init passport");
 
     app.use(passport.initialize());
     app.use(flash());
