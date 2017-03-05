@@ -2,9 +2,10 @@ var express         = require('express');
 var mongoose        = require('mongoose');
 var promise         = require('promise');
 var serverSettings  = require('./serverSettings');
+var logger          = require('../components/logger');
 
 module.exports = function(app) {
-    console.log("init db");
+    logger.log("debug", "init db");
 
     var connectionString = serverSettings.DB_CONNECTION_STRING;
 
@@ -14,15 +15,9 @@ module.exports = function(app) {
     };
     mongoose.Promise = promise;
     mongoose.connection.on('error', function(err) {
-        console.error('MongoDB connection error: ' + err);
+        logger.error('MongoDB connection error: ' + err);
         process.exit(-1);
     	}
     );
     mongoose.connect(connectionString, dbOptions);
-
-    /*if (argv['seed-db']) {
-      console.log('Seeding DB');
-      var dbseeder = require('../components/dbseeder');
-      dbseeder();
-    }*/
 };

@@ -1,5 +1,7 @@
-var mongoose = require('mongoose');
-var passport = require('passport');
+var mongoose        = require('mongoose');
+var passport        = require('passport');
+var serverSettings  = require('../../config/serverSettings');
+var logger          = require('../../components/logger');
 
 /**
  * Session
@@ -27,16 +29,20 @@ exports.checkAuthenticated = function (req, res) {
  * returns nothing
  */
 exports.logout = function (req, res) {
-  res.clearCookie('notinphillytoken.sid');
+  res.clearCookie(serverSettings.AUTH_COOKIE_NAME);
 
   if(req.user) {
     req.logout();
     req.session.save(function (err) {
-        if (err) { return next(err); }
+        if (err) { 
+          logger.error("authController.logout " + err);
+          next(err); 
+        }
     });
 
     res.sendStatus(200);
   } else {
+    logger.error("authController.logout Logout failed, wasn't logged in");
     res.sendStatus(400, "Logout failed, wasn't logged in");
   }
 };

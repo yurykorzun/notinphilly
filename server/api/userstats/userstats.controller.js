@@ -1,13 +1,14 @@
-var mongoose = require('mongoose');
-var UserStatsModel = require('./userstats.model');
-var UserController = require('../user/user.controller');
-var uuid = require('uuid');
-var url = require('url');
+var mongoose          = require('mongoose');
+var UserStatsModel    = require('./userstats.model');
+var UserController    = require('../user/user.controller');
+var uuid              = require('uuid');
+var url               = require('url');
+var logger            = require('../../components/logger');
 
 var saveUserStats = function(userStats, res) {
   userStats.save(function (err) {
     if (err) {
-      console.log("Error while saving user" + err);
+      logger.error("userstats.saveUserStats " + err);
     } else {
       res.statusCode = 200;
       res.setHeader("Location", "/");

@@ -4,16 +4,18 @@ var UserModel           = require('../user/user.model');
 var NeighborhoodModel   = require('../neighborhood/neighborhood.model');
 var streetService       = require('../../service/streetService');
 var userService         = require('../../service/userService')
+var logger              = require('../../components/logger');
 
 var Schema = mongoose.Schema;
 
 exports.index = function(req, res, next) {
   streetService.getAll.then(function(streets)
   {
-      res.status(200).json(streets);
+    res.status(200).json(streets);
   },
   function(error)
   {
+    logger.error("streetController.index " + error);
     res.status(500).send(error);
   });
 };
@@ -27,6 +29,7 @@ exports.get = function(req, res, next) {
   },
   function(error)
   {
+    logger.error("streetController.get " + error);    
     res.status(500).send(error);
   });
 };
@@ -34,14 +37,17 @@ exports.get = function(req, res, next) {
 exports.getByNeighborhood = function(req, res, next) {
   var neighborhoodId = req.params.nid;
 
-  streetService.getByNeighborhoodId(neighborhoodId).then(function(streets)
-  {
-    res.status(200).json(streets);
-  },
-  function(error)
-  {
-    res.status(500).send(error);
-  });
+  streetService
+    .getByNeighborhoodId(neighborhoodId)
+    .then(function(streets)
+    {
+      res.status(200).json(streets);
+    },
+    function(error)
+    {
+      logger.error("streetController.getByNeighborhood " + error); 
+      res.status(500).send(error);
+    });
 };
 
 exports.currentUserStreets = function(req, res, next) {
@@ -54,6 +60,7 @@ exports.currentUserStreets = function(req, res, next) {
       res.status(200).json(result);
     },
     function(error) {
+      logger.error("streetController.currentUserStreets " + error);    
       res.status(500).json("Street retrieval failed");
     });
 };
@@ -71,10 +78,12 @@ exports.getByLocation = function(req, res, next) {
           res.status(200).json(streets);
         },
         function(error){
+          logger.error("streetController.getByLocation " + error);              
           res.status(500).json("Search failed");          
         });
       },
       function (error) {
+        logger.error("streetController.getByLocation " + error);                      
         res.status(500).json("Search failed");
       });
     }
@@ -85,6 +94,7 @@ exports.getByLocation = function(req, res, next) {
           res.status(200).json(streets);
         },
         function(error){
+          logger.error("streetController.getByLocation " + error);                                
           res.status(500).json("Search failed");          
         });
     }
@@ -105,10 +115,12 @@ exports.getByLocationPaged = function(req, res, next) {
           res.status(200).json(result);
         },
         function(error){
+          logger.error("streetController.getByLocationPaged " + error);                                          
           res.status(500).json("Search failed");          
         });
       },
       function (error) {
+        logger.error("streetController.getByLocationPaged " + error);                                                  
         res.status(500).json("Search failed");
       });
     }
@@ -120,6 +132,7 @@ exports.getByLocationPaged = function(req, res, next) {
         res.status(200).json(result);
       },
       function(error){
+        logger.error("streetController.getByLocationPaged " + error);                                                          
         res.status(500).json("Search failed");          
       });
     }
@@ -136,10 +149,12 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
           res.status(200).json(streets);
         },
         function(error){
+          logger.error("streetController.getByNeighborhoodGeojson " + error);                                                                    
           res.status(500).json("Streets retrieval by neighborhood failed");          
         });
       },
       function (error) {
+        logger.error("streetController.getByNeighborhoodGeojson " + error);    
         res.status(500).json("User retrieval failed");
       });
     }
@@ -151,6 +166,7 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
         res.status(200).json(streets);
       },
       function(error){
+        logger.error("streetController.getByNeighborhoodGeojson " + error);            
         res.status(500).json("Streets retrieval by neighborhood failed");          
       });
     }
@@ -163,6 +179,7 @@ exports.reconcileAdoptedStreets = function(req, res, next) {
     },
     function(error)
     {
+      logger.error("streetController.reconcileAdoptedStreets " + error);                  
       res.status(500).json("Adopted streets reconciliation failed");    
     }
   )
@@ -182,6 +199,7 @@ exports.adopt = function(req, res, next) {
       },
       function(error)
       {
+        logger.error("streetController.adopt " + error);                          
         res.status(500).json(error);
       }
     );
@@ -200,6 +218,7 @@ exports.leave = function(req, res, next) {
         res.status(200).json(result);
       },
       function(error) {
+        logger.error("streetController.leave " + error);                                  
         res.status(500).json(error);
       }
     );

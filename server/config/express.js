@@ -7,9 +7,11 @@ var methodOverride = require('method-override');
 var path           = require('path');
 var expressSession = require('express-session');
 var mongoStore     = require('connect-mongo/es5')(expressSession);
+var serverSettings = require('../config/serverSettings');
+var logger         = require('../components/logger');
 
 module.exports = function(app, secretToken) {
-  console.log("init express");
+  logger.debug("init express");
 
   var assetsPath = path.normalize(__dirname + '/../../client/');
   app.use(express.static(assetsPath));;
@@ -22,7 +24,7 @@ module.exports = function(app, secretToken) {
 
   //make the app use the passport/express session
   app.use(expressSession({
-    name: "notinphillytoken.sid",
+    name: serverSettings.AUTH_COOKIE_NAME,
     resave: false,
     saveUninitialized: false,
     secret: secretToken,
@@ -32,7 +34,7 @@ module.exports = function(app, secretToken) {
     },
     store: new mongoStore({
         mongooseConnection: mongoose.connection,
-        db: 'notinphilly'
+        db: serverSettings.DATABASE_NAME
     })
   }));
 };

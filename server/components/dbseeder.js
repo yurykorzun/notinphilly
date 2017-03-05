@@ -3,13 +3,11 @@ var fs             = require('fs');
 var path           = require('path');
 var arrayFind      = require('array-find');
 
-var StreetSegmentModel = require('../api/street/streetSegment.model');
+var StreetSegmentModel = require('../api/street/street.model');
 var NeighborhoodModel = require('../api/neighborhood/neighborhood.model');
 var StateModel = require('../api/state/state.model');
 var RoleModel = require('../api/role/role.model');
 var UserModel = require('../api/user/user.model');
-var StreetNamesModel = require('../api/street/streetNames.model');
-var StreetZipsModel = require('../api/street/streetZipcodes.model');
 
 module.exports = function() {
   var streetsJson     = fs.readFileSync(path.resolve(__dirname, "../misc/streetsData.json"), 'utf8');

@@ -1,6 +1,7 @@
 var handlebarsEngine = require("handlebars");
 var apiSettings = require('../config/apiSettings');
-var mailgun = require('mailgun-js')({ apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN });
+var mailgun     = require('mailgun-js')({ apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN });
+var logger      = require('../components/logger');
 
 //common
 var emailFrom = "noreply <noreply@notinphilly.org>";
@@ -42,7 +43,9 @@ exports.sendUserConfirmationEmail = function(email, firstName, lastName, activat
         html: userConfirmationEmailHtmlTemplate({ firstName: firstName, url: url })
     };
 
-    mailgun.messages().send(data, function(error, body) {});
+    mailgun.messages().send(data, function(error, body) {
+        logger.error("emailService.sendUserConfirmationEmail " + error);
+    });
 };
 
 exports.sendResetPasswordEmail = function(firstName, lastName, email, newPassword) {
@@ -56,7 +59,9 @@ exports.sendResetPasswordEmail = function(firstName, lastName, email, newPasswor
         html: userPasswordResetHtmlTemplate({ firstName: firstName, newPassword: newPassword })
     };
 
-    mailgun.messages().send(data, function(error, body) {});
+    mailgun.messages().send(data, function(error, body) {
+        logger.error("emailService.sendResetPasswordEmail " + error);
+    });
 };
 
 exports.sendUserNotificationEmail = function(firstName, lastName, email, address) {
@@ -68,5 +73,7 @@ exports.sendUserNotificationEmail = function(firstName, lastName, email, address
         html: userSignedUpNotificationHtmlTemplate({ firstName: firstName, lastName: lastName, email: email, address: address })
     };
 
-    mailgun.messages().send(data, function(error, body) {});
+    mailgun.messages().send(data, function(error, body) {
+        logger.error("emailService.sendUserNotificationEmail " + error);        
+    });
 };

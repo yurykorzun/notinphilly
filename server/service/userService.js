@@ -1,23 +1,30 @@
-var mongoose = require('mongoose');
-var promise = require('promise');
-var lodash = require('lodash');
-var uuid = require('uuid');
+var mongoose        = require('mongoose');
+var promise         = require('promise');
+var lodash          = require('lodash');
+var uuid            = require('uuid');
 var passwordGenerator = require('generate-password');
-var emailService = require('./emailService');
-var streetService = require('./streetService');
-var UserModel = require('../api/user/user.model');
-var StateModel = require('../api/state/state.model');
+var emailService    = require('./emailService');
+var streetService   = require('./streetService');
+var UserModel       = require('../api/user/user.model');
+var StateModel      = require('../api/state/state.model');
+var logger          = require('../components/logger');
 
 exports.getUserById = function(userId) {
     return new Promise(function(fulfill, reject) {
-        if (!userId) reject("User id is missing")
+        if (!userId) {
+            logger.error("streetService.getAll User id is missing");
+            reject("User id is missing");
+        }
         else {
             UserModel.findById(userId)
                 .populate('state')
                 .populate('adoptedStreets')
                 .select('-salt -hashedPassword -_v -authToken -__v')
                 .exec(function(err, user) {
-                    if (err) reject(err);
+                    if (err) {
+                        logger.error("userService.getUserById " + err);
+                        reject(err);
+                    } 
                     else if (!user) reject("User doesn't exist");
                     else fulfill(user);
                 });
@@ -27,13 +34,20 @@ exports.getUserById = function(userId) {
 
 exports.getUserByFacebookId = function(facebookId) {
     return new Promise(function(fulfill, reject) {
-        if (!facebookId) reject("Facebook id is missing")
+        if (!facebookId) {
+            logger.error("userService.getUserByFacebookId Facebook id is missing");
+            reject("Facebook id is missing");
+        } 
         else {
             UserModel.findOne({
                     "facebook.id": facebookId
                 },
                 function(err, user) {
-                    if (err) reject("User retrieval by facebook id failed " + err);
+                    if (err) 
+                    { 
+                        logger.error("userService.getUserByFacebookId " + err);
+                        reject("User retrieval by facebook id failed " + err);
+                    }
                     else fulfill(user);
                 });
         }
@@ -42,13 +56,19 @@ exports.getUserByFacebookId = function(facebookId) {
 
 exports.getUserByEmail = function(email) {
     return new Promise(function(fulfill, reject) {
-        if (!email) reject("email is missing")
+        if (!email) {
+            logger.error("userService.getUserByEmail email is missing");
+            reject("email is missing");
+        } 
         else {
             UserModel.findOne({
                     "email": email
                 },
                 function(err, user) {
-                    if (err) reject("User retrieval by email failed " + err);
+                    if (err) {
+                        logger.error("userService.getUserByEmail " + err);
+                        reject("User retrieval by email failed " + err);
+                    } 
                     else fulfill(user);
                 });
         }
@@ -62,7 +82,10 @@ exports.getAll = function() {
             .populate('adoptedStreets')
             .select('-salt -hashedPassword -_v -authToken -__v')
             .exec(function(err, users) {
-                if (err) reject(err);
+                if (err) {
+                    logger.error("userService.getAll " + err);
+                    reject(err);
+                } 
                 else fulfill(users);
             });
     });
@@ -100,7 +123,10 @@ exports.getAllPagedSorted = function(sortColumn, sortDirection, skip, limit) {
             }
 
             query.exec(function(err, users) {
-                if (err) reject(err);
+                if (err) {
+                    logger.error("userService.getAllPagedSorted " + err);
+                    reject(err);
+                } 
 
                 var data = { users: users, count: count };
                 fulfill(data);
@@ -112,7 +138,10 @@ exports.getAllPagedSorted = function(sortColumn, sortDirection, skip, limit) {
 exports.create = function(user, isEmailRequired) {
     return new Promise(function(fulfill, reject) {
         UserModel.findOne({ email: user.email }, function(err, existingUser) {
-            if (err) reject(err);
+            if (err){
+                logger.error("userService.create " + err);
+                reject(err);
+            }
             else if (existingUser) reject("user " + existingUser.email + " already exists");
             else {
                 if (!user.password) reject("Please enter password and confirm your password");
@@ -149,7 +178,10 @@ exports.create = function(user, isEmailRequired) {
                                     reject(messages);
                                 } else {
                                     newUser.save(function(err, savedUser) {
-                                        if (err) reject(err);
+                                        if (err) {
+                                            logger.error("userService.create " + err);
+                                            reject(err);
+                                        } 
                                         else {
                                             if (isEmailRequired) {
                                                 emailService.sendUserConfirmationEmail(savedUser.email, savedUser.firstName, savedUser.lastName, savedUser.activationHash);
@@ -163,6 +195,7 @@ exports.create = function(user, isEmailRequired) {
                             });
                         },
                         function(error) {
+                            logger.error("userService.create " + error);
                             reject(error);
                         });
                 }
@@ -174,7 +207,10 @@ exports.create = function(user, isEmailRequired) {
 exports.createSocial = function(user) {
     return new Promise(function(fulfill, reject) {
         UserModel.findOne({ email: user.email }, function(err, existingUser) {
-            if (err) reject(err);
+            if (err) {
+                logger.error("userService.createSocial " + err);
+                reject(err);
+            } 
             else if (existingUser) reject("user " + existingUser.email + " already exists");
             else {
                 if (!user.facebook) reject("Facebook profile is missing");
@@ -188,7 +224,10 @@ exports.createSocial = function(user) {
                         reject(messages);
                     } else {
                         newUser.save(function(err, savedUser) {
-                            if (err) reject(err);
+                            if (err) {
+                                logger.error("userService.createSocial " + err);
+                                reject(err);
+                            } 
                             else {
                                 emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
                                 
@@ -209,7 +248,10 @@ exports.update = function(user) {
         if (!updatedUser || !updatedUser._id) reject("User is missing. Update failed.");
 
         UserModel.findById(updatedUser._id, function(err, existingUser) {
-            if (err) return reject(err);
+            if (err) {
+                logger.error("userService.update " + err);
+                reject(err);
+            } 
             else {
                 lodash.extend(existingUser, updatedUser);
 
@@ -219,7 +261,10 @@ exports.update = function(user) {
                         reject(messages);
                     } else {
                         existingUser.save(function(err, savedUser) {
-                            if (err) reject(err);
+                            if (err) {
+                                logger.error("userService.update " + err);
+                                reject(err);
+                            } 
                             else fulfill(savedUser);
                         });
                     }
@@ -234,19 +279,26 @@ exports.delete = function(userId) {
         if (!userId) reject("User is missing. User deletion failed.");
         else {
             UserModel.findById(userId).exec(function(err, user) {
-                if (err) reject("User retrieval failed " + err);
+                if (err) {
+                    logger.error("userService.delete " + err);
+                    reject("User retrieval failed " + err);
+                } 
                 else {
                     var userId = user._id;
                     streetService.decrementAdopters(user.adoptedStreets).then(
                         function(result) {
                             UserModel.remove({ _id: userId }, function(err, result) {
-                                if (err) reject("User removal failed " + err);
+                                if (err) {
+                                    logger.error("userService.delete " + err);
+                                    reject("User removal failed " + err);
+                                } 
                                 else {
                                     fulfill(userId);
                                 }
                             });
                         },
                         function(error) {
+                            logger.error("userService.delete " + error);
                             reject("User retrieval failed " + err)
                         }
                     );
@@ -260,13 +312,19 @@ exports.delete = function(userId) {
 exports.changePassword = function(userId, oldPassword, newPassword) {
     return new Promise(function(fulfill, reject) {
         UserModel.findById(userId, function(err, existingUser) {
-            if (err) reject(err);
+            if (err) {
+                logger.error("userService.changePassword " + err);
+                reject(err);
+            }
             else if (existingUser.authenticate(oldPassword)) {
                 existingUser.activationHash = uuid.v4();
                 existingUser.password = newPassword;
 
                 existingUser.save(function(err, updatedUser) {
-                    if (err) reject(err);
+                    if (err) {
+                        logger.error("userService.changePassword " + err);
+                        reject(err);
+                    }
                     else fulfill(updatedUser);
                 });
             } else {
@@ -281,7 +339,10 @@ exports.resetPassword = function(userEmail) {
         if (!userEmail) reject("user email is missing");
 
         UserModel.findOne({ email: userEmail }, function(err, existingUser) {
-            if (err) reject(err);
+            if (err) {
+                logger.error("userService.resetPassword " + err);
+                reject(err);
+            } 
             else if (!existingUser) fulfill();
             else {
                 var newPassword = passwordGenerator.generate({
@@ -293,7 +354,10 @@ exports.resetPassword = function(userEmail) {
                 existingUser.password = newPassword;
 
                 existingUser.save(function(err, updatedUser) {
-                    if (err) reject(err);
+                    if (err) {
+                        logger.error("userService.resetPassword " + err);
+                        reject(err);
+                    } 
                     else {
                         emailService.sendResetPasswordEmail(updatedUser.firstName, updatedUser.lastName, updatedUser.email, newPassword);
                         fulfill(updatedUser);
@@ -307,14 +371,20 @@ exports.resetPassword = function(userEmail) {
 exports.activate = function(activationId) {
     return new Promise(function(fulfill, reject) {
         UserModel.findOne({ activationHash: activationId }, function(err, existingUser) {
-            if (err) reject("User retrieval failed " + err);
+            if (err) {
+                logger.error("userService.activate " + err);
+                reject("User retrieval failed " + err);
+            } 
             else if (!existingUser) reject("User doesn't exist ");
             else {
                 if (existingUser.active) fulfill(existingUser);
 
                 existingUser.active = true;
                 existingUser.save(function(err, activedUser) {
-                    if (err) reject("User saving failed " + err);
+                    if (err) {
+                        logger.error("userService.activate " + err);
+                        reject("User saving failed " + err);
+                    } 
                     else fulfill(activedUser);
                 })
             }
@@ -347,7 +417,10 @@ var parseErrorMessage = function(validationError) {
 var findStateForString = function(sateCode) {
     return new Promise(function(fulfill, reject) {
         StateModel.findOne({ abbrev: new RegExp('^' + sateCode + '$', "i") }, function(err, foundState) {
-            if (err) reject(err);
+            if (err) {
+                logger.error("findStateForString " + err);
+                reject(err);
+            } 
 
             if (foundState) fulfill(foundState);
             else reject("State " + sateCode + " wasn't found");

@@ -1,14 +1,15 @@
-var mongoose = require('mongoose');
-var json2csv = require('json2csv');
-var userService = require('../../service/userService');
+var mongoose        = require('mongoose');
+var json2csv        = require('json2csv');
+var userService     = require('../../service/userService');
 
-var UserModel = require('./user.model');
-var StateModel = require('../state/state.model');
-var StreetModel = require('../street/street.model');
+var UserModel           = require('./user.model');
+var StateModel          = require('../state/state.model');
+var StreetModel         = require('../street/street.model');
 var NeighborhoodModel = require('../neighborhood/neighborhood.model');
 var toolRequestController = require('../toolRequests/toolRequest.controller');
-var apiSettings = require('../../config/apiSettings');
-var mailgun = require('mailgun-js')({ apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN });
+var apiSettings         = require('../../config/apiSettings');
+var mailgun             = require('mailgun-js')({ apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN });
+var logger              = require('../../components/logger');
 
 exports.index = function(req, res) {
     userService.getAll().then(
@@ -16,6 +17,7 @@ exports.index = function(req, res) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("usercontroller.index " + error);
             res.status(500).send(err);
         });
 };
@@ -31,7 +33,8 @@ exports.me = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
-            res.status(500).send(err);
+            logger.error("usercontroller.me " + error);            
+            res.status(500).send(error);
         });
 };
 
@@ -49,7 +52,8 @@ exports.getAllPaged = function(req, res) {
             res.status(200).json(result);
         },
         function(error) {
-            res.status(500).send(err);
+            logger.error("usercontroller.getAllPaged " + error);                        
+            res.status(500).send(error);
         });
 };
 
@@ -85,7 +89,8 @@ exports.exportUsersCSV = function(req, res) {
             res.status(200).send(csv);
         },
         function(error) {
-            res.status(500).send(err);
+            logger.error("usercontroller.exportUsersCSV " + error);                                    
+            res.status(500).send(error);
         });
 };
 
@@ -98,6 +103,7 @@ exports.create = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("usercontroller.create " + error);                                                
             res.status(500).send(error);
         });
 };
@@ -115,6 +121,7 @@ exports.update = function(req, res) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("usercontroller.update " + error);                                                            
             res.status(500).send(error);
         });
 };
@@ -132,9 +139,11 @@ exports.changePassword = function(req, res, next) {
                 res.status(200).send('Successfully changed password');
             },
             function(error) {
+                logger.error('usercontroller.changePassword ' + error);                                                                            
                 res.status(403).send('Password change failed');
             });
     } else {
+        logger.error('usercontroller.changePassword Password change is forbidden');                                                            
         res.status(403).send('Password change is forbidden');
     }
 };
@@ -147,6 +156,7 @@ exports.resetPassword = function(req, res, next) {
             res.status(200).send('Successfully completed password reset');
         },
         function(error) {
+            logger.error('usercontroller.resetPassword ' + error);                                                                        
             res.status(500).send('There was an issue. Please try again later');
         });
 };
@@ -164,6 +174,7 @@ exports.get = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error('usercontroller.get ' + error);                                                                                    
             res.status(500).send(err);
         });
 };
@@ -181,6 +192,7 @@ exports.destroy = function(req, res) {
             res.status(200).json(userId);
         },
         function(error) {
+            logger.error('usercontroller.destroy ' + error);                                                                                                
             res.status(500).send(err);
         });
 };
@@ -196,6 +208,7 @@ exports.activate = function(req, res) {
             res.end();
         },
         function(error) {
+            logger.error('usercontroller.activate ' + error);                                                                                                            
             res.status(500).send(err);
         });
 };
