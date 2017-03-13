@@ -1,6 +1,6 @@
 {
   "name": "not-in-philly",
-  "main": "server.js",
+  "main": "start.js",
   "dependencies": {
     "array-find": "^1.0.0",
     "bcrypt-nodejs": "0.0.3",
