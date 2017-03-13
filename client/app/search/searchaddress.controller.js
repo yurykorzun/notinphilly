@@ -11,9 +11,7 @@ angular.module('notinphillyServerApp')
     };
 
     $scope.autocompleteOptions = {
-      country: 'us',
-      bounds: new google.maps.LatLngBounds(new google.maps.LatLng(39.878320, -75.262921),
-                                           new google.maps.LatLng(40.137082, -75.014356))
+      country: 'us'
     };
     $scope.autocomplete = undefined;
     $scope.addressDetails = undefined;

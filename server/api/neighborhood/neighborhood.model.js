@@ -16,4 +16,11 @@ var NeighborhoodSchema = new Schema({
 },
 { collection: 'neighborhoods' });
 
+NeighborhoodSchema.virtual('id').get(function() {
+  return this._id.toString();
+});
+
+NeighborhoodSchema.set('toObject', { virtuals: true });
+NeighborhoodSchema.set('toJSON', { virtuals: true });
+
 module.exports = mongoose.model('Neighborhood', NeighborhoodSchema);

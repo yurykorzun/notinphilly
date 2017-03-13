@@ -28,6 +28,22 @@ exports.getAllGeojson = function(req, res) {
   });
 };
 
+exports.getByLocation = function(req, res, next) {
+  var locationLat = req.body.lat;
+  var locationLng = req.body.lng;
+
+  neighborhoodService.getByLocation(locationLat, locationLng).then(
+  function(neighborhood)
+  {
+     res.status(200).json(neighborhood);
+  },
+  function(error)
+  {
+    logger.error("neighborhoodController.getByLocation " + error);        
+    res.status(500).send(error);
+  });
+}
+
 exports.get = function(req, res, next) {
   var neighborhoodId = req.params.id;
 

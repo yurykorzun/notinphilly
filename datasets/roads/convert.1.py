@@ -13,10 +13,12 @@ for properties in jsonParsed:
     record["_id"] = properties["_id"]   
 
     blockNumber = properties["rightHundred"] if properties["rightHundred"] != 0 else "" 
-    record["name"] = "{0} {1} {2}".format(properties["streetName"],properties["type"], blockNumber  )   
+    if blockNumber != "":
+        record["name"] = "{0} block of {1} {2}".format(blockNumber, properties["streetName"], properties["type"]) 
+    else:
+        record["name"] = "{1} {2}".format(blockNumber, properties["streetName"], properties["type"])
+
     record["block"] =  properties["rightHundred"]
-    record["zipCode"] = properties["zipLeft"] 
-    record["neighborhood"] = ""
     record["totalAdopters"] = properties["totalAdopters"]   
 
     record["geometry"] = properties["geodata"]["geometry"]

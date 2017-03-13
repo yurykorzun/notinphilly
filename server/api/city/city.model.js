@@ -9,8 +9,16 @@ var CitySchema = new Schema({
     ref: 'State',
     required: [true, 'State is requred']
   },   
-  geometry: {}
+  geometry: {},
+  center: {}
 },
 { collection: 'city' });
+
+CitySchema.virtual('id').get(function() {
+  return this._id.toString();
+});
+
+CitySchema.set('toObject', { virtuals: true });
+CitySchema.set('toJSON', { virtuals: true });
 
 module.exports = mongoose.model('City', CitySchema);

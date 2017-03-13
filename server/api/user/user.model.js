@@ -52,6 +52,10 @@ var userSchema = new Schema({
 
 userSchema.plugin(timestamps);
 
+userSchema.virtual('id').get(function() {
+  return this._id.toString();
+});
+
 userSchema
     .virtual('password')
     .set(function(password) {
@@ -147,6 +151,20 @@ userSchema.methods = {
     encryptPassword: function(password) {
         if (!password || !this.salt) return '';
         return crypto.hashSync(password, this.salt);
+    },
+
+    isAdoptedStreet: function(streetId) {
+        if (!this.adoptedStreets) return false;
+
+        for (var i= 0; i < this.adoptedStreets.length; i++)
+        {
+            var adoptedStreet = this.adoptedStreets[i];
+            if (adoptedStreet.id.toString() === streetId.toString())
+            {
+                return true;
+            }
+        }
+        return false;
     }
 };
 

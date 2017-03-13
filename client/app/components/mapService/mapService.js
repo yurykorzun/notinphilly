@@ -96,8 +96,26 @@
         });
       };
 
-      self.addNeigborhoodStreets = function(neighborhoodId) {
-        $http.get("api/neighborhoods/" + neighborhoodId).success(function(neighborhooData, status) {
+      
+      self.addAllStreets = function() {
+        $http.get("api/streets/getAllGeojson").success(function(streetData, status) {
+          _deferredMap.promise.then(function(map) {
+              createStreetControls(map);
+
+              _mapLayerGroup.clearLayers();
+              _mapLabelsLayer.clearLayers();
+
+              var streetLayer = createStreetLayer(streetData);
+
+              _mapLayerGroup.addLayer(streetLayer);
+              _mapStreetLayer = streetLayer;
+              streetLayer.addTo(map);
+            });
+        });
+      };
+
+      self.addNeigborhoodStreets = function(location) {
+        $http.post('api/neighborhoods/byloc', location).success(function(neighborhooData, status) {
           _deferredMap.promise.then(function(map) {
             loadStreets(neighborhooData, map);
           });
@@ -200,14 +218,14 @@
       self.goToStreet = function(streetId) {
         _deferredMap.promise.then(function(map) {
           $http.get("api/streets/" + streetId).success(function(streetData, status) {
-            $http.get("api/neighborhoods/" + streetData.neighborhood).success(function(neighborhooData, status) {
+            $http.get("api/neighborhoods/" + streetData.neighborhoods[0]).success(function(neighborhooData, status) {
               var start = L.latLng(streetData.geometry.coordinates[0][1], streetData.geometry.coordinates[0][0]);
               var end = L.latLng(streetData.geometry.coordinates[1][1], streetData.geometry.coordinates[1][0]);
               var streetBounds = new L.LatLngBounds(start, end);
 
               loadStreets(neighborhooData, map).then(function(layers) {
                 var foundLayer = layers.filter(function(layer) {
-                  return layer.feature.properties.id === streetData._id;
+                  return layer.feature.properties._id === streetData._id;
                 })[0];
 
                 var geoJsonLayer = L.geoJson(foundLayer.feature);
@@ -227,7 +245,7 @@
         _deferredMap.promise.then(function(map) {
           var layers = _mapStreetLayer.getLayers();
           var foundLayer = layers.filter(function(layer) {
-            return layer.feature.properties.id === streetId;
+            return layer.feature.properties._id === streetId;
           })[0];
 
           var geoJsonLayer = L.geoJson(foundLayer.feature);
@@ -282,7 +300,7 @@
         $http.get("api/city/getGeoJSON").success(function(cityData, status) {
           var geoJsonLayer = L.geoJson(cityData);
           var layerBounds = geoJsonLayer.getBounds();
-          var mapCenter = layerBounds.getCenter();
+          var mapCenter = cityData.properties.center ? cityData.properties.center : layerBounds.getCenter();
 
           defferedCenter.resolve(mapCenter);
         }, function(err) {
