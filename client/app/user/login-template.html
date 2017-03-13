@@ -1,0 +1,45 @@
+<ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
+<div class="row padding-y--large">
+  <fieldset>
+    <legend class="accessibly-hidden">Member Login Form</legend>
+    <div class="col-xs-11 col-sm-10 col-md-8 col-sm-offset-1">
+      <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">
+        <p>We couldn't log you in. Please check that you entered your email address and password correctly.</p>
+      </div>
+      <div class="row">
+      <h4 class="headline-s">New Members</h4>
+        <p>New Members, please sign up for an account.</p>
+        <a href="#" class="btn btn--blue" ng-click="loginForm.signup()">Sign Me Up</a>
+        <hr class="margin-y"/>
+      </div>
+      <div class="row">
+          <div>
+              <a ng-href="/api/facebook/" class="btn btn-sm btn-block md-max-width btn-facebook position-center" target="_self">
+                  <span>Facebook login</span>
+              </a>
+          </div>
+          <hr class="margin-y"/>
+      </div>
+      <div class="row">
+        <h4 class="headline-s">Returning Members</h4>
+        <div class="padding-y--small">
+          <label for="login-email">Email Address</label>
+          <input type="email" id="login-email" class="form-control login-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
+        </div>
+        <div class="padding-y--small">
+          <label for="login-pass">Password</label>
+          <input type="password" id="login-pass" class="form-control login-control" name="pass" ng-model="loginForm.password" required placeholder="Please enter your password"></input>
+        </div>
+        <div class="padding-top">
+          <div>
+            <button type="submit" class="btn btn--yellow btn--sm" ng-click="loginForm.login(loginForm)">Log Me In</button>
+          </div>
+          <div class="margin-top--small">
+            <a href="" ng-click="loginForm.resetPassword()">Forgot password?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+</div>
+</ng-form>

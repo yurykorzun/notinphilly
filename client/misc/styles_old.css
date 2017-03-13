@@ -1,0 +1,54 @@
+#map
+{
+  position: absolute;
+  top: 50px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 35;
+}
+
+.text-labels
+{
+  font-size: 10pt;
+  font-weight: bold;
+}
+
+.sidebar { z-index: 45; max-width: 310px; }
+
+.logo
+{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sponsor-logo
+{
+  display: block;
+  width: 160px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.goback
+{
+  position: relative;
+  top: 80px;
+  bottom: 0px;
+  left: 20px;
+  right: 0px;
+  z-index: 36;
+}
+.btn-goback
+{
+  font-size: 12pt;
+  z-index: 36;
+}
+.start
+{
+  text-align: center;
+}
+.btn-start
+{
+  font-size: 15pt;
+}

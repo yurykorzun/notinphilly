@@ -1,0 +1,8 @@
+mongoexport -h localhost --port 27017 -d notinphilly -c blocks -o blocks_export.json
+mongoexport -h localhost --port 27017 -d notinphilly -c city -o city_export.json
+mongoexport -h localhost --port 27017 -d notinphilly -c neighborhoods -o neighborhoods_export.json
+mongoexport -h localhost --port 27017 -d notinphilly -c roles -o roles_export.json
+mongoexport -h localhost --port 27017 -d notinphilly -c states -o states_export.json
+mongoexport -h localhost --port 27017 -d notinphilly -c streets -o streets_export.json
+mongoexport -h localhost --port 27017 -d notinphilly -c userProfiles -o userProfiles_export.json
+mongoexport -h localhost --port 27017 -d notinphilly -c zipcodes -o zipcodes_export.json
