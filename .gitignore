@@ -9,5 +9,8 @@ client/public/libs
 .openshift
 .vscode/
 
+server/config/apiSettings.js
+server/config/serverSettings.js
+
 # logs
 *.log
