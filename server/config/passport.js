@@ -4,6 +4,7 @@ var LocalStrategy   = require('passport-local').Strategy;
 var FacebookStrategy = require('passport-facebook').Strategy;
 var flash           = require('connect-flash');
 var serverSettings  = require('./serverSettings');
+var apiSettings  = require('./apiSettings');
 var UserModel       = require('../api/user/user.model');
 var userService     = require('../service/userService');
 var logger          = require('../components/logger');
@@ -62,9 +63,9 @@ module.exports = function(app) {
     ));
 
     passport.use(new FacebookStrategy({
-        clientID: serverSettings.FACEBOOK_APP_ID,
-        clientSecret: serverSettings.FACEBOOK_SECRET,
-        callbackURL: serverSettings.FACEBOOK_CALLBACK_URL,
+        clientID: apiSettings.FACEBOOK_APP_ID,
+        clientSecret: apiSettings.FACEBOOK_SECRET,
+        callbackURL: apiSettings.FACEBOOK_CALLBACK_URL,
         profileFields: ['id', 'first_name', 'last_name', 'photos', 'emails']
     }, 
     function(accessToken, refreshToken, profile, done) {

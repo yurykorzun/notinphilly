@@ -12,4 +12,6 @@ router.get('/reconcile/', authService.isAdmin, controller.reconcileNeighborhoods
 //Get single neighborhood by id
 router.get('/:id', controller.get);
 
+router.post('/byloc/', controller.getByLocation);
+
 module.exports = router;

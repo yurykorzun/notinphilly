@@ -15,4 +15,8 @@ var ZipCodeSchema = new Schema({
 },
 { collection: 'zipcodes' });
 
+ZipCodeSchema.virtual('id').get(function() {
+  return this._id.toString();
+});
+
 module.exports = mongoose.model('ZipCode', ZipCodeSchema);

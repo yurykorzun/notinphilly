@@ -1,5 +1,7 @@
 var lodash              = require('lodash');
+var mongoose            = require('mongoose');
 var NeighborhoodModel   = require('../api/neighborhood/neighborhood.model');
+var StreetModel         = require('../api/street/street.model');
 var logger              = require('../components/logger');
 
 exports.getAll = function() {
@@ -46,6 +48,25 @@ exports.getAllGeoJSON = function() {
     });
 }
 
+exports.getByLocation = function(locationLat, locationLng) {
+    return new Promise(function (fulfill, reject){
+        NeighborhoodModel.findOne({"geometry": { 
+                                    "$geoIntersects": {
+                                    "$geometry": {
+                                        "type": "Point",
+                                        "coordinates": [locationLng, locationLat]
+                                    }}
+                                }}, function(err, neighborhood) {
+            if (err)
+            {
+                logger.error("neighborhoodService.getByLocation " + err);
+                reject("Failed retrieving neighborhood by location " + err);
+            } 
+            else fulfill(neighborhood);
+        });
+    });
+}
+
 exports.reconcileNeighborhoods = function()
 {
     return new Promise(function (fulfill, reject){
@@ -57,8 +78,8 @@ exports.reconcileNeighborhoods = function()
 
                 StreetModel.aggregate(
                 [
-                    { '$match': { neighborhood: mongoose.Types.ObjectId(neighborhood._id) } },
-                    { '$group': { '_id': "$neighborhood", 'total': { '$sum': "$totalAdopters" } } }
+                    { '$match': { neighborhoods: { "$elemMatch": { "$eq": mongoose.Types.ObjectId(neighborhood._id) } } }},
+                    { '$group': { '_id': mongoose.Types.ObjectId(neighborhood._id), 'total': { '$sum': "$totalAdopters" } } }
                 ],
                 function(err, result) {
                     if (err) {
@@ -117,49 +138,57 @@ exports.setTotalAdoptedStreets = function(neighborhoodId, totalAdoptedStreets) {
     });
 }
 
-exports.incrementAdoptedStreets = function(neighborhoodId) {
+exports.incrementAdoptedStreets = function(neighborhoodIds) {
     return new Promise(function (fulfill, reject){
-        NeighborhoodModel.findById(neighborhoodId, function(err, neighborhood) {
+        NeighborhoodModel.find({ "_id" : { "$in" : neighborhoodIds }}, function(err, neighborhoods) {
             if (err) {
                 logger.error("neighborhoodService.incrementAdoptedStreets " + err); 
-                reject("Failed while finding neighborhood " + err);
+                reject("Failed while finding neighborhoods " + err);
             } 
             else
             {
-                neighborhood.totalAdoptedStreets++;
-                neighborhood.percentageAdoptedStreets = calculatePercentageAdoptedStreets(neighborhood.totalAdoptedStreets, neighborhood.totalStreets);
-                neighborhood.save(function(err, savedNeighborhood){
-                    if (err) {
-                        logger.error("neighborhoodService.incrementAdoptedStreets " + err);                 
-                        reject("Failed while saving neighborhood " + err);
-                    } 
-                    else fulfill(savedNeighborhood);
-                });
+                for(var i = 0; i < neighborhoods.length; i++)
+                {
+                    var neighborhood = neighborhoods[i];
+                    neighborhood.totalAdoptedStreets++;
+                    neighborhood.percentageAdoptedStreets = calculatePercentageAdoptedStreets(neighborhood.totalAdoptedStreets, neighborhood.totalStreets);
+                    neighborhood.save(function(err, savedNeighborhood){
+                        if (err) {
+                            logger.error("neighborhoodService.incrementAdoptedStreets " + err);                 
+                            reject("Failed while saving neighborhood " + err);
+                        } 
+                        else fulfill(savedNeighborhood);
+                    });
+                }
             }
         });
     });
 }
 
-exports.decrementAdoptedStreets = function(neighborhoodId) {
+exports.decrementAdoptedStreets = function(neighborhoodIds) {
     return new Promise(function (fulfill, reject){
-        NeighborhoodModel.findById(neighborhoodId, function(err, neighborhood) {
+        NeighborhoodModel.find({ "_id" : { "$in" : neighborhoodIds }}, function(err, neighborhoods) {
             if (err) {
-                logger.error("neighborhoodService.decrementAdoptedStreets " + err);                                 
-                reject("Failed while finding neighborhood " + err);
+                logger.error("neighborhoodService.incrementAdoptedStreets " + err); 
+                reject("Failed while finding neighborhoods " + err);
             } 
             else
             {
-                if (neighborhood.totalAdoptedStreets && neighborhood.totalAdoptedStreets > 0) neighborhood.totalAdoptedStreets--;
-                else neighborhood.totalAdoptedStreetss = 0;
+                for(var i = 0; i < neighborhoods.length; i++)
+                {
+                    var neighborhood = neighborhoods[i];
+                    if (neighborhood.totalAdoptedStreets && neighborhood.totalAdoptedStreets > 0) neighborhood.totalAdoptedStreets--;
+                    else neighborhood.totalAdoptedStreetss = 0;
 
-                neighborhood.percentageAdoptedStreets = calculatePercentageAdoptedStreets(neighborhood.totalAdoptedStreets, neighborhood.totalStreets);
-                neighborhood.save(function(err, savedNeighborhood){
-                    if (err) {
-                        logger.error("neighborhoodService.decrementAdoptedStreets " + err);                                 
-                        reject("Failed while saving neighborhood " + err);
-                    } 
-                    else fulfill(savedNeighborhood);
-                });
+                    neighborhood.percentageAdoptedStreets = calculatePercentageAdoptedStreets(neighborhood.totalAdoptedStreets, neighborhood.totalStreets);
+                    neighborhood.save(function(err, savedNeighborhood){
+                        if (err) {
+                            logger.error("neighborhoodService.decrementAdoptedStreets " + err);                                 
+                            reject("Failed while saving neighborhood " + err);
+                        } 
+                        else fulfill(savedNeighborhood);
+                    });
+                }
             }
         });
     });

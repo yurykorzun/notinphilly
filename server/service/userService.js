@@ -9,28 +9,33 @@ var UserModel       = require('../api/user/user.model');
 var StateModel      = require('../api/state/state.model');
 var logger          = require('../components/logger');
 
-exports.getUserById = function(userId) {
+exports.getUserById = function(userId, populate) {
     return new Promise(function(fulfill, reject) {
         if (!userId) {
-            logger.error("streetService.getAll User id is missing");
+            logger.error("userService.getUserById User id is missing");
             reject("User id is missing");
         }
         else {
-            UserModel.findById(userId)
-                .populate('state')
-                .populate('adoptedStreets')
-                .select('-salt -hashedPassword -_v -authToken -__v')
-                .exec(function(err, user) {
-                    if (err) {
-                        logger.error("userService.getUserById " + err);
-                        reject(err);
-                    } 
-                    else if (!user) reject("User doesn't exist");
-                    else fulfill(user);
-                });
+            var query = UserModel.findById(userId);
+            if (populate)
+            {
+                query = query.populate('state').populate('adoptedStreets');
+            }
+            
+            query
+            .select('-salt -hashedPassword -_v -authToken -__v')
+            .exec(function(err, user) {
+                if (err) {
+                    logger.error("userService.getUserById " + err);
+                    reject(err);
+                } 
+                else if (!user) reject("User doesn't exist");
+                else fulfill(user);
+            });
         }
     });
 }
+
 
 exports.getUserByFacebookId = function(facebookId) {
     return new Promise(function(fulfill, reject) {
@@ -253,15 +258,15 @@ exports.update = function(user) {
                 reject(err);
             } 
             else {
-                lodash.extend(existingUser, updatedUser);
-
+                existingUser.merge(updatedUser);
+               
                 existingUser.validate(function(validationError) {
                     if (validationError) {
                         var messages = parseErrorMessage(validationError);
                         reject(messages);
                     } else {
-                        existingUser.save(function(err, savedUser) {
-                            if (err) {
+                       existingUser.save(function(err, savedUser) {
+                            if (err)  {
                                 logger.error("userService.update " + err);
                                 reject(err);
                             } 

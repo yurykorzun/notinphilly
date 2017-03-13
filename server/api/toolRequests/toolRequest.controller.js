@@ -94,6 +94,8 @@ exports.getPaged = function(req, res, next) {
     var sortColumn = req.params.sortColumn;
     var sortDirection = req.params.sortDirection;
 
+    page = parseInt(page);
+    skip = parseInt(skip);
     var itemsToSkip = (page - 1) * skip;
 
     ToolRequestModel.count({}, function(err, count) {

@@ -45,6 +45,7 @@ angular.module('notinphillyServerApp')
 
         // Create the popup view when is opened
         var properties = popupEvent.popup.options.properties;
+        var popupLocation = popupEvent.popup.getLatLng();
         var targetPopup = popupEvent.popup;
 
         setUpDefaultView();
@@ -73,11 +74,11 @@ angular.module('notinphillyServerApp')
 
         newScope.adoptStreet = function() {
           if ($scope.isAuthorized) {
-            $http.get("api/streets/adopt/" + properties.id).then(function(response) {
+            $http.get("api/streets/adopt/" + properties._id).then(function(response) {
               setUpDefaultView();
               $scope.isShowAdoptedSuccess = true;
-              mapService.addNeigborhoodStreets(properties.neighborhood);
-
+              mapService.addNeigborhoodStreets(popupLocation);
+     
               $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
             },
             function(err) {
@@ -95,7 +96,7 @@ angular.module('notinphillyServerApp')
         
         newScope.leave = function() {
           $http.get("api/streets/leave/" + properties._id).then(function(response) {
-            mapService.addNeigborhoodStreets(properties.neighborhood);
+            mapService.addNeigborhoodStreets(popupLocation);
             targetPopup._close();
 
             $rootScope.$broadcast(APP_EVENTS.STREET_LEFT);

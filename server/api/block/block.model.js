@@ -15,4 +15,11 @@ var BlockSchema = new Schema({
 },
 { collection: 'blocks' });
 
+BlockSchema.virtual('id').get(function() {
+  return this._id.toString();
+});
+
+BlockSchema.set('toObject', { virtuals: true });
+BlockSchema.set('toJSON', { virtuals: true });
+
 module.exports = mongoose.model('Blocks', BlockSchema);

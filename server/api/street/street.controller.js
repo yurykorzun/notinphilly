@@ -72,7 +72,7 @@ exports.getByLocation = function(req, res, next) {
     var user = {};
     //Get user info
     if (typeof req.user !== 'undefined') {
-      userService.getById(req.user._id).then(function(user) {
+      userService.getUserById(req.user._id, true).then(function(user) {
         streetService.getByLocation(locationLat, locationLng, user).then(function (streets)
         {
           res.status(200).json(streets);
@@ -108,7 +108,7 @@ exports.getByLocationPaged = function(req, res, next) {
 
     var user = {};
     if (typeof req.user !== 'undefined') {
-      userService.getById(req.user._id).then(function(user) {
+      userService.getUserById(req.user._id, true).then(function(user) {
         streetService.getByLocationPaged(locationLat, locationLng, page, take, user).then(
         function (result)
         {
@@ -138,11 +138,37 @@ exports.getByLocationPaged = function(req, res, next) {
     }
 };
 
+exports.getAllGeojson = function(req, res, next) {
+    if (typeof req.user !== 'undefined') {
+        streetService.getAllGeoJSON(user).then(
+                                          function (streets)
+                                          {
+                                            res.status(200).json(streets);
+                                          },
+                                          function(error){
+                                            logger.error("streetController.getAllGeojson " + error);                                                                    
+                                            res.status(500).json("Streets retrieval failed");          
+                                          });
+    }
+    else 
+    {
+       streetService.getAllGeoJSON().then(
+                                          function (streets)
+                                          {
+                                            res.status(200).json(streets);
+                                          },
+                                          function(error){
+                                            logger.error("streetController.getAllGeojson " + error);                                                                    
+                                            res.status(500).json("Streets retrieval failed");          
+                                          });
+    }
+};
+
 exports.getByNeighborhoodGeojson = function(req, res, next) {
     var neighborhoodId = req.params.nid;
 
     if (typeof req.user !== 'undefined') {
-      userService.getById(req.user._id).then(function(user) {
+      userService.getUserById(req.user._id, true).then(function(user) {
         streetService.getGeoJSONByNeighborhoodId(neighborhoodId, user).then(
         function (streets)
         {

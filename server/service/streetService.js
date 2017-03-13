@@ -33,7 +33,7 @@ exports.getById = function(id) {
 
 exports.getGeoJSONByUserId = function(userId) {
     return new Promise(function (fulfill, reject){
-        userService.getById(userId).then(
+        userService.getUserById(userId, true).then(
         function(user)
         {
             StreetModel.find({'_id': { $in: user.adoptedStreets}})
@@ -73,7 +73,7 @@ exports.getGeoJSONByUserId = function(userId) {
 
 exports.getByNeighborhoodId = function(neighborhoodId) {
     return new Promise(function (fulfill, reject){
-        StreetModel.find({neighborhood: mongoose.Types.ObjectId(neighborhoodId)}, 
+        StreetModel.find({neighborhoods: { "$elemMatch": { "$eq":mongoose.Types.ObjectId(neighborhoodId) } }}, 
         function(err, streets) {
             if (err) {
                 logger.error("streetService.getByNeighborhoodId " + error);
@@ -84,15 +84,15 @@ exports.getByNeighborhoodId = function(neighborhoodId) {
     });
 };
 
-exports.getAllGeoJSON = function() {
+exports.getAllGeoJSON = function(user) {
     return new Promise(function (fulfill, reject){
         StreetModel
         .find({})
-        .populate('neighborhood')
-        .populate('zipCode')
+        .populate('neighborhoods')
+        .populate('zipCodes')
         .exec(function(err, streets) {
             if (err) {
-                logger.error("streetService.getAllGeoJSON " + error);
+                logger.error("streetService.getAllGeoJSON " + err);
                 reject("Failed retrieving streets " + err);
             } 
             else {
@@ -131,9 +131,9 @@ exports.getAllGeoJSON = function() {
 exports.getGeoJSONByNeighborhoodId = function(neighborhoodId, user) {
     return new Promise(function (fulfill, reject){
         StreetModel
-        .find({neighborhood: mongoose.Types.ObjectId(neighborhoodId)})
-        .populate('neighborhood')
-        .populate('zipCode')
+        .find({neighborhoods: { "$elemMatch": { "$eq":mongoose.Types.ObjectId(neighborhoodId) } }})
+        .populate('neighborhoods')
+        .populate('zipCodes')      
         .exec(function(err, streets) {
             if (err) {
                 logger.error("streetService.getGeoJSONByNeighborhoodId " + error);
@@ -182,7 +182,7 @@ exports.getByLocation = function(locationLat, locationLng, user) {
                 '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
                 }
             }})
-            .populate('zipCode')
+            .populate('zipCodes')      
             .exec(function(err, streets) {
                 if (err) {
                     logger.error("streetService.getByLocation " + err);
@@ -234,7 +234,7 @@ exports.getByLocationPaged = function(locationLat, locationLng, page, take, user
         })
         .skip(skipRecords)
         .take(take)
-        .populate('zipCode')
+        .populate('zipCodes')                   
         .exec(function(err, streets) {
             if (err) {
                 logger.error("streetService.getByLocationPaged " + err);
@@ -270,10 +270,10 @@ exports.getByLocationPaged = function(locationLat, locationLng, page, take, user
 
 exports.adopt = function(userId, streetId) {
     return new Promise(function (fulfill, reject){
-        userService.getUserById(userId).then(
-        function(user)
+        userService.getUserById(userId, true).then(
+        function (user)
         {
-            if(user.adoptedStreets.indexOf(streetId) == -1)
+            if(!user.isAdoptedStreet(streetId))
             {
                 user.adoptedStreets.push(mongoose.Types.ObjectId(streetId));
                 user.save(function(err, user) {
@@ -308,7 +308,7 @@ exports.adopt = function(userId, streetId) {
 
 exports.leave = function(userId, streetId) {
     return new Promise(function (fulfill, reject){
-        userService.getUserById(userId).then(
+        userService.getUserById(userId, false).then(
         function(user)
         {
             var adoptedStreetIndex = user.adoptedStreets.indexOf(streetId);
@@ -322,7 +322,7 @@ exports.leave = function(userId, streetId) {
                     } 
                     else
                     {
-                         streetService.decrementAdopters([streetId]).then(
+                         decrementAdopters([streetId]).then(
                             function(result) {
                                 fulfill({ "_id": user._id, "adoptedStreets" : user.adoptedStreets });
                             },
@@ -446,7 +446,7 @@ var incrementAdopters = function(streetIds)
                                 for (var i = 0; i < results.length; i++ )
                                 {   
                                     var street = results[i];
-                                    var savePromise = neighborhoodService.incrementAdoptedStreets(street.neighborhood);
+                                    var savePromise = neighborhoodService.incrementAdoptedStreets(street.neighborhoods);
                                 }
                                 neighborhoodSavePromises.push(savePromise);
 
@@ -502,7 +502,7 @@ var decrementAdopters = function(streetIds)
                                 for (var i = 0; i < results.length; i++ )
                                 {   
                                     var street = results[i];
-                                    var savePromise = neighborhoodService.decrementAdoptedStreets(street.neighborhood);
+                                    var savePromise = neighborhoodService.decrementAdoptedStreets(street.neighborhoods);
                                 }
                                 neighborhoodSavePromises.push(savePromise);
 
@@ -571,19 +571,5 @@ var setIsAdopted = function(streets, user)
 var isStreetAdoptedByUser = function(user, street) {
   if (user == undefined) return false;
 
-  if (user.adoptedStreets && user.adoptedStreets.indexOf(street._id) == -1 && street.totalAdopters <=5) {
-    return false;
-  }
-
-  if (user.adoptedStreets && (user.adoptedStreets.indexOf(street._id) > -1 || street.totalAdopters > 5)) {
-    return true;
-  }
-
-  if (user.adoptedStreets && street.totalAdopters === 0 && street.totalAdopters <=5) {
-    return false;
-  }
-
-  if (user.adoptedStreets && street.totalAdopters > 0 || street.totalAdopters > 5) {
-    return true;
-  }
+  return user.isAdoptedStreet(street.id);
 }

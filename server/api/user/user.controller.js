@@ -28,7 +28,7 @@ exports.me = function(req, res, next) {
 
     if (!userId) throw new Error('User id is missing');
 
-    userService.getUserById(userId).then(
+    userService.getUserById(userId, true).then(
         function(result) {
             res.status(200).json(result);
         },
@@ -169,7 +169,7 @@ exports.get = function(req, res, next) {
     if (!userId) return res.status(500).send("User id is missing. Update failed.");
     else if (userId != currentUserId && !req.user.isAdmin) return res.status(401).send("Unauthorized");
 
-    userService.getUserById(userId).then(
+    userService.getUserById(userId, true).then(
         function(result) {
             res.status(200).json(result);
         },
