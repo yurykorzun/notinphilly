@@ -9,7 +9,8 @@ var CitySchema = new Schema({
     ref: 'State',
     required: [true, 'State is requred']
   },   
-  geometry: {}
+  geometry: {},
+  center: {}
 },
 { collection: 'city' });
 

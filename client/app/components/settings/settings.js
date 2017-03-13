@@ -9,7 +9,6 @@
           var layerBounds = geoJsonLayer.getBounds();
           var mapCenter = cityData.properties.center ? cityData.properties.center : layerBounds.getCenter();
 
-
           $http.get("api/external/mapbox-map-credentials/").then(function(response) {
             deferredSettings.resolve({
                                         mapId: response.data.mapId,
