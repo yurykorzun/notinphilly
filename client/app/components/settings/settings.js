@@ -7,7 +7,8 @@
         $http.get("api/city/getGeoJSON").success(function(cityData, status) {
           var geoJsonLayer = L.geoJson(cityData);
           var layerBounds = geoJsonLayer.getBounds();
-          var mapCenter = layerBounds.getCenter();
+          var mapCenter = cityData.properties.center ? cityData.properties.center : layerBounds.getCenter();
+
 
           $http.get("api/external/mapbox-map-credentials/").then(function(response) {
             deferredSettings.resolve({

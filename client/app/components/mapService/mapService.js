@@ -300,7 +300,7 @@
         $http.get("api/city/getGeoJSON").success(function(cityData, status) {
           var geoJsonLayer = L.geoJson(cityData);
           var layerBounds = geoJsonLayer.getBounds();
-          var mapCenter = layerBounds.getCenter();
+          var mapCenter = cityData.properties.center ? cityData.properties.center : layerBounds.getCenter();
 
           defferedCenter.resolve(mapCenter);
         }, function(err) {
