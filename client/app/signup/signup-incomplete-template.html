@@ -1,0 +1,74 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title">Please complete your profile</h3>
+        <div class="alert alert-success" ng-show="isUpdateSuccess">Your profile was succesfully completed!</div>
+        <div class="alert alert-danger" ng-show="isUpdateFailed">{{ errorMessage }}</div>
+    </div>
+    <div class="modal-body">
+        <div class="row" ng-show="isUpdateSuccess">
+            <div class="row">
+                <div class="col-sm-3 col-sm-3">
+                </div>
+                <div class="col-sm-6 col-sm-6">
+                    <a class="btn btn-lg btn-success btn-block input-block-level" href="" ng-click="close()">
+                        Close
+                    </a>
+                </div>
+            </div>
+        </div>
+         <form name="signinForm" ng-show="!isUpdateSuccess" novalidate>
+            <div class="row">
+                <div class="col-xs-6 form-group">
+                    <label for="Full Name" class="control-label">First Name</label>
+                    <input name="firstName" ng-disabled="true" ng-model="User.firstName" class="form-control input-sm" type="text">
+                </div>
+                <div class="col-xs-6 form-group">
+                    <label for="lastName" class="control-label">Last Name</label>
+                    <input name="lastName" ng-disabled="true" ng-model="User.lastName" class="form-control input-sm" type="text">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-6 form-group">
+                    <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input name="email" ng-disabled="true" ng-model="User.email" class="form-control input-sm" type="email">
+                </div>
+                <div class="col-xs-6 form-group">
+                    <label for="phone" class="control-label">Phone Number</label>
+                    <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    <label for="businessName" class="control-label">Business/Organization</label>
+                    <input name="businessName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+                </div>
+            </div>
+            <div class="row">
+                <div ng-class="['col-xs-6', 'form-group', { 'has-error': (!addressDetails || signinForm.fullAddress.$invalid) && !signinForm.fullAddress.$pristine }]">
+                    <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" ng-change="addressChange()" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required="" />
+                    <p ng-show="(!addressDetails || signinForm.fullAddress.$invalid) && !signinForm.fullAddress.$pristine" class="help-block">Valid address is required.</p>
+                </div>
+                <div class="col-xs-6 form-group">
+                    <label for="apartmentNumber" class="control-label">Apartment Number</label>
+                    <input name="apartmentNumber" ng-model="User.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="User.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <a href="#" class="btn btn-success btn-lg btn-block md-max-width position-center" ng-click="update()" type="submit" ng-disabled="signinForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i>Update</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <small aria-hidden="true">* Required fields</small>
+    </div>
+</div>

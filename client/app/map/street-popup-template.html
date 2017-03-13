@@ -1,0 +1,71 @@
+<div class="street-popup">
+  <div ng-show="!isShowLogin">
+    <div class="street-popup-image">
+      <img src='{{imageSrc}}' />
+    </div>
+    <div class="center">
+      <div class="street-popup-address"><h4><i class="fa fa-map-marker"></i> {{address}} </h4></div>
+    </div>
+  </div>
+  <div ng-show="!isShowLogin && !isShowError">
+    <div ng-show="!isAdoptedByUser && !isAdoptedSuccessfully">
+      <div class="street-popup-buttons">
+        <h4 ng-show="totalAdopters == 0">Be the first one to participate in cleaning up this street!</h4>
+        <h4 ng-show="totalAdopters > 0">Join others in cleaning up this street!</h4>
+
+        <button type='button' class='btn btn-success' ng-click='adoptStreet()'>Count me in!</button>
+        <button type='button' class='btn btn-danger' ng-click='close()'>No, thanks</button>
+      </div>
+    </div>
+    <div ng-show="isAuthorized && isAdoptedSuccessfully">
+      <h3>Thank you!</h3>
+      <div class="street-popup-buttons">
+        <button type='button' class='btn btn-success' ng-click='close()'>You're welcome!</button>
+      </div>
+    </div>
+    <div ng-show="isAuthorized && isAdoptedByUser">
+      <h4>You are participating in taking care of this street.</h4>
+      <div class="street-popup-buttons">
+        <button type='button' class='btn btn-success' ng-click='checkin()' ng-disabled="true">Check In!</button>
+        <button type='button' class='btn btn-danger' ng-click='leave()'>Leave street</button>
+      </div>
+    </div>
+  </div>
+  <div ng-show="isShowError">
+    <h4>Sorry, something went wrong. Please try again later or contact notinphilly@gmail.com.</h4>
+    <div class="street-popup-buttons">
+      <button type='button' class='btn btn-success' ng-click='close()'>Close</button>
+    </div>
+  </div>
+  <div ng-show="isShowLogin">
+      <ng-form ng-controller="LoginController" ng-submit="loginForm.login()">
+        <div class="form-group menu-login">
+          <div class="row">
+            <div class="col-md-12">
+              <div><h5>Great! In order to complete, please:</h5></div>
+              <a href="" class="btn btn--blue" ng-click="loginForm.signup()">sign up</a>
+            </div>
+          </div>
+          <div class="login-or">
+            <hr class="hr-or">
+            <span class="span-or">or</span>
+          </div>
+          <div><h5>Returning members:</h5></div>
+          <div class="alert alert-danger" ng-show="authError" ng-hide="!authError">Login failed. Please check your username or password.</div>
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <input type="text" class="form-control" name="uname" ng-model="loginForm.email" required placeholder="Please enter your email address"></input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-12 form-group">
+              <input type="password" class="form-control" name="pass" ng-model="loginForm.password" placeholder="Please enter your password" required></input>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-4 form-actions form-group">
+              <input type="submit" class="btn btn--blue" ng-click="loginForm.login(loginForm);" value="Login"/>
+            </div>
+          </div>
+        </div>
+  </div>

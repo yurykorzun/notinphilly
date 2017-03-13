@@ -1,0 +1,105 @@
+<div>
+    <div class="modal-header">
+        <h3 class="modal-title" ng-show="!isRegisterSuccess && !isRegisterFailed">Sign up and join others in eliminating litter!</h3>
+        <div class="alert alert-success" ng-show="isRegisterSuccess">Sent confirmation email to your email address. Please check your inbox.</div>
+        <div class="alert alert-danger" ng-show="isRegisterFailed">{{ errorMessage }}</div>
+    </div>
+    <div class="modal-body">
+        <div class="row" ng-show="isRegisterSuccess">
+            <div class="row">
+                <div class="col-sm-3 col-sm-3">
+                </div>
+                <div class="col-sm-6 col-sm-6">
+                    <a class="btn btn-lg btn-success btn-block input-block-level" href="" ng-click="close()">
+                        Close
+                    </a>
+                </div>
+            </div>
+        </div>
+        <form name="signinForm" ng-show="!isRegisterSuccess" novalidate>
+            <div class="row">
+                <div>
+                    <a ng-href="/api/facebook/" class="btn btn-lg btn-block md-max-width btn-facebook position-center" target="_self">
+                        <span>Facebook login</span>
+                    </a>
+                </div>
+            </div>
+            <div class="login-or">
+                <hr class="hr-or">
+            </div>
+            <div class="row">
+                <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.firstName.$invalid && !signinForm.firstName.$pristine }]">
+                    <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input name="firstName" ng-model="User.firstName" ng-class="['form-control', 'input-sm', { 'has-error': signinForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
+                    <p ng-show="signinForm.firstName.$invalid && !signinForm.firstName.$pristine" class="help-block">First Name is required.</p>
+                </div>
+                <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.lastName.$invalid && !signinForm.lastName.$pristine }]">
+                    <label for="lastName" class="control-label">Last Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input name="lastName" ng-model="User.lastName" ng-class="['form-control', 'input-sm', { 'has-error': signinForm.lastName.$error.required }]" placeholder="Last Name" type="text" required="">
+                    <p ng-show="signinForm.lastName.$invalid && !signinForm.lastName.$pristine" class="help-block">Last Name is required.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.email.$invalid && !signinForm.email.$pristine }]">
+                    <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input name="email" ng-model="User.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+                    <p ng-show="signinForm.email.$invalid && !signinForm.email.$pristine" class="help-block">Email is required.</p>
+                </div>
+                <div class="col-xs-6 form-group">
+                    <label for="phone" class="control-label">Phone Number</label>
+                    <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="User.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12 form-group">
+                    <label for="businessName" class="control-label">Business/Organization</label>
+                    <input name="businessName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+                </div>
+            </div>
+            <div class="row">
+                <div ng-class="['col-xs-6', 'form-group', { 'has-error': (!addressDetails || signinForm.fullAddress.$invalid) && !signinForm.fullAddress.$pristine }]">
+                    <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input name="fullAddress" search-autocomplete ng-model="User.fullAddress" ng-change="addressChange()" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required="" />
+                    <p ng-show="(!addressDetails || signinForm.fullAddress.$invalid) && !signinForm.fullAddress.$pristine" class="help-block">Valid address is required.</p>
+                </div>
+                <div class="col-xs-6 form-group">
+                    <label for="apartmentNumber" class="control-label">Apartment Number</label>
+                    <input name="apartmentNumber" ng-model="User.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+                </div>
+            </div>
+            <div class="row">
+                <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.password.$invalid && !signinForm.password.$pristine }]">
+                    <label for="password" class="control-label">Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input type="password" name="password" ng-model="User.password" class="form-control input-sm" placeholder="Password" required>
+                    <p ng-show="signinForm.password.$invalid && !signinForm.password.$pristine" class="help-block">Password is required.</p>
+                </div>
+                <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.passwordConfirm.$invalid && !signinForm.passwordConfirm.$pristine }]">
+                    <label for="passwordConfirm" class="control-label">Confirm Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                    <input type="password" name="passwordConfirm" ng-model="User.passwordConfirm" class="form-control input-sm" placeholder="Confirm password" required equal="{{User.password}}">
+                    <p ng-show="signinForm.passwordConfirm.$error.required && !signinForm.passwordConfirm.$pristine" class="help-block">Password confirmation is required.</p>
+                    <p ng-show="signinForm.passwordConfirm.$error.equal && !signinForm.passwordConfirm.$pristine" class="help-block">Password must match.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="User.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div>
+                    <a href="#" class="btn btn-success btn-lg btn-block md-max-width position-center" ng-click="register()" type="submit" ng-disabled="signinForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i> Register now</a>
+                </div>
+            </div>
+            <div class="row row-buffer--top">
+                <div>
+                    <a href="#" class="btn btn-danger btn-lg btn-block md-max-width position-center" ng-click="close()" type="button"><i class="fa fa-ban" aria-hidden="true"></i> Maybe next time</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <small aria-hidden="true">* Required fields</small>
+    </div>
+</div>

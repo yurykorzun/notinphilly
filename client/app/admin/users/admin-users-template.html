@@ -1,0 +1,21 @@
+<div ng-controller="AdminUsersController">
+  <treasure-overlay-spinner active='spinnerActive'>
+    <div class="row">
+       <div class="col-md-3">
+          <div class="col-md-3">
+            <button ng-click="addUser()">Add User</button>
+          </div>
+          <div class="col-md-1">
+            <a target="_self" href="{{usersExportUrl}}">
+              <button>Export</button>
+            </a>
+          </div>
+        </div>
+    </div>
+    <div class="row">
+      <div class="col-md-12 pull-left">
+        <div ui-grid="gridOptions" ui-grid-pagination class="admin-users-grid" ui-grid-resize-columns></div>
+      </div>
+    </div>
+  </treasure-overlay-spinner>
+</div>

@@ -1,0 +1,50 @@
+<div ng-controller="searchAddressController" class="padding-y--large">
+  <div class="row">
+    <div class="col-md-8 col-md-offset-2 text-center">
+      <h3 class="headline-m">Welcome to notinphilly.org!</h3>
+      <p>Let's begin with finding your block and participating streets nearby:</p>
+    </div>
+  </div>
+  <div class="row padding-top">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="input-group">
+        <input id="address-search" search-autocomplete ng-model="autocomplete" options="autocompleteOptions" details="addressDetails" type="text" class="form-control input-lg" placeholder="Enter your address..." />
+        <div ng-show="hasAddress()" class="input-group-addon" ng-click="clearSearch()"><i class="fa fa-close"></i></div>
+        <div class="input-group-addon btn btn--blue" ng-click="findStreet()">Go!</div>
+      </div>
+    </div>
+  </div>
+  <div class="row margin-top" ng-show="hasStreets()">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="row">
+        <div class="col-md-5 pull-left">
+          <h4>We found {{searchAddress.streets.length}} streets nearby:</h4>
+        </div>
+        <div class="col-md-3 pull-right">
+          <a href="" ng-click="switchToMap()" class="text-link">View on map</a>
+        </div>
+      </div>
+      <div class="found-streets-items col-md-12 clearfix">
+         <streetslist streets-show="searchAddress.pagedStreets" streets-all="searchAddress.streets"/>
+         <div ng-show="searchAddress.hasMoreStreets">
+             <div class="col-md-2">
+             </div>
+             <div class="col-md-7">
+               <a class="btn bth-sm btn-default btn-block" href="" ng-click="loadMore()">
+                 Load more &raquo;
+               </a>
+             </div>
+         </div>
+      </div>
+    </div>
+  </div>
+  <div class="row margin-top" ng-show="noStreetsFound">
+    <div class="col-md-8 col-md-offset-2">
+      <div class="row">
+        <div class="col-md-11 pull-left">
+          <h4>Sorry, we haven't found any participating streets for your address. Try a different address or contact <a href="mailto:notinphilly@gmail.com">notinphilly@gmail.com</a></h4>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
