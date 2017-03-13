@@ -1,5 +1,7 @@
 var lodash              = require('lodash');
+var mongoose            = require('mongoose');
 var NeighborhoodModel   = require('../api/neighborhood/neighborhood.model');
+var StreetModel         = require('../api/street/street.model');
 var logger              = require('../components/logger');
 
 exports.getAll = function() {

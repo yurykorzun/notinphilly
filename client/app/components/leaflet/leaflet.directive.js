@@ -15,7 +15,7 @@
 
         var map = L.map(scope.mapId, {
                           center: [settings.center.lng, settings.center.lat],
-                          zoom: 13,
+                          zoom: 12,
                           zoomControl: false
                         });
 

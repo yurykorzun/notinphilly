@@ -33,7 +33,7 @@ exports.getById = function(id) {
 
 exports.getGeoJSONByUserId = function(userId) {
     return new Promise(function (fulfill, reject){
-        userService.getUserById(userId).then(
+        userService.getUserById(userId, true).then(
         function(user)
         {
             StreetModel.find({'_id': { $in: user.adoptedStreets}})
@@ -270,10 +270,10 @@ exports.getByLocationPaged = function(locationLat, locationLng, page, take, user
 
 exports.adopt = function(userId, streetId) {
     return new Promise(function (fulfill, reject){
-        userService.getUserById(userId).then(
+        userService.getUserById(userId, true).then(
         function (user)
         {
-            if(user.adoptedStreets.indexOf(streetId) == -1)
+            if(!user.isAdoptedStreet(streetId))
             {
                 user.adoptedStreets.push(mongoose.Types.ObjectId(streetId));
                 user.save(function(err, user) {
@@ -308,7 +308,7 @@ exports.adopt = function(userId, streetId) {
 
 exports.leave = function(userId, streetId) {
     return new Promise(function (fulfill, reject){
-        userService.getUserById(userId).then(
+        userService.getUserById(userId, false).then(
         function(user)
         {
             var adoptedStreetIndex = user.adoptedStreets.indexOf(streetId);
