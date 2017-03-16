@@ -1,6 +1,6 @@
 {
   "name": "not-in-philly",
-  "main": "start.js",
+  "main": "server.js",
   "dependencies": {
     "array-find": "^1.0.0",
     "bcrypt-nodejs": "0.0.3",
@@ -32,7 +32,6 @@
     "winston": "^2.3.1"
   },
   "scripts": {
-    "start": "node start.js",
-	"postinstall": "export HOME=/var/lib/openshift/58c5e4b67628e1b8670000f2/app-root/runtime/repo; ./node_modules/bower/bin/bower install"
-  }
+    "start": "node server.js"
+	  }
 }
