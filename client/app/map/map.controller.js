@@ -139,9 +139,20 @@ angular.module('notinphillyServerApp')
       neighborhoodMouseClickCallback : function(e) {
         $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
       },
-      streetMouseOverCallback : function(e) {
+      streetMouseOverCallback : function(e) {  
+        var streetProperties = e.target.feature.properties;
+        
+        $("#map-tooltip")
+          .toggleClass("hidden")
+          .css({top: e.originalEvent.clientY, left: e.originalEvent.clientX})
+          .find('#tooltipValue').html("<div>" + streetProperties.name + "</div><div>Participants: " + streetProperties.totalAdopters + "</div>");
       },
       streetMouseOutCallback: function(e) {
+        var streetProperties = e.target.feature.properties;
+
+        $("#map-tooltip")
+          .toggleClass("hidden")
+          find('#tooltipValue').html("");
       },
       streetClickCallback: function(e) {
         if (e.target.feature) {
@@ -154,7 +165,7 @@ angular.module('notinphillyServerApp')
         }
       }
     };
-
+   
     mapService.setMapCallbacks(mapCallbacks);
     mapService.setNeighborhoodLayers();
   }]);
