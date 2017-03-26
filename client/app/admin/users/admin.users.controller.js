@@ -32,6 +32,7 @@ angular.module('notinphillyServerApp')
        { name: 'phoneNumber', displayName: 'Phone', enableSorting: false, width:100 },
        { name: 'createdAt', displayName: 'Created', enableSorting: true, type: 'date', width:110 },
        { name: 'isDistributer', displayName: 'Distributer?',  enableSorting: false, width:100 },
+       { name: 'adoptedStreets.length', displayName: 'Streets', enableSorting: false, width:80 },
        { name: 'isAdmin', displayName: 'Admin?', enableSorting: false, width:80 },
        { name: 'active', displayName: 'Active?', enableSorting: true, width:80 },
        { name: 'editColumn', cellTemplate: 'app/admin/users/user-edit-column.html', width: 34, enableSorting: false},

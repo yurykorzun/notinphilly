@@ -152,7 +152,7 @@ angular.module('notinphillyServerApp')
 
         $("#map-tooltip")
           .toggleClass("hidden")
-          find('#tooltipValue').html("");
+          find('#tooltipValue');
       },
       streetClickCallback: function(e) {
         if (e.target.feature) {
