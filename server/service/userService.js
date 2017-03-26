@@ -140,7 +140,7 @@ exports.getAllPagedSorted = function(sortColumn, sortDirection, skip, limit) {
     });
 }
 
-exports.create = function(user, isEmailRequired) {
+exports.create = function(user, isActiveUser, isEmailRequired) {
     return new Promise(function(fulfill, reject) {
         UserModel.findOne({ email: user.email }, function(err, existingUser) {
             if (err){
@@ -165,7 +165,7 @@ exports.create = function(user, isEmailRequired) {
                                 fullAddress: user.fullAddress,
                                 addressLocation: user.addressLocation,
                                 apartmentNumber: user.apartmentNumber,
-                                active: false,
+                                active: isActiveUser,
                                 roles: [4],
                                 city: user.city,
                                 state: foundState._id,
@@ -192,6 +192,7 @@ exports.create = function(user, isEmailRequired) {
                                                 emailService.sendUserConfirmationEmail(savedUser.email, savedUser.firstName, savedUser.lastName, savedUser.activationHash);
                                             }
 
+                                            emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
                                             emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
                                             fulfill(savedUser);
                                         }

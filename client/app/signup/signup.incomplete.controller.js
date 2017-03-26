@@ -33,7 +33,6 @@
             $scope.User.addressLocation = address.location;
             $scope.User.fullAddress = address.fullAddress;
             $scope.User.needsCompletion = false;
-            $scope.User.confirmationEmailRequired = true;
             $http.put('/api/users/', $scope.User).
                     success(function(data) {
                         $scope.isUpdateFailed = false;

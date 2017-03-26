@@ -45,7 +45,6 @@ angular.module('notinphillyServerApp')
                   });
         }
         else {
-          $scope.User.confirmationEmailRequired = false;
           $http.post('/api/users/', $scope.User).
                   success(function(data) {
                     $uibModalInstance.close();

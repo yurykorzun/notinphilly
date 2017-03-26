@@ -1,80 +1,174 @@
+var promise             = require('promise');
 var handlebarsEngine    = require("handlebars");
+var fs                  = require('fs');
+var path                = require('path');
 var apiSettings         = require('../config/apiSettings');
 var serverSettings      = require('../config/serverSettings');
 var mailgun             = require('mailgun-js')({ apiKey: apiSettings.EMAIL_API_KEY, domain: apiSettings.EMAIL_DOMAIN });
 var logger              = require('../components/logger');
 
+var templateFolderPath = path.join(__dirname, "../templates");
+
 //common
 var emailFrom = "noreply <noreply@notinphilly.org>";
-
 var emailToTemplate = handlebarsEngine.compile("{{firstName}} {{lastName}} <{{email}}>");
 
 //confirmation email
 var userConfirmationSubject = "NotInPhilly.org confirm registration";
-
 var activationUrl = handlebarsEngine.compile(serverSettings.WEB_SITE_URL + "/api/users/confirm/{{activationHash}}");
-
-var userConfirmationEmailPlainTemplate = handlebarsEngine.compile("Hi {{firstName}},\n Just a reminder that have launched this project in the Walnut Hill and Spruce Hill neighborhoods right now. Sign up wherever you live and we'll let you know when we expand to your neighborhood! \n\n Please follow the link in order to finish the registration: \n {{ url }}\n\nBe sure to tag pictures of your cleaned blocks with @notinphilly and #notinphilly on Instagram to be entered for prizes! \n\n \n #NotInPhilly Team");
-
-var userConfirmationEmailHtmlTemplate = handlebarsEngine.compile("<p>Hi {{firstName}},<p> <p>Just a reminder that have launched this project in the Walnut Hill and Spruce Hill neighborhoods right now. Sign up wherever you live and we'll let you know when we expand to your neighborhood!</p> <p>Please follow the link in order to finish the registration:</p> <p><a href='{{ url }}'>{{ url }}</a></p> <p>Be sure to tag pictures of your cleaned blocks with @notinphilly and #notinphilly on Instagram to be entered for prizes!</p> <div><b>#NotInPhilly Team</b></div>");
 
 //reset email
 var userPasswordResetSubjectTemplate = "NotInPhilly.org reset password confirmation";
 
-var userPasswordResetPlainTemplate = handlebarsEngine.compile("Hi {{firstName}},\n Your temporary password for notinphilly.org is: {{newPassword}}\nPlease don't forget to change your password after login. \n\n\n #NotInPhilly Team");
-
-var userPasswordResetHtmlTemplate = handlebarsEngine.compile("<p>Hi {{firstName}},</p><p>Your temporary password for notinphilly.org is: <p><b>{{newPassword}}</b></p></p><p>Please don't forget to change your password after login.</p> <p><b>#NotInPhilly Team</b></p>");
-
 //admin notify
 var adminEmail = serverSettings.ADMIN_EMAIL;
 
-var userSignedUpNotificationPlainTemplate = handlebarsEngine.compile("Dear Admin,\nA new user just signed up!\n\nName: {{firstName}} {{lastName}} Email: {{email}} Address: {{address}}\n\n#NotInPhilly Team");
-var userSignedUpNotificationHtmlTemplate = handlebarsEngine.compile("<p>Dear Admin,<p> <p>A new user just signed up!</p> <p>Name: {{firstName}} {{lastName}} Email: {{email}} Address: {{address}}</p> <div><b>#NotInPhilly Team</b></div>");
+//confirmation email
+var userWelcomeSubject = "Welcome to NotInPhilly.org!";
 
+exports.sendUserWelcomeEmail = function(email, firstName, lastName) {
+    var emailTo = emailToTemplate({ firstName: firstName, lastName: lastName, email: email });
+
+    promise.all([getEmailTemplate("userWelcomeHtmlTemplate.html"), 
+                getEmailTemplate("userWelcomePlainTemplate.html")])
+                .then(function(templates){
+                    var htmlTemplate = templates[0];
+                    var plainTemplate = templates[1];
+
+                    var data = {
+                        from: emailFrom,
+                        to: emailTo,
+                        subject: userWelcomeSubject,
+                        text: plainTemplate({firstName: firstName, websiteUrl: serverSettings.WEB_SITE_URL, adminEmail: serverSettings.ADMIN_EMAIL }),
+                        html: htmlTemplate({firstName: firstName, websiteUrl: serverSettings.WEB_SITE_URL, adminEmail: serverSettings.ADMIN_EMAIL }),
+                        inline: [ path.join(__dirname, "../resources/NotInPhillyLogo.jpg") ]
+                    };
+
+                    mailgun.messages().send(data, function(error, body) {
+                        if (error) logger.error("emailService.sendUserWelcomeEmail " + error);
+                    });
+                },
+                function(error) {
+                    if (error) logger.error("emailService.sendUserWelcomeEmail " + error);
+                });
+}
 
 exports.sendUserConfirmationEmail = function(email, firstName, lastName, activationHash) {
-    var emailTo = emailToTemplate({ firstName: firstName, lastName: lastName, email: email });
-    var url = activationUrl({ activationHash: activationHash });
+    promise.all([getEmailTemplate("userConfirmationEmailHtmlTemplate.html"), 
+                getEmailTemplate("userConfirmationEmailPlainTemplate.html")])
+                .then(function(templates){
+                    var htmlTemplate = templates[0];
+                    var plainTemplate = templates[1];
 
-    var data = {
-        from: emailFrom,
-        to: emailTo,
-        subject: userConfirmationSubject,
-        text: userConfirmationEmailPlainTemplate({ firstName: firstName, url: url }),
-        html: userConfirmationEmailHtmlTemplate({ firstName: firstName, url: url })
-    };
+                    var emailTo = emailToTemplate({ firstName: firstName, lastName: lastName, email: email });
+                    var url = activationUrl({ activationHash: activationHash });
 
-    mailgun.messages().send(data, function(error, body) {
-        if (error) logger.error("emailService.sendUserConfirmationEmail " + error);
-    });
+                    var data = {
+                        from: emailFrom,
+                        to: emailTo,
+                        subject: userConfirmationSubject,
+                        text: plainTemplate({ firstName: firstName, url: url }),
+                        html: htmlTemplate({ firstName: firstName, url: url })
+                    };
+
+                    mailgun.messages().send(data, function(error, body) {
+                        if (error) logger.error("emailService.sendUserConfirmationEmail " + error);
+                    });
+                },
+                function(error) {
+                    if (error) logger.error("emailService.sendUserConfirmationEmail " + error);
+                });
+ 
 };
 
 exports.sendResetPasswordEmail = function(firstName, lastName, email, newPassword) {
     var emailTo = emailToTemplate({ firstName: firstName, lastName: lastName, email: email });
 
-    var data = {
-        from: emailFrom,
-        to: emailTo,
-        subject: userPasswordResetSubjectTemplate,
-        text: userPasswordResetPlainTemplate({ firstName: firstName, newPassword: newPassword }),
-        html: userPasswordResetHtmlTemplate({ firstName: firstName, newPassword: newPassword })
-    };
+    promise.all([getEmailTemplate("userPasswordResetHtmlTemplate.html"), 
+                getEmailTemplate("userPasswordResetPlainTemplate.html")])
+                .then(function(templates){
+                    var htmlTemplate = templates[0];
+                    var plainTemplate = templates[1];
 
-    mailgun.messages().send(data, function(error, body) {
-        if (error) logger.error("emailService.sendResetPasswordEmail " + error);
-    });
+                    var data = {
+                        from: emailFrom,
+                        to: emailTo,
+                        subject: userPasswordResetSubjectTemplate,
+                        text: plainTemplate({ firstName: firstName, newPassword: newPassword }),
+                        html: htmlTemplate({ firstName: firstName, newPassword: newPassword })
+                    };
+
+                    mailgun.messages().send(data, function(error, body) {
+                        if (error) logger.error("emailService.sendResetPasswordEmail " + error);
+                    });
+                },
+                function(error) {
+                    if (error) logger.error("emailService.sendUserConfirmationEmail " + error);
+                });
+
+ 
 };
 
 exports.sendUserNotificationEmail = function(firstName, lastName, email, address) {
-    var data = {
-        from: adminEmail,
-        to: adminEmail,
-        subject: "New user signed up!",
-        text: userSignedUpNotificationPlainTemplate({ firstName: firstName, lastName: lastName, email: email, address: address }),
-        html: userSignedUpNotificationHtmlTemplate({ firstName: firstName, lastName: lastName, email: email, address: address })
-    };
+    promise.all([getEmailTemplate("userSignedUpNotificationHtmlTemplate.html"), 
+                getEmailTemplate("userSignedUpNotificationPlainTemplate.html")])
+                .then(function(templates){
+                    var htmlTemplate = templates[0];
+                    var plainTemplate = templates[1];
 
-    mailgun.messages().send(data, function(error, body) {
-        if (error) logger.error("emailService.sendUserNotificationEmail " + error);        
-    });
+                      var data = {
+                        from: adminEmail,
+                        to: adminEmail,
+                        subject: "Notinphilly.org: new user created account",
+                        text: plainTemplate({ firstName: firstName, lastName: lastName, email: email, address: address }),
+                        html: htmlTemplate({ firstName: firstName, lastName: lastName, email: email, address: address })
+                    };
+
+                    mailgun.messages().send(data, function(error, body) {
+                        if (error) logger.error("emailService.sendUserNotificationEmail " + error);        
+                    });
+                },
+                function(error) {
+                    if (error) logger.error("emailService.sendUserConfirmationEmail " + error);
+                });
 };
+
+var getEmailTemplate = function(fileName)
+{
+    var pathToTemplateFile = path.join(templateFolderPath, fileName);
+
+    return new Promise(function (fulfill, reject){
+        fs.readFile(pathToTemplateFile, function(err, templateData) {  
+            if (err)
+            {
+                logger.error("emailService.getEmailTemplate " + err);
+                reject("Failed retrieving email template " + err);
+            }
+            else
+            {
+                var compiledTemplate = handlebarsEngine.compile(templateData.toString());
+                fulfill(compiledTemplate);
+            }
+        });
+    });
+}
+
+var getImageAttachment = function(fileName)
+{
+    var pathToImageFile = path.join("../resources", fileName);
+
+    return new Promise(function (fulfill, reject){
+        fs.readFile(pathToImageFile, function(err, file) {  
+            if (err)
+            {
+                logger.error("emailService.getImageAttachment " + err);
+                reject("Failed retrieving image " + err);
+            }
+            else
+            {
+                var attachment = new mailgun.Attachment({data: file, filename: filename});
+                fulfill(attachment);
+            }
+        });
+    });
+}

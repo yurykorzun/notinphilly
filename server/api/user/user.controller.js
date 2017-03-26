@@ -95,10 +95,9 @@ exports.exportUsersCSV = function(req, res) {
 };
 
 exports.create = function(req, res, next) {
-    var isEmailRequired = req.body.confirmationEmailRequired;
     var user = req.body;
 
-    userService.create(user, isEmailRequired).then(
+    userService.create(user, true, false).then(
         function(result) {
             res.status(200).json(result);
         },
