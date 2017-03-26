@@ -192,7 +192,7 @@
             map.setView(addressLocation, 17, { animate: false });
           }
 
-          var markerIcon = new LeafIcon({iconUrl: 'public/img/broom.png'});
+          var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
 
           var streetLayer = createStreetLayer(streets);
           _mapStreetLayer = streetLayer;
@@ -315,9 +315,14 @@
         var layerBounds = layer.getBounds();
         var center = layerBounds.getCenter();
 
-        var myIcon = L.divIcon({html: '<div><h5>' + feature.properties.name + '<h5></div>', iconAnchor: [20, 15], className: 'map-label'});
-        var tooltipMarker = L.marker(center, {icon: myIcon, riseOnHover: true});
-        tooltipMarker.addTo(_mapLabelsLayer);
+        if (feature.properties.receivesSupplies)
+        {
+          var myIcon = L.divIcon({html: '<img class="map-legend-icon" src="/public/img/checked.png"></img>',
+                                iconAnchor: [20, 15], 
+                                className: 'map-label'});
+          var tooltipMarker = L.marker(center, {icon: myIcon, riseOnHover: true});
+          tooltipMarker.addTo(_mapLabelsLayer);
+        }
       }
 
       var loadStreets = function(neighborhooData, map) {
@@ -350,9 +355,14 @@
       {
         clearMapControls(mapInstance);
         createZoomControls(mapInstance);
+        createNeighborhoodLegend(mapInstance);
         if (neighborhooData)
         {
           createNeighborhoodDetails(mapInstance, neighborhooData);
+        }
+        else
+        {
+          createNeighborhoodTip(mapInstance);
         }
       }
 
@@ -361,10 +371,13 @@
         clearMapControls(mapInstance);
         createZoomControls(mapInstance);
         createNavigationControls(mapInstance);
+        createStreetLegend(mapInstance);     
+
         if (neighborhooData)
         {
           createNeighborhoodDetails(mapInstance, neighborhooData);
         }
+       
       }
 
       var clearMapControls = function(mapInstance) {
@@ -414,6 +427,65 @@
           neighborhoodDetails = new neighborhoodDetails();
           mapInstance.addControl(neighborhoodDetails);
           _mapControls.push(neighborhoodDetails);
+      }
+
+      
+      var createNeighborhoodTip = function(mapInstance) {
+          var neighborhoodTip = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function (map) {
+              var detailsContainer = L.DomUtil.create('div', 'map-control');
+              detailsContainer.innerHTML = '<div class="hidden-xs"><i class="fa fa-info-circle"></i> Point at a neighborhood</div>';
+              return detailsContainer;
+            }
+          });
+          neighborhoodTip = new neighborhoodTip();
+          mapInstance.addControl(neighborhoodTip);
+          _mapControls.push(neighborhoodTip);
+      }
+
+
+      var createNeighborhoodLegend = function(mapInstance)
+      {
+        var neighborhoodLegend = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function (map) {
+              var container = L.DomUtil.create('div', 'map-legend');
+              container.innerHTML = '<div class="hidden-xs"><b>Neighborhood:</b>'
+                                    + '<div><img class="map-legend-icon" src="/public/img/participating-neighborhood.png"/>Has participants</div>' 
+                                    + '<div><img class="map-legend-icon" src="/public/img/future-neighborhood.png"/>No participants</div>' 
+                                    + '</div>' ;
+              return container;
+            }
+          });
+          neighborhoodLegend = new neighborhoodLegend();
+          mapInstance.addControl(neighborhoodLegend);
+          _mapControls.push(neighborhoodLegend);
+      }
+
+      var createStreetLegend = function(mapInstance)
+      {
+        var streetLegend = L.Control.extend({
+            options: {
+              position: 'topleft'
+            },
+            onAdd: function (map) {
+              var container = L.DomUtil.create('div', 'map-legend');
+                container.innerHTML = '<div class="hidden-xs"><b>Street:</b>'
+                                    + '<div><img class="map-legend-icon" src="/public/img/participating-street.png"/>Has participants</div>' 
+                                    + '<div><img class="map-legend-icon" src="/public/img/future-street.png"/>No participants</div>' 
+                                    + '</div>' ;
+              return container;
+            }
+          });
+
+          streetLegend = new streetLegend();
+          mapInstance.addControl(streetLegend);
+          _mapControls.push(streetLegend);
       }
 
       var createZoomControls = function(mapInstance) {
@@ -596,6 +668,8 @@
         _deferredMap.promise.then(function(map) {
           clearMapControls(map);
           createZoomControls(map);
+          createNeighborhoodLegend(map);
+          createNeighborhoodTip(map);
         });
 
         if(properties.active) {

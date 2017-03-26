@@ -11,13 +11,13 @@ angular.module('notinphillyServerApp')
 
     mapService.getMap().then(function(map) {
       map.on('zoomend', function(zoomEvent) {
-        if (zoomEvent.target._zoom > 13)
+        /*if (zoomEvent.target._zoom > 13)
         {
           mapService.showLabels();
         }
         else {
           mapService.hideLabels();
-        }
+        }*/
       });
 
       map.on('popupopen', function(popupEvent) {
@@ -168,5 +168,6 @@ angular.module('notinphillyServerApp')
    
     mapService.setMapCallbacks(mapCallbacks);
     mapService.setNeighborhoodLayers();
+    mapService.showLabels();
   }]);
 })();

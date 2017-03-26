@@ -17,7 +17,7 @@ for feature in jsonParsed["features"]:
     record["percentageAdoptedStreets"] = 0
     record["totalAdoptedStreets"] = 0
     record["totalStreets"] = 0
-
+    record["receivesSupplies"] = True
     record["geometry"] = feature["geometry"]
 
     mappedRecords.append(record)

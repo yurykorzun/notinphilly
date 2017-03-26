@@ -767,6 +767,25 @@ hr {
     border-style: none;
 }
 
+.map-legend {
+    background-color: white;
+    font-size: 13px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 5px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+.map-legend-icon {
+    width:25px;
+}
+
+.map-neighborhood-icon
+{
+    width:25px;
+}
+
 #map-tooltip {
     position: fixed;
     width: auto;

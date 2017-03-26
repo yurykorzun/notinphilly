@@ -12,6 +12,7 @@ var NeighborhoodSchema = new Schema({
   totalStreets: {  type: Number, default: 0 },
   totalAdoptedStreets: {  type: Number, default: 0 },
   percentageAdoptedStreets: {  type: Number, default: 0 },
+  receivesSupplies: { type: Boolean, default: false },
   geometry: {}
 },
 { collection: 'neighborhoods' });
