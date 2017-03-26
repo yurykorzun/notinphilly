@@ -143,26 +143,28 @@ angular.module('notinphillyServerApp')
         var streetProperties = e.target.feature.properties;
         
         $("#map-tooltip")
-          .toggleClass("hidden")
+          .removeClass()
           .css({top: e.originalEvent.clientY, left: e.originalEvent.clientX})
           .find('#tooltipValue').html("<div>" + streetProperties.name + "</div><div>Participants: " + streetProperties.totalAdopters + "</div>");
       },
       streetMouseOutCallback: function(e) {
         var streetProperties = e.target.feature.properties;
 
-        $("#map-tooltip")
-          .toggleClass("hidden")
-          find('#tooltipValue');
+        $("#map-tooltip").addClass("hidden");
       },
       streetClickCallback: function(e) {
         if (e.target.feature) {
           mapService.showStreetPopup(e.target.feature);
         }
+
+         $("#map-tooltip").addClass("hidden");
       },
       pinClickCallback: function(e) {
         if (e.target.street) {
           mapService.showStreetPopup(e.target.street);
         }
+
+        $("#map-tooltip").addClass("hidden");
       }
     };
    
