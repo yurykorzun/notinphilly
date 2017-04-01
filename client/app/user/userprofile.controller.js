@@ -15,6 +15,7 @@
                 $scope.user = {
                     adoptedStreets: []
                 };
+                $scope.userStreetsGeoJSON = [];
                 $scope.errorMessage = undefined;
 
                 function SetupCurrentUser() {
@@ -27,13 +28,13 @@
                                 $scope.errorMessage = undefined;
 
                                 if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
-                                SetupUserStreets();
                                 SetupToolRequest();
 
                                 if ($scope.user.needsCompletion) {
                                     ShowIncompleteForm($scope.user);
                                 }
 
+                                UpdateUserStreets();
                                 $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
                             },
                             function(err) {
@@ -45,13 +46,19 @@
                     }
                 }
 
-                function SetupUserStreets() {
-                    mapService.getStreetsForCurrentUser().then(function(response) {
-                            $scope.user.adoptedStreets = response;
-                        },
-                        function(err) {
+                function UpdateUserStreets() {
+                    mapService.getCurrentUserStreets().then(function(response) {
+                        $scope.user.adoptedStreets = response;
 
-                        });
+                        SetStreetsGeoJSON();
+                    });
+                }
+
+                function SetStreetsGeoJSON()
+                {
+                    mapService.getCurrentUserStreetsGeoJSON().then(function(response) {
+                        $scope.userStreetsGeoJSON = response;
+                    });
                 }
 
                 function SetupToolRequest() {
@@ -94,10 +101,10 @@
 
                 });
                 $scope.$on(APP_EVENTS.STREET_ADOPTED, function(event) {
-                    SetupUserStreets();
+                    UpdateUserStreets();
                 });
                 $scope.$on(APP_EVENTS.STREET_LEFT, function(event) {
-                    SetupUserStreets();
+                    UpdateUserStreets();
                 });
 
                 $scope.makeToolRequest = function() {
@@ -113,7 +120,7 @@
                 }
 
                 $scope.locateStreet = function(streetId) {
-                    mapService.showStreets($scope.streets);
+                    mapService.showUserStreets();
                     mapService.selectStreet(streetId);
 
                     $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
@@ -140,14 +147,12 @@
                 };
 
                 var showBlockStreets = function(addressLocation) {
-                    mapService.findStreetsNear(addressLocation).then(function(searchResults) {
-                        mapService.showStreets(searchResults, addressLocation);
-                        $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
-                    });
+                    mapService.showStreetsNear(addressLocation);
+                    $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
                 }
 
                 $scope.switchToMap = function() {
-                    mapService.showStreets($scope.user.adoptedStreets);
+                    mapService.showUserStreets();
                     $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
                 };
 

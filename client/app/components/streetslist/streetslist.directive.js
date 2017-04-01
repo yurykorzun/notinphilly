@@ -10,7 +10,7 @@
       },
       controller: ['$scope', function($scope) {
         $scope.chooseStreet = function(streetId) {
-          mapService.showStreets($scope.streetsAll);
+          mapService.showStreets($scope.streetsAll);          
           mapService.selectStreet(streetId);
           $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
         };

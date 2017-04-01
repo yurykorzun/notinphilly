@@ -9,15 +9,24 @@ angular.module('notinphillyServerApp')
         }, 400);
     });
 
+    var mapTooltip = $("#map-tooltip");
+
+    var showMapTooltip = function(position, content)
+    {
+      mapTooltip
+        .show()
+        .css(position)
+        .find('#tooltipValue').html(content);
+    }
+
+    var hideMapTooltip = function()
+    {
+      mapTooltip.find('#tooltipValue').html("");
+      mapTooltip.hide();
+    }
+
     mapService.getMap().then(function(map) {
       map.on('zoomend', function(zoomEvent) {
-        /*if (zoomEvent.target._zoom > 13)
-        {
-          mapService.showLabels();
-        }
-        else {
-          mapService.hideLabels();
-        }*/
       });
 
       map.on('popupopen', function(popupEvent) {
@@ -133,43 +142,50 @@ angular.module('notinphillyServerApp')
 
     var mapCallbacks = {
       neighborhoodMouseOverCallback : function(e) {
+        var neighborhoodProperties = e.target.feature.properties;
+        var tooltipPosition = { top: e.originalEvent.clientY, left: e.originalEvent.clientX };
+        var tooltipValue = "<div>" + neighborhoodProperties.name 
+                                   + "</div><div>Participating streets: " + neighborhoodProperties.totalAdoptedStreets + "</div>"
+                                   + "<div>Total streets: " + neighborhoodProperties.totalStreets + "</div>";
+        
+        showMapTooltip(tooltipPosition, tooltipValue);
       },
       neighborhoodMouseOutCallback : function(e) {
+        hideMapTooltip();
       },
       neighborhoodMouseClickCallback : function(e) {
         $rootScope.$broadcast(APP_EVENTS.ENTER_STREET_LEVEL);
+        hideMapTooltip();
       },
       streetMouseOverCallback : function(e) {  
         var streetProperties = e.target.feature.properties;
-        
-        $("#map-tooltip")
-          .removeClass()
-          .css({top: e.originalEvent.clientY, left: e.originalEvent.clientX})
-          .find('#tooltipValue').html("<div>" + streetProperties.name + "</div><div>Participants: " + streetProperties.totalAdopters + "</div>");
+        var tooltipPosition = { top: e.originalEvent.clientY, left: e.originalEvent.clientX };
+        var tooltipValue = "<div>" + streetProperties.name + "</div><div>Participants: " + streetProperties.totalAdopters + "</div>";
+
+        showMapTooltip(tooltipPosition, tooltipValue);
       },
       streetMouseOutCallback: function(e) {
         var streetProperties = e.target.feature.properties;
-
-        $("#map-tooltip").addClass("hidden");
+        
+        hideMapTooltip();
       },
       streetClickCallback: function(e) {
         if (e.target.feature) {
           mapService.showStreetPopup(e.target.feature);
         }
 
-         $("#map-tooltip").addClass("hidden");
+        hideMapTooltip();
       },
       pinClickCallback: function(e) {
         if (e.target.street) {
           mapService.showStreetPopup(e.target.street);
         }
 
-        $("#map-tooltip").addClass("hidden");
+        hideMapTooltip();
       }
     };
    
     mapService.setMapCallbacks(mapCallbacks);
     mapService.setNeighborhoodLayers();
-    mapService.showLabels();
   }]);
 })();

@@ -55,12 +55,27 @@ exports.currentUserStreets = function(req, res, next) {
 
     if (!userId) throw new Error('Required userId needs to be set');
 
+    streetService.getByUserId(userId).then(
+    function(result) {
+      res.status(200).json(result);
+    },
+    function(error) {
+      logger.error("streetController.currentUserStreetsGeoJSON " + error);    
+      res.status(500).json("Street retrieval failed");
+    });
+};
+
+exports.currentUserStreetsGeoJSON = function(req, res, next) {
+    var userId = req.user._id;
+
+    if (!userId) throw new Error('Required userId needs to be set');
+
     streetService.getGeoJSONByUserId(userId).then(
     function(result) {
       res.status(200).json(result);
     },
     function(error) {
-      logger.error("streetController.currentUserStreets " + error);    
+      logger.error("streetController.currentUserStreetsGeoJSON " + error);    
       res.status(500).json("Street retrieval failed");
     });
 };
@@ -135,6 +150,41 @@ exports.getByLocationPaged = function(req, res, next) {
         logger.error("streetController.getByLocationPaged " + error);                                                          
         res.status(500).json("Search failed");          
       });
+    }
+};
+
+exports.getGeoJSONByLocation = function(req, res, next) {
+    var locationLat = req.body.lat;
+    var locationLng = req.body.lng;
+
+    var user = {};
+    //Get user info
+    if (typeof req.user !== 'undefined') {
+      userService.getUserById(req.user._id, true).then(function(user) {
+        streetService.getGeoJSONByLocation(locationLat, locationLng, user).then(function (streets)
+        {
+          res.status(200).json(streets);
+        },
+        function(error){
+          logger.error("streetController.getGeoJSONByLocation " + error);              
+          res.status(500).json("Search failed");          
+        });
+      },
+      function (error) {
+        logger.error("streetController.getGeoJSONByLocation " + error);                      
+        res.status(500).json("Search failed");
+      });
+    }
+    else 
+    {
+       streetService.getGeoJSONByLocation(locationLat, locationLng).then(function (streets)
+        {
+          res.status(200).json(streets);
+        },
+        function(error){
+          logger.error("streetController.getGeoJSONByLocation " + error);                                
+          res.status(500).json("Search failed");          
+        });
     }
 };
 

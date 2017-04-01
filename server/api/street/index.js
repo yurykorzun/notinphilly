@@ -7,12 +7,14 @@ var router = express.Router();
 router.get('/', controller.index);
 router.get('/getAllGeojson/', controller.getAllGeojson);
 router.get('/current/', authService.isAuthenticated, controller.currentUserStreets);
+router.get('/currentGeoJSON', authService.isAuthenticated, controller.currentUserStreetsGeoJSON);
 router.get('/byparent/:nid', controller.getByNeighborhood);
 router.get('/byparentgeo/:nid', controller.getByNeighborhoodGeojson);
 router.get('/adopt/:sid', authService.isAuthenticated, controller.adopt);
 router.get('/leave/:sid', authService.isAuthenticated, controller.leave);
 router.get('/reconcile/', authService.isAdmin, controller.reconcileAdoptedStreets);
-router.post('/byloc/', controller.getByLocation);
+router.post('/byLocation/', controller.getByLocation);
+router.post('/byLocationGeoJSON/', controller.getGeoJSONByLocation);
 router.get('/:sid', controller.get);
 
 module.exports = router;

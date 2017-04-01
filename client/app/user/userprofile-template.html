@@ -115,7 +115,7 @@
                         <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
                     </ul>
                 </div>
-                <streetslist streets-all="user.adoptedStreets" streets-show="user.adoptedStreets" />
+                <streets-list streets-show="user.adoptedStreets" streets-all="userStreetsGeoJSON" />
             </div>
         </div>
     </div>
@@ -124,7 +124,6 @@
             <div class="street-list-header">
                 You currently don't participate in any streets. Find <a href="" ng-click="showBlock()">streets in your block</a>.
             </div>
-            <streetslist streets="user.adoptedStreets" />
         </div>
     </div>
 </div>

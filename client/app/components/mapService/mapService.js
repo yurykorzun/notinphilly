@@ -5,7 +5,6 @@
       var _deferredMap = $q.defer();
 
       var _mapLayerGroup = L.layerGroup();
-      var _mapLabelsLayer = L.layerGroup();
       var _mapStreetLayer = undefined;
 
       var _mapCallbacks = {
@@ -45,10 +44,10 @@
       }
 
       self.setNeighborhoodLayers = function() {
+        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
         _deferredMap.promise.then(function(map) {
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
             _mapLayerGroup.clearLayers();
-            _mapLabelsLayer.clearLayers();
 
             map.closePopup();
             createNeighborhoodControls(map);
@@ -56,12 +55,13 @@
             var geoJsonLayer = L.geoJson(data, {
               onEachFeature: function (feature, layer){
                 layer.setStyle(setNeighborhoodColor(feature));
-                setNeighborhoodLabel(feature, layer, map);
                 layer.on({
                   mouseover: function(e) { highlightNeighborhood(e); _mapCallbacks.neighborhoodMouseOverCallback(e); },
                   mouseout: function(e) { resetHighlightNeighborhood(e); _mapCallbacks.neighborhoodMouseOutCallback(e); },
                   click: function(e) { onNeighborhoodLayerClick(e); _mapCallbacks.neighborhoodMouseClickCallback(e);},
                 });
+
+                setNeighborhoodIcon(layer, feature, map);
               },
               style: {
                 color: '#9A9B9C',
@@ -79,6 +79,8 @@
 
               map.invalidateSize();
             });
+
+             $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
            });
         });
       };
@@ -95,15 +97,13 @@
           openStreetLayerPopup(streetCenter, properties);
         });
       };
-
       
       self.addAllStreets = function() {
         $http.get("api/streets/getAllGeojson").success(function(streetData, status) {
           _deferredMap.promise.then(function(map) {
-              createStreetControls(map);
+              createStreetControls(map, false);
 
               _mapLayerGroup.clearLayers();
-              _mapLabelsLayer.clearLayers();
 
               var streetLayer = createStreetLayer(streetData);
 
@@ -122,15 +122,43 @@
         });
       };
 
-      self.getStreetsForCurrentUser = function()
+      self.showUserStreets = function()
+      {
+        _deferredMap.promise.then(function(map) {
+          $http.get('api/streets/currentGeoJSON').then(function(result) {
+            var foundStreets = result.data;
+            foundStreets = setStreetViewSrc(foundStreets);
+
+            showStreets(foundStreets);
+          });
+        });
+      }
+
+      self.getCurrentUserStreets = function()
       {
         var deferredStreets = $q.defer();
 
         $http.get("api/streets/current/").success(function(result, status) {
           var foundStreets = result;
-          foundStreets = convertStreets(foundStreets);
+          foundStreets = setStreetViewSrc(foundStreets);
 
-          deferredStreets.resolve(result);
+          deferredStreets.resolve(foundStreets);
+        }, function(err) {
+            deferredStreets.reject(err);
+        });
+
+        return deferredStreets.promise;
+      }
+
+      self.getCurrentUserStreetsGeoJSON = function()
+      {
+        var deferredStreets = $q.defer();
+
+        $http.get("api/streets/currentGeoJSON").success(function(result, status) {
+          var foundStreets = result;
+          foundStreets = setStreetViewSrc(foundStreets);
+
+          deferredStreets.resolve(foundStreets);
         }, function(err) {
             deferredStreets.reject(err);
         });
@@ -142,11 +170,27 @@
         var deferredStreets = $q.defer();
 
         _deferredMap.promise.then(function(map) {
-          $http.post('api/streets/byloc', location).then(function(result) {
+          $http.post('api/streets/byLocation', location).then(function(result) {
             var foundStreets = result.data;
-            foundStreets = convertStreets(foundStreets);
+            foundStreets = setStreetViewSrc(foundStreets);
 
-            map.invalidateSize();
+            deferredStreets.resolve(foundStreets);
+          }, function(err) {
+            deferredStreets.reject(err);
+          });
+        });
+
+        return deferredStreets.promise;
+      }
+
+      self.findStreetsNearGeoJSON = function(location) {
+        var deferredStreets = $q.defer();
+
+        _deferredMap.promise.then(function(map) {
+          $http.post('api/streets/byLocationGeoJSON', location).then(function(result) {
+            var foundStreets = result.data;
+            foundStreets = setStreetViewSrc(foundStreets);
+
             deferredStreets.resolve(result.data);
           }, function(err) {
             deferredStreets.reject(err);
@@ -156,63 +200,23 @@
         return deferredStreets.promise;
       }
 
-      self.showStreets = function(streets, addressLocation) {
-        if(streets.length == 0) return;
-
+      self.showStreetsNear = function(location) {
         _deferredMap.promise.then(function(map) {
-          _mapLayerGroup.clearLayers();
-          _mapLabelsLayer.clearLayers();
+          $http.post('api/streets/byLocationGeoJSON', location).then(function(result) {
+            var foundStreets = result.data;
+            foundStreets = setStreetViewSrc(foundStreets);
 
-          map.closePopup();
-          createStreetControls(map);
-
-          var LeafIcon = L.Icon.extend({
-            options: {
-              iconSize:     [40, 40], // size of the icon
-              iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
-              popupAnchor:  [20, 0] // point from which the popup should open relative to the iconAnchor
-            }
+            showStreets(foundStreets, location);
+            
+            map.invalidateSize();
           });
-
-          if (addressLocation)
-          {
-            var addressIcon = new LeafIcon({iconUrl: 'public/img/home.png'});
-            var addressMarker = L.marker(addressLocation, {icon: addressIcon});
-            _mapLayerGroup.addLayer(addressMarker);
-            addressMarker.addTo(map);
-
-            map.setView(addressLocation, 17, { animate: false });
-          }
-          else
-          {
-            var geoJsonLayer = L.geoJson(streets[0]);
-            var layerBounds = geoJsonLayer.getBounds();
-            addressLocation = layerBounds.getCenter();
-
-            map.setView(addressLocation, 17, { animate: false });
-          }
-
-          var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
-
-          var streetLayer = createStreetLayer(streets);
-          _mapStreetLayer = streetLayer;
-          _mapLayerGroup.addLayer(streetLayer);
-          streetLayer.addTo(map);
-
-          for(var i = 0; i < streets.length; i++)
-          {
-            var street = streets[i];
-            var streetMarker = L.marker(street.streetCenter, {icon: markerIcon});
-            streetMarker.street = street;
-            streetMarker.on({
-              click: function(e) { _mapCallbacks.pinClickCallback(e); }
-            });
-            _mapLayerGroup.addLayer(streetMarker);
-            streetMarker.addTo(map);
-          }
-
-          map.invalidateSize();
         });
+      }
+
+      self.showStreets = function(streets, addressLocation) {
+        streets = setStreetViewSrc(streets);
+
+        showStreets(streets, addressLocation);
       }
 
       self.goToStreet = function(streetId) {
@@ -276,24 +280,6 @@
         });
       };
 
-      self.showLabels = function() {
-        _deferredMap.promise.then(function(map) {
-          if (!map.hasLayer(_mapLabelsLayer))
-          {
-            _mapLabelsLayer.addTo(map);
-          }
-        });
-      };
-
-      self.hideLabels = function() {
-        _deferredMap.promise.then(function(map) {
-          if (map.hasLayer(_mapLabelsLayer))
-          {
-            map.removeLayer(_mapLabelsLayer);
-          }
-        });
-      };
-
       var getMapCenter = function() {
         var defferedCenter = $q.defer();
 
@@ -310,30 +296,74 @@
         return defferedCenter.promise;
       };
 
-      var setNeighborhoodLabel = function(feature, layer, map)
-      {
-        var layerBounds = layer.getBounds();
-        var center = layerBounds.getCenter();
+      var showStreets = function(streets, addressLocation) {
+        if(streets.length == 0) return;
 
-        if (feature.properties.receivesSupplies)
-        {
-          var myIcon = L.divIcon({html: '<img class="map-legend-icon" src="/public/img/checked.png"></img>',
-                                iconAnchor: [20, 15], 
-                                className: 'map-label'});
-          var tooltipMarker = L.marker(center, {icon: myIcon, riseOnHover: true});
-          tooltipMarker.addTo(_mapLabelsLayer);
-        }
+        _deferredMap.promise.then(function(map) {
+          _mapLayerGroup.clearLayers();
+
+          map.closePopup();
+          createStreetControls(map, true);
+
+          var LeafIcon = L.Icon.extend({
+            options: {
+              iconSize:     [40, 40], // size of the icon
+              iconAnchor:   [20, 40], // point of the icon which will correspond to marker's location
+              popupAnchor:  [20, 0] // point from which the popup should open relative to the iconAnchor
+            }
+          });
+
+          if (addressLocation)
+          {
+            var addressIcon = new LeafIcon({iconUrl: 'public/img/home.png'});
+            var addressMarker = L.marker(addressLocation, {icon: addressIcon});
+            _mapLayerGroup.addLayer(addressMarker);
+            addressMarker.addTo(map);
+
+            map.setView(addressLocation, 17, { animate: false });
+          }
+          else
+          {
+            
+            var geoJsonLayer = L.geoJson(streets[0].geometry);
+            var layerBounds = geoJsonLayer.getBounds();
+            addressLocation = layerBounds.getCenter();
+
+            map.setView(addressLocation, 17, { animate: false });
+          }
+
+          var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
+
+          var streetLayer = createStreetLayer(streets);
+          _mapStreetLayer = streetLayer;
+          _mapLayerGroup.addLayer(streetLayer);
+          streetLayer.addTo(map);
+
+          for(var i = 0; i < streets.length; i++)
+          {
+            var street = streets[i];
+            var streetMarker = L.marker(street.streetCenter, {icon: markerIcon});
+            streetMarker.street = street;
+            streetMarker.on({
+              click: function(e) { _mapCallbacks.pinClickCallback(e); }
+            });
+            _mapLayerGroup.addLayer(streetMarker);
+            streetMarker.addTo(map);
+          }
+
+          map.invalidateSize();
+        });
       }
 
       var loadStreets = function(neighborhooData, map) {
+        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
         var deferredSetup = $q.defer();
 
         _deferredMap.promise.then(function(map) {
           _mapLayerGroup.clearLayers();
-          _mapLabelsLayer.clearLayers();
 
           map.closePopup();
-          createStreetControls(map, neighborhooData);
+          createStreetControls(map, false, neighborhooData);
 
           $http.get("api/streets/byparentgeo/" + neighborhooData._id).success(function(data, status) {
             var streetLayer = createStreetLayer(data);
@@ -342,6 +372,7 @@
             _mapStreetLayer = streetLayer;
             streetLayer.addTo(map);
 
+            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
             deferredSetup.resolve(streetLayer.getLayers());
           }, function(err) {
             deferredSetup.reject(err);
@@ -354,30 +385,22 @@
       var createNeighborhoodControls = function(mapInstance, neighborhooData) 
       {
         clearMapControls(mapInstance);
+        createNeighborhoodTip(mapInstance);
         createZoomControls(mapInstance);
         createNeighborhoodLegend(mapInstance);
-        if (neighborhooData)
-        {
-          createNeighborhoodDetails(mapInstance, neighborhooData);
-        }
-        else
-        {
-          createNeighborhoodTip(mapInstance);
-        }
       }
 
-      var createStreetControls = function(mapInstance, neighborhooData) 
+      var createStreetControls = function(mapInstance, isAddressSearch, neighborhooData) 
       {
         clearMapControls(mapInstance);
-        createZoomControls(mapInstance);
         createNavigationControls(mapInstance);
-        createStreetLegend(mapInstance);     
+        createZoomControls(mapInstance);
+        createStreetLegend(mapInstance, isAddressSearch);     
 
         if (neighborhooData)
         {
           createNeighborhoodDetails(mapInstance, neighborhooData);
         }
-       
       }
 
       var clearMapControls = function(mapInstance) {
@@ -437,7 +460,7 @@
             },
             onAdd: function (map) {
               var detailsContainer = L.DomUtil.create('div', 'map-control');
-              detailsContainer.innerHTML = '<div class="hidden-xs"><i class="fa fa-info-circle"></i> Point at a neighborhood</div>';
+              detailsContainer.innerHTML = '<div class="hidden-xs"><i class="fa fa-info-circle"></i> Point at a neighborhood to see details</div>';
               return detailsContainer;
             }
           });
@@ -456,8 +479,9 @@
             onAdd: function (map) {
               var container = L.DomUtil.create('div', 'map-legend');
               container.innerHTML = '<div class="hidden-xs"><b>Neighborhood:</b>'
-                                    + '<div><img class="map-legend-icon" src="/public/img/participating-neighborhood.png"/>Has participants</div>' 
-                                    + '<div><img class="map-legend-icon" src="/public/img/future-neighborhood.png"/>No participants</div>' 
+                                    + '<div><img class="map-legend-icon" src="/public/img/participating-neighborhood.png"/> Has participants</div>' 
+                                    + '<div><img class="map-legend-icon" src="/public/img/future-neighborhood.png"/> No participants</div>' 
+                                    + '<div><img class="map-legend-icon" src="/public/img/checked.png"/> Received cleanup tools</div>' 
                                     + '</div>' ;
               return container;
             }
@@ -467,7 +491,7 @@
           _mapControls.push(neighborhoodLegend);
       }
 
-      var createStreetLegend = function(mapInstance)
+      var createStreetLegend = function(mapInstance, isAddressSearch)
       {
         var streetLegend = L.Control.extend({
             options: {
@@ -475,9 +499,14 @@
             },
             onAdd: function (map) {
               var container = L.DomUtil.create('div', 'map-legend');
-                container.innerHTML = '<div class="hidden-xs"><b>Street:</b>'
-                                    + '<div><img class="map-legend-icon" src="/public/img/participating-street.png"/>Has participants</div>' 
-                                    + '<div><img class="map-legend-icon" src="/public/img/future-street.png"/>No participants</div>' 
+                container.innerHTML = '<div class="hidden-xs">' 
+                                      + ( isAddressSearch ? 
+                                        '<div><img class="map-legend-icon" src="/public/img/home.png"/> Found address</div>'
+                                        + '<div><img class="map-legend-icon" src="/public/img/map_marker.png"/> Nearby street</div>'  : "" )
+
+                                    + '<b>Street:</b>'
+                                    + '<div><img class="map-legend-icon" src="/public/img/participating-street.png"/> Has participants</div>' 
+                                    + '<div><img class="map-legend-icon" src="/public/img/future-street.png"/> No participants</div>' 
                                     + '</div>' ;
               return container;
             }
@@ -510,12 +539,15 @@
         _mapControls.push(zoomControl);
       }
 
-      var convertStreets = function(streets)
+      var setStreetViewSrc = function(streets)
       {
         for(var i = 0; i < streets.length; i++)
         {
           var street = streets[i];
-          var geoJsonLayer = L.geoJson(street);
+          var geoJsonLayer = L.geoJson({
+            "type" : "Feature",
+            "geometry" : street.geometry
+          });
           var layerBounds = geoJsonLayer.getBounds();
           var streetCenter = layerBounds.getCenter();
 
@@ -597,6 +629,20 @@
         }
       };
 
+      var setNeighborhoodIcon = function (layer, feature, map) {
+        if (feature.properties.receivesSupplies)
+        {
+          var layerBounds = layer.getBounds();
+          var center = layerBounds.getCenter();
+
+          var myIcon = L.divIcon({html: '<img class="map-legend-icon" src="/public/img/checked.png"></img>',
+                        iconAnchor: [20, 15], 
+                        className: 'map-label'});
+          var tooltipMarker = L.marker(center, {icon: myIcon, riseOnHover: true, interactive: false});
+          _mapLayerGroup.addLayer(tooltipMarker);
+        }
+      }
+
       var setNeighborhoodColor = function (feature) {
         var properties = feature.properties;
 
@@ -667,9 +713,9 @@
 
         _deferredMap.promise.then(function(map) {
           clearMapControls(map);
+          createNeighborhoodTip(map);
           createZoomControls(map);
           createNeighborhoodLegend(map);
-          createNeighborhoodTip(map);
         });
 
         if(properties.active) {

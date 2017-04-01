@@ -3,6 +3,7 @@ angular.module('notinphillyServerApp')
   .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $cookies, mapService, APP_EVENTS, APP_CONSTS) {
     $scope.searchAddress = {
       streets: [],
+      streetsGeoJSON: [],      
       pagedStreets: [],
       streetsPage: 1,
       streetsPageSize: 4,
@@ -31,7 +32,7 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.switchToMap = function() {
-      mapService.showStreets($scope.searchAddress.streets, $scope.searchAddress.location);
+      mapService.showStreetsNear($scope.searchAddress.location);
       $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
     }
 
@@ -57,6 +58,11 @@ angular.module('notinphillyServerApp')
           $scope.noStreetsFound = searchResults.length === 0;
 
           setPagedStreets($scope.searchAddress.streets, $scope.searchAddress.streetsPage, $scope.searchAddress.streetsPageSize);
+
+          mapService.findStreetsNearGeoJSON($scope.searchAddress.location).then(function(searchResults)
+          {
+            $scope.searchAddress.streetsGeoJSON = searchResults;
+          });
           $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
         });
       }
