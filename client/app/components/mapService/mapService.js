@@ -481,7 +481,7 @@
               container.innerHTML = '<div class="hidden-xs"><b>Neighborhood:</b>'
                                     + '<div><img class="map-legend-icon" src="/public/img/participating-neighborhood.png"/> Has participants</div>' 
                                     + '<div><img class="map-legend-icon" src="/public/img/future-neighborhood.png"/> No participants</div>' 
-                                    + '<div><img class="map-legend-icon" src="/public/img/checked.png"/> Received cleanup tools</div>' 
+                                    + '<div><img class="map-legend-icon" src="/public/img/checked.png"/> Receiving cleanup tools</div>' 
                                     + '</div>' ;
               return container;
             }
