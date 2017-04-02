@@ -223,6 +223,7 @@ exports.createSocial = function(user) {
 
                 var User = mongoose.model('User');
                 var newUser = new User(user);
+                newUser.active = true;
 
                 newUser.validate(function(validationError) {
                     if (validationError) {
@@ -235,6 +236,7 @@ exports.createSocial = function(user) {
                                 reject(err);
                             } 
                             else {
+                                emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
                                 emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
                                 
                                 fulfill(savedUser);
