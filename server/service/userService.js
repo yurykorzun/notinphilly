@@ -110,7 +110,8 @@ exports.getAllPagedSorted = function(sortColumn, sortDirection, skip, limit) {
 
             var query = query.skip(skip).limit(limit)
                 .populate('state')
-                .populate('adoptedStreets')            
+                .populate('adoptedStreets')   
+                .populate('neighborhood')           
                 .select('-salt -hashedPassword -_v -authToken -__v');
 
             if (sortColumn && sortDirection) {

@@ -36,6 +36,10 @@ var userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Street'
     }],
+    neighborhood: {
+        type: Schema.Types.ObjectId,
+        ref: 'Neighborhood'
+    },
     hashedPassword: { type: String, default: '' },
     activationHash: String,
     salt: { type: String, default: '' },

@@ -26,6 +26,7 @@ angular.module('notinphillyServerApp')
        { name: 'firstName', displayName: 'First Name', enableSorting: true, width:130  },
        { name: 'lastName', displayName: 'Last Name', enableSorting: true,  width:130  },
        { name: 'address',  displayName: 'Address', enableSorting: true },
+       { name: 'neighborhood.name',  displayName: 'Neighborhood',  width:80 },
        { name: 'zip', displayName: 'ZipCode',  enableSorting: true, width:80 },
        { name: 'email', displayName: 'Email', enableSorting: true, width:250 },
        { name: 'businessName', displayName: 'Organization', enableSorting: false, width:120 },
