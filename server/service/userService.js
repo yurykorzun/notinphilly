@@ -1,13 +1,14 @@
-var mongoose        = require('mongoose');
-var promise         = require('promise');
-var lodash          = require('lodash');
-var uuid            = require('uuid');
-var passwordGenerator = require('generate-password');
-var emailService    = require('./emailService');
-var streetService   = require('./streetService');
-var UserModel       = require('../api/user/user.model');
-var StateModel      = require('../api/state/state.model');
-var logger          = require('../components/logger');
+var mongoose            = require('mongoose');
+var promise             = require('promise');
+var lodash              = require('lodash');
+var uuid                = require('uuid');
+var passwordGenerator   = require('generate-password');
+var emailService        = require('./emailService');
+var streetService       = require('./streetService');
+var neighborhoodService = require('./neighborhoodService');
+var UserModel           = require('../api/user/user.model');
+var StateModel          = require('../api/state/state.model');
+var logger              = require('../components/logger');
 
 exports.getUserById = function(userId, populate) {
     return new Promise(function(fulfill, reject) {
@@ -154,57 +155,60 @@ exports.create = function(user, isActiveUser, isEmailRequired) {
                 if (user.password !== user.passwordConfirm) reject("Your passwords do not match");
                 else {
                     findStateForString(user.stateName).then(function(foundState) {
-                            var User = mongoose.model('User');
-                            var newUser = new User({
-                                firstName: user.firstName,
-                                middleName: user.middleName,
-                                lastName: user.lastName,
-                                birthDate: user.birthDate,
-                                phoneNumber: user.phoneNumber,
-                                email: user.email,
-                                businessName: user.businessName,
-                                fullAddress: user.fullAddress,
-                                addressLocation: user.addressLocation,
-                                apartmentNumber: user.apartmentNumber,
-                                active: isActiveUser,
-                                roles: [4],
-                                city: user.city,
-                                state: foundState._id,
-                                zip: user.zip,
-                                streetNumber: user.streetNumber,
-                                streetName: user.streetName,
-                                password: user.password,
-                                isDistributer: user.distributer,
-                                adoptedStreets: []
-                            });
+                      if (user.addressLocation)
+                      {
+                            neighborhoodService.getByLocation(user.addressLocation.lat, user.addressLocation.lng).then(
+                            function(neighborhood)
+                            {
+                                var newUser = createNewUser(user, isActiveUser, foundState._id, neighborhood._id);
+                                
+                                validateUserAndSave(newUser).then(function(savedUser){
+                                    if (isEmailRequired) {
+                                        emailService.sendUserConfirmationEmail(savedUser.email, savedUser.firstName, savedUser.lastName, savedUser.activationHash);
+                                    }
 
-                            newUser.validate(function(validationError) {
-                                if (validationError) {
-                                    var messages = parseErrorMessage(validationError);
-                                    reject(messages);
-                                } else {
-                                    newUser.save(function(err, savedUser) {
-                                        if (err) {
-                                            logger.error("userService.create " + err);
-                                            reject(err);
-                                        } 
-                                        else {
-                                            if (isEmailRequired) {
-                                                emailService.sendUserConfirmationEmail(savedUser.email, savedUser.firstName, savedUser.lastName, savedUser.activationHash);
-                                            }
+                                    emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
+                                    emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
 
-                                            emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
-                                            emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
-                                            fulfill(savedUser);
-                                        }
-                                    });
+                                    fulfill(savedUser);
+                                },
+                                function(error){
+                                    logger.error("userService.create " + error);
+                                    reject(error);
+                                });
+                            },
+                            function(error)
+                            {
+                                logger.error("userService.create " + error);        
+                                res.status(500).send(error);
+                            }); 
+                      }
+                      else
+                      {
+                            var newUser = createNewUser(user, isActiveUser, foundState._id);
+                            
+                            validateUserAndSave(newUser).then(function(savedUser){
+                                if (isEmailRequired) {
+                                    emailService.sendUserConfirmationEmail(savedUser.email, savedUser.firstName, savedUser.lastName, savedUser.activationHash);
                                 }
+
+                                emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
+                                emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
+
+                                fulfill(savedUser);
+                            },
+                            function(error){
+                                logger.error("userService.create " + error);
+                                reject(error);
                             });
-                        },
-                        function(error) {
-                            logger.error("userService.create " + error);
-                            reject(error);
-                        });
+                           
+                      }
+                           
+                    },
+                    function(error) {
+                        logger.error("userService.create " + error);
+                        reject(error);
+                    });
                 }
             }
         })
@@ -225,25 +229,18 @@ exports.createSocial = function(user) {
                 var User = mongoose.model('User');
                 var newUser = new User(user);
                 newUser.active = true;
+                newUser.roles = [4];
+                newUser.adoptedStreets = [];
 
-                newUser.validate(function(validationError) {
-                    if (validationError) {
-                        var messages = parseErrorMessage(validationError);
-                        reject(messages);
-                    } else {
-                        newUser.save(function(err, savedUser) {
-                            if (err) {
-                                logger.error("userService.createSocial " + err);
-                                reject(err);
-                            } 
-                            else {
-                                emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
-                                emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
+                validateUserAndSave(newUser).then(function(savedUser){
+                    emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
+                    emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
                                 
-                                fulfill(savedUser);
-                            } 
-                        });
-                    }
+                    fulfill(savedUser);
+                },
+                function(error){
+                    logger.error("userService.create " + error);
+                    reject(error);
                 });
             }
         });
@@ -264,20 +261,32 @@ exports.update = function(user) {
             else {
                 existingUser.merge(updatedUser);
                
-                existingUser.validate(function(validationError) {
-                    if (validationError) {
-                        var messages = parseErrorMessage(validationError);
-                        reject(messages);
-                    } else {
-                       existingUser.save(function(err, savedUser) {
-                            if (err)  {
-                                logger.error("userService.update " + err);
-                                reject(err);
-                            } 
-                            else fulfill(savedUser);
+                if(existingUser.addressLocation)
+                {
+                     neighborhoodService.getByLocation(existingUser.addressLocation.lat, existingUser.addressLocation.lng).then(
+                        function(neighborhood)
+                        {
+                            existingUser.neighborhood = neighborhood ? neighborhood._id : undefined;
+                            
+                             validateUserAndSave(existingUser).then(function(savedUser){      
+                                                        fulfill(savedUser);
+                                                    },
+                                                    function(error){
+                                                        logger.error("userService.update " + error);
+                                                        reject(error);
+                                                    });
                         });
-                    }
-                });
+                }
+                else
+                {
+                     validateUserAndSave(existingUser).then(function(result){      
+                                                        fulfill(savedUser);
+                                                    },
+                                                    function(error){
+                                                        logger.error("userService.update " + error);
+                                                        reject(error);
+                                                    });
+                }
             }
         });
     });
@@ -399,6 +408,58 @@ exports.activate = function(activationId) {
             }
         });
     });
+}
+
+var createNewUser = function(userData, isActiveUser, stateId, neighborhoodId)
+{
+      var User = mongoose.model('User');
+      var newUser = new User({
+                                firstName: userData.firstName,
+                                middleName: userData.middleName,
+                                lastName: userData.lastName,
+                                birthDate: userData.birthDate,
+                                phoneNumber: userData.phoneNumber,
+                                email: userData.email,
+                                businessName: userData.businessName,
+                                fullAddress: userData.fullAddress,
+                                addressLocation: userData.addressLocation,
+                                apartmentNumber: userData.apartmentNumber,
+                                active: isActiveUser,
+                                roles: [4],
+                                city: userData.city,
+                                state: stateId,
+                                zip: userData.zip,
+                                streetNumber: userData.streetNumber,
+                                streetName: userData.streetName,
+                                password: userData.password,
+                                isDistributer: userData.distributer,
+                                adoptedStreets: [],
+                                neighborhood: neighborhoodId
+                            });
+    
+    return newUser;
+}
+
+var validateUserAndSave = function(user)
+{
+    return new Promise(function(fulfill, reject) {
+          user.validate(function(validationError) {
+                if (validationError) {
+                    var messages = parseErrorMessage(validationError);
+                    reject(messages);
+                } else {
+                    user.save(function(err, savedUser) {
+                        if (err) {
+                            logger.error("userService.validateUserAndSave " + err);
+                            reject(err);
+                        } 
+                        else {
+                            fulfill(savedUser);
+                        }
+                    });
+                }
+            });
+        });
 }
 
 var parseErrorMessage = function(validationError) {
