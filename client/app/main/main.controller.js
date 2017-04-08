@@ -14,7 +14,9 @@
                     MAP_TAB: 1,
                     PROFILE_TAB: 2,
                     LOGIN_TAB: 3,
-                    ABOUT_TAB: 4
+                    SOCIAL_TAB: 4,  
+                    MEDIA_TAB: 5,
+                    ABOUT_TAB: 6
                 }
 
                 function ShowUserProfile(isActive) {
@@ -77,7 +79,13 @@
                         case 3: // Login
                             $scope.main.activeTabIndex = $scope.tabs.LOGIN_TAB;
                             break;
-                        case 4: // About
+                        case 4: // Social
+                            $scope.main.activeTabIndex = $scope.tabs.SOCIAL_TAB;
+                            break;    
+                        case 5: // Media
+                            $scope.main.activeTabIndex = $scope.tabs.MEDIA_TAB;
+                            break;
+                        case 6: // About
                             $scope.main.activeTabIndex = $scope.tabs.ABOUT_TAB;
                             break;
                         default:

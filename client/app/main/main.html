@@ -64,6 +64,12 @@
             <li ng-class="[ { 'active' : main.isTabOpen(tabs.LOGIN_TAB) } ]" ng-show="main.isLoginEnabled">
               <a href="" ng-click="main.openTab(tabs.LOGIN_TAB)" class="nav-link">Sign Up / Log In</a>
             </li>
+             <li ng-class="[ { 'active' : main.isTabOpen(tabs.SOCIAL_TAB) } ]">
+              <a href="" ng-click="main.openTab(tabs.SOCIAL_TAB)" class="nav-link">Social media</a>
+            </li>
+            <li ng-class="[ { 'active' : main.isTabOpen(tabs.MEDIA_TAB) } ]">
+              <a href="" ng-click="main.openTab(tabs.MEDIA_TAB)" class="nav-link">In the news</a>
+            </li>
             <li ng-class="[ { 'active' : main.isTabOpen(tabs.ABOUT_TAB) } ]">
               <a href="" ng-click="main.openTab(tabs.ABOUT_TAB)" class="nav-link">About us</a>
             </li>
@@ -105,11 +111,29 @@
                 </div>
               </div>
             </div>
+            <div class="social-block" ng-show="main.isTabOpen(tabs.SOCIAL_TAB)">
+              <div class="container">
+                <div class="row tab-contents tab-inner">
+                  <div class="col-md-10">
+                    <div ng-include src="'app/social/social-template.html'"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="media-block" ng-show="main.isTabOpen(tabs.MEDIA_TAB)">
+              <div class="container">
+                <div class="row tab-contents tab-inner">
+                  <div class="col-md-10">
+                    <div ng-include src="'app/info/media-template.html'"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
             <div class="about-block" ng-show="main.isTabOpen(tabs.ABOUT_TAB)">
               <div class="container">
                 <div class="row tab-contents tab-inner">
                   <div class="col-md-10">
-                    <div ng-include src="'app/faq/faq-template.html'"></div>
+                    <div ng-include src="'app/info/faq-template.html'"></div>
                   </div>
                 </div>
               </div>

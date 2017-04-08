@@ -701,6 +701,20 @@ hr {
     font-size: 14pt;
 }
 
+.links-header
+{
+    color: #333;
+    background-color: #fff;
+    border-color: #ddd;
+    padding: 10px 15px;
+    font-size: 1.3em;
+}
+
+.link-description
+{
+    padding: 10px 15px;
+}
+
 .faq {
     width: 90%;
     margin-left: auto;
