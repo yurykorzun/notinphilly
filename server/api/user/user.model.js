@@ -44,6 +44,7 @@ var userSchema = new Schema({
     activationHash: String,
     salt: { type: String, default: '' },
     active: { type: Boolean, default: false },
+    hasAgreedToTerms: { type: Boolean, default: false },    
     authToken: { type: String, default: '' },
     facebook: {},
     twitter: {},

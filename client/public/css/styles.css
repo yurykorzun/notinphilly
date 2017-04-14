@@ -633,6 +633,16 @@ hr {
     margin-left: 15px;
 }
 
+.agreement-terms
+{
+    width: 100%;
+    height: 170px;
+    border: 1px solid #ccc;
+    background: #f2f2f2;
+    padding: 6px;
+    overflow: auto;
+}
+
 .nav-tabs li {
     font-family: "Open Sans", Helvetica, Geneva, sans-serif;
     font-size: 1.2em;

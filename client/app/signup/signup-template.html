@@ -88,6 +88,22 @@
                 </div>
             </div>
             <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <div ng-include src="'app/signup/useragreement-template.html'"></div>
+                        <div class="row">
+                            <div class="position-center">
+                                <label for="agreementCheckbox">
+                                    <input type="checkbox" id="agreementCheckbox" ng-model="User.hasAgreedToTerms" required=""/>&nbsp;&nbsp;
+                                    <small>I agree to these electronic terms</small>
+                                    <span aria-hidden="true">*</span><span class="sr-only">required</span>
+                                </label>                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
                 <div>
                     <a href="#" class="btn btn-success btn-lg btn-block md-max-width position-center" ng-click="register()" type="submit" ng-disabled="signinForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i> Register now</a>
                 </div>

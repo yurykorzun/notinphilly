@@ -425,6 +425,7 @@ var createNewUser = function(userData, isActiveUser, stateId, neighborhoodId)
                                 addressLocation: userData.addressLocation,
                                 apartmentNumber: userData.apartmentNumber,
                                 active: isActiveUser,
+                                hasAgreedToTerms: userData.hasAgreedToTerms,
                                 roles: [4],
                                 city: userData.city,
                                 state: stateId,
