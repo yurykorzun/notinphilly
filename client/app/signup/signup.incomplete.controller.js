@@ -32,6 +32,9 @@
             $scope.User.streetNumber = address.streetNumber;
             $scope.User.addressLocation = address.location;
             $scope.User.fullAddress = address.fullAddress;
+          }
+          if ($scope.User.fullAddress && $scope.User.city && $scope.User.streetName && $scope.User.streetNumber)
+          {
             $scope.User.needsCompletion = false;
             $http.put('/api/users/', $scope.User).
                     success(function(data) {
@@ -46,14 +49,14 @@
                         $scope.isUpdateFailed = true;
                         $scope.isUpdateSuccess = false;
                     });
-            }
-            else
-            {
-              $scope.errorMessage = "Provided address is invalid, please make sure you use autocomplete";
-              $scope.isUpdateFailed = true;
-              $scope.isUpdateSuccess = false;
-            }
           }
+          else
+          {
+            $scope.errorMessage = "Provided address is invalid, please make sure you use autocomplete";
+            $scope.isUpdateFailed = true;
+            $scope.isUpdateSuccess = false;
+          }
+        }
       }
 
       $scope.close = function(){

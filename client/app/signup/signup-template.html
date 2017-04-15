@@ -1,7 +1,14 @@
 <div>
     <div class="modal-header">
         <h3 class="modal-title" ng-show="!isRegisterSuccess && !isRegisterFailed">Sign up and join others in eliminating litter!</h3>
-        <div class="alert alert-success" ng-show="isRegisterSuccess">Thank you! We sent you a welcome email, please check your inbox.</div>
+        <div ng-show="isRegisterSuccess">
+            <div class="alert alert-success">
+                Thank you! We sent you a welcome email, please check your inbox.
+            </div>
+            <h3>
+                Please don't forget to select a street in your block!
+            </h3>
+        </div>
         <div class="alert alert-danger" ng-show="isRegisterFailed">{{ errorMessage }}</div>
     </div>
     <div class="modal-body">

@@ -30,7 +30,7 @@
                                 if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
                                 SetupToolRequest();
 
-                                if ($scope.user.needsCompletion) {
+                                if ($scope.user.needsCompletion || !$scope.user.hasAgreedToTerms) {
                                     ShowIncompleteForm($scope.user);
                                 }
 
