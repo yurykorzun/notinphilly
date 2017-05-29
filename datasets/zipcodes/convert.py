@@ -2,7 +2,7 @@ import os
 import json
 
 currentDirPath = os.path.dirname(__file__)
-jsonFile = open(os.path.join(currentDirPath, 'HollyHill.geojson'))
+jsonFile = open(os.path.join(currentDirPath, 'source\UpperDarby.geojson'))
 jsonString = jsonFile.read()
 jsonParsed = json.loads(jsonString)
 
@@ -22,7 +22,7 @@ for feature in jsonParsed["features"]:
     mappedRecords.append(record)
 
 print "Exporting.."
-with open(os.path.join(currentDirPath, 'HollyHill_output.geojson'), 'w') as outfile:
+with open(os.path.join(currentDirPath, 'converted\UpperDarby.geojson'), 'w') as outfile:
     json.dump(mappedRecords, outfile)
 
 print "Done"

@@ -5,7 +5,7 @@ from bson.objectid import ObjectId
 
 client = MongoClient('mongodb://localhost:27017/')
 
-db = client.notinbaltimore
+db = client.notinpittsburgh
 collection = db.streets
 collection.drop()
 
@@ -13,7 +13,7 @@ neighborhoods = db.neighborhoods
 zipcodes = db.zipcodes
 
 currentDirPath = os.path.dirname(__file__)
-jsonFile = open(os.path.join(currentDirPath, 'baltimore.json'))
+jsonFile = open(os.path.join(currentDirPath, 'Pittsburgh.geojson'))
 jsonString = jsonFile.read()
 jsonParsed = json.loads(jsonString)
 
@@ -37,36 +37,39 @@ for new_record in newRecords:
     index += 1
     print str(index) + " of " + str(totalCount)
 
-    coordinates = new_record["geometry"]["coordinates"]
+    if index > 6659:
+        coordinates = new_record["geometry"]["coordinates"]
 
-    query = { 'geometry':
-            { '$geoIntersects': { 
-                '$geometry': {
-                    'type': "LineString",
-                    'coordinates':coordinates
-                }
-            }}
-        }
+        query = { 'geometry':
+                { '$geoIntersects': { 
+                    '$geometry': {
+                        'type': "LineString",
+                        'coordinates':coordinates
+                    }
+                }}
+            }
 
-    neighborhoodResult = neighborhoods.find(query)
-    zipcodeResult = zipcodes.find(query)
+        neighborhoodResult = neighborhoods.find(query)
+        zipcodeResult = zipcodes.find(query)
+        neighborhoodIds = []
+        zipcodeIds = []
 
-    neighborhoodIds = []
-    for neighborhood in neighborhoodResult:
-        neighborhoodIds.append(neighborhood["_id"])
-    
-    zipcodeIds = []
-    for zipcode in zipcodeResult:
-        zipcodeIds.append(zipcode["_id"])
+        if neighborhoodResult and neighborhoodResult.retrieved != 0:
+            for neighborhood in neighborhoodResult:
+                neighborhoodIds.append(neighborhood["_id"])
 
-    UpdateResult = collection.update_one({"_id": new_record["_id"]}, 
-                                        {
-                                          '$set' : {
-                                              "zipCodes":  zipcodeIds, "neighborhoods": neighborhoodIds
-                                            }
-                                        })
-    
-    print "{0} {1} {2} {3}".format(new_record["_id"], new_record["name"],  zipcodeIds, neighborhoodIds)
+        if zipcodeResult and zipcodeResult.retrieved != 0:
+            for zipcode in zipcodeResult:
+                zipcodeIds.append(zipcode["_id"])
+
+        UpdateResult = collection.update_one({"_id": new_record["_id"]}, 
+                                            {
+                                            '$set' : {
+                                                "zipCodes":  zipcodeIds, "neighborhoods": neighborhoodIds
+                                                }
+                                            })
+        
+        print "{0} {1} {2} {3}".format(new_record["_id"], new_record["name"],  zipcodeIds, neighborhoodIds)
 
 print "Done.."
 

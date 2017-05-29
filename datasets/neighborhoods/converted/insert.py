@@ -5,14 +5,14 @@ from bson.objectid import ObjectId
 
 client = MongoClient('mongodb://localhost:27017/')
 
-db = client.notinphilly
+db = client.notinpittsburgh
 collection = db.neighborhoods
 collection.drop()
 
 city = db.city.find_one({})
 
 currentDirPath = os.path.dirname(__file__)
-jsonFile = open(os.path.join(currentDirPath, 'philadelphia.json'))
+jsonFile = open(os.path.join(currentDirPath, 'Pittsburgh.geojson'))
 jsonString = jsonFile.read()
 jsonParsed = json.loads(jsonString)
 
