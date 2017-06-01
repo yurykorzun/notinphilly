@@ -1,3 +1,0 @@
-db.getCollection("neighborhoods").createIndex( { "geometry" : "2dsphere" })
-db.getCollection("streets").createIndex( { "geometry" : "2dsphere" })
-db.getCollection("zipcodes").createIndex( { "geometry" : "2dsphere" })
