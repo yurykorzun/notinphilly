@@ -101,6 +101,10 @@
                     $anchorScroll('bodyContent');
                 }
 
+                $scope.downloadFile = function(filePath) {
+                    $window.location.href = filePath;
+                }
+
                 // Toggle class for sticky nav on scroll
                 angular.element($window).bind("scroll", function() {
                     var mainNav = angular.element(document.querySelector('#mainNav'));

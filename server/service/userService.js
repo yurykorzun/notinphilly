@@ -419,7 +419,7 @@ var createNewUser = function(userData, isActiveUser, stateId, neighborhoodId)
                                 lastName: userData.lastName,
                                 birthDate: userData.birthDate,
                                 phoneNumber: userData.phoneNumber,
-                                email: userData.email,
+                                email: userData.email.toLowerCase(),
                                 businessName: userData.businessName,
                                 fullAddress: userData.fullAddress,
                                 addressLocation: userData.addressLocation,
