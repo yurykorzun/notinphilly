@@ -154,38 +154,7 @@ exports.create = function(user, isActiveUser, isEmailRequired) {
                 if (!user.password) reject("Please enter password and confirm your password");
                 if (user.password !== user.passwordConfirm) reject("Your passwords do not match");
                 else {
-                    findStateForString(user.stateName).then(function(foundState) {
-                      if (user.addressLocation)
-                      {
-                            neighborhoodService.getByLocation(user.addressLocation.lat, user.addressLocation.lng).then(
-                            function(neighborhood)
-                            {
-                                var newUser = createNewUser(user, isActiveUser, foundState._id, neighborhood._id);
-                                
-                                validateUserAndSave(newUser).then(function(savedUser){
-                                    if (isEmailRequired) {
-                                        emailService.sendUserConfirmationEmail(savedUser.email, savedUser.firstName, savedUser.lastName, savedUser.activationHash);
-                                    }
-
-                                    emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
-                                    emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
-
-                                    fulfill(savedUser);
-                                },
-                                function(error){
-                                    logger.error("userService.create " + error);
-                                    reject(error);
-                                });
-                            },
-                            function(error)
-                            {
-                                logger.error("userService.create " + error);        
-                                res.status(500).send(error);
-                            }); 
-                      }
-                      else
-                      {
-                            var newUser = createNewUser(user, isActiveUser, foundState._id);
+                    var newUser = createNewUser(user, isActiveUser);
                             
                             validateUserAndSave(newUser).then(function(savedUser){
                                 if (isEmailRequired) {
@@ -201,14 +170,6 @@ exports.create = function(user, isActiveUser, isEmailRequired) {
                                 logger.error("userService.create " + error);
                                 reject(error);
                             });
-                           
-                      }
-                           
-                    },
-                    function(error) {
-                        logger.error("userService.create " + error);
-                        reject(error);
-                    });
                 }
             }
         })

@@ -23,7 +23,64 @@
                 </div>
             </div>
         </div>
-        <div ng-include src="'app/signup/signup-1-template.html'"></div>
+        <form name="signinForm" ng-show="!isRegisterSuccess" novalidate>
+    <div class="row">
+        <div>
+            <a ng-href="/api/facebook/" class="btn btn-lg btn-block md-max-width btn-facebook position-center" target="_self">
+                <span>Facebook login</span>
+            </a>
+        </div>
+    </div>
+    <div class="login-or">
+        <hr class="hr-or">
+    </div>
+    <div class="row">
+        <div ng-class="['col-xs-12', 'form-group', { 'has-error': signinForm.email.$invalid && !signinForm.email.$pristine }]">
+            <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+            <input name="email" ng-model="User.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+            <p ng-show="signinForm.email.$invalid && !signinForm.email.$pristine" class="help-block">Email is required.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.password.$invalid && !signinForm.password.$pristine }]">
+            <label for="password" class="control-label">Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+            <input type="password" name="password" ng-model="User.password" class="form-control input-sm" placeholder="Password" required>
+            <p ng-show="signinForm.password.$invalid && !signinForm.password.$pristine" class="help-block">Password is required.</p>
+        </div>
+        <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.passwordConfirm.$invalid && !signinForm.passwordConfirm.$pristine }]">
+            <label for="passwordConfirm" class="control-label">Confirm Password<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+            <input type="password" name="passwordConfirm" ng-model="User.passwordConfirm" class="form-control input-sm" placeholder="Confirm password" required equal="{{User.password}}">
+            <p ng-show="signinForm.passwordConfirm.$error.required && !signinForm.passwordConfirm.$pristine" class="help-block">Password confirmation is required.</p>
+            <p ng-show="signinForm.passwordConfirm.$error.equal && !signinForm.passwordConfirm.$pristine" class="help-block">Password must match.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="form-group">
+                <div ng-include src="'app/signup/useragreement-template.html'"></div>
+                <div class="row">
+                    <div class="position-center">
+                        <label for="agreementCheckbox">
+                            <input type="checkbox" id="agreementCheckbox" ng-model="User.hasAgreedToTerms" required=""/>&nbsp;&nbsp;
+                            <small>I agree to these electronic terms</small>
+                            <span aria-hidden="true">*</span><span class="sr-only">required</span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div>
+            <a href="#" class="btn btn-success btn-lg btn-block md-max-width position-center" ng-click="register()" type="submit" ng-disabled="signinForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i> Register now</a>
+        </div>
+    </div>
+    <div class="row row-buffer--top">
+        <div>
+            <a href="#" class="btn btn-danger btn-lg btn-block md-max-width position-center" ng-click="close()" type="button"><i class="fa fa-ban" aria-hidden="true"></i> Maybe next time</a>
+        </div>
+    </div>
+</form>
         <!--<div ng-include src="'app/signup/signup-2-template.html'"></div>-->
         <!--<form name="signinForm" ng-show="!isRegisterSuccess" novalidate>
             <div class="row">

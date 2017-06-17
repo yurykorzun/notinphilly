@@ -21,6 +21,20 @@
       $scope.register = function(){
         if(!$scope.signinForm.$invalid)
         {
+        
+        $http.post('/api/users/', $scope.User).
+            success(function(data) {
+                $scope.isRegisterFailed = false;
+                $scope.isRegisterSuccess = true;
+                
+                $location.path('/');
+            }).error(function(err) {
+                $scope.errorMessage = err ? err : "Something went wrong, please try again later. ";
+                $scope.isRegisterFailed = true;
+                $scope.isRegisterSuccess = false;
+            });
+
+          /*
           if ($scope.addressDetails)
           {
             var address = $scope.addressDetails;
@@ -51,6 +65,7 @@
               $scope.isRegisterFailed = true;
               $scope.isRegisterSuccess = false;
             }
+            */
         }
       }
 
