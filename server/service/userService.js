@@ -160,7 +160,7 @@ exports.create = function(user, isActiveUser, isEmailRequired) {
                             neighborhoodService.getByLocation(user.addressLocation.lat, user.addressLocation.lng).then(
                             function(neighborhood)
                             {
-                                var newUser = createNewUser(user, isActiveUser, foundState._id, neighborhood._id);
+                                var newUser = createNewUser(user, isActiveUser, foundState._id, neighborhood ? neighborhood._id : undefined);
                                 
                                 validateUserAndSave(newUser).then(function(savedUser){
                                     if (isEmailRequired) {
