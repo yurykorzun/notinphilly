@@ -1,6 +1,14 @@
 (function() {
-    angular.module('notinphillyServerApp')
-        .controller('mainController', ['$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', '$window', '$location', '$anchorScroll',
+    var app = angular.module('notinphillyServerApp');
+    
+        app.directive('footer', [function() {
+            return {
+                restrict: 'E',
+                templateUrl: 'app/main/footer.html'
+            }
+        }]);
+
+        app.controller('mainController', ['$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', '$window', '$location', '$anchorScroll',
             function($scope, $http, $rootScope, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS, $window, $location, $anchorScroll) {
                 $scope.main = {
                     isUserProfileEnabled: false,
@@ -133,4 +141,6 @@
                         });
             }
         ]);
+
+        
 })();
