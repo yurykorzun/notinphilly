@@ -5,7 +5,6 @@
     '$location',
     '$http',
     '$cookies',
-    '$uibModalInstance',
     'placeSearchService',
     'sessionService',
     'APP_EVENTS',
@@ -16,7 +15,6 @@
       $location,
       $http,
       $cookies,
-      $uibModalInstance,
       placeSearchService,
       sessionService,
       APP_EVENTS,
@@ -97,10 +95,6 @@
               'Provided address is invalid, please make sure you use autocomplete';
           }
         }
-      };
-
-      $scope.close = function() {
-        $uibModalInstance.dismiss('cancel');
       };
     }
   ]);
