@@ -46,8 +46,7 @@
           controller: 'CleanupController'
         })
         .when('/signup', {
-          templateUrl: 'app/signup/signup.html',
-          controller: 'SignupController'
+          templateUrl: 'app/signup/signup.html'
         })
         .when('/admin', {
           templateUrl: 'app/admin/admin-template.html',
