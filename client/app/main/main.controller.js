@@ -8,6 +8,8 @@
                     activeTabIndex: 0,
                     spinnerActive: false
                 };
+                
+                $scope.inSignup = true;
 
                 $scope.tabs = {
                     SEARCH_TAB: 0,
@@ -63,6 +65,7 @@
                 }
 
                 $scope.main.openTab = function(tabIndex, goToTab) {
+                    $scope.inSignup = false;
 
                     switch (tabIndex) {
                         case 0: // Search

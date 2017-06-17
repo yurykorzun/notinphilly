@@ -48,7 +48,7 @@
      </div>
   </div>
 
-  <div class="main-block">
+  <div class="main-block"  ng-if="!inSignup">
     <div class="container-fluid padding-y--large">
       <div class="container">
         <div class="row">
@@ -145,6 +145,16 @@
     </div>
   </div>
   <!--// main-block -->
+  
+  <div class="main-block signup" ng-if="inSignup">
+    <div class="container-fluid padding-y--large">
+      <div class="container">
+        <div class="row">
+          <h1>Get Started</h1>
+        </div>
+      </div>
+    </div>
+  </div>
 </treasure-overlay-spinner>
 <!-- PARTNERS -->
 <div class="partners container-fluid bg-gray">
