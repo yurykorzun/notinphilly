@@ -112,6 +112,7 @@ exports.update = function(req, res) {
     var userId = req.body._id.toString();
     var currentUserId = req.user._id.toString();
 
+
     if (!userId) return res.status(500).send("User id is missing. Update failed.");
     else if (userId != currentUserId && !req.user.isAdmin) return res.status(401).send("Unauthorized");
 

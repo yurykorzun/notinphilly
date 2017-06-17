@@ -15,9 +15,9 @@ var Schema = mongoose.Schema;
 
 // define our user schema
 var userSchema = new Schema({
-    firstName: { type: String, default: '', required: [true, 'First name is requred'] },
+    firstName: { type: String, default: '', required: [false, 'First name is required'] },
     middleName: { type: String, default: '' },
-    lastName: { type: String, default: '', required: [true, 'Last name is requred'] },
+    lastName: { type: String, default: '', required: [false, 'Last name is required'] },
     birthDate: { type: Date, default: '' },
     phoneNumber: { type: String, default: '' },
     signUpStep: { type: Number },
@@ -34,7 +34,7 @@ var userSchema = new Schema({
         type: Number,
         ref: 'State'
     },
-    email: { type: String, default: '', required: [true, 'Email is requred'] },
+    email: { type: String, default: '', required: [true, 'Email is required'] },
     roles: [{
         type: Number,
         ref: 'Role'
