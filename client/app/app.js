@@ -41,6 +41,13 @@
           templateUrl: 'app/main/main.html',
           controller: 'mainController'
         })
+        .when('/cleanups', {
+          templateUrl: 'app/cleanups/cleanups.html',
+          controller: 'CleanupController'
+        })
+        .when('/signup', {
+          templateUrl: 'app/signup/signup.html'
+        })
         .when('/admin', {
           templateUrl: 'app/admin/admin-template.html',
           controller: 'AdminController'

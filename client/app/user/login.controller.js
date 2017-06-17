@@ -29,18 +29,6 @@
                                   $scope.authError = true;
                                 });
         },
-        signup : function() {
-          var modalInstance = $uibModal.open({
-                                templateUrl: 'app/signup/signup-template.html',
-                                controller: 'SignupController',
-                                resolve: {
-
-                                 }
-                               });
-                               modalInstance.result.then(function (selectedItem) {
-                                 $scope.selected = selectedItem;
-                                });
-        },
         resetPassword: function()
         {
           var modalInstance = $uibModal.open({

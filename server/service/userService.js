@@ -154,38 +154,7 @@ exports.create = function(user, isActiveUser, isEmailRequired) {
                 if (!user.password) reject("Please enter password and confirm your password");
                 if (user.password !== user.passwordConfirm) reject("Your passwords do not match");
                 else {
-                    findStateForString(user.stateName).then(function(foundState) {
-                      if (user.addressLocation)
-                      {
-                            neighborhoodService.getByLocation(user.addressLocation.lat, user.addressLocation.lng).then(
-                            function(neighborhood)
-                            {
-                                var newUser = createNewUser(user, isActiveUser, foundState._id, neighborhood._id);
-                                
-                                validateUserAndSave(newUser).then(function(savedUser){
-                                    if (isEmailRequired) {
-                                        emailService.sendUserConfirmationEmail(savedUser.email, savedUser.firstName, savedUser.lastName, savedUser.activationHash);
-                                    }
-
-                                    emailService.sendUserWelcomeEmail(savedUser.email, savedUser.firstName, savedUser.lastName);                                            
-                                    emailService.sendUserNotificationEmail(savedUser.firstName, savedUser.lastName, savedUser.email, savedUser.fullAddress);
-
-                                    fulfill(savedUser);
-                                },
-                                function(error){
-                                    logger.error("userService.create " + error);
-                                    reject(error);
-                                });
-                            },
-                            function(error)
-                            {
-                                logger.error("userService.create " + error);        
-                                res.status(500).send(error);
-                            }); 
-                      }
-                      else
-                      {
-                            var newUser = createNewUser(user, isActiveUser, foundState._id);
+                    var newUser = createNewUser(user, isActiveUser);
                             
                             validateUserAndSave(newUser).then(function(savedUser){
                                 if (isEmailRequired) {
@@ -201,14 +170,6 @@ exports.create = function(user, isActiveUser, isEmailRequired) {
                                 logger.error("userService.create " + error);
                                 reject(error);
                             });
-                           
-                      }
-                           
-                    },
-                    function(error) {
-                        logger.error("userService.create " + error);
-                        reject(error);
-                    });
                 }
             }
         })
@@ -260,7 +221,7 @@ exports.update = function(user) {
             } 
             else {
                 existingUser.merge(updatedUser);
-               
+
                 if(existingUser.addressLocation)
                 {
                      neighborhoodService.getByLocation(existingUser.addressLocation.lat, existingUser.addressLocation.lng).then(
@@ -279,7 +240,7 @@ exports.update = function(user) {
                 }
                 else
                 {
-                     validateUserAndSave(existingUser).then(function(result){      
+                     validateUserAndSave(existingUser).then(function(savedUser){      
                                                         fulfill(savedUser);
                                                     },
                                                     function(error){
@@ -419,6 +380,7 @@ var createNewUser = function(userData, isActiveUser, stateId, neighborhoodId)
                                 lastName: userData.lastName,
                                 birthDate: userData.birthDate,
                                 phoneNumber: userData.phoneNumber,
+                                signUpStep: 1,
                                 email: userData.email.toLowerCase(),
                                 businessName: userData.businessName,
                                 fullAddress: userData.fullAddress,
