@@ -8,10 +8,30 @@
             }
         }]);
 
-        app.directive('appHeader', [function() {
+        app.directive('appHeader', ['$window', function($window) {
             return {
                 restrict: 'E',
+                controller: function() {
+                      // Toggle class for sticky nav on scroll
+                    angular.element($window).bind("scroll", function() {
+                        var mainNav = angular.element(document.querySelector('#mainNav'));
+                        var offset = $window.pageYOffset;
+
+                        if (offset >= 10) {
+                            mainNav.addClass('is-sticky');
+                        } else {
+                            mainNav.removeClass('is-sticky');
+                        }
+                    });
+                },
                 templateUrl: 'app/main/header.html'
+            }
+        }]);
+
+        app.directive('appPartners', [function() {
+            return {
+                restrict: 'E',
+                templateUrl: 'app/main/partners.html'
             }
         }]);
 
@@ -119,18 +139,6 @@
                 $scope.downloadFile = function(filePath) {
                     $window.location.href = filePath;
                 }
-
-                // Toggle class for sticky nav on scroll
-                angular.element($window).bind("scroll", function() {
-                    var mainNav = angular.element(document.querySelector('#mainNav'));
-                    var offset = $window.pageYOffset;
-
-                    if (offset >= 10) {
-                        mainNav.addClass('is-sticky');
-                    } else {
-                        mainNav.removeClass('is-sticky');
-                    }
-                });
 
                 sessionService.checkLoggedin()
                     .then(function() {
