@@ -1,0 +1,39 @@
+<div id="mainNav" class="sticky-header padding-y--small">
+  <div class="container">
+    <div class="row">
+      <div class="col-sm-2 header-logo">
+        <a href="/" class="main-logo">
+          <img ng-src="/public/img/logo-not-in-philly.png" alt="Logo" class="img-responsive" />
+        </a>
+      </div>
+      <div class="col-sm-10 text-center main-nav">
+        <a ng-click="main.openTab(tabs.SEARCH_TAB, true)">Find My Block</a>
+        <a ng-click="main.openTab(tabs.MAP_TAB, true)">Explore the Map</a>
+        <a ng-click="main.openTab(tabs.LOGIN_TAB, true)" disable="!main.isLoginEnabled" ng-show="main.isLoginEnabled">Sign Up / Log In</a>
+        <a ng-click="main.openTab(tabs.PROFILE_TAB, true)" disable="!main.isUserProfileEnabled" ng-show="main.isUserProfileEnabled">My Account</a>
+        <a ng-click="main.openTab(tabs.ABOUT_TAB, true)">About Us</a>
+        <a href="https://prc.networkforgood.com/projects/22356-not-in-philly">Donate</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="header container-fluid homepage-hero">
+  <div class="container padding-y--small">
+    <!-- Hero -->
+    <div class="row main-hero">
+      <div class="introduction col-md-8 col-md-offset-2 padding-y--large">
+        <div class="center-block">
+          <div class="header-title text-center">
+            <h2 class="headline-l text-white">Litter? <span class="text-yellow">Not in Philly!</span></h2>
+            <p class="text-white">Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
+          </div>
+          <div class="cta-btns text-center padding-top--small">
+            <a href="#" class="btn btn--yellow" ng-click="main.openTab(tabs.ABOUT_TAB, true)">Learn More</a>
+            <a href="#" class="btn btn--blue text-black" ng-click="main.openTab(tabs.SEARCH_TAB, true)">Find My Block</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

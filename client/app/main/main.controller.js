@@ -1,6 +1,41 @@
 (function() {
-    angular.module('notinphillyServerApp')
-        .controller('mainController', ['$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', '$window', '$location', '$anchorScroll',
+    var app = angular.module('notinphillyServerApp');
+    
+        app.directive('appFooter', [function() {
+            return {
+                restrict: 'E',
+                templateUrl: 'app/main/footer.html'
+            }
+        }]);
+
+        app.directive('appHeader', ['$window', function($window) {
+            return {
+                restrict: 'E',
+                controller: function() {
+                      // Toggle class for sticky nav on scroll
+                    angular.element($window).bind("scroll", function() {
+                        var mainNav = angular.element(document.querySelector('#mainNav'));
+                        var offset = $window.pageYOffset;
+
+                        if (offset >= 10) {
+                            mainNav.addClass('is-sticky');
+                        } else {
+                            mainNav.removeClass('is-sticky');
+                        }
+                    });
+                },
+                templateUrl: 'app/main/header.html'
+            }
+        }]);
+
+        app.directive('appPartners', [function() {
+            return {
+                restrict: 'E',
+                templateUrl: 'app/main/partners.html'
+            }
+        }]);
+
+        app.controller('mainController', ['$scope', '$http', '$rootScope', '$cookies', 'mapService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', '$window', '$location', '$anchorScroll',
             function($scope, $http, $rootScope, $cookies, mapService, sessionService, APP_EVENTS, APP_CONSTS, $window, $location, $anchorScroll) {
                 $scope.main = {
                     isUserProfileEnabled: false,
@@ -8,6 +43,8 @@
                     activeTabIndex: 0,
                     spinnerActive: false
                 };
+                
+                $scope.inSignup = true;
 
                 $scope.tabs = {
                     SEARCH_TAB: 0,
@@ -63,6 +100,7 @@
                 }
 
                 $scope.main.openTab = function(tabIndex, goToTab) {
+                    $scope.inSignup = false;
 
                     switch (tabIndex) {
                         case 0: // Search
@@ -105,18 +143,6 @@
                     $window.location.href = filePath;
                 }
 
-                // Toggle class for sticky nav on scroll
-                angular.element($window).bind("scroll", function() {
-                    var mainNav = angular.element(document.querySelector('#mainNav'));
-                    var offset = $window.pageYOffset;
-
-                    if (offset >= 10) {
-                        mainNav.addClass('is-sticky');
-                    } else {
-                        mainNav.removeClass('is-sticky');
-                    }
-                });
-
                 sessionService.checkLoggedin()
                     .then(function() {
                             ShowUserProfile();
@@ -130,4 +156,6 @@
                         });
             }
         ]);
+
+        
 })();

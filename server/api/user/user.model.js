@@ -5,6 +5,14 @@ var uuid = require('uuid');
 var StateModel = require('../state/state.model');
 var Schema = mongoose.Schema;
 
+/*
+ * Account Sign Up Steps
+ * 1 - Registered
+ * 2 - Profile information populated
+ * 3 - Block chosen
+ * 4 - Fully on-boarded
+ */
+
 // define our user schema
 var userSchema = new Schema({
     firstName: { type: String, default: '', required: [true, 'First name is requred'] },
@@ -12,6 +20,7 @@ var userSchema = new Schema({
     lastName: { type: String, default: '', required: [true, 'Last name is requred'] },
     birthDate: { type: Date, default: '' },
     phoneNumber: { type: String, default: '' },
+    signUpStep: { type: Number },
     businessName: { type: String, default: '' },
     fullAddress: { type: String, default: '' },
     addressLocation: {},
