@@ -23,7 +23,9 @@
                 </div>
             </div>
         </div>
-        <form name="signinForm" ng-show="!isRegisterSuccess" novalidate>
+        <div ng-include src="'app/signup/signup-1-template.html'"></div>
+        <!--<div ng-include src="'app/signup/signup-2-template.html'"></div>-->
+        <!--<form name="signinForm" ng-show="!isRegisterSuccess" novalidate>
             <div class="row">
                 <div>
                     <a ng-href="/api/facebook/" class="btn btn-lg btn-block md-max-width btn-facebook position-center" target="_self">
@@ -104,7 +106,7 @@
                                     <input type="checkbox" id="agreementCheckbox" ng-model="User.hasAgreedToTerms" required=""/>&nbsp;&nbsp;
                                     <small>I agree to these electronic terms</small>
                                     <span aria-hidden="true">*</span><span class="sr-only">required</span>
-                                </label>                        
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -120,7 +122,7 @@
                     <a href="#" class="btn btn-danger btn-lg btn-block md-max-width position-center" ng-click="close()" type="button"><i class="fa fa-ban" aria-hidden="true"></i> Maybe next time</a>
                 </div>
             </div>
-        </form>
+        </form>-->
     </div>
     <div class="modal-footer">
         <small aria-hidden="true">* Required fields</small>
