@@ -44,6 +44,7 @@
 
       $scope.register = function() {
         if (!$scope.signinForm.$invalid) {
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
           $http
             .post('/api/users/', $scope.User)
             .success(function(data) {
@@ -63,12 +64,16 @@
                 $scope.User.email,
                 $scope.User.password
               );
+            })
+            .then(function () {
+              $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+              $scope.authError = false;
             });
         }
       };
 
       $scope.updateAccount = function() {
-        if (!$scope.signinForm.$invalid) {
+        if (!$scope.accountForm.$invalid) {
           if ($scope.addressDetails) {
             var address = $scope.addressDetails;
 
@@ -84,8 +89,12 @@
             $http
               .put('/api/users/', $scope.User)
               .success(function(data) {
+                // Update user status
                 $scope.User.status += 1;
-                $location.path('/');
+                // Close modal
+                $scope.close();
+                // Broadcast login success
+                $rootScope.$broadcast(APP_EVENTS.LOGIN_SUCCESS);
               })
               .error(function(err) {
                 $scope.errorMessage = err
