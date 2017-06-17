@@ -71,7 +71,7 @@
             </div>
         </form>
 
-        <form name="accountForm" ng-show="User.status === 2" novalidate ng-submit="register()">
+        <form name="accountForm" ng-show="User.status === 2" novalidate ng-submit="updateAccount()">
             <div class="row">
                 <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.firstName.$invalid && !signinForm.firstName.$pristine }]">
                     <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
@@ -114,7 +114,7 @@
             </div>
             <div class="row">
                 <div>
-                    <a href="#" class="btn btn-success btn-lg btn-block md-max-width position-center" type="submit" ng-disabled="signinForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i> Update Account</a>
+                    <button class="btn btn-success btn-lg btn-block md-max-width position-center" type="submit" ng-disabled="signinForm.$invalid"><i class="fa fa-check" aria-hidden="true"></i> Update Account</button>
                 </div>
             </div>
             <div class="row row-buffer--top">

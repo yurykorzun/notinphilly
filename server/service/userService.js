@@ -221,7 +221,7 @@ exports.update = function(user) {
             } 
             else {
                 existingUser.merge(updatedUser);
-               
+
                 if(existingUser.addressLocation)
                 {
                      neighborhoodService.getByLocation(existingUser.addressLocation.lat, existingUser.addressLocation.lng).then(
@@ -240,7 +240,7 @@ exports.update = function(user) {
                 }
                 else
                 {
-                     validateUserAndSave(existingUser).then(function(result){      
+                     validateUserAndSave(existingUser).then(function(savedUser){      
                                                         fulfill(savedUser);
                                                     },
                                                     function(error){
