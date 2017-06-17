@@ -1,10 +1,17 @@
 (function() {
     var app = angular.module('notinphillyServerApp');
     
-        app.directive('footer', [function() {
+        app.directive('appFooter', [function() {
             return {
                 restrict: 'E',
                 templateUrl: 'app/main/footer.html'
+            }
+        }]);
+
+        app.directive('appHeader', [function() {
+            return {
+                restrict: 'E',
+                templateUrl: 'app/main/header.html'
             }
         }]);
 
