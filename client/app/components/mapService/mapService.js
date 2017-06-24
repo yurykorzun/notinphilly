@@ -5,7 +5,7 @@
       var _deferredMap = $q.defer();
 
       var _mapLayerGroup = L.layerGroup();
-      var _mapStreetLayer = undefined;
+      var _mapStreetLayer = undefined; 
 
       var _mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
@@ -84,6 +84,28 @@
            });
         });
       };
+
+      self.setFacebookEvents = function() {
+          _deferredMap.promise.then(function(map) {
+            $http.get("api/events/facebook").success(function(eventData, status) {
+              if (eventData && eventData.length > 0)
+              {
+                for (var eventIndex=0; eventIndex < eventData.length; eventIndex++)
+                {
+                  var event = eventData[eventIndex];
+
+                  if (!event.place || !event.place.location) continue;
+                  
+                  var eventLocation = event.place.location;
+                  var eventDate = new Date(event.start_time);
+                  
+                  var marker = L.marker([eventLocation.latitude, eventLocation.longitude]).addTo(map);
+                  marker.bindPopup("<b>"+ event.name + "</b><p>" + event.place.name + "</p><p>" + eventDate.toDateString() + "</p><p><a href='https://www.facebook.com/events/" + event.id + "' target='_blank'>View more</a></p>");
+                }
+              }
+            });
+          });
+      };      
 
       self.showStreetPopup = function(streetFeature) {
         _deferredMap.promise.then(function(map) {

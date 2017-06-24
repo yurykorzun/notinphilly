@@ -30,6 +30,7 @@ angular.module('notinphillyServerApp')
       });
 
       map.on('popupopen', function(popupEvent) {
+        if (!popupEvent.popup.options || !popupEvent.popup.options.properties) return;
 
         var setUpDefaultView = function(){
           $scope.isAuthorized = false;
@@ -187,5 +188,6 @@ angular.module('notinphillyServerApp')
    
     mapService.setMapCallbacks(mapCallbacks);
     mapService.setNeighborhoodLayers();
+    mapService.setFacebookEvents();    
   }]);
 })();
