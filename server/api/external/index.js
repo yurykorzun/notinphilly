@@ -23,7 +23,7 @@ router.get('/google-streetview-api/:lat/:lng/', function(req, res, next) {
 router.get('/mapbox-staticmap/:lat/:lng/', function(req, res, next) {
     var lat = req.params.lat;
     var lng = req.params.lng;
-    var url = "https://api.mapbox.com/styles/v1/yurykorzun/cimv1ezcc00sqb8m7z8e3yeiz/static/" + lat + "," + lng + ",15/120x95?logo=false&access_token=" + settings.MAP_BOX_API_KEY;
+    var url = "https://api.mapbox.com/styles/v1/" + settings.MAP_BOX_USER + "/" + settings.MAP_BOX_MAP_ID + "/static/" + lat + "," + lng + ",15/120x95?logo=false&access_token=" + settings.MAP_BOX_API_KEY;
 
     res.setHeader('content-type', 'text/javascript');
     request(url).pipe(res);
@@ -33,7 +33,8 @@ router.get('/mapbox-map-credentials/', function(req, res, next) {
 
     res.status(200).json({
         apiKey: settings.MAP_BOX_API_KEY,
-        mapId: settings.MAP_BOX_MAP_ID
+        mapId: settings.MAP_BOX_MAP_ID,
+        userId: settings.MAP_BOX_USER
     });
 });
 
