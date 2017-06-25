@@ -87,20 +87,20 @@
 
       self.setFacebookEvents = function() {
           _deferredMap.promise.then(function(map) {
-            $http.get("api/events/facebook").success(function(eventData, status) {
+            $http.get("api/events/google").success(function(eventData, status) {
               if (eventData && eventData.length > 0)
               {
                 for (var eventIndex=0; eventIndex < eventData.length; eventIndex++)
                 {
                   var event = eventData[eventIndex];
 
-                  if (!event.place || !event.place.location) continue;
+                  if (!event.location) continue;
                   
-                  var eventLocation = event.place.location;
-                  var eventDate = new Date(event.start_time);
+                  var eventLocation = event.location;
+                  var eventDate = new Date(event.start.dateTime);
                   
                   var marker = L.marker([eventLocation.latitude, eventLocation.longitude]).addTo(map);
-                  marker.bindPopup("<b>"+ event.name + "</b><p>" + event.place.name + "</p><p>" + eventDate.toDateString() + "</p><p><a href='https://www.facebook.com/events/" + event.id + "' target='_blank'>View more</a></p>");
+                  marker.bindPopup("<b>"+ event.summary + "</b><p>" + eventLocation.formattedAddress + "</p><p>" + eventDate.toDateString() + "</p><p><a href='" + event.htmlLink + "' target='_blank'>View more</a></p>");
                 }
               }
             });

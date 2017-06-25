@@ -4,6 +4,6 @@ var authService = require('../../auth/authService');
 
 var router = express.Router();
 
-router.get('/facebook', controller.getFacebookEvents);
+router.get('/google', controller.getGoogleEvents);
 
 module.exports = router;
