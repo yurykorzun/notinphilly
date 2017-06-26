@@ -1,11 +1,11 @@
-var databaseName = "notinphilly";
+var databaseName = "";
 
 module.exports = {
-  ADMIN_EMAIL: "korzun.yury@gmail.com",
-  WEB_SITE_URL: "http://notinphilly.org",
+  ADMIN_EMAIL: '',
+  WEB_SITE_URL: '',
   DATABASE_NAME: databaseName,
-  AUTH_COOKIE_NAME: 'notinphillytoken.sid',
-  SECRET_TOKEN: 'notinphillynotinphilly',
+  AUTH_COOKIE_NAME: '',
+  SECRET_TOKEN: '',
   HTTP_IP: "127.0.0.1",
   HTTP_PORT: 8080,
   DB_CONNECTION_STRING: "mongodb://localhost/" + databaseName
