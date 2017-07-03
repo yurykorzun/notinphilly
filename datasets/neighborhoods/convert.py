@@ -17,13 +17,13 @@ for feature in jsonParsed["features"]:
     record["percentageAdoptedStreets"] = 0
     record["totalAdoptedStreets"] = 0
     record["totalStreets"] = 0
-    record["receivesSupplies"] = True
+    record["receivesSupplies"] = False
     record["geometry"] = feature["geometry"]
 
     mappedRecords.append(record)
 
 print "Exporting.."
-with open(os.path.join(currentDirPath, 'converted\pittsburgh_output.geojson'), 'w') as outfile:
+with open(os.path.join(currentDirPath, 'converted\pittsburgh.geojson'), 'w') as outfile:
     json.dump(mappedRecords, outfile)
 
 print "Done"
