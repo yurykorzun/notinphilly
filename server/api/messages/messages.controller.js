@@ -1,6 +1,7 @@
 var mongoose        = require('mongoose');
 var messageStatus   = require('./messagestatus.model');
 var message         = require('./message.model');
+var messageService  = require('../../service/messagingService');
 var logger          = require('../../components/logger');
 
 exports.index = function(req, res, next) {

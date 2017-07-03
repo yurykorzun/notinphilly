@@ -1,5 +1,5 @@
 var express = require('express');
-var controller = require('./messaging.controller');
+var controller = require('./messages.controller');
 var authService = require('../../auth/authService');
 
 var router = express.Router();

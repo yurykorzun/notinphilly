@@ -13,8 +13,14 @@ var MessageSchema = new Schema({
         required: true,
         ref: 'User'
     },
+    subject: {
+        type: String,
+        required: true,
+        default: ''
+    },
     contents: {
         type: String,
+        required: true,
         default: ''
     },
     read: Boolean,
