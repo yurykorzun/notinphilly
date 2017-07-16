@@ -40,17 +40,17 @@ exports.getById = function(recipientUserId, messageId) {
     });
 };
 
-exports.deleteMessage = function(recipientUserId, messageId) {
+exports.deleteMessage = function(userId, messageId) {
     return new Promise(function(fulfill, reject) {
-        if (!recipientUserId) reject("recipient user id is missing");
+        if (!userId) reject("recipient user id is missing");
 
-        recipientUserId = mongoose.Types.ObjectId(recipientUserId);
+        userId = mongoose.Types.ObjectId(userId);
         messageId = mongoose.Types.ObjectId(messageId);
 
         if (!userId || !messageId) reject("User or message id is missing. Message deletion failed.");
         else
         {
-            MessageModel.remove({ "$and": [ {to: recipientUserId}, {_id: messageId} ] }, function(err, message) {
+            MessageModel.remove({ "$and": [ { "$or": [{to: userId}, {from: userId} ] }, {_id: messageId} ] }, function(err, message) {
                                 if (err) {
                                     logger.error("messageService.deleteMessage " + err);
                                     reject("Message deletion failed");
@@ -199,7 +199,7 @@ exports.requestConnectionWithUser = function(userId, userIdToConnect)
         userIdToConnect = mongoose.Types.ObjectId(userIdToConnect);
 
         getMutedUsers(userIdToConnect).then(function(mutedUsers) {
-            if (mutedUsers && mutedUsers.length > 0 && mutedUsers.indexOf(userId) > 0) 
+            if (mutedUsers && mutedUsers.length > -1 && mutedUsers.indexOf(userId) > -1) 
             {
                 logger.error("messageService.requestConnectionWithUser user is muted " + userId + " " + userIdToConnect);
                 reject("Failed to request connection");
@@ -218,7 +218,7 @@ exports.requestConnectionWithUser = function(userId, userIdToConnect)
                     }
                     else
                     {
-                        if (userToConnect.connectedUsers.indexOf(userId) > 0)
+                        if (userToConnect.connectedUsers.indexOf(userId) > -1)
                         {
                             fulfill(userToConnect);
                         }
@@ -226,7 +226,7 @@ exports.requestConnectionWithUser = function(userId, userIdToConnect)
                         {
                             if (!userToConnect.pendingConnectedUsers) userToConnect.pendingConnectedUsers = [];
 
-                            if (userToConnect.pendingConnectedUsers.indexOf(userId) == 0)
+                            if (userToConnect.pendingConnectedUsers.indexOf(userId) === -1)
                             {
                                 userToConnect.pendingConnectedUsers.push(userId);
                                 userToConnect.save(function(err, savedUser) {
@@ -277,17 +277,17 @@ exports.approveUserConnection = function(userId, pendingUserId)
             }
             else
             {
-                var user = results[0];
-                var pendingUser = results[1];
+                var user = lodash.first(lodash.first(results));
+                var pendingUser = lodash.first(results[1]);
 
                 var existingPendingUserId = lodash.find(user.pendingConnectedUsers, pendingUserId);
                 var existingConnectedUserId = lodash.find(user.connectedUsers, pendingUserId);
                 if (existingPendingUserId && !existingConnectedUserId)
                 {
-                    user.pendingConnectedUsers.reduce(existingPendingUserId);
+                    user.pendingConnectedUsers.pull(existingPendingUserId);
                     user.connectedUsers.push(existingPendingUserId);
 
-                    if (user.pendingConnectedUsers.indexOf(user._id) > 0) user.pendingConnectedUsers.reduce(user._id);
+                    if (pendingUser.pendingConnectedUsers.indexOf(user._id) > -1) pendingUser.pendingConnectedUsers.pull(user._id);
                     pendingUser.connectedUsers.push(user._id);
 
                     promise.all([user.save(), pendingUser.save()]).then(function(results) {
@@ -332,14 +332,14 @@ exports.cancelUserConnection = function(userId, cancelUserId)
             }
             else
             {
-                var user = results[0];
-                var userToCancel = results[1];
+                var user = lodash.first(lodash.first(results));
+                var userToCancel = lodash.first(results[1]);
 
-                if (user.pendingConnectedUsers.indexOf(cancelUserId) > 0) user.pendingConnectedUsers.reduce(cancelUserId);                
-                if (user.connectedUsers.indexOf(cancelUserId) > 0) user.connectedUsers.reduce(cancelUserId);
+                if (user.pendingConnectedUsers.indexOf(cancelUserId) > -1) user.pendingConnectedUsers.pull(cancelUserId);                
+                if (user.connectedUsers.indexOf(cancelUserId) > -1) user.connectedUsers.pull(cancelUserId);
                 
-                if (userToCancel.pendingConnectedUsers.indexOf(userId) > 0) userToCancel.pendingConnectedUsers.reduce(userId);                
-                if (userToCancel.connectedUsers.indexOf(userId) > 0) userToCancel.connectedUsers.reduce(userId);
+                if (userToCancel.pendingConnectedUsers.indexOf(userId) > -1) userToCancel.pendingConnectedUsers.pull(userId);                
+                if (userToCancel.connectedUsers.indexOf(userId) > -1) userToCancel.connectedUsers.pull(userId);
 
                 promise.all([user.save(), userToCancel.save()]).then(function(results) {
                     fulfill(results);
@@ -379,19 +379,24 @@ exports.sendMessage = function(senderUserId, recipientUserId, subject, messageCo
         senderUserId = mongoose.Types.ObjectId(senderUserId);
         recipientUserId = mongoose.Types.ObjectId(recipientUserId);
         
-        promise.all([connectedUsers(senderUserId), getMutedUsers(recipientUserId)])
+        promise.all([getConnectedUsers(senderUserId), getMutedUsers(recipientUserId)])
                 .then(function(results) {
-                    var connectedUsers = results.length > 1 ? results[0] : [];
-                    var mutedUsers = results.length > 2 ? results[1] : [];
+                    var connectedUsers = results.length > 1  ? lodash.first(results) : [];
+                    var mutedUsers = results.length > 2 ? results[1] : [];             
                     
-                    if (connectedUsers.indexOf(recipientUserId) > 0 && mutedUsers.indexOf(senderUserId) == 0)
+                    var connectedUserIndex = lodash.findIndex(connectedUsers, function(user) { return user._id.toString() === recipientUserId.toString(); });
+                    var mutedUserIndex = lodash.findIndex(mutedUsers, function(user) { return user._id.toString() === senderUserId.toString(); });                    
+
+                    if (connectedUserIndex > -1
+                        && lodash.findIndex(mutedUsers, function(user) { return user._id === senderUserId }) === -1)
                     {
                         var Message = mongoose.model('Message');
                         var newMessage = new Message({
                             from: senderUserId,
                             to: recipientUserId,
                             subject: subject,
-                            contents: messageContents
+                            contents: messageContents,
+                            read: false
                         });
 
                         newMessage.save(function(err, savedMessage) {
@@ -437,15 +442,15 @@ exports.muteUser = function(userId, muteUserId) {
             }
             else
             {
-                var user = results[0];
-                var userToMute = results[1];
+                var user = lodash.first(lodash.first(results));
+                var userToMute = lodash.first(results[1]);
 
-                if (user.pendingConnectedUsers.indexOf(muteUserId) > 0) user.pendingConnectedUsers.reduce(muteUserId);
-                if (user.connectedUsers.indexOf(muteUserId) > 0) user.connectedUsers.reduce(muteUserId);
-                if (user.mutedUsers.indexOf(muteUserId) == 0) user.mutedUsers.push(muteUserId);
+                if (user.pendingConnectedUsers.indexOf(muteUserId) > -1) user.pendingConnectedUsers.pull(muteUserId);
+                if (user.connectedUsers.indexOf(muteUserId) > -1) user.connectedUsers.pull(muteUserId);
+                if (user.mutedUsers.indexOf(muteUserId) === -1) user.mutedUsers.push(muteUserId);
 
-                if (userToMute.pendingConnectedUsers.indexOf(userId) > 0) userToMute.pendingConnectedUsers.reduce(userId);
-                if (userToMute.connectedUsers.indexOf(userId) > 0) userToMute.connectedUsers.reduce(userId);
+                if (userToMute.pendingConnectedUsers.indexOf(userId) > -1) userToMute.pendingConnectedUsers.pull(userId);
+                if (userToMute.connectedUsers.indexOf(userId) > -1) userToMute.connectedUsers.pull(userId);
 
                 promise.all([user.save(), userToMute.save()]).then(function(results) {
                     fulfill(results);
@@ -482,10 +487,11 @@ exports.unmuteUser = function(userId, unmuteUserId) {
             }
             else
             {
-                var user = results[0];
-                var userToUnmute = results[1];
+                var user = lodash.first(lodash.first(results));
+                var userToUnmute = lodash.first(results[1]);
 
-                if (user.mutedUsers.indexOf(unmuteUserId) == 0) user.mutedUsers.reduce(unmuteUserId);
+                if (user.mutedUsers.indexOf(unmuteUserId) === -1) user.mutedUsers.pull(unmuteUserId);
+                if (user.pendingConnectedUsers.indexOf(unmuteUserId) === -1) user.pendingConnectedUsers.push(unmuteUserId);
 
                 user.save(function(err, savedUser) {
                     if (err) {
