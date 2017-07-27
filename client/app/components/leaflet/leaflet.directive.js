@@ -19,11 +19,12 @@
                           zoomControl: false
                         });
 
-        L.tileLayer('https://{s}.tiles.mapbox.com/v4/{mapId}/{z}/{x}/{y}.png?access_token={accessToken}', {
+        L.tileLayer('https://api.mapbox.com/styles/v1/{userId}/{mapId}/tiles/256/{z}/{x}/{y}?access_token={accessToken}', {
             attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://mapbox.com">Mapbox</a>',
             subdomains: ['a','b','c','d'],
             mapId: settings.mapId,
-            accessToken: settings.accessToken
+            accessToken: settings.accessToken,
+            userId: settings.userId
         }).addTo(map);
 
           mapService.setMap(map);

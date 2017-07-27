@@ -14,9 +14,10 @@
                     MAP_TAB: 1,
                     PROFILE_TAB: 2,
                     LOGIN_TAB: 3,
-                    SOCIAL_TAB: 4,  
-                    MEDIA_TAB: 5,
-                    ABOUT_TAB: 6
+                    CALENDAR_TAB: 4,                      
+                    SOCIAL_TAB: 5,  
+                    MEDIA_TAB: 6,
+                    ABOUT_TAB: 7
                 }
 
                 function ShowUserProfile(isActive) {
@@ -79,13 +80,16 @@
                         case 3: // Login
                             $scope.main.activeTabIndex = $scope.tabs.LOGIN_TAB;
                             break;
-                        case 4: // Social
+                        case 4: // Calendar
+                            $scope.main.activeTabIndex = $scope.tabs.CALENDAR_TAB;
+                            break; 
+                        case 5: // Social
                             $scope.main.activeTabIndex = $scope.tabs.SOCIAL_TAB;
                             break;    
-                        case 5: // Media
+                        case 6: // Media
                             $scope.main.activeTabIndex = $scope.tabs.MEDIA_TAB;
                             break;
-                        case 6: // About
+                        case 7: // About
                             $scope.main.activeTabIndex = $scope.tabs.ABOUT_TAB;
                             break;
                         default:
@@ -99,6 +103,10 @@
                 $scope.main.goToTab = function() {
                     $anchorScroll.yOffset = 80;
                     $anchorScroll('bodyContent');
+                }
+
+                $scope.downloadFile = function(filePath) {
+                    $window.location.href = filePath;
                 }
 
                 // Toggle class for sticky nav on scroll

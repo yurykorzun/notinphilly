@@ -34,12 +34,24 @@ var userSchema = new Schema({
     streetName: { type: String, default: '' },
     adoptedStreets: [{
         type: Schema.Types.ObjectId,
-        ref: 'Street'
+        ref: 'Street',
     }],
     neighborhood: {
         type: Schema.Types.ObjectId,
         ref: 'Neighborhood'
     },
+    pendingConnectedUsers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    connectedUsers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
+    mutedUsers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'User'
+    }],
     hashedPassword: { type: String, default: '' },
     activationHash: String,
     salt: { type: String, default: '' },

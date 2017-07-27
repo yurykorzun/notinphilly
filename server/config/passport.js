@@ -39,7 +39,7 @@ module.exports = function(app) {
         },
         function(email, password, done) {
             UserModel.findOne({
-                email: email.toLowerCase()
+                email: email
             }, function(err, user) {
                 if (err) {
                     return done(err);

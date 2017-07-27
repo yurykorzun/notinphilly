@@ -13,6 +13,7 @@
             deferredSettings.resolve({
                                         mapId: response.data.mapId,
                                         accessToken: response.data.apiKey,
+                                        userId: response.data.userId,
                                         center: mapCenter,
                                         zoom: 13,
                                         zoomControl: false

@@ -160,7 +160,7 @@ exports.create = function(user, isActiveUser, isEmailRequired) {
                             neighborhoodService.getByLocation(user.addressLocation.lat, user.addressLocation.lng).then(
                             function(neighborhood)
                             {
-                                var newUser = createNewUser(user, isActiveUser, foundState._id, neighborhood._id);
+                                var newUser = createNewUser(user, isActiveUser, foundState._id, neighborhood ? neighborhood._id : undefined);
                                 
                                 validateUserAndSave(newUser).then(function(savedUser){
                                     if (isEmailRequired) {
@@ -419,7 +419,7 @@ var createNewUser = function(userData, isActiveUser, stateId, neighborhoodId)
                                 lastName: userData.lastName,
                                 birthDate: userData.birthDate,
                                 phoneNumber: userData.phoneNumber,
-                                email: userData.email,
+                                email: userData.email.toLowerCase(),
                                 businessName: userData.businessName,
                                 fullAddress: userData.fullAddress,
                                 addressLocation: userData.addressLocation,

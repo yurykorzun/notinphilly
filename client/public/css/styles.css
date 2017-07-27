@@ -420,6 +420,7 @@ hr {
     font-size: 12px;
     font-weight: bold;
     text-decoration: none;
+    cursor: pointer;
 }
 
 .main-nav a:hover {

@@ -5,7 +5,7 @@
       var _deferredMap = $q.defer();
 
       var _mapLayerGroup = L.layerGroup();
-      var _mapStreetLayer = undefined;
+      var _mapStreetLayer = undefined; 
 
       var _mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
@@ -84,6 +84,28 @@
            });
         });
       };
+
+      self.setFacebookEvents = function() {
+          _deferredMap.promise.then(function(map) {
+            $http.get("api/events/google").success(function(eventData, status) {
+              if (eventData && eventData.length > 0)
+              {
+                for (var eventIndex=0; eventIndex < eventData.length; eventIndex++)
+                {
+                  var event = eventData[eventIndex];
+
+                  if (!event.location) continue;
+                  
+                  var eventLocation = event.location;
+                  var eventDate = new Date(event.start.dateTime);
+                  
+                  var marker = L.marker([eventLocation.latitude, eventLocation.longitude]).addTo(map);
+                  marker.bindPopup("<b>"+ event.summary + "</b><p>" + eventLocation.formattedAddress + "</p><p>" + eventDate.toDateString() + "</p><p><a href='" + event.htmlLink + "' target='_blank'>View more</a></p>");
+                }
+              }
+            });
+          });
+      };      
 
       self.showStreetPopup = function(streetFeature) {
         _deferredMap.promise.then(function(map) {
