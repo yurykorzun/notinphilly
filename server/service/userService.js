@@ -142,6 +142,113 @@ exports.getAllPagedSorted = function(sortColumn, sortDirection, skip, limit) {
     });
 }
 
+exports.findNearUser = function(userId)
+{
+    return new Promise(function(fulfill, reject) {
+        UserModel.findById(userId, function(err, user) {
+            if (err)
+            {
+                logger.error("userService.findNearUser " + err);
+                reject(err);
+            }
+            else if (!user.addressLocation) {
+                logger.error("userService.findNearUser user's address is missing " + user._id);
+                reject("User's address is missing");
+            }
+            else
+            {
+                streetService.getByLocation(user.addressLocation.lat, user.addressLocation.lng)
+                        .then(function(streets) {
+                            var streetIds = lodash.map(streets, function(street) {
+                                return street._id;
+                            });
+
+                            UserModel.find({ 
+                                            "$and": [
+                                                        { "adoptedStreets" : { "$in": streetIds } },
+                                                        { "_id": { "$ne": mongoose.Types.ObjectId(user._id) } },
+                                                        { "addressGeo":  { 
+                                                                        '$near': {
+                                                                            '$minDistance': 0,
+                                                                            '$maxDistance': 90,
+                                                                            '$geometry': user.addressGeo
+                                                                        } } }
+                                                    ]}, 
+                            function(err, users) {
+                                if (err)
+                                {
+                                    logger.error("userService.findNearUser " + err);
+                                    reject(err);
+                                }
+                                else
+                                {
+                                    fulfill(users);
+                                }
+                            });
+                        },
+                        function(error) {
+                            logger.error("userService.findNearUser " + err);
+                            reject(err);
+                        });
+            }
+        });
+    });
+}
+
+exports.findNearUserCount = function(userId)
+{
+    return new Promise(function(fulfill, reject) {
+        UserModel.findById(userId, function(err, user) {
+            if (err)
+            {
+                logger.error("userService.findNearUserCount " + err);
+                reject(err);
+            }
+            else if (!user.addressLocation) {
+                logger.error("userService.findNearUserCount user's address is missing " + user._id);
+                reject("User's address is missing");
+            }
+            else
+            {
+                streetService.getByLocation(user.addressLocation.lat, user.addressLocation.lng)
+                        .then(function(streets) {
+                            var streetIds = lodash.map(streets, function(street) {
+                                return street._id;
+                            });
+
+                            UserModel.count({ 
+                                            "$and": [
+                                                        { "adoptedStreets" : { "$in": streetIds } },
+                                                        { "_id": { "$ne": mongoose.Types.ObjectId(user._id) } },
+                                                        { "addressGeo":  { 
+                                                                        '$near': {
+                                                                            '$minDistance': 0,
+                                                                            '$maxDistance': 90,
+                                                                            '$geometry': user.addressGeo
+                                                                        } } }
+                                                    ]}, 
+                            function(err, count) {
+                                if (err)
+                                {
+                                    logger.error("userService.findNearUserCount " + err);
+                                    reject(err);
+                                }
+                                else
+                                {
+                                    fulfill({userCount: count});
+                                }
+                            });
+                        },
+                        function(error) {
+                            logger.error("userService.findNearUserCount " + err);
+                            reject(err);
+                        });
+            }
+        });
+    });
+}
+
+
 exports.create = function(user, isActiveUser, isEmailRequired) {
     return new Promise(function(fulfill, reject) {
         UserModel.findOne({ email: user.email }, function(err, existingUser) {

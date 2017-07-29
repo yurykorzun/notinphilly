@@ -5,9 +5,11 @@ var authService = require('../../auth/authService');
 var router = express.Router();
 
 router.get('/', authService.isAuthenticated, controller.index);
+router.get('/count', authService.isAuthenticated, controller.getAllCount);
 router.get('/unread', authService.isAuthenticated, controller.getAllUnread);
 router.get('/unread/count', authService.isAuthenticated, controller.getUnreadCount);
 router.get('/unread/count/:senderUserId', authService.isAuthenticated, controller.getUnreadCountByUserId);
+router.get('/paged/:pageNumber/:pageSize', authService.isAuthenticated, controller.getAllPaged);
 router.get('/connections', authService.isAuthenticated, controller.getConnectedUsers);
 router.get('/:messageId', authService.isAuthenticated, controller.getById);
 

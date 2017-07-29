@@ -15,7 +15,54 @@ exports.index = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.index " + error);
-            res.status(500).send(error);
+            res.status(500).send("Messages retrieval failed");
+        });
+    }
+    else 
+    {
+        res.status(401).send('Unauthorized');
+    }
+};
+
+exports.getAllPaged = function(req, res, next) {
+    if (req.user) {
+        var userId = req.user._id;
+
+        if (!userId) throw new Error('User id is missing');
+
+        var page = req.params.pageNumber;
+        var pageSize = req.params.pageSize;
+
+        var limit = parseInt(pageSize);
+        var itemsToSkip = (page - 1) * limit;
+
+        messageService.getAllPaged(userId, itemsToSkip, limit).then(
+                        function(result) {
+                            res.status(200).json(result);
+                        },
+                        function(error) {
+                            logger.error("messagesController.getAllPaged " + error);                        
+                            res.status(500).send("Messages retrieval failed");
+                        });
+    }
+    else 
+    {
+        res.status(401).send('Unauthorized');
+    }
+}
+
+exports.getAllCount = function(req, res, next) {
+    if (req.user) {
+        var userId = req.user._id;
+
+        if (!userId) throw new Error('User id is missing');
+        
+        messageService.getAllCount(userId).then( function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            logger.error("messagesController.getAllCount " + error);
+            res.status(500).send("Messages count failed");
         });
     }
     else 
@@ -35,7 +82,7 @@ exports.getAllUnread = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.getAllUnread " + error);
-            res.status(500).send(error);
+            res.status(500).send("Messages retrieval failed");
         });
     }
     else 
@@ -55,7 +102,7 @@ exports.getUnreadCount = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.getUnreadCount " + error);
-            res.status(500).send(error);
+            res.status(500).send("Messages retrieval failed");
         });
     }
     else 
@@ -77,7 +124,7 @@ exports.getUnreadCountByUserId = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.getUnreadCountByUserId " + error);
-            res.status(500).send(error);
+            res.status(500).send("Messages retrieval failed");
         });
     }
     else 
@@ -99,7 +146,7 @@ exports.getById = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.getById " + error);
-            res.status(500).send(error);
+            res.status(500).send("Message retrieval failed");
         });
     }
     else 
@@ -121,7 +168,7 @@ exports.deleteMessage = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.deleteMessage " + error);
-            res.status(500).send(error);
+            res.status(500).send("Message deletion failed");
         });
     }
     else 
@@ -143,7 +190,7 @@ exports.markMessagesAsRead = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.markMessagesAsRead " + error);
-            res.status(500).send(error);
+            res.status(500).send("Messages update failed");
         });
     }
     else 
@@ -165,7 +212,7 @@ exports.requestConnectionWithUser = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.requestConnectionWithUser " + error);
-            res.status(500).send(error);
+            res.status(500).send("Connection request failed");
         });
     }
     else 
@@ -187,7 +234,7 @@ exports.approveUserConnection = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.approveUserConnection " + error);
-            res.status(500).send(error);
+            res.status(500).send("Connection approval failed");
         });
     }
     else 
@@ -209,7 +256,7 @@ exports.cancelUserConnection = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.cancelUserConnection " + error);
-            res.status(500).send(error);
+            res.status(500).send("Connection cancel failed");
         });
     }
     else 
@@ -229,7 +276,7 @@ exports.getConnectedUsers = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.getConnectedUsers " + error);
-            res.status(500).send(error);
+            res.status(500).send("Connection retrieval failed");
         });
     }
     else 
@@ -254,7 +301,7 @@ exports.sendMessage = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.sendMessage " + error);
-            res.status(500).send(error);
+            res.status(500).send("Message send failed");
         });
     }
     else 
@@ -276,7 +323,7 @@ exports.muteUser = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.muteUser " + error);
-            res.status(500).send(error);
+            res.status(500).send("User muting failed");
         });
     }
     else 
@@ -298,7 +345,7 @@ exports.unmuteUser = function(req, res, next) {
         },
         function(error) {
             logger.error("messagesController.unmuteUser " + error);
-            res.status(500).send(error);
+            res.status(500).send("User unmuting failed");
         });
     }
     else 

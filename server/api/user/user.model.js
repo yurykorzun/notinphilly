@@ -15,6 +15,7 @@ var userSchema = new Schema({
     businessName: { type: String, default: '' },
     fullAddress: { type: String, default: '' },
     addressLocation: {},
+    addressGeo: {},
     apartmentNumber: { type: String, default: '' },
     zip: { type: String, default: '' },
     city: { type: String, default: '' },

@@ -23,6 +23,29 @@ exports.getAll = function(recipientUserId) {
     });
 };
 
+exports.getAllPaged = function(recipientUserId, skip, limit) {
+    return new Promise(function(fulfill, reject) {
+        if (!recipientUserId) reject("recipient user id is missing");
+
+        MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId)}, function(err, count) {
+            var query = MessageModel.find({"to": mongoose.Types.ObjectId(recipientUserId)});
+
+            if (skip) query = query.skip(skip);
+            if (limit) query = query.limit(limit);
+
+            query.sort({'createdAt': 'desc'})
+                .populate('from')
+                .populate('to')
+                .exec(function (err, messages) {
+                    if (err) {
+                        logger.error("messageService.getAllPaged " + err);
+                    }
+                    else fulfill({ messages: messages, totalCount: count });
+                });
+        });
+    });
+}
+
 exports.getById = function(recipientUserId, messageId) {
     return new Promise(function (fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
@@ -78,6 +101,19 @@ exports.getAllUnread = function(recipientUserId) {
                 else fulfill(messages);
             });
     });
+};
+
+exports.getAllCount = function(recipientUserId) {
+     return new Promise(function(fulfill, reject) {
+        if (!recipientUserId) reject("recipient user id is missing");
+         
+        MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId)}, function(err, count) {
+            if (err) {
+                logger.error("messageService.getAllCount " + err);
+            }
+            else fulfill({totalCount: count});
+        });
+     });
 };
 
 exports.getUnreadCount = function(recipientUserId) {

@@ -18,7 +18,7 @@ exports.index = function(req, res) {
         },
         function(error) {
             logger.error("usercontroller.index " + error);
-            res.status(500).send(err);
+            res.status(500).send("Users retrieval failed");
         });
 };
 
@@ -34,7 +34,7 @@ exports.me = function(req, res, next) {
         },
         function(error) {
             logger.error("usercontroller.me " + error);            
-            res.status(500).send(error);
+            res.status(500).send("User retrieval failed");
         });
 };
 
@@ -53,10 +53,39 @@ exports.getAllPaged = function(req, res) {
         },
         function(error) {
             logger.error("usercontroller.getAllPaged " + error);                        
-            res.status(500).send(error);
+            res.status(500).send("Users retrieval failed");
         });
 };
 
+exports.findNeighborsCount = function(req, res) {
+    var userId = req.user._id;
+
+    if (!userId) throw new Error('User id is missing');
+
+    userService.findNearUserCount(userId).then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            logger.error("usercontroller.findNeighborsCount " + error);            
+            res.status(500).send("Failed counting neighbors");
+    });
+}
+
+exports.findNeighbors = function(req, res) {
+    var userId = req.user._id;
+
+    if (!userId) throw new Error('User id is missing');
+
+    userService.findNearUser(userId).then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            logger.error("usercontroller.findNeighbors " + error);            
+            res.status(500).send("Failed retrieving neighbors");
+    });
+}
 
 exports.exportUsersCSV = function(req, res) {
     var sortColumn = req.params.sortColumn;

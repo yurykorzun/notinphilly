@@ -7,6 +7,8 @@ var router = express.Router();
 router.get('/', authService.isAdmin, controller.index);
 router.get('/paged/:pageNumber/:pageSize/:sortColumn/:sortDirection', authService.isAdmin, controller.getAllPaged);
 router.get('/current/', authService.isAuthenticated, controller.me);
+router.get('/neighbors/', authService.isAuthenticated, controller.findNeighbors);
+router.get('/neighbors/count', authService.isAuthenticated, controller.findNeighborsCount);
 router.get('/confirm/:activationId', controller.activate);
 router.get('/exportcsv', authService.isAdmin, controller.exportUsersCSV);
 router.get('/:id', authService.isAdmin, controller.get);
