@@ -1,6 +1,8 @@
 var lodash               = require('lodash');
 var mongoose             = require('mongoose');
 var promise              = require('promise');
+var emailService         = require('./emailService');
+var userService          = require('./userService');
 var MessageStatusModel   = require('../api/messages/messagestatus.model');
 var MessageModel         = require('../api/messages/message.model');
 var UserModel            = require('../api/user/user.model');
@@ -17,6 +19,7 @@ exports.getAll = function(recipientUserId) {
             .exec(function (err, messages) {
                 if (err) {
                     logger.error("messageService.getAll " + err);
+                    reject("Failed retrieving messages");
                 }
                 else fulfill(messages);
             });
@@ -39,6 +42,7 @@ exports.getAllPaged = function(recipientUserId, skip, limit) {
                 .exec(function (err, messages) {
                     if (err) {
                         logger.error("messageService.getAllPaged " + err);
+                        reject("Failed retrieving messages");
                     }
                     else fulfill({ messages: messages, totalCount: count });
                 });
@@ -56,12 +60,43 @@ exports.getById = function(recipientUserId, messageId) {
         MessageModel.find({ "$and": [ {to: recipientUserId}, {_id: messageId} ] })
                     .exec(function (err, message) {
                         if (err) {
-                            logger.error("messageService.getAll " + err);
+                            logger.error("messageService.getById " + err);
+                            reject("Failed retrieving a message");
                         }
                         else fulfill(message);
                     });
     });
 };
+
+exports.getAllUserContacts = function(userId) {
+    return new Promise(function (fulfill, reject) {
+        if (!userId) reject("user id is missing");
+
+        userId = mongoose.Types.ObjectId(userId);
+
+        UserModel.findById(userId)
+                    .populate("pendingConnectedUsers")
+                    .populate("connectedUsers")
+                    .populate("mutedUsers")                    
+                    .exec(function (err, user) {
+                        if (err) {
+                            logger.error("messageService.getAllUserContacts " + err);
+                            reject("Failed retrieving contacts");                            
+                        }
+                        else
+                        {
+                            var response = {
+                                connectedUsers: user.connectedUsers,
+                                pendingUsers: user.pendingConnectedUsers,
+                                mutedUsers: user.mutedUsers
+                            };
+                            
+                            fulfill(response);
+                        }
+                    });
+    });
+};
+
 
 exports.deleteMessage = function(userId, messageId) {
     return new Promise(function(fulfill, reject) {
@@ -227,70 +262,41 @@ exports.markMessagesAsRead = function(recipientUserId, messageIds)
 
 exports.requestConnectionWithUser = function(userId, userIdToConnect)
 {
+    return requestConnectionWithUser(userId, userIdToConnect);
+}
+
+exports.requestConnectionsWithNearUsers = function(userId)
+{
     return new Promise(function(fulfill, reject) {
         if (!userId) reject("user id is missing");
-        if (!userIdToConnect) reject("user Id to connect is missing"); 
+        
+        userService.findNearUser(userId).then(function(users) {
+            for (var i = 0; i < users.length; i++) {
+                var userToConnect = users[i];
 
-        userId = mongoose.Types.ObjectId(userId);
-        userIdToConnect = mongoose.Types.ObjectId(userIdToConnect);
-
-        getMutedUsers(userIdToConnect).then(function(mutedUsers) {
-            if (mutedUsers && mutedUsers.length > -1 && mutedUsers.indexOf(userId) > -1) 
-            {
-                logger.error("messageService.requestConnectionWithUser user is muted " + userId + " " + userIdToConnect);
-                reject("Failed to request connection");
-            }
-            else
-            {
-                UserModel.findById(userIdToConnect, function(err, userToConnect) {
-                    if (err) 
-                    {
-                        logger.error("messageService.requestConnectionWithUser " + err);
-                    }
-                    else if (!userToConnect)
-                    {
-                        logger.error("messageService.requestConnectionWithUser Couldn't find requested user " + userId);
-                        reject("Failed to request connection");
-                    }
-                    else
-                    {
-                        if (userToConnect.connectedUsers.indexOf(userId) > -1)
-                        {
-                            fulfill(userToConnect);
-                        }
-                        else
-                        {
-                            if (!userToConnect.pendingConnectedUsers) userToConnect.pendingConnectedUsers = [];
-
-                            if (userToConnect.pendingConnectedUsers.indexOf(userId) === -1)
-                            {
-                                userToConnect.pendingConnectedUsers.push(userId);
-                                userToConnect.save(function(err, savedUser) {
-                                    if (err) {
-                                        logger.error("messageService.requestConnectionWithUser " + err);
-                                        reject(err);
-                                    } 
-                                    else
-                                    {
-                                        fulfill(savedUser);
-                                    }
-                                });
-                            }
-                            else 
-                            {
-                                logger.error("messageService.requestConnectionWithUser Connection already exists for user " + userId);
-                                reject("Failed to request connection");
-                            }
-                        }
-                    }
-                });
+                requestConnectionWithUser(userId, userToConnect._id)
+                    .then(function(result){
+                        fulfill(result);
+                    },
+                    function(error) {
+                        logger.error("messageService.requestConnectionsWithNearUsers failed requesting connections " + error);
+                        reject("Failed to request connections");
+                    })
+                    .catch(function(error) {
+                        logger.error("messageService.requestConnectionsWithNearUsers failed requesting connections " + error);
+                        reject("Failed to request connections");
+                    });
             }
         },
         function(error) {
-
+            logger.error("messageService.requestConnectionsWithNearUsers failed requesting connections " + error);
+            reject("Failed to request connections");
+        })
+        .catch(function(error) {
+            logger.error("messageService.requestConnectionsWithNearUsers failed requesting connections " + error);
+            reject("Failed to request connections");
         });
-       
-     });
+    });
 }
 
 exports.approveUserConnection = function(userId, pendingUserId)
@@ -548,6 +554,85 @@ exports.unmuteUser = function(userId, unmuteUserId) {
     });
 };
 
+var requestConnectionWithUser = function(userId, userIdToConnect)
+{
+    return new Promise(function(fulfill, reject) {
+        if (!userId) reject("user id is missing");
+        if (!userIdToConnect) reject("user Id to connect is missing"); 
+
+        userId = mongoose.Types.ObjectId(userId);
+        userIdToConnect = mongoose.Types.ObjectId(userIdToConnect);
+
+        getMutedUsers(userIdToConnect).then(function(mutedUsers) {
+            if (mutedUsers && mutedUsers.length > -1 && mutedUsers.indexOf(userId) > -1) 
+            {
+                logger.error("messageService.requestConnectionWithUser user is muted " + userId + " " + userIdToConnect);
+                reject("Failed to request connection");
+            }
+            else
+            {
+                UserModel.findById(userIdToConnect)
+                        .populate("neighborhood")
+                        .exec(function(err, userToConnect) 
+                        {
+                                if (err) 
+                                {
+                                    logger.error("messageService.requestConnectionWithUser " + err);
+                                }
+                                else if (!userToConnect)
+                                {
+                                    logger.error("messageService.requestConnectionWithUser Couldn't find requested user " + userId);
+                                    reject("Failed to request connection");
+                                }
+                                else
+                                {
+                                    if (userToConnect.connectedUsers.indexOf(userId) > -1)
+                                    {
+                                        fulfill(userToConnect);
+                                    }
+                                    else
+                                    {
+                                        if (!userToConnect.pendingConnectedUsers) userToConnect.pendingConnectedUsers = [];
+
+                                        if (userToConnect.pendingConnectedUsers.indexOf(userId) === -1)
+                                        {
+                                            userToConnect.pendingConnectedUsers.push(userId);
+                                            userToConnect.save(function(err, savedUser) {
+                                                if (err) {
+                                                    logger.error("messageService.requestConnectionWithUser " + err);
+                                                    reject(err);
+                                                } 
+                                                else
+                                                {
+                                                    UserModel.findById(userId, function(err, user)
+                                                            {
+                                                                emailService.sendUserConnectionRequest(user.firstName, 
+                                                                                                        savedUser.fullName, 
+                                                                                                        savedUser.neighborhood ? savedUser.neighborhood.name : undefined)
+                                                            });
+
+                                                    fulfill(savedUser);
+                                                }
+                                            });
+                                        }
+                                        else 
+                                        {
+                                            logger.error("messageService.requestConnectionWithUser Connection already exists for user " + userId);
+                                            reject("Failed to request connection");
+                                        }
+                                    }
+                                }
+                        });
+            }
+        },
+        function(error) {
+            logger.error("messageService.requestConnectionWithUser failed requesting a connection " + error);
+            reject("Failed to request connection");
+        });
+       
+     });
+}
+
 var getConnectedUsers = function(userId) {
      return new Promise(function(fulfill, reject) {
         if (!userId) reject("user id is missing");
@@ -556,6 +641,24 @@ var getConnectedUsers = function(userId) {
         userQuery.populate('connectedUsers').exec(function(err, user) { 
             if (err) {
                 logger.error("messageService.getConnectedUsers failed for user " + userId + " " + err);
+                reject("Failed to retrieve connections");
+            }
+            else
+            {
+                fulfill(user.connectedUsers);
+            }
+        });
+    });
+}
+
+var getPendingUsers = function(userId) {
+     return new Promise(function(fulfill, reject) {
+        if (!userId) reject("user id is missing");
+
+        var userQuery = UserModel.findById(userId);
+        userQuery.populate('pendingConnectedUsers').exec(function(err, user) { 
+            if (err) {
+                logger.error("messageService.getPendingUsers failed for user " + userId + " " + err);
                 reject("Failed to retrieve connections");
             }
             else

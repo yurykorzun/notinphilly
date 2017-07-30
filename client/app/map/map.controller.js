@@ -188,6 +188,8 @@ angular.module('notinphillyServerApp')
    
     mapService.setMapCallbacks(mapCallbacks);
     mapService.setNeighborhoodLayers();
-    mapService.setFacebookEvents();    
+    mapService.setFacebookEvents();
+
+    //mapService.addAllStreets();
   }]);
 })();

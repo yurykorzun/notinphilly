@@ -1,0 +1,123 @@
+.userprofile-header {
+    padding-top: 20px;
+    padding-left: 30px;
+    margin-bottom: 20px;
+}
+.userprofile-error {
+    text-align: center;
+    background-color: #FF9898;
+    padding: 10px;
+}
+.userprofile-section {
+    background-color: #fff;
+    border: 1px solid rgba(0, 0, 0, .12);
+    margin-bottom: 15px;
+}
+.userprofile-header-top {
+   background-color: #F0EEEE;
+   height: 35px;
+   padding-top: 5px;  
+   text-align: center;
+   font-size: 12pt;
+   font-weight: bold;
+}
+.userprofile-header-menu {
+   background-color:#EEEEEE;
+}
+.useprofile-userinfo {
+    font-size: 12pt;
+}
+.userprofile-avatar {
+    width: 58px;
+    height: 58px;
+    display: block;
+    border-radius: 50%;
+}
+.userprofile-name {
+    display: inline-block;
+}
+.userprofile-name-element {
+    display: inline-block;
+}
+.userprofile-header-summary {
+    margin-left: 25px;
+}
+.userprofile-btn {
+    background-image: -webkit-linear-gradient(top, #69C1E7 0%, #3FB0E1 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#69C1E7), to(#3FB0E1));
+    background-image: linear-gradient(to bottom, #69C1E7 0%, #3FB0E1 100%);
+    background-repeat: repeat-x;
+}
+.userprofile-btn:hover {
+    background-image: -webkit-linear-gradient(top, #69C1E7 0%, #0597D6 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#69C1E7), to(#0597D6));
+    background-image: linear-gradient(to bottom, #69C1E7 0%, #0597D6 100%);
+    background-repeat: repeat-x;
+}
+.userprofile-contact-item {
+    margin-top: 5px;
+    margin-left: 5px;
+    margin-right: 5px;   
+    margin-bottom: 5px; 
+}
+.userprofile-contact-avatar {
+    float: left;
+    width: 60px;
+
+}
+.userprofile-contact-avatar-image {
+    float: left;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+.userprofile-contacts {
+    margin-right: 10px;
+}
+.userprofile-contact-text{
+    font-size: 12pt;
+    padding-top: 10px;
+}
+.userprofile-messages-item {
+    position: relative;
+    padding: 15px 15px;
+    margin-bottom: -1px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    height: 58px;
+}
+.userprofile-messages-item:hover {
+    background-color: #F3F3F3;
+    text-decoration: none;
+}
+.userprofile-messages-link {
+    color: #555;
+    text-decoration: none;    
+}
+.userprofile-messages-link:hover {
+    text-decoration: none;    
+}
+.userprofile-messages-name
+{
+    font-weight: bold;
+}
+.userprofile-editform {
+    padding: 15px 15px 15px;
+}
+.userprofile-contact-action {
+    margin-right: 5px;
+    display: inline-block;
+}
+.userprofile-contact-item .userprofile-contact-actions {
+    display: none;
+}
+.userprofile-contact-item:hover .userprofile-contact-actions {
+    display: block;
+}
+.userprofile-contact-action-link {
+    color: #0597D6;
+    font-size: 13pt;
+}

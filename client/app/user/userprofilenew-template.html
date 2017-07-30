@@ -1,0 +1,48 @@
+<div class="user-profile" ng-controller="UserProfileNewController">
+    <div class="row">
+        <div class="col-md-11 userprofile-section">
+            <div ng-include src="'app/user/userprofile-userinfo-template.html'"></div>
+            <div class="row" ng-show="userProfile.isEditing">
+                <div class="userprofile-editform col-md-12">
+                    <div ng-include src="'app/user/userprofile-edituser-template.html'"></div>   
+                </div>
+            </div>
+            <div class="row" ng-show="userProfile.isChangingPassword">
+                <div class="userprofile-editform col-md-12">
+                    <div ng-include src="'app/user/userprofile-changepassword-template.html'"></div>                  
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="userprofile-section col-md-3">
+            <div ng-include src="'app/messages/messages-contacts-template.html'"></div>
+        </div>
+        <div class="userprofile-section col-md-8 margin-left--small">
+             <div ng-include src="'app/messages/messages-list-template.html'"></div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-11">
+            <div class="row userprofile-header-top">
+                    Your streets
+                    <ul class="list-inline user-profile-actions pull-right">
+                    <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
+                </ul>
+            </div>                
+            <div class="row street-item-block">
+                <div ng-include src="'app/user/userprofile-userstreets-template.html'"></div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-11">
+            <div class="row userprofile-header-top">
+                Your block
+            </div>                
+        </div>
+        <div class="row">
+            <div ng-include src="'app/user/userprofile-blockmap-template.html'"></div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,22 @@
+<div>
+  <div class="modal-header">
+      Message
+  </div>
+</div>
+<div class="modal-body">
+  <form name="requestForm" novalidate>
+  <div class="bg-danger" ng-show="errorMessage">
+    {{errorMessage}}
+  </div>
+  <div class="row">
+    <div class="col-md-12">
+      <p>Message contents</p>
+    </div>
+  </div>
+</div>
+<div class="modal-footer">
+   <button class="btn btn-primary" type="submit" ng-click="">Respond</button>
+   <button class="btn btn-primary" type="button" ng-click="">Close</button>
+   <button class="btn btn-warning" type="button" ng-click="">Delete</button>   
+</div>
+

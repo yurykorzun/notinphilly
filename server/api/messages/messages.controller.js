@@ -155,6 +155,26 @@ exports.getById = function(req, res, next) {
     }
 };
 
+exports.getAllUserContacts = function(req, res, next) {
+    if (req.user) {
+        var userId = req.user._id;
+
+        if (!userId) throw new Error('User id is missing');
+
+        messageService.getAllUserContacts(userId).then( function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            logger.error("messagesController.getAllUserContacts " + error);
+            res.status(500).send("Contacts retrieval failed");
+        });
+    }
+    else 
+    {
+        res.status(401).send('Unauthorized');
+    }
+};
+
 exports.deleteMessage = function(req, res, next) {
     if (req.user) {
         var recipientUserId = req.user._id;
@@ -214,6 +234,27 @@ exports.requestConnectionWithUser = function(req, res, next) {
             logger.error("messagesController.requestConnectionWithUser " + error);
             res.status(500).send("Connection request failed");
         });
+    }
+    else 
+    {
+        res.status(401).send('Unauthorized');
+    }
+};
+
+exports.requestConnectionsWithNearUsers = function(req, res, next) {
+    if (req.user) {
+        var userId = req.user._id; 
+
+        if (!userId) throw new Error('User id is missing');   
+
+        messageService.requestConnectionsWithNearUsers(userId)
+            .then(function(result) {
+                res.status(200).json(result);
+            },
+            function(error) {
+                logger.error("messagesController.requestConnectionsWithNearUsers " + error);
+                res.status(500).send("Connections request failed");
+            });
     }
     else 
     {

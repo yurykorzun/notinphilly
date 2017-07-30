@@ -165,15 +165,25 @@ exports.findNearUser = function(userId)
 
                             UserModel.find({ 
                                             "$and": [
-                                                        { "adoptedStreets" : { "$in": streetIds } },
-                                                        { "_id": { "$ne": mongoose.Types.ObjectId(user._id) } },
-                                                        { "addressGeo":  { 
-                                                                        '$near': {
-                                                                            '$minDistance': 0,
-                                                                            '$maxDistance': 90,
-                                                                            '$geometry': user.addressGeo
+                                                        { 
+                                                            "$or": [
+                                                                { "adoptedStreets" : { "$in": streetIds } },
+                                                                { "addressGeo":  { 
+                                                                        '$geoWithin': {
+                                                                            '$centerSphere': [
+                                                                                [
+                                                                                    user.addressLocation.lng,
+                                                                                    user.addressLocation.lat
+                                                                                ],
+                                                                                //approx 100 meters
+                                                                                0.000028
+                                                                            ]
                                                                         } } }
-                                                    ]}, 
+                                                                ]
+                                                        },
+                                                        { "_id": { "$ne": mongoose.Types.ObjectId(user._id) } }
+                                                    ]
+                                            }, 
                             function(err, users) {
                                 if (err)
                                 {
@@ -205,8 +215,7 @@ exports.findNearUserCount = function(userId)
                 reject(err);
             }
             else if (!user.addressLocation) {
-                logger.error("userService.findNearUserCount user's address is missing " + user._id);
-                reject("User's address is missing");
+                fulfill({userCount: 0});
             }
             else
             {
@@ -218,15 +227,25 @@ exports.findNearUserCount = function(userId)
 
                             UserModel.count({ 
                                             "$and": [
-                                                        { "adoptedStreets" : { "$in": streetIds } },
-                                                        { "_id": { "$ne": mongoose.Types.ObjectId(user._id) } },
-                                                        { "addressGeo":  { 
-                                                                        '$near': {
-                                                                            '$minDistance': 0,
-                                                                            '$maxDistance': 90,
-                                                                            '$geometry': user.addressGeo
+                                                        { 
+                                                            "$or": [
+                                                                { "adoptedStreets" : { "$in": streetIds } },
+                                                                { "addressGeo":  { 
+                                                                        '$geoWithin': {
+                                                                            '$centerSphere': [
+                                                                                [
+                                                                                    user.addressLocation.lng,
+                                                                                    user.addressLocation.lat
+                                                                                ],
+                                                                                //approx 100 meters
+                                                                                0.000028
+                                                                            ]
                                                                         } } }
-                                                    ]}, 
+                                                                ]
+                                                        },
+                                                        { "_id": { "$ne": mongoose.Types.ObjectId(user._id) } }
+                                                    ]
+                                            }, 
                             function(err, count) {
                                 if (err)
                                 {
@@ -368,14 +387,21 @@ exports.update = function(user) {
             else {
                 existingUser.merge(updatedUser);
                
-                if(existingUser.addressLocation)
+                if (existingUser.addressLocation)
                 {
+                    existingUser.addressGeo =  {
+                                    "type" : "Point",
+                                    "coordinates" : [ 
+                                        existingUser.addressLocation.lng, 
+                                        existingUser.addressLocation.lat
+                                    ]
+                                };
                      neighborhoodService.getByLocation(existingUser.addressLocation.lat, existingUser.addressLocation.lng).then(
                         function(neighborhood)
                         {
                             existingUser.neighborhood = neighborhood ? neighborhood._id : undefined;
                             
-                             validateUserAndSave(existingUser).then(function(savedUser){      
+                            validateUserAndSave(existingUser).then(function(savedUser){      
                                                         fulfill(savedUser);
                                                     },
                                                     function(error){
@@ -530,6 +556,14 @@ var createNewUser = function(userData, isActiveUser, stateId, neighborhoodId)
                                 businessName: userData.businessName,
                                 fullAddress: userData.fullAddress,
                                 addressLocation: userData.addressLocation,
+                                addressGeo: {
+                                    "type" : "Point",
+                                    "coordinates" : [ 
+                                        userData.addressLocation.lng, 
+                                        userData.addressLocation.lat
+                                    ]
+                                },
+                                addressLocation: userData.addressLocation,                                
                                 apartmentNumber: userData.apartmentNumber,
                                 active: isActiveUser,
                                 hasAgreedToTerms: userData.hasAgreedToTerms,

@@ -133,6 +133,38 @@ exports.sendUserNotificationEmail = function(firstName, lastName, email, address
                 });
 };
 
+exports.sendUserConnectionRequest = function(firstName, userRequestedFullName, userRequestedNeighborhood) {
+    promise.all([getEmailTemplate("userRequestedConnectionHtmlTemplate.html"), 
+                getEmailTemplate("userRequestedConnectionPlainTemplate.html")])
+                .then(function(templates){
+                    var htmlTemplate = templates[0];
+                    var plainTemplate = templates[1];
+
+                    userRequestedNeighborhood = userRequestedNeighborhood ? " in " + userRequestedNeighborhood : "";
+
+                    var data = {
+                        from: adminEmail,
+                        to: adminEmail,
+                        subject: "Notinphilly.org: " + userRequestedFullName + " wants to connect with you",
+                        text: plainTemplate({ firstName: firstName, 
+                                                userRequestedFullName: userRequestedFullName, 
+                                                userRequestedNeighborhood: userRequestedNeighborhood 
+                                            }),
+                        html: htmlTemplate({ firstName: firstName, 
+                                                userRequestedFullName: userRequestedFullName,
+                                                userRequestedNeighborhood: userRequestedNeighborhood 
+                                            })
+                    };
+
+                    mailgun.messages().send(data, function(error, body) {
+                        if (error) logger.error("emailService.sendUserConnectionRequest " + error);        
+                    });
+                },
+                function(error) {
+                    if (error) logger.error("emailService.sendUserConnectionRequest " + error);
+                });
+};
+
 var getEmailTemplate = function(fileName)
 {
     var pathToTemplateFile = path.join(templateFolderPath, fileName);

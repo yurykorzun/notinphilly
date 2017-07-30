@@ -13,17 +13,18 @@
                     SEARCH_TAB: 0,
                     MAP_TAB: 1,
                     PROFILE_TAB: 2,
-                    LOGIN_TAB: 3,
-                    CALENDAR_TAB: 4,                      
-                    SOCIAL_TAB: 5,  
-                    MEDIA_TAB: 6,
-                    ABOUT_TAB: 7
+                    PROFILENEW_TAB: 3,                    
+                    LOGIN_TAB: 4,
+                    CALENDAR_TAB: 5,                      
+                    SOCIAL_TAB: 6,  
+                    MEDIA_TAB: 7,
+                    ABOUT_TAB: 8
                 }
 
                 function ShowUserProfile(isActive) {
                     $scope.main.isUserProfileEnabled = true;
                     if (isActive) {
-                        $scope.main.openTab($scope.tabs.PROFILE_TAB);
+                        $scope.main.openTab($scope.tabs.PROFILENEW_TAB);
                     }
                     $scope.main.isLoginEnabled = false;
                 }
@@ -77,19 +78,22 @@
                         case 2: // Profile
                             $scope.main.activeTabIndex = $scope.tabs.PROFILE_TAB;
                             break;
-                        case 3: // Login
+                        case 3: // New Profile
+                            $scope.main.activeTabIndex = $scope.tabs.PROFILENEW_TAB;
+                            break;
+                        case 4: // Login
                             $scope.main.activeTabIndex = $scope.tabs.LOGIN_TAB;
                             break;
-                        case 4: // Calendar
+                        case 5: // Calendar
                             $scope.main.activeTabIndex = $scope.tabs.CALENDAR_TAB;
                             break; 
-                        case 5: // Social
+                        case 6: // Social
                             $scope.main.activeTabIndex = $scope.tabs.SOCIAL_TAB;
                             break;    
-                        case 6: // Media
+                        case 7: // Media
                             $scope.main.activeTabIndex = $scope.tabs.MEDIA_TAB;
                             break;
-                        case 7: // About
+                        case 8: // About
                             $scope.main.activeTabIndex = $scope.tabs.ABOUT_TAB;
                             break;
                         default:

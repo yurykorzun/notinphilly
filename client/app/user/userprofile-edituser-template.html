@@ -1,0 +1,64 @@
+<form name="editForm" novalidate>
+        <div class="row" ng-show="errorMessage">
+            <div class="alert alert-danger">{{ errorMessage }}</div>
+        </div>
+        <div class="row">
+            <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.firstName.$invalid && !editForm.firstName.$pristine }]">
+                <label for="firstName" class="control-label">First Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                <input name="firstName" ng-model="user.firstName" ng-class="['form-control', 'input-sm', { 'has-error': editForm.firstName.$error.required }]" placeholder="First Name" type="text" required="">
+                <p ng-show="editForm.firstName.$invalid && !editForm.firstName.$pristine" class="help-block">First Name is required.</p>
+            </div>
+            <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.lastName.$invalid && !editForm.lastName.$pristine }]">
+                <label for="lastName" class="control-label">Last Name<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                <input name="lastName" ng-model="user.lastName" ng-class="['form-control', 'input-sm', { 'has-error': editForm.lastName.$error.required }]" placeholder="Last Name" type="text" required="">
+                <p ng-show="editForm.lastName.$invalid && !editForm.lastName.$pristine" class="help-block">Last Name is required.</p>
+            </div>
+        </div>
+        <div class="row">
+            <div ng-class="['col-xs-6', 'form-group', { 'has-error': editForm.email.$invalid && !editForm.email.$pristine }]">
+                <label for="email" class="control-label">Email Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                <input name="email" ng-model="user.email" class="form-control input-sm" placeholder="Email Address" type="email" required>
+                <p ng-show="editForm.email.$invalid && !editForm.email.$pristine" class="help-block">Email is required.</p>
+            </div>
+            <div class="col-xs-6 form-group">
+                <label for="phone" class="control-label">Phone Number</label>
+                <input name="phone" class="form-control input-sm" name="emerPhone" ng-model="user.phoneNumber" ui-mask="{{'(999) 999-9999'}}" type="tel" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12 form-group">
+                <label for="businessName" class="control-label">Business/Organization</label>
+                <input name="businessName" ng-model="user.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+            </div>
+        </div>
+        <div class="row">
+            <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.fullAddress.$invalid && !signinForm.fullAddress.$pristine }]">
+                <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
+                <input name="fullAddress" search-autocomplete ng-model="user.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required="" />
+                <p ng-show="editForm.fullAddress.$invalid && !editForm.fullAddress.$pristine" class="help-block">Address is required.</p>
+            </div>
+            <div class="col-xs-6 form-group">
+                <label for="apartmentNumber" class="control-label">Apartment Number</label>
+                <input name="apartmentNumber" ng-model="user.apartmentNumber" class="form-control input-sm" placeholder="Apartment/Unit" type="text">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="form-group">
+                    <label for="distributeCheckbox"><input type="checkbox" id="distributeCheckbox" ng-model="user.isDistributer">&nbsp;&nbsp;<small>I can help distribute materials to those in my neighborhood if needed.</small></label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-actions form-group">
+                    <div class="col-xs-4 col-md-5">
+                        <button type="button" class="btn btn-default pull-left" ng-click="toggleChangePassword()">Change Password</button>
+                </div>
+                <div class="col-xs-8 col-md-7">
+                    <button type="button" class="btn btn-default btn-cancel pull-right" ng-click="toggleEdit()">Cancel</button>
+                    <button type="submit" class="btn btn-primary pull-right" ng-disabled="!editForm.$dirty || editForm.$invalid" ng-click="update()">Update profile</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

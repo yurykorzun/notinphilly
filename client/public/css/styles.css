@@ -9,7 +9,7 @@
 
 html,
 body {
-    font-family: "PT Serif", "Book Antiqua", Palatino, Georgia, serif;
+    font-family: "Open Sans", Helvetica, Geneva, sans-serif;
 }
 
 h1,
@@ -253,6 +253,9 @@ hr {
     margin-bottom: 40px;
 }
 
+.margin-left--small {
+    margin-left: 10px;
+}
 
 /* Margins for just the vertical or horizontal axes */
 

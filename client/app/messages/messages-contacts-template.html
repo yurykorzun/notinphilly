@@ -1,0 +1,63 @@
+<div ng-controller="MessagesContactsController">
+    <div class="row userprofile-header-top" >
+        Contacts
+    </div>  
+    <div class="row userprofile-error" ng-show="contacts.errorMessage">
+        {{ contacts.errorMessage }}
+    </div>
+    <div class="row userprofile-contact-item" ng-show="contacts.connectedUsers.length === 0">
+        <div class="text-center">
+            <a href="" ng-click="requestNeighborsConnections()">Connect</a> with your neighbors
+        </div>
+        <div class="text-center">
+            <h4>or</h6>
+        </div>
+        <div class="text-center">
+            <a href="" ng-click="goToMap()">Explore streets</a> and connect with participants
+        </div>
+    </div>
+    <div ng-repeat="contact in contacts.connectedUsers">
+         <div class="row userprofile-contact-item">
+            <div class="userprofile-contact-avatar">
+                <img ng-if="contact.profileImageUrl" src="{{contact.profileImageUrl}}" class="userprofile-avatar" alt="User"/>
+                <img ng-if="!contact.profileImageUrl" src="/public/img/user-profile.png" class="userprofile-avatar" alt="User"/>
+            </div>
+            <div class="userprofile-contact-text">
+                <a href="" ng-click="sendMessage(contact)">{{contact.fullName}}</a>
+            </div>
+            <div class="userprofile-contact-actions">
+                <div class="userprofile-contact-action">
+                    <a class="userprofile-contact-action-link" title="Send message" href="" ng-click="sendMessage(contact)"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                </div>
+                <div class="userprofile-contact-action">
+                    <a class="userprofile-contact-action-link" title="Remove" href="" ng-click="removeContact(contact)"><i class="fa fa-remove" aria-hidden="true"></i></a>
+                </div>     
+                <div class="userprofile-contact-action">
+                    <a class="userprofile-contact-action-link" title="Mute" href=""  ng-click="muteContact(contact)"><i class="fa fa-ban" aria-hidden="true"></i></a>
+                </div>        
+            </div>
+        </div>
+    </div>
+    <div class="row userprofile-header-top" ng-show="contacts.pendingConnectedUsers.length > 0">
+        Pending requests
+    </div>
+    <div ng-repeat="contact in contacts.pendingConnectedUsers">                
+        <div class="row userprofile-contact-item">
+            <div class="userprofile-contact-avatar">
+                <img ng-if="contact.profileImageUrl" src="{{contact.profileImageUrl}}" class="userprofile-avatar" alt="User"/>
+                <img ng-if="!contact.profileImageUrl" src="/public/img/user-profile.png" class="userprofile-avatar" alt="User"/>
+            </div>
+            <div class="userprofile-contact-text">
+                {{contact.fullName}}
+            </div>
+            <div class="userprofile-contact-actions">
+                <div class="userprofile-contact-action">
+                    <a class="userprofile-contact-action-link" href="" ng-click="approveContact(contact)"><i class="fa fa-check" aria-hidden="true"></i></a>
+                </div>                         
+                <div class="userprofile-contact-action">
+                    <a class="userprofile-contact-action-link" href="" ng-click="rejectContact(contact)"><i class="fa fa-remove" aria-hidden="true"></i></a>
+                </div>            
+            </div>
+        </div>
+    </div>
+</div>
