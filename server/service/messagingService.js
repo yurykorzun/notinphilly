@@ -8,7 +8,7 @@ var MessageModel         = require('../api/messages/message.model');
 var UserModel            = require('../api/user/user.model');
 var logger               = require('../components/logger');
 
-exports.getAll = function(recipientUserId) {
+exports.getReceivedAll = function(recipientUserId) {
     return new Promise(function (fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
 
@@ -18,7 +18,7 @@ exports.getAll = function(recipientUserId) {
             .populate('to')
             .exec(function (err, messages) {
                 if (err) {
-                    logger.error("messageService.getAll " + err);
+                    logger.error("messageService.getReceivedAll " + err);
                     reject("Failed retrieving messages");
                 }
                 else fulfill(messages);
@@ -26,31 +26,85 @@ exports.getAll = function(recipientUserId) {
     });
 };
 
-exports.getAllPaged = function(recipientUserId, skip, limit) {
+exports.getReceivedAllPaged = function(recipientUserId, skip, limit) {
     return new Promise(function(fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
 
         MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId)}, function(err, count) {
-            var query = MessageModel.find({"to": mongoose.Types.ObjectId(recipientUserId)});
+            if (err) {
+                logger.error("messageService.getAllPaged " + err);
+                reject("Failed retrieving messages");
+            }
+            else
+            {
+                var query = MessageModel.find({"to": mongoose.Types.ObjectId(recipientUserId)});
 
-            if (skip) query = query.skip(skip);
-            if (limit) query = query.limit(limit);
+                if (skip) query = query.skip(skip);
+                if (limit) query = query.limit(limit);
 
-            query.sort({'createdAt': 'desc'})
-                .populate('from')
-                .populate('to')
-                .exec(function (err, messages) {
-                    if (err) {
-                        logger.error("messageService.getAllPaged " + err);
-                        reject("Failed retrieving messages");
-                    }
-                    else fulfill({ messages: messages, totalCount: count });
-                });
+                query.sort({'createdAt': 'desc'})
+                    .populate('from')
+                    .populate('to')
+                    .exec(function (err, messages) {
+                        if (err) {
+                            logger.error("messageService.getReceivedAllPaged " + err);
+                            reject("Failed retrieving messages");
+                        }
+                        else {
+                            var totalMessagesBeforeNext = skip + limit;
+
+                            fulfill({ 
+                                messages: messages, 
+                                totalCount: count,
+                                hasMore: totalMessagesBeforeNext < count
+                            });
+                        }
+                    });
+            }
         });
     });
 }
 
-exports.getById = function(recipientUserId, messageId) {
+exports.getSentAllPaged = function(senderUserId, skip, limit) {
+    return new Promise(function(fulfill, reject) {
+        if (!senderUserId) reject("sender user id is missing");
+
+        MessageModel.count({"from": mongoose.Types.ObjectId(senderUserId)}, function(err, count) {
+            if (err) {
+                logger.error("messageService.getSentAllPaged " + err);
+                reject("Failed retrieving messages");
+            }
+            else
+            {
+                var query = MessageModel.find({"from": mongoose.Types.ObjectId(senderUserId)});
+
+                if (skip) query = query.skip(skip);
+                if (limit) query = query.limit(limit);
+
+                query.sort({'createdAt': 'desc'})
+                    .populate('from')
+                    .populate('to')
+                    .exec(function (err, messages) {
+                        if (err) {
+                            logger.error("messageService.getSentAllPaged " + err);
+                            reject("Failed retrieving messages");
+                        }
+                        else {
+                            var totalMessagesBeforeNextPage = skip + limit;
+
+                            fulfill({ 
+                                messages: messages, 
+                                totalCount: count,
+                                hasMore: totalMessagesBeforeNextPage < count
+                            });
+                        }
+                    });
+            }
+        });
+    });
+}
+
+exports.getReceivedById = function(recipientUserId, messageId) {
     return new Promise(function (fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
 
@@ -60,7 +114,7 @@ exports.getById = function(recipientUserId, messageId) {
         MessageModel.find({ "$and": [ {to: recipientUserId}, {_id: messageId} ] })
                     .exec(function (err, message) {
                         if (err) {
-                            logger.error("messageService.getById " + err);
+                            logger.error("messageService.getReceivedById " + err);
                             reject("Failed retrieving a message");
                         }
                         else fulfill(message);
@@ -108,20 +162,21 @@ exports.deleteMessage = function(userId, messageId) {
         if (!userId || !messageId) reject("User or message id is missing. Message deletion failed.");
         else
         {
-            MessageModel.remove({ "$and": [ { "$or": [{to: userId}, {from: userId} ] }, {_id: messageId} ] }, function(err, message) {
-                                if (err) {
-                                    logger.error("messageService.deleteMessage " + err);
-                                    reject("Message deletion failed");
-                                } 
-                                else {
-                                    fulfill(message);
-                                }
-                            });
+            MessageModel.remove({ "$and": [ { "$or": [{to: userId}, {from: userId} ] }, {_id: messageId} ] }, 
+                                function(err, message) {
+                                    if (err) {
+                                        logger.error("messageService.deleteMessage " + err);
+                                        reject("Message deletion failed");
+                                    } 
+                                    else {
+                                        fulfill(message);
+                                    }
+                                });
         }
     });
 };
 
-exports.getAllUnread = function(recipientUserId) {
+exports.getReceivedAllUnread = function(recipientUserId) {
      return new Promise(function (fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
          
@@ -131,54 +186,60 @@ exports.getAllUnread = function(recipientUserId) {
             .populate('to')
             .exec(function (err, messages) {
                 if (err) {
-                    logger.error("messageService.getAllUnread " + err);
+                    logger.error("messageService.getReceivedAllUnread " + err);
+                    reject("Messages retrieval failed");
                 }
                 else fulfill(messages);
             });
     });
 };
 
-exports.getAllCount = function(recipientUserId) {
+exports.getReceivedAllCount = function(recipientUserId) {
      return new Promise(function(fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
          
         MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId)}, function(err, count) {
             if (err) {
-                logger.error("messageService.getAllCount " + err);
+                logger.error("messageService.getReceivedAllCount " + err);
+                reject("Messages count failed");
             }
             else fulfill({totalCount: count});
         });
      });
 };
 
-exports.getUnreadCount = function(recipientUserId) {
+exports.getReceivedUnreadCount = function(recipientUserId) {
      return new Promise(function(fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
          
-        MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId), "read": false}, function(err, count) {
-            if (err) {
-                logger.error("messageService.getUnreadCount " + err);
-            }
-            else fulfill({unreadCount: count});
-        });
+        MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId), "read": false}, 
+                    function(err, count) {
+                        if (err) {
+                            logger.error("messageService.getReceivedUnreadCount " + err);
+                            reject("Messages count failed");
+                        }
+                        else fulfill({unreadCount: count});
+                    });
      });
 };
 
-exports.getUnreadCountByUserId = function(recipientUserId, senderUserId) {
+exports.getReceivedUnreadCountByUserId = function(recipientUserId, senderUserId) {
      return new Promise(function(fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
         if (!senderUserId) reject("sender user id is missing");        
          
-        MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId), "from": mongoose.Types.ObjectId(senderUserId), "read": false}, function(err, count) {
-            if (err) {
-                logger.error("messageService.getUnreadCountByUserId " + err);
-            }
-            else fulfill({unreadCount: count});
-        });
+        MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId), "from": mongoose.Types.ObjectId(senderUserId), "read": false}, 
+                    function(err, count) {
+                        if (err) {
+                            logger.error("messageService.getReceivedUnreadCountByUserId " + err);
+                            reject("Messages count failed");                            
+                        }
+                        else fulfill({unreadCount: count});
+                    });
      });
 };
 
-exports.getUnreadBySenderUserIds = function(recipientUserId) {
+exports.getReceivedUnreadBySenderUserIds = function(recipientUserId) {
     return new Promise(function(fulfill, reject) {
         if (!recipientUserId) reject("user id is missing");
 
@@ -189,14 +250,15 @@ exports.getUnreadBySenderUserIds = function(recipientUserId) {
             ], 
         function(err, count) {
             if (err) {
-                logger.error("messageService.getUnreadBySenderUserIds " + err);
+                logger.error("messageService.getReceivedUnreadBySenderUserIds " + err);
+                reject("Messages count failed");                            
             }
             else fulfill(result);
         });
      });
 };
 
-exports.getByUserId = function(recipientUserId, senderUserId) {
+exports.getReceivedByUserId = function(recipientUserId, senderUserId) {
      return new Promise(function(fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
         if (!senderUserId) reject("sender user id is missing");        
@@ -207,14 +269,15 @@ exports.getByUserId = function(recipientUserId, senderUserId) {
             .populate('to')
             .exec(function (err, messages) {
                 if (err) {
-                    logger.error("messageService.getByUserId " + err);
+                    logger.error("messageService.getReceivedByUserId " + err);
+                    reject("Message retrieval failed");                            
                 }
                 else fulfill(messages);
             });
      });
 };
 
-exports.markMessageAsRead = function(recipientUserId, messageId)
+exports.markReceivedMessageAsRead = function(recipientUserId, messageId)
 {
       return new Promise(function(fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
@@ -228,14 +291,15 @@ exports.markMessageAsRead = function(recipientUserId, messageId)
                             })
             .exec(function (err, result) {
                 if (err) {
-                    logger.error("messageService.markMessageAsRead " + err);
+                    logger.error("messageService.markReceivedMessageAsRead " + err);
+                    reject("Message update failed");                                                
                 }
                 else fulfill(result);
             });
      });
 }
 
-exports.markMessagesAsRead = function(recipientUserId, messageIds)
+exports.markReceivedMessagesAsRead = function(recipientUserId, messageIds)
 {
       return new Promise(function(fulfill, reject) {
         if (!recipientUserId) reject("recipient user id is missing");
@@ -253,7 +317,8 @@ exports.markMessagesAsRead = function(recipientUserId, messageIds)
                             {multi: true})
             .exec(function (err, result) {
                 if (err) {
-                    logger.error("messageService.markMessagesAsRead " + err);
+                    logger.error("messageService.markReceivedMessagesAsRead " + err);
+                    reject("Messages update failed");                                                                    
                 }
                 else fulfill(result);
         });
@@ -350,6 +415,10 @@ exports.approveUserConnection = function(userId, pendingUserId)
         function(error) {
             logger.error("messageService.approveUserConnection failed for user " + userId);
             reject("Failed to approve connection");
+        })
+        .catch(function(error) {
+            logger.error("messageService.approveUserConnection failed for user " + userId);
+            reject("Failed to approve connection");
         });
     });
 }
@@ -393,6 +462,10 @@ exports.cancelUserConnection = function(userId, cancelUserId)
             }
         },
         function(error) {
+            logger.error("messageService.cancelUserConnection failed for user " + userId + " " + cancelUserId);
+            reject("Failed to approve connection");
+        })
+        .catch(function(error) {
             logger.error("messageService.cancelUserConnection failed for user " + userId + " " + cancelUserId);
             reject("Failed to approve connection");
         });
@@ -461,6 +534,10 @@ exports.sendMessage = function(senderUserId, recipientUserId, subject, messageCo
                 function(error) {
                     logger.error("messageService.sendMessage failed for user " + userId  + " " + error);
                     reject("Failed to sendMessage");
+                })
+                .catch(function(error) {
+                    logger.error("messageService.sendMessage failed for user " + userId  + " " + error);
+                    reject("Failed to sendMessage");
                 });
     });
 };
@@ -504,6 +581,10 @@ exports.muteUser = function(userId, muteUserId) {
             }
         },
         function(error) {
+            logger.error("messageService.muteUser failed for user " + userId  + " " + muteUserId);
+            reject("Failed to mute user");
+        })
+        .catch(function(error) {
             logger.error("messageService.muteUser failed for user " + userId  + " " + muteUserId);
             reject("Failed to mute user");
         });
@@ -550,6 +631,10 @@ exports.unmuteUser = function(userId, unmuteUserId) {
         function(error) {
             logger.error("messageService.unmuteUser failed for user " + userId  + " " + muteUserId);
             reject("Failed to unmute user");
+        })
+        .catch(function(error) {
+            logger.error("messageService.unmuteUser failed for user " + userId  + " " + muteUserId);
+            reject("Failed to unmute user");
         });
     });
 };
@@ -564,10 +649,10 @@ var requestConnectionWithUser = function(userId, userIdToConnect)
         userIdToConnect = mongoose.Types.ObjectId(userIdToConnect);
 
         getMutedUsers(userIdToConnect).then(function(mutedUsers) {
-            if (mutedUsers && mutedUsers.length > -1 && mutedUsers.indexOf(userId) > -1) 
+            if (mutedUsers && mutedUsers.length > -1 && lodash.findIndex(mutedUsers, function(mutedUser) { return mutedUser._id.equals(userId) } ) > -1) 
             {
                 logger.error("messageService.requestConnectionWithUser user is muted " + userId + " " + userIdToConnect);
-                reject("Failed to request connection");
+                fulfill({});
             }
             else
             {
@@ -628,6 +713,9 @@ var requestConnectionWithUser = function(userId, userIdToConnect)
         function(error) {
             logger.error("messageService.requestConnectionWithUser failed requesting a connection " + error);
             reject("Failed to request connection");
+        })
+        .catch(function(error) {
+            throw Error(error);
         });
        
      });

@@ -1,19 +1,13 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$timeout', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $compile, $http, $rootScope, $timeout, $cookies, mapService, APP_EVENTS, APP_CONSTS) {
-    $scope.$on(APP_EVENTS.OPENED_EXPLORE, function(event) {
-      $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
-        $timeout(function() {
-            mapService.resetSize();
-            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
-        }, 400);
-    });
-
-    var mapTooltip = $("#map-tooltip");
+  .controller('MapController', [ '$scope', '$routeParams', '$compile', '$http', '$rootScope', '$timeout', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
+  function($scope, $routeParams, $compile, $http, $rootScope, $timeout, $cookies, mapService, APP_EVENTS, APP_CONSTS) 
+  {
+    $scope.mapTooltip = $("#map-tooltip");
 
     var showMapTooltip = function(position, content)
     {
-      mapTooltip
+      $scope.mapTooltip
         .show()
         .css(position)
         .find('#tooltipValue').html(content);
@@ -21,8 +15,8 @@ angular.module('notinphillyServerApp')
 
     var hideMapTooltip = function()
     {
-      mapTooltip.find('#tooltipValue').html("");
-      mapTooltip.hide();
+      $scope.mapTooltip.find('#tooltipValue').html("");
+      $scope.mapTooltip.hide();
     }
 
     mapService.getMap().then(function(map) {
@@ -139,6 +133,7 @@ angular.module('notinphillyServerApp')
 
     });
     $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event, leafletEvent){
+
     });
 
     var mapCallbacks = {
@@ -187,9 +182,19 @@ angular.module('notinphillyServerApp')
     };
    
     mapService.setMapCallbacks(mapCallbacks);
-    mapService.setNeighborhoodLayers();
+    if ($routeParams.lng && $routeParams.lat)
+    {
+      mapService.showStreetsNear({ lng: parseFloat($routeParams.lng), lat: parseFloat($routeParams.lat) });  
+    }
+    else
+    {
+      mapService.showNeighborhoodLayers();
+    }
+    
     mapService.setFacebookEvents();
 
-    //mapService.addAllStreets();
+    $scope.$on('$destroy', function () {
+      mapService.removeMap();
+    });
   }]);
 })();

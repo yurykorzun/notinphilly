@@ -1,23 +1,96 @@
 <div ng-controller="MessagesListController">
     <div class="row userprofile-header-top">
         Messages
-    </div>                
-    <div class="row userprofile-messages">
-        <div class="userprofile-messages-item">
-            <a href="" ng-click="viewMessage()" class="userprofile-messages-link">
-                <div class="userprofile-messages-name padding-none pull-left col-md-2">Andres posada</div>
-                <div class="col-md-5 col-xs-8 col-sm-8">Nice work on the lastest version</div>
-                <div class="col-md-3 text-muted hidden-xs hidden-sm" style="font-size: 11px;">- More content here</div> 
-                <div class="padding-none col-md-2 pull-right">12:10 AM</div> 
-            </a>
+    </div>  
+    <div class="row userprofile-error" ng-show="messages.errorMessage">
+        {{ contacts.errorMessage }}
+    </div>
+     <div class="row">
+        <ul class="nav nav-tabs">
+            <li ng-class="[ { 'active' : isTabOpen(tabs.INBOX) } ]">
+                <a href="" ng-click="openTab(tabs.INBOX)" class="nav-link">Inbox {{ receivedMessages.unread > 0 ? "(" +  receivedMessages.unread + ")" : "" }}</a>
+            </li>
+            <li ng-class="[ { 'active' : isTabOpen(tabs.SENT) } ]">
+                <a href="" ng-click="openTab(tabs.SENT)" class="nav-link">Sent</a>
+            </li>
+        </ul>
+    </div> 
+    <div class="row userprofile-messages" ng-show="isTabOpen(tabs.INBOX)">
+        <div class="col-md-12">          
+            <div ng-repeat="message in receivedMessages.pagedMessages" class="row"> 
+                <a href="" ng-click="viewMessage(message)" class="userprofile-messages-link">  
+                    <div class="userprofile-messages-item" ng-class="['userprofile-messages-item', { 'userprofile-messages-row-item-unread': !message.read }]">
+                        <div class="pull-left col-md-10">
+                            <div class="userprofile-messages-name userprofile-messages-row-item">{{ message.from.fullName }}</div>
+                            <div class="margin-left userprofile-messages-row-item">{{ message.subject }}</div>
+                            <div class="userprofile-messages-preview userprofile-messages-row-item hidden-xs hidden-sm"> - {{ message.contentsPreview }}</div>                            
+                        </div>
+                        <div class="padding-y--small pull-right">
+                            <div class="userprofile-messages-row-item">
+                                {{ message.createdDateFormatted }}
+                            </div>
+                            <div class="userprofile-messages-row-item">
+                                <a href="" ng-click="deleteMessage(message)"><i class="fa fa-trash"/></a>
+                            </div>
+                        </div> 
+                    </div>  
+                </a>
+            </div>
+            <div class="row padding-y text-center" ng-show="receivedMessages.total === 0">
+                <div>You haven't received messages yet.</div>
+            </div>
+            <div class="row" ng-show="receivedMessages.hasPager">
+                <div class="col-md-12 userprofile-messages-pager">
+                    <div class="position-center">
+                        <a href="" ng-click="receivedMessages.goBack()" ng-show="receivedMessages.page > 1">
+                            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+                        </a> 
+                        {{ receivedMessages.pageStart }}-{{ receivedMessages.pageEnd }} of {{ receivedMessages.total }}
+                        <a href="" ng-click="receivedMessages.goForward()" ng-show="receivedMessages.hasMore">
+                            <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="userprofile-messages-item">
-            <a href="" ng-click="viewMessage()" class="userprofile-messages-link">
-                <div class="userprofile-messages-name padding-none pull-left col-md-2">Andres posada</div>
-                <div class="col-md-5 col-xs-8 col-sm-8">Nice work on the lastest version</div>
-                <div class="col-md-3 text-muted hidden-xs hidden-sm" style="font-size: 11px;">- More content here</div> 
-                <div class="padding-none col-md-2 pull-right">12:10 AM</div> 
-            </a>
+    </div>
+    <div class="row userprofile-messages" ng-show="isTabOpen(tabs.SENT)">  
+        <div class="col-md-12">          
+            <div ng-repeat="message in sentMessages.pagedMessages" class="row">       
+                <a href="" ng-click="viewMessage(message)" class="userprofile-messages-link">  
+                    <div class="userprofile-messages-item" ng-class="['userprofile-messages-item', { 'userprofile-messages-row-item-unread': !message.read }]">
+                        <div class="pull-left col-md-10">
+                            <div class="userprofile-messages-name userprofile-messages-row-item">{{ message.from.fullName }}</div>
+                            <div class="margin-left userprofile-messages-row-item">{{ message.subject }}</div>
+                            <div class="userprofile-messages-preview userprofile-messages-row-item hidden-xs hidden-sm"> - {{ message.contentsPreview }}</div>                            
+                        </div>
+                        <div class="padding-y--small pull-right">
+                            <div class="userprofile-messages-row-item">
+                                {{ message.createdDateFormatted }}
+                            </div>
+                            <div class="userprofile-messages-row-item">
+                                <a href="" ng-click="deleteMessage(message)"><i class="fa fa-trash"/></a>
+                            </div>
+                        </div> 
+                    </div>  
+                </a>
+            </div>
+            <div class="row padding-y text-center" ng-show="sentMessages.total === 0">
+                <div>You haven't received messages yet.</div>
+            </div>
+            <div class="row" ng-show="sentMessages.hasPager">
+                <div class="col-md-12 userprofile-messages-pager">
+                    <div class="position-center">
+                        <a href="" ng-click="sentMessages.goBack()" ng-show="sentMessages.page > 1">
+                            <i class="fa fa-chevron-circle-left" aria-hidden="true"></i>
+                        </a> 
+                        {{ sentMessages.pageStart }}-{{ sentMessages.pageEnd }} of {{ sentMessages.total }}
+                        <a href="" ng-click="sentMessages.goForward()" ng-show="sentMessages.hasMore">
+                            <i class="fa fa-chevron-circle-right" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>

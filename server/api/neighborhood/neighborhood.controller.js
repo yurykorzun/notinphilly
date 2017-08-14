@@ -13,6 +13,10 @@ exports.index = function(req, res) {
   {
     logger.error("neighborhoodController.index " + error);
     res.status(500).send(error);
+  })
+  .catch(function(error) {
+      logger.error("neighborhoodController.index " + error);
+      res.status(500).send(error);
   });
 };
 
@@ -25,6 +29,10 @@ exports.getAllGeojson = function(req, res) {
   {
     logger.error("neighborhoodController.getAllGeojson " + error);    
     res.status(500).send(error);
+  })
+  .catch(function(error) {
+      logger.error("neighborhoodController.getAllGeojson " + error);    
+      res.status(500).send(error);
   });
 };
 
@@ -42,6 +50,10 @@ exports.getByLocation = function(req, res, next) {
   {
     logger.error("neighborhoodController.getByLocation " + error);        
     res.status(500).send(error);
+  })
+  .catch(function(error) {
+     logger.error("neighborhoodController.getByLocation " + error);        
+     res.status(500).send(error);
   });
 }
 
@@ -56,6 +68,10 @@ exports.get = function(req, res, next) {
   {
     logger.error("neighborhoodController.get " + error);        
     res.status(500).send(error);
+  })
+  .catch(function(error) {
+      logger.error("neighborhoodController.get " + error);        
+      res.status(500).send(error);
   });
 };
 
@@ -66,6 +82,10 @@ exports.reconcileNeighborhoods = function(req, res, next) {
   },
   function(error)
   {
+    logger.error("neighborhoodController.reconcileNeighborhoods " + error);            
+    res.status(500).json(error);
+  })
+  .catch(function(error) {
     logger.error("neighborhoodController.reconcileNeighborhoods " + error);            
     res.status(500).json(error);
   });

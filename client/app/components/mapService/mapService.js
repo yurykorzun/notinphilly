@@ -3,10 +3,9 @@
     .service('mapService', ['$http', '$q', '$rootScope', 'APP_EVENTS', 'APP_CONSTS', function($http, $q, $rootScope, APP_EVENTS, APP_CONSTS) {
       var self = this;
       var _deferredMap = $q.defer();
-
       var _mapLayerGroup = L.layerGroup();
       var _mapStreetLayer = undefined; 
-
+      
       var _mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
         neighborhoodMouseOutCallback : undefined,
@@ -21,8 +20,20 @@
         _deferredMap.resolve(mapInstance);
       };
 
+      self.removeMap = function()
+      {
+        _deferredMap.promise.then(function(map) {
+          map.remove();
+          _deferredMap = $q.defer();
+        });
+      }
+
       self.getMap = function() {
         return _deferredMap.promise;
+      };
+
+      self.hasMap = function() {
+        return _cityMapInstance != undefined;
       };
 
       self.setMapCallbacks = function(callbacks) {
@@ -43,9 +54,9 @@
           });
       }
 
-      self.setNeighborhoodLayers = function() {
-        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
+      self.showNeighborhoodLayers = function() {
         _deferredMap.promise.then(function(map) {
+          $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
             _mapLayerGroup.clearLayers();
 
@@ -71,17 +82,25 @@
               }
             });
 
-            var mapCenter = getMapCenter().then(function(mapCenter){
-               map.setView(mapCenter, 13, { animate: false });
-              _mapLayerGroup.addLayer(geoJsonLayer);
-              _mapLayerGroup.addTo(map);
-              _mapStreetLayer = undefined;
+            _mapLayerGroup.addLayer(geoJsonLayer);
+            _mapLayerGroup.addTo(map);
+            _mapStreetLayer = undefined;
 
+            var mapCenter = getMapCenter().then(function(mapCenter){
+              map.setView(mapCenter, 13, { animate: false });
               map.invalidateSize();
             });
 
              $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
            });
+        });
+      };
+
+      self.addNeigborhoodStreets = function(location) {
+        $http.post('api/neighborhoods/byloc', location).success(function(neighborhooData, status) {
+          _deferredMap.promise.then(function(map) {
+            loadStreets(neighborhooData, map);
+          });
         });
       };
 
@@ -136,13 +155,7 @@
         });
       };
 
-      self.addNeigborhoodStreets = function(location) {
-        $http.post('api/neighborhoods/byloc', location).success(function(neighborhooData, status) {
-          _deferredMap.promise.then(function(map) {
-            loadStreets(neighborhooData, map);
-          });
-        });
-      };
+ 
 
       self.showUserStreets = function()
       {
@@ -191,15 +204,13 @@
       self.findStreetsNear = function(location) {
         var deferredStreets = $q.defer();
 
-        _deferredMap.promise.then(function(map) {
-          $http.post('api/streets/byLocation', location).then(function(result) {
-            var foundStreets = result.data;
-            foundStreets = setStreetViewSrc(foundStreets);
+        $http.post('api/streets/byLocation', location).then(function(result) {
+          var foundStreets = result.data;
+          foundStreets = setStreetViewSrc(foundStreets);
 
-            deferredStreets.resolve(foundStreets);
-          }, function(err) {
-            deferredStreets.reject(err);
-          });
+          deferredStreets.resolve(foundStreets);
+        }, function(err) {
+          deferredStreets.reject(err);
         });
 
         return deferredStreets.promise;
@@ -208,15 +219,13 @@
       self.findStreetsNearGeoJSON = function(location) {
         var deferredStreets = $q.defer();
 
-        _deferredMap.promise.then(function(map) {
-          $http.post('api/streets/byLocationGeoJSON', location).then(function(result) {
-            var foundStreets = result.data;
-            foundStreets = setStreetViewSrc(foundStreets);
+        $http.post('api/streets/byLocationGeoJSON', location).then(function(result) {
+          var foundStreets = result.data;
+          foundStreets = setStreetViewSrc(foundStreets);
 
-            deferredStreets.resolve(result.data);
-          }, function(err) {
-            deferredStreets.reject(err);
-          });
+          deferredStreets.resolve(result.data);
+        }, function(err) {
+          deferredStreets.reject(err);
         });
 
         return deferredStreets.promise;
@@ -445,7 +454,7 @@
               container.innerHTML = '<a class="map-control-text"><i class="fa fa-map-o"></i> View Neighborhoods</a>';
 
               container.onclick = function(){
-                self.setNeighborhoodLayers();
+                self.showNeighborhoodLayers();
               }
               return container;
             }

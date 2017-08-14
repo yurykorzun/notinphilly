@@ -29,4 +29,8 @@ app.listen(port, ip, function () {
   logger.debug('Express server listening', { "ip" : ip, "port" : port });
 });
 
+process.on('unhandledRejection', (reason) => {
+    console.log('Reason: ' + reason);
+});
+  
 module.exports = app;

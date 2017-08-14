@@ -19,6 +19,10 @@ exports.index = function(req, res) {
         function(error) {
             logger.error("usercontroller.index " + error);
             res.status(500).send("Users retrieval failed");
+        })
+        .catch(function(error) {
+            logger.error("usercontroller.index " + error);
+            res.status(500).send("Users retrieval failed");
         });
 };
 
@@ -33,6 +37,10 @@ exports.me = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("usercontroller.me " + error);            
+            res.status(500).send("User retrieval failed");
+        })
+        .catch(function(error) {
             logger.error("usercontroller.me " + error);            
             res.status(500).send("User retrieval failed");
         });
@@ -54,6 +62,10 @@ exports.getAllPaged = function(req, res) {
         function(error) {
             logger.error("usercontroller.getAllPaged " + error);                        
             res.status(500).send("Users retrieval failed");
+        })
+        .catch(function(error) {
+            logger.error("usercontroller.getAllPaged " + error);                        
+            res.status(500).send("Users retrieval failed");
         });
 };
 
@@ -69,6 +81,10 @@ exports.findNeighborsCount = function(req, res) {
         function(error) {
             logger.error("usercontroller.findNeighborsCount " + error);            
             res.status(500).send("Failed counting neighbors");
+    })
+    .catch(function(error) {
+        logger.error("usercontroller.findNeighborsCount " + error);            
+        res.status(500).send("Failed counting neighbors");
     });
 }
 
@@ -84,6 +100,10 @@ exports.findNeighbors = function(req, res) {
         function(error) {
             logger.error("usercontroller.findNeighbors " + error);            
             res.status(500).send("Failed retrieving neighbors");
+    })
+    .catch(function(error) {
+        logger.error("usercontroller.findNeighbors " + error);            
+        res.status(500).send("Failed retrieving neighbors");
     });
 }
 
@@ -121,7 +141,11 @@ exports.exportUsersCSV = function(req, res) {
         function(error) {
             logger.error("usercontroller.exportUsersCSV " + error);                                    
             res.status(500).send(error);
-        });
+        })
+     .catch(function(error) {
+        logger.error("usercontroller.exportUsersCSV " + error);                                    
+        res.status(500).send(error);
+    });
 };
 
 exports.create = function(req, res, next) {
@@ -132,6 +156,10 @@ exports.create = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("usercontroller.create " + error);                                                
+            res.status(500).send(error);
+        })
+        .catch(function(error) {
             logger.error("usercontroller.create " + error);                                                
             res.status(500).send(error);
         });
@@ -152,6 +180,10 @@ exports.update = function(req, res) {
         function(error) {
             logger.error("usercontroller.update " + error);                                                            
             res.status(500).send(error);
+        })
+        .catch(function(error) {
+            logger.error("usercontroller.update " + error);                                                            
+            res.status(500).send(error);
         });
 };
 
@@ -170,6 +202,10 @@ exports.changePassword = function(req, res, next) {
             function(error) {
                 logger.error('usercontroller.changePassword ' + error);                                                                            
                 res.status(403).send('Password change failed');
+            })
+            .catch(function(error) {
+                logger.error('usercontroller.changePassword ' + error);                                                                            
+                res.status(403).send('Password change failed');
             });
     } else {
         logger.error('usercontroller.changePassword Password change is forbidden');                                                            
@@ -185,6 +221,10 @@ exports.resetPassword = function(req, res, next) {
             res.status(200).send('Successfully completed password reset');
         },
         function(error) {
+            logger.error('usercontroller.resetPassword ' + error);                                                                        
+            res.status(500).send('There was an issue. Please try again later');
+        })
+        .catch(function(error) {
             logger.error('usercontroller.resetPassword ' + error);                                                                        
             res.status(500).send('There was an issue. Please try again later');
         });
@@ -205,6 +245,10 @@ exports.get = function(req, res, next) {
         function(error) {
             logger.error('usercontroller.get ' + error);                                                                                    
             res.status(500).send(err);
+        })
+        .catch(function(error) {
+            logger.error('usercontroller.get ' + error);                                                                                    
+            res.status(500).send(err);
         });
 };
 
@@ -223,6 +267,10 @@ exports.destroy = function(req, res) {
         function(error) {
             logger.error('usercontroller.destroy ' + error);                                                                                                
             res.status(500).send(err);
+        })
+        .catch(function(error) {
+            logger.error('usercontroller.destroy ' + error);                                                                                                
+            res.status(500).send(err);
         });
 };
 
@@ -237,6 +285,10 @@ exports.activate = function(req, res) {
             res.end();
         },
         function(error) {
+            logger.error('usercontroller.activate ' + error);                                                                                                            
+            res.status(500).send(err);
+        })
+        .catch(function(error) {
             logger.error('usercontroller.activate ' + error);                                                                                                            
             res.status(500).send(err);
         });

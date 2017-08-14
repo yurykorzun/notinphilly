@@ -7,9 +7,16 @@
 #ebebeb Light Gray
 ------------------ */
 
-html,
+html {
+    font-family: "Open Sans", Helvetica, Geneva, sans-serif;    
+    height: 100%;
+    box-sizing: border-box;
+}
 body {
     font-family: "Open Sans", Helvetica, Geneva, sans-serif;
+    position: relative;
+    margin: 0;
+    min-height: 100%;
 }
 
 h1,
@@ -257,6 +264,10 @@ hr {
     margin-left: 10px;
 }
 
+.margin-left {
+    margin-left: 20px;
+}
+
 /* Margins for just the vertical or horizontal axes */
 
 .margin-y {
@@ -411,30 +422,77 @@ hr {
 
 
 /* MAIN NAV ################### */
+.main-nav ul {
+    list-style: none;
+    text-align: center;
+    padding: 0;
+    margin: 0;
+}
+
+.main-nav > ul > li {
+    text-align: center;
+    font-family: 'Oswald', sans-serif;
+    text-align: left;
+    border-bottom: none;
+    display: inline-block;
+    margin-right: 20px;
+    padding: 5px;
+}
+
+.main-nav > ul > li:hover {
+    background: rgba(253, 196, 66, 0.8);
+}
 
 .main-nav a {
-    display: inline-block;
-    padding: 5px 10px;
-    margin: 2px 5px;
+    text-decoration: none;
+    display: block;
     color: #fff;
     text-transform: uppercase;
     text-align: center;
     font-family: "Open Sans", Helvetica, Geneva, sans-serif;
-    font-size: 12px;
     font-weight: bold;
-    text-decoration: none;
-    cursor: pointer;
+    transition: .3s background-color;
 }
 
-.main-nav a:hover {
-    color: #000;
-    text-decoration: none;
+
+.main-nav a.active {
+    background-color: #aaa;
+    color: #444;
+    cursor: default;
+}
+
+/* Sub Menus */
+.main-nav li li {
+    padding-left: 10px;
+    padding-right: 10px;    
+}
+
+/* Sub Menus */
+.main-nav li ul {
+    position: absolute;
+    display: none;
+    margin-left: -35px;
+    background-color: #444;
+}
+
+.main-nav li:hover ul {
+    display: block;
+}
+
+.main-nav li ul li {
+    font-size: 0.9em;
+}
+
+.main-nav li ul li:hover {
     background: rgba(253, 196, 66, 0.8);
 }
 
-
 /* HOMEPAGE ################### */
 
+.bodyContent
+{
+
+}
 
 /* -- HERO ------------------ */
 
@@ -507,7 +565,6 @@ hr {
 
 
 /* FOOTER ######################## */
-
 .footer-logo {
     margin-bottom: 0;
     font-family: "Open Sans", Helvetica, Geneva, sans-serif;
@@ -556,6 +613,11 @@ hr {
 
 /* Existing Styles ############################################## */
 
+.site-info-message
+{
+
+}
+
 .top-bar {
     background: #fdfdfd;
     background-color: #F2F8FF;
@@ -588,6 +650,17 @@ hr {
 .donate {
     width: 69px;
     margin-left: 10px;
+}
+
+.page-content {
+    display: block;
+    overflow: hidden;
+    border: 1px solid #ddd;
+    border-top: none;
+}
+
+.page-content-inner {
+    background-color: #F2F8FF;
 }
 
 .user-profile {
@@ -659,17 +732,6 @@ hr {
 
 .nav-tabs>li:not(.active)>a.nav-link {
     color: #717171;
-}
-
-.tab-content {
-    display: block;
-    overflow: hidden;
-    border: 1px solid #ddd;
-    border-top: none;
-}
-
-.tab-inner {
-    background-color: #F2F8FF;
 }
 
 .address-search-form {
@@ -855,6 +917,11 @@ hr {
         width: auto;
         max-height: 65px;
     }
+    
+    .page-content
+    {
+        padding: 8px;
+    }
 }
 
 
@@ -888,7 +955,7 @@ hr {
     .main-logo img {
         width: 100%;
     }
-    .main-nav a {
+    .main-nav-item > a {
         font-size: 1em;
         padding: 10px;
         margin: 0 10px;
@@ -899,5 +966,11 @@ hr {
     }
     .footer-contact {
         text-align: right;
+    }
+}
+
+@media (max-height: 900px) {
+    .partners {
+        display: none;
     }
 }

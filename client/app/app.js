@@ -10,7 +10,8 @@
       'selectize',
       'ui.grid',
       'ui.grid.pagination',
-      'ui.grid.resizeColumns'
+      'ui.grid.resizeColumns',
+      'ui.tinymce'
     ])
 
     app.constant("APP_EVENTS", {
@@ -37,13 +38,38 @@
     app.config(function ($httpProvider, $routeProvider, $locationProvider, $logProvider, $provide) {
       $httpProvider.defaults.withCredentials = true;
       $routeProvider
-        .when('/', {
-          templateUrl: 'app/main/main.html',
-          controller: 'mainController'
+        .when('/search', {
+          templateUrl: 'app/search/searchaddress-template.html'
         })
-        .when('/admin', {
-          templateUrl: 'app/admin/admin-template.html',
-          controller: 'AdminController'
+        .when('/map', {
+          templateUrl: 'app/map/map-template.html'
+        })
+        .when('/map', {
+          templateUrl: 'app/map/map-template.html'
+        })
+        .when('/map/location/:lat/:lng', {
+          templateUrl: 'app/map/map-template.html'
+        })
+        .when('/profile', {
+          templateUrl: 'app/user/userprofile-template.html'
+        })
+        .when('/profile1', {
+          templateUrl: 'app/user/userprofilenew-template.html'
+        })
+        .when('/login', {
+          templateUrl: 'app/user/login-template.html'
+        })
+        .when('/calendar', {
+          templateUrl: 'app/social/calendar-template.html'
+        })
+        .when('/social', {
+          templateUrl: 'app/social/social-template.html'
+        })
+        .when('/media', {
+          templateUrl: 'app/info/media-template.html'
+        })
+        .when('/faq', {
+          templateUrl: 'app/info/faq-template.html'
         })
         .otherwise({
           redirectTo: '/'
@@ -57,14 +83,13 @@
       }
     ]);
 
-        $logProvider.debugEnabled(false);
+    $logProvider.debugEnabled(false);
 
-        $locationProvider.html5Mode({
-          enabled: true,
-          requireBase: false
-        });
-
+    $locationProvider.html5Mode({
+      enabled: true,
+      requireBase: false
     });
+  });
 
   app.run([
     '$rootScope',

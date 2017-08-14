@@ -104,6 +104,23 @@
 {
     font-weight: bold;
 }
+.userprofile-messages-preview {
+    font-size: 12px;
+    color: #B1B1B1;
+}
+.userprofile-messages-row-item
+{
+    display: inline;
+}
+.userprofile-messages-row-item-unread
+{
+    font-weight: bold;
+}
+.userprofile-messages-pager 
+{
+    color: #0000;
+    font-size: 14pt;
+}
 .userprofile-editform {
     padding: 15px 15px 15px;
 }

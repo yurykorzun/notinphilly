@@ -1,15 +1,17 @@
-<div class="user-profile" ng-controller="UserProfileController">
+<div class="position-center col-md-8 user-profile" ng-controller="UserProfileController">
     <div class="row">
-        <div class="col-xs-offset-1 col-xs-11">
+        <div class="col-md-12">
             <div class="row">
-                <div>
-                    <div class="heading">
-                        <h4>
-                            <img ng-if="user.profileImageUrl" class="user-profile-image" src="{{user.profileImageUrl}}" />
-                            <i ng-if="!user.profileImageUrl" class="fa fa-user" aria-hidden="true"></i> {{user.fullName}}
-                        </h4>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="heading">
+                            <h4>
+                                <img ng-if="user.profileImageUrl" class="user-profile-image" src="{{user.profileImageUrl}}" />
+                                <i ng-if="!user.profileImageUrl" class="fa fa-user" aria-hidden="true"></i> {{user.fullName}}
+                            </h4>
+                        </div>
+                        <div class="heading"><a href="" ng-click="logout()">Log out <i class="fa fa-sign-out"></i></a></div>
                     </div>
-                    <div class="heading"><a href="" ng-click="logout()">Log out <i class="fa fa-sign-out"></i></a></div>
                 </div>
                 <div class="row">
                     <div class="col-md-11 col-sm-10 col-xs-12">
@@ -25,17 +27,19 @@
                     </div>
                 </div>
             </div>
-
-            <address ng-show="!userProfile.isEditing">
-              <div ng-show="user.email"  class="info"><i class="fa fa-envelope" aria-hidden="true"></i> {{user.email}}</div>
-              <div ng-show="user.address" class="info"><i class="fa fa-map-pin" aria-hidden="true"></i> {{user.address}}</div>
-              <div ng-show="user.aptNumber" class="info"><i class="fa fa-building" aria-hidden="true"></i> Apt. {{user.aptNumber}}<br></div>
-            </address>
-
-            <div ng-show="userProfile.isChangingPassword" ng-include src="'app/user/usereditpassword-template.html'"></div>
+            <div class="row">
+                <address ng-show="!userProfile.isEditing">
+                    <div ng-show="user.email"  class="info"><i class="fa fa-envelope" aria-hidden="true"></i> {{user.email}}</div>
+                    <div ng-show="user.address" class="info"><i class="fa fa-map-pin" aria-hidden="true"></i> {{user.address}}</div>
+                    <div ng-show="user.aptNumber" class="info"><i class="fa fa-building" aria-hidden="true"></i> Apt. {{user.aptNumber}}<br></div>
+                </address>
+              
+                <div ng-show="userProfile.isChangingPassword" ng-include src="'app/user/usereditpassword-template.html'"></div>
+            </div>
+           
         </div>
         <div class="row">
-            <div class="col-xs-12 col-md-offset-1 col-md-11">
+            <div class="col-md-12">
                 <form class="edit-form" name="editForm" ng-show="userProfile.isEditing" novalidate>
                     <div class="row" ng-show="errorMessage">
                         <div class="alert alert-danger">{{ errorMessage }}</div>
@@ -108,7 +112,7 @@
             <div ng-include src="'app/inventory/grabber-request-template.html'"></div>
         </div>
         <div class="row">
-            <div class="col-xs-offset-1 col-xs-12">
+            <div class="col-md-12">
                 <div class="street-list-header">
                     <i class="fa fa-check-circle-o"></i> You are participating in picking up trash in following streets:
                     <ul class="list-inline user-profile-actions pull-right">
@@ -120,7 +124,7 @@
         </div>
     </div>
     <div class="row" ng-show="!hasStreets()">
-        <div class="col-xs-offset-1 col-xs-11">
+        <div class="col-md-12">
             <div class="street-list-header">
                 <h5>You currently don't participate in any streets. Find <a href="" ng-click="showBlock()">streets in your block</a>. </h5>
             </div>

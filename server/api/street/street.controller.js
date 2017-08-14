@@ -17,6 +17,10 @@ exports.index = function(req, res, next) {
   {
     logger.error("streetController.index " + error);
     res.status(500).send(error);
+  })
+  .catch(function(error) {
+    logger.error("streetController.index " + error);
+    res.status(500).send(error);
   });
 };
 
@@ -29,6 +33,10 @@ exports.get = function(req, res, next) {
   },
   function(error)
   {
+    logger.error("streetController.get " + error);    
+    res.status(500).send(error);
+  })
+  .catch(function(error) {
     logger.error("streetController.get " + error);    
     res.status(500).send(error);
   });
@@ -47,6 +55,10 @@ exports.getByNeighborhood = function(req, res, next) {
     {
       logger.error("streetController.getByNeighborhood " + error); 
       res.status(500).send(error);
+    })
+    .catch(function(error) {
+      logger.error("streetController.getByNeighborhood " + error); 
+      res.status(500).send(error);
     });
 };
 
@@ -62,6 +74,10 @@ exports.currentUserStreets = function(req, res, next) {
     function(error) {
       logger.error("streetController.currentUserStreetsGeoJSON " + error);    
       res.status(500).json("Street retrieval failed");
+    })
+    .catch(function(error) {
+      logger.error("streetController.currentUserStreetsGeoJSON " + error);    
+      res.status(500).json("Street retrieval failed");
     });
 };
 
@@ -75,6 +91,10 @@ exports.currentUserStreetsGeoJSON = function(req, res, next) {
       res.status(200).json(result);
     },
     function(error) {
+      logger.error("streetController.currentUserStreetsGeoJSON " + error);    
+      res.status(500).json("Street retrieval failed");
+    })
+    .catch(function(error) {
       logger.error("streetController.currentUserStreetsGeoJSON " + error);    
       res.status(500).json("Street retrieval failed");
     });
@@ -95,11 +115,19 @@ exports.getByLocation = function(req, res, next) {
         function(error){
           logger.error("streetController.getByLocation " + error);              
           res.status(500).json("Search failed");          
+        })
+        .catch(function(error) {
+          logger.error("streetController.getByLocation " + error);              
+          res.status(500).json("Search failed");   
         });
       },
       function (error) {
         logger.error("streetController.getByLocation " + error);                      
         res.status(500).json("Search failed");
+      })
+      .catch(function(error) {
+        logger.error("streetController.getByLocation " + error);              
+        res.status(500).json("Search failed");   
       });
     }
     else 
@@ -111,6 +139,10 @@ exports.getByLocation = function(req, res, next) {
         function(error){
           logger.error("streetController.getByLocation " + error);                                
           res.status(500).json("Search failed");          
+        })
+        .catch(function(error) {
+          logger.error("streetController.getByLocation " + error);                                
+          res.status(500).json("Search failed");     
         });
     }
 };
@@ -132,9 +164,17 @@ exports.getByLocationPaged = function(req, res, next) {
         function(error){
           logger.error("streetController.getByLocationPaged " + error);                                          
           res.status(500).json("Search failed");          
+        })
+        .catch(function(error) {
+          logger.error("streetController.getByLocationPaged " + error);                                                  
+          res.status(500).json("Search failed");
         });
       },
       function (error) {
+        logger.error("streetController.getByLocationPaged " + error);                                                  
+        res.status(500).json("Search failed");
+      })
+      .catch(function(error) {
         logger.error("streetController.getByLocationPaged " + error);                                                  
         res.status(500).json("Search failed");
       });
@@ -149,6 +189,10 @@ exports.getByLocationPaged = function(req, res, next) {
       function(error){
         logger.error("streetController.getByLocationPaged " + error);                                                          
         res.status(500).json("Search failed");          
+      })
+      .catch(function(error) {
+        logger.error("streetController.getByLocationPaged " + error);                                                          
+        res.status(500).json("Search failed");       
       });
     }
 };
@@ -156,6 +200,12 @@ exports.getByLocationPaged = function(req, res, next) {
 exports.getGeoJSONByLocation = function(req, res, next) {
     var locationLat = req.body.lat;
     var locationLng = req.body.lng;
+
+    if (!locationLat) throw Error("Latitude is missing");
+    if (!locationLng) throw Error("Longtitude is missing");    
+
+    locationLat = parseFloat(locationLat);
+    locationLng = parseFloat(locationLng);
 
     var user = {};
     //Get user info
@@ -168,9 +218,17 @@ exports.getGeoJSONByLocation = function(req, res, next) {
         function(error){
           logger.error("streetController.getGeoJSONByLocation " + error);              
           res.status(500).json("Search failed");          
+        })
+        .catch(function(error) {
+          logger.error("streetController.getGeoJSONByLocation " + error);                      
+          res.status(500).json("Search failed");
         });
       },
       function (error) {
+        logger.error("streetController.getGeoJSONByLocation " + error);                      
+        res.status(500).json("Search failed");
+      })
+      .catch(function(error) {
         logger.error("streetController.getGeoJSONByLocation " + error);                      
         res.status(500).json("Search failed");
       });
@@ -184,7 +242,11 @@ exports.getGeoJSONByLocation = function(req, res, next) {
         function(error){
           logger.error("streetController.getGeoJSONByLocation " + error);                                
           res.status(500).json("Search failed");          
-        });
+        })
+        .catch(function(error) {
+          logger.error("streetController.getGeoJSONByLocation " + error);                                
+          res.status(500).json("Search failed");      
+        }); 
     }
 };
 
@@ -198,6 +260,10 @@ exports.getAllGeojson = function(req, res, next) {
                                           function(error){
                                             logger.error("streetController.getAllGeojson " + error);                                                                    
                                             res.status(500).json("Streets retrieval failed");          
+                                          })
+                                          .catch(function(error) {
+                                            logger.error("streetController.getAllGeojson " + error);                                                                    
+                                            res.status(500).json("Streets retrieval failed");  
                                           });
     }
     else 
@@ -210,6 +276,10 @@ exports.getAllGeojson = function(req, res, next) {
                                           function(error){
                                             logger.error("streetController.getAllGeojson " + error);                                                                    
                                             res.status(500).json("Streets retrieval failed");          
+                                          })
+                                          .catch(function(error) {
+                                            logger.error("streetController.getAllGeojson " + error);                                                                    
+                                            res.status(500).json("Streets retrieval failed");   
                                           });
     }
 };
@@ -227,11 +297,19 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
         function(error){
           logger.error("streetController.getByNeighborhoodGeojson " + error);                                                                    
           res.status(500).json("Streets retrieval by neighborhood failed");          
+        })
+        .catch(function(error) {
+          logger.error("streetController.getByNeighborhoodGeojson " + error);    
+          res.status(500).json("User retrieval failed");   
         });
       },
       function (error) {
         logger.error("streetController.getByNeighborhoodGeojson " + error);    
         res.status(500).json("User retrieval failed");
+      })
+      .catch(function(error) {
+        logger.error("streetController.getByNeighborhoodGeojson " + error);    
+        res.status(500).json("User retrieval failed");   
       });
     }
     else 
@@ -244,6 +322,10 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
       function(error){
         logger.error("streetController.getByNeighborhoodGeojson " + error);            
         res.status(500).json("Streets retrieval by neighborhood failed");          
+      })
+      .catch(function(error) {
+        logger.error("streetController.getByNeighborhoodGeojson " + error);            
+        res.status(500).json("Streets retrieval by neighborhood failed"); 
       });
     }
 };
@@ -259,6 +341,10 @@ exports.reconcileAdoptedStreets = function(req, res, next) {
       res.status(500).json("Adopted streets reconciliation failed");    
     }
   )
+  .catch(function(error) {
+    logger.error("streetController.reconcileAdoptedStreets " + error);                  
+    res.status(500).json("Adopted streets reconciliation failed");    
+  });
 }
 
 exports.adopt = function(req, res, next) {
@@ -278,7 +364,11 @@ exports.adopt = function(req, res, next) {
         logger.error("streetController.adopt " + error);                          
         res.status(500).json(error);
       }
-    );
+    )
+    .catch(function(error) {
+      logger.error("streetController.adopt " + error);                          
+      res.status(500).json(error);    
+    });
 };
 
 exports.leave = function(req, res, next) {
@@ -297,6 +387,10 @@ exports.leave = function(req, res, next) {
         logger.error("streetController.leave " + error);                                  
         res.status(500).json(error);
       }
-    );
+    )
+    .catch(function(error) {
+      logger.error("streetController.leave " + error);                                  
+      res.status(500).json(error);
+    });
 };
 

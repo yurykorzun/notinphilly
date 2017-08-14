@@ -5,17 +5,19 @@ var authService = require('../../auth/authService');
 var router = express.Router();
 
 router.get('/', authService.isAuthenticated, controller.index);
-router.get('/count', authService.isAuthenticated, controller.getAllCount);
-router.get('/unread', authService.isAuthenticated, controller.getAllUnread);
-router.get('/unread/count', authService.isAuthenticated, controller.getUnreadCount);
-router.get('/unread/count/:senderUserId', authService.isAuthenticated, controller.getUnreadCountByUserId);
-router.get('/paged/:pageNumber/:pageSize', authService.isAuthenticated, controller.getAllPaged);
+router.get('/received/count', authService.isAuthenticated, controller.getReceivedAllCount);
+router.get('/received/unread', authService.isAuthenticated, controller.getReceivedAllUnread);
+router.get('/received/unread/count', authService.isAuthenticated, controller.getReceivedUnreadCount);
+router.get('/received/unread/count/:senderUserId', authService.isAuthenticated, controller.getReceivedUnreadCountByUserId);
+router.get('/received/paged/:pageNumber/:pageSize', authService.isAuthenticated, controller.getReceivedAllPaged);
+router.get('/sent/paged/:pageNumber/:pageSize', authService.isAuthenticated, controller.getSentAllPaged);
 router.get('/contacts', authService.isAuthenticated, controller.getAllUserContacts);
 router.get('/contacts/connected', authService.isAuthenticated, controller.getConnectedUsers);
-router.get('/:messageId', authService.isAuthenticated, controller.getById);
+router.get('/:messageId', authService.isAuthenticated, controller.getReceivedById);
 
-router.post('/markasread', authService.isAuthenticated, controller.markMessagesAsRead);
+router.post('/markasread', authService.isAuthenticated, controller.markReceivedMessagesAsRead);
 router.post('/send', authService.isAuthenticated, controller.sendMessage);
+router.post('/send/multiple', authService.isAuthenticated, controller.sendMessages);
 router.post('/connections/request', authService.isAuthenticated, controller.requestConnectionWithUser);
 router.post('/connections/request/near', authService.isAuthenticated, controller.requestConnectionsWithNearUsers);
 router.post('/connections/approve', authService.isAuthenticated, controller.approveUserConnection);

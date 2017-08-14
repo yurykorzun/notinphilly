@@ -1,5 +1,8 @@
 var mongoose    = require('mongoose');
 var timestamps  = require('mongoose-timestamp');
+var striptags   = require('striptags');
+var moment      = require('moment');
+var htmlEntities      = require('html-entities').AllHtmlEntities;
 var Schema      = mongoose.Schema;
 
 var MessageSchema = new Schema({
@@ -33,6 +36,31 @@ var MessageSchema = new Schema({
 {
     collection: 'messages'
 });
+
+MessageSchema.set('toObject', { virtuals: true });
+MessageSchema.set('toJSON', { virtuals: true });
+
+MessageSchema
+    .virtual('contentsPreview')
+    .get(function() {
+        var unescapedContents = htmlEntities.decode(this.contents);
+        var contentsWithoutTags = striptags(unescapedContents, [], '')
+        contentsWithoutTags = contentsWithoutTags.replace(/(\r\n|\n|\r)/gm," ");
+        if (contentsWithoutTags.length > 35)
+        {
+            contentsWithoutTags = contentsWithoutTags.substring(0, 35);
+            contentsWithoutTags += "...";
+        }
+       
+        return contentsWithoutTags;
+    });
+
+MessageSchema
+    .virtual('createdDateFormatted')
+    .get(function() {
+        return moment(this.createdAt).format('MMM Do YY');
+    });
+
 
 MessageSchema.plugin(timestamps);
 module.exports = mongoose.model('Message', MessageSchema);

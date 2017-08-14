@@ -10,10 +10,14 @@ exports.index = function(req, res, next) {
 
         if (!userId) throw new Error('User id is missing');
         
-        messageService.getAll(userId).then( function(result) {
+        messageService.getReceivedAll(userId).then( function(result) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("messagesController.index " + error);
+            res.status(400).send("Messages retrieval failed");
+        })
+        .catch(function(error) {
             logger.error("messagesController.index " + error);
             res.status(500).send("Messages retrieval failed");
         });
@@ -24,7 +28,7 @@ exports.index = function(req, res, next) {
     }
 };
 
-exports.getAllPaged = function(req, res, next) {
+exports.getReceivedAllPaged = function(req, res, next) {
     if (req.user) {
         var userId = req.user._id;
 
@@ -36,11 +40,15 @@ exports.getAllPaged = function(req, res, next) {
         var limit = parseInt(pageSize);
         var itemsToSkip = (page - 1) * limit;
 
-        messageService.getAllPaged(userId, itemsToSkip, limit).then(
+        messageService.getReceivedAllPaged(userId, itemsToSkip, limit).then(
                         function(result) {
                             res.status(200).json(result);
                         },
                         function(error) {
+                            logger.error("messagesController.getAllPaged " + error);                        
+                            res.status(500).send("Messages retrieval failed");
+                        })
+                        .catch(function(error) {
                             logger.error("messagesController.getAllPaged " + error);                        
                             res.status(500).send("Messages retrieval failed");
                         });
@@ -51,17 +59,52 @@ exports.getAllPaged = function(req, res, next) {
     }
 }
 
-exports.getAllCount = function(req, res, next) {
+exports.getSentAllPaged = function(req, res, next) {
+    if (req.user) {
+        var userId = req.user._id;
+
+        if (!userId) throw new Error('User id is missing');
+
+        var page = req.params.pageNumber;
+        var pageSize = req.params.pageSize;
+
+        var limit = parseInt(pageSize);
+        var itemsToSkip = (page - 1) * limit;
+
+        messageService.getSentAllPaged(userId, itemsToSkip, limit).then(
+                        function(result) {
+                            res.status(200).json(result);
+                        },
+                        function(error) {
+                            logger.error("messagesController.getSentAllPaged " + error);                        
+                            res.status(500).send("Messages retrieval failed");
+                        })
+                        .catch(function(error) {
+                            logger.error("messagesController.getSentAllPaged " + error);                        
+                            res.status(500).send("Messages retrieval failed");
+                        });
+    }
+    else 
+    {
+        res.status(401).send('Unauthorized');
+    }
+}
+
+exports.getReceivedAllCount = function(req, res, next) {
     if (req.user) {
         var userId = req.user._id;
 
         if (!userId) throw new Error('User id is missing');
         
-        messageService.getAllCount(userId).then( function(result) {
+        messageService.getReceivedAllCount(userId).then( function(result) {
             res.status(200).json(result);
         },
         function(error) {
-            logger.error("messagesController.getAllCount " + error);
+            logger.error("messagesController.getReceivedAllCount " + error);
+            res.status(500).send("Messages count failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.getReceivedAllCount " + error);
             res.status(500).send("Messages count failed");
         });
     }
@@ -71,17 +114,21 @@ exports.getAllCount = function(req, res, next) {
     }
 };
 
-exports.getAllUnread = function(req, res, next) {
+exports.getReceivedAllUnread = function(req, res, next) {
     if (req.user) {
         var userId = req.user._id;
 
         if (!userId) throw new Error('User id is missing');
         
-        messageService.getAllUnread(userId).then( function(result) {
+        messageService.getReceivedAllUnread(userId).then( function(result) {
             res.status(200).json(result);
         },
         function(error) {
-            logger.error("messagesController.getAllUnread " + error);
+            logger.error("messagesController.getReceivedAllUnread " + error);
+            res.status(500).send("Messages retrieval failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.getReceivedAllUnread " + error);
             res.status(500).send("Messages retrieval failed");
         });
     }
@@ -91,17 +138,21 @@ exports.getAllUnread = function(req, res, next) {
     }
 };
 
-exports.getUnreadCount = function(req, res, next) {
+exports.getReceivedAllCount = function(req, res, next) {
     if (req.user) {
         var userId = req.user._id;
 
         if (!userId) throw new Error('User id is missing');
         
-        messageService.getUnreadCount(userId).then( function(result) {
+        messageService.getReceivedAllCount(userId).then( function(result) {
             res.status(200).json(result);
         },
         function(error) {
-            logger.error("messagesController.getUnreadCount " + error);
+            logger.error("messagesController.getReceivedAllCount " + error);
+            res.status(500).send("Messages retrieval failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.getReceivedAllCount " + error);
             res.status(500).send("Messages retrieval failed");
         });
     }
@@ -111,7 +162,31 @@ exports.getUnreadCount = function(req, res, next) {
     }
 };
 
-exports.getUnreadCountByUserId = function(req, res, next) {
+exports.getReceivedUnreadCount = function(req, res, next) {
+    if (req.user) {
+        var recipientUserId = req.user._id;
+
+        if (!recipientUserId) throw new Error('Recipient user id is missing');
+
+        messageService.getReceivedUnreadCount(recipientUserId).then( function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            logger.error("messagesController.getReceivedUnreadCount " + error);
+            res.status(500).send("Messages retrieval failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.getReceivedUnreadCount " + error);
+            res.status(500).send("Messages retrieval failed");
+        });
+    }
+    else 
+    {
+        res.status(401).send('Unauthorized');
+    }
+};
+
+exports.getReceivedUnreadCountByUserId = function(req, res, next) {
     if (req.user) {
         var recipientUserId = req.user._id;
         var senderUserId = req.params.senderUserId;
@@ -119,11 +194,15 @@ exports.getUnreadCountByUserId = function(req, res, next) {
         if (!recipientUserId) throw new Error('Recipient user id is missing');
         if (!senderUserId) throw new Error('User id is missing');    
         
-        messageService.getUnreadCountByUserId(recipientUserId, senderUserId).then( function(result) {
+        messageService.getReceivedUnreadCountByUserId(recipientUserId, senderUserId).then( function(result) {
             res.status(200).json(result);
         },
         function(error) {
-            logger.error("messagesController.getUnreadCountByUserId " + error);
+            logger.error("messagesController.getReceivedUnreadCountByUserId " + error);
+            res.status(500).send("Messages retrieval failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.getReceivedUnreadCountByUserId " + error);
             res.status(500).send("Messages retrieval failed");
         });
     }
@@ -133,7 +212,7 @@ exports.getUnreadCountByUserId = function(req, res, next) {
     }
 };
 
-exports.getById = function(req, res, next) {
+exports.getReceivedById = function(req, res, next) {
     if (req.user) {
         var recipientUserId = req.user._id;
         var messageId = req.params.messageId;
@@ -141,11 +220,15 @@ exports.getById = function(req, res, next) {
         if (!recipientUserId) throw new Error('Recipient user id is missing');
         if (!messageId) throw new Error('Message id is missing');   
 
-        messageService.getById(recipientUserId, messageId).then( function(result) {
+        messageService.getReceivedById(recipientUserId, messageId).then( function(result) {
             res.status(200).json(result);
         },
         function(error) {
-            logger.error("messagesController.getById " + error);
+            logger.error("messagesController.getReceivedById " + error);
+            res.status(500).send("Message retrieval failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.getReceivedById " + error);
             res.status(500).send("Message retrieval failed");
         });
     }
@@ -165,6 +248,10 @@ exports.getAllUserContacts = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("messagesController.getAllUserContacts " + error);
+            res.status(500).send("Contacts retrieval failed");
+        })
+        .catch(function(error) {
             logger.error("messagesController.getAllUserContacts " + error);
             res.status(500).send("Contacts retrieval failed");
         });
@@ -189,6 +276,10 @@ exports.deleteMessage = function(req, res, next) {
         function(error) {
             logger.error("messagesController.deleteMessage " + error);
             res.status(500).send("Message deletion failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.deleteMessage " + error);
+            res.status(500).send("Message deletion failed");
         });
     }
     else 
@@ -197,7 +288,7 @@ exports.deleteMessage = function(req, res, next) {
     }
 };
 
-exports.markMessagesAsRead = function(req, res, next) {
+exports.markReceivedMessagesAsRead = function(req, res, next) {
     if (req.user) {
         var recipientUserId = req.user._id;
         var messageIds = req.body.messageIds;
@@ -205,11 +296,15 @@ exports.markMessagesAsRead = function(req, res, next) {
         if (!recipientUserId) throw new Error('Recipient user id is missing');
         if (!messageIds) throw new Error('Message ids is missing');   
 
-        messageService.markMessagesAsRead(recipientUserId, messageIds).then( function(result) {
+        messageService.markReceivedMessagesAsRead(recipientUserId, messageIds).then( function(result) {
             res.status(200).json(result);
         },
         function(error) {
-            logger.error("messagesController.markMessagesAsRead " + error);
+            logger.error("messagesController.markReceivedMessagesAsRead " + error);
+            res.status(500).send("Messages update failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.markReceivedMessagesAsRead " + error);
             res.status(500).send("Messages update failed");
         });
     }
@@ -233,6 +328,10 @@ exports.requestConnectionWithUser = function(req, res, next) {
         function(error) {
             logger.error("messagesController.requestConnectionWithUser " + error);
             res.status(500).send("Connection request failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.requestConnectionWithUser " + error);
+            res.status(500).send("Connection request failed");
         });
     }
     else 
@@ -252,6 +351,10 @@ exports.requestConnectionsWithNearUsers = function(req, res, next) {
                 res.status(200).json(result);
             },
             function(error) {
+                logger.error("messagesController.requestConnectionsWithNearUsers " + error);
+                res.status(500).send("Connections request failed");
+            })
+            .catch(function(error) {
                 logger.error("messagesController.requestConnectionsWithNearUsers " + error);
                 res.status(500).send("Connections request failed");
             });
@@ -276,6 +379,10 @@ exports.approveUserConnection = function(req, res, next) {
         function(error) {
             logger.error("messagesController.approveUserConnection " + error);
             res.status(500).send("Connection approval failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.approveUserConnection " + error);
+            res.status(500).send("Connection approval failed");
         });
     }
     else 
@@ -298,6 +405,10 @@ exports.cancelUserConnection = function(req, res, next) {
         function(error) {
             logger.error("messagesController.cancelUserConnection " + error);
             res.status(500).send("Connection cancel failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.cancelUserConnection " + error);
+            res.status(500).send("Connection cancel failed");
         });
     }
     else 
@@ -316,6 +427,10 @@ exports.getConnectedUsers = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("messagesController.getConnectedUsers " + error);
+            res.status(500).send("Connection retrieval failed");
+        })
+        .catch(function(error) {
             logger.error("messagesController.getConnectedUsers " + error);
             res.status(500).send("Connection retrieval failed");
         });
@@ -343,6 +458,10 @@ exports.sendMessage = function(req, res, next) {
         function(error) {
             logger.error("messagesController.sendMessage " + error);
             res.status(500).send("Message send failed");
+        })
+        .catch(function(error) {
+            logger.error("messagesController.sendMessage " + error);
+            res.status(500).send("Message send failed");
         });
     }
     else 
@@ -350,6 +469,44 @@ exports.sendMessage = function(req, res, next) {
         res.status(401).send('Unauthorized');
     }
 };
+
+exports.sendMessages = function(req, res, next) {
+    if (req.user) {
+        var userId = req.user._id;
+        var recipientUserIds = req.body.recipientUserIds;
+        var subject = req.body.subject;
+        var messageContents = req.body.contents;
+
+        if (!userId) throw new Error('User id is missing');
+        if (!recipientUserIds || recipientUserIds.length === 0) throw new Error('Recipient user ids is missing');    
+        if (!messageContents) throw new Error('Message contents is missing');    
+
+        var sendMessageResults = [];
+        for (var recipientIndex = 0; recipientIndex < recipientUserIds.length; recipientIndex++)
+        {
+            var recipientUserId = recipientUserIds[recipientIndex];
+
+            sendMessageResults.push(messageService.sendMessage(userId, recipientUserId, subject, messageContents));
+        }
+
+        Promise.all(sendMessageResults).then(function(results)
+                                        {
+                                            res.status(200).json(results);
+                                        },
+                                        function(error) {
+                                            logger.error("messagesController.sendMessages " + error);
+                                            res.status(500).send("Message send failed");
+                                        })
+                                        .catch(function(error) {
+                                            logger.error("messagesController.sendMessages " + error);
+                                            res.status(500).send("Messages send failed");
+                                        });
+    }
+    else 
+    {
+        res.status(401).send('Unauthorized');
+    }
+}
 
 exports.muteUser = function(req, res, next) {
     if (req.user) {
@@ -363,6 +520,10 @@ exports.muteUser = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("messagesController.muteUser " + error);
+            res.status(500).send("User muting failed");
+        })
+        .catch(function(error) {
             logger.error("messagesController.muteUser " + error);
             res.status(500).send("User muting failed");
         });
@@ -385,6 +546,10 @@ exports.unmuteUser = function(req, res, next) {
             res.status(200).json(result);
         },
         function(error) {
+            logger.error("messagesController.unmuteUser " + error);
+            res.status(500).send("User unmuting failed");
+        })
+        .catch(function(error) {
             logger.error("messagesController.unmuteUser " + error);
             res.status(500).send("User unmuting failed");
         });

@@ -1,6 +1,7 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $http, $rootScope, $cookies, mapService, APP_EVENTS, APP_CONSTS) {
+  .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$cookies', '$location', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
+  function($scope, $http, $rootScope, $cookies, $location, mapService, APP_EVENTS, APP_CONSTS) {
     $scope.searchAddress = {
       streets: [],
       streetsGeoJSON: [],      
@@ -32,15 +33,13 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.switchToMap = function() {
-      mapService.showStreetsNear($scope.searchAddress.location);
-      $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+      $location.path("/map/location/" + $scope.searchAddress.location.lat + "/" + $scope.searchAddress.location.lng )
     }
 
     $scope.clearSearch = function() {
       $scope.addressDetails = $scope.autocomplete = undefined;
       $scope.searchAddresspagedStreets = $scope.searchAddress.streets = [];
       $scope.searchAddress.streetsPage = 1;
-      mapService.setNeighborhoodLayers();
     };
 
     $scope.findStreet = function() {
@@ -92,6 +91,6 @@ angular.module('notinphillyServerApp')
 
         $scope.searchAddress.pagedStreets = $scope.searchAddress.pagedStreets.concat(pagedStreets);
         $scope.searchAddress.hasMoreStreets = endIndex < streets.length;
-    }
+    }    
   }]);
 })();

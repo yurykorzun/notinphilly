@@ -23,11 +23,11 @@
                 <img ng-if="!contact.profileImageUrl" src="/public/img/user-profile.png" class="userprofile-avatar" alt="User"/>
             </div>
             <div class="userprofile-contact-text">
-                <a href="" ng-click="sendMessage(contact)">{{contact.fullName}}</a>
+                <a href="" ng-click="showCreateMessage(contact)">{{contact.fullName}}</a>
             </div>
             <div class="userprofile-contact-actions">
                 <div class="userprofile-contact-action">
-                    <a class="userprofile-contact-action-link" title="Send message" href="" ng-click="sendMessage(contact)"><i class="fa fa-envelope" aria-hidden="true"></i></a>
+                    <a class="userprofile-contact-action-link" title="Send message" href="" ng-click="showCreateMessage(contact)"><i class="fa fa-envelope" aria-hidden="true"></i></a>
                 </div>
                 <div class="userprofile-contact-action">
                     <a class="userprofile-contact-action-link" title="Remove" href="" ng-click="removeContact(contact)"><i class="fa fa-remove" aria-hidden="true"></i></a>

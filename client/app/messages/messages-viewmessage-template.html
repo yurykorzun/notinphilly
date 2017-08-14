@@ -4,19 +4,27 @@
   </div>
 </div>
 <div class="modal-body">
-  <form name="requestForm" novalidate>
   <div class="bg-danger" ng-show="errorMessage">
     {{errorMessage}}
   </div>
   <div class="row">
+     <div class="col-md-12">
+      <p>From: {{ message.from.fullName }}</p>
+    </div>
     <div class="col-md-12">
-      <p>Message contents</p>
+      <p>To: {{ message.to.fullName }}</p>
+    </div>
+    <div class="col-md-12">
+      <p>Subject: {{ message.subject }}</p>
+    </div>
+    <div class="col-md-12">
+      <p ng-bind-html="message.contents"></p>
     </div>
   </div>
 </div>
 <div class="modal-footer">
-   <button class="btn btn-primary" type="submit" ng-click="">Respond</button>
-   <button class="btn btn-primary" type="button" ng-click="">Close</button>
-   <button class="btn btn-warning" type="button" ng-click="">Delete</button>   
+   <button class="btn btn-primary" type="submit" ng-click="respond()">Respond</button>
+   <button class="btn btn-primary" type="button" ng-click="close()">Close</button>
+   <button class="btn btn-danger" type="button" ng-click="delete()">Delete</button>   
 </div>
 
