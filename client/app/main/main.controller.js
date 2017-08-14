@@ -1,12 +1,35 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('mainController', ['$scope', '$rootScope', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', '$window', '$location',
-            function($scope, $rootScope, sessionService, APP_EVENTS, APP_CONSTS, $window, $location) {
+        .controller('mainController', ['$scope', '$rootScope', '$anchorScroll', '$window', '$location', 'sessionService', 'APP_EVENTS', 'APP_CONSTS',
+            function($scope, $rootScope, $anchorScroll, $window, $location, sessionService, APP_EVENTS, APP_CONSTS) {
                 $scope.main = {
                     spinnerActive: false
                 };
 
+                $scope.header = {
+                    isUserProfileEnabled: false,
+                    isLoginEnabled: false,
+                    activeTabIndex: 0,
+                    spinnerActive: false
+                };
+
                 $scope.spinnerActive = true;
+
+                $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
+                    ShowUserProfile(true);
+                });
+                $scope.$on(APP_EVENTS.LOGIN_FAILED, function(event) {
+
+                });
+                $scope.$on(APP_EVENTS.LOGOUT, function(event) {
+                    ShowLoginForm(true);
+                });
+                $scope.$on(APP_EVENTS.OPEN_SEARCH, function(event) {
+                    $scope.goToPage("/search");
+                });
+                $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
+                    $scope.goToPage("/map");
+                });
                 $scope.$on(APP_EVENTS.SPINNER_START, function(event) {
                     $scope.main.spinnerActive = true;
                 });
@@ -16,6 +39,28 @@
           
                 $scope.downloadFile = function(filePath) {
                     $window.location.href = filePath;
+                }
+
+                function ShowUserProfile(isActive) {
+                    $scope.header.isUserProfileEnabled = true;
+                    $scope.header.isLoginEnabled = false;                    
+                }
+
+                function ShowLoginForm(isActive) {
+                    $scope.header.isUserProfileEnabled = false;
+                    $scope.header.isLoginEnabled = true;
+                }
+
+                $scope.toggleSidebar = function(path) {
+                    $("#wrapper").toggleClass("toggled");
+                }
+
+                $scope.goToPage = function(path) {
+                    $location.path(path);
+                    $("#wrapper").removeClass("toggled");
+                    
+                    //$anchorScroll.yOffset = 80;
+                    //$anchorScroll('bodyContent');
                 }
 
                 sessionService.checkLoggedin()
@@ -28,7 +73,7 @@
                             $scope.main.spinnerActive = false;
                         });
 
-                 // function to set the height on fly
+                 // pushing footer down
                 function autoHeight() {
                     $('#bodyContent').css('min-height', 0);
                     $('#bodyContent').css('min-height', (
@@ -46,6 +91,17 @@
                 // onResize bind of the function
                 $(window).resize(function() {
                     autoHeight();
+                });
+
+                angular.element($window).bind("scroll", function() {
+                    var mainNav = angular.element(document.querySelector('#mainNav'));
+                    var offset = $window.pageYOffset;
+
+                    if (offset >= 10) {
+                        mainNav.addClass('is-sticky');
+                    } else {
+                        mainNav.removeClass('is-sticky');
+                    }
                 });
             }
         ]);

@@ -42,7 +42,8 @@
                                 $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
                             });
                     } else {
-                        $scope.errorMessage = "You are not authorized to view or edit the user profile";
+                        $scope.errorMessage = "You are not authorized to view or edit the user profile";                        
+                        $location.path("/login");
                     }
                 }
 

@@ -31,7 +31,6 @@
     <link rel="stylesheet" href="public/libs/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="public/libs/bootstrap/dist/css/bootstrap-theme.css">
     <link rel="stylesheet" href="public/libs/font-awesome/css/font-awesome.css" />
-    <link rel="stylesheet" href="public/libs/angular-treasure-overlay-spinner/src/treasure-overlay-spinner.css" />
     <link rel="styleSheet" href="public/libs/angular-ui-grid/ui-grid.min.css"/>
     <link rel="styleSheet" href="public/libs/leaflet/dist/leaflet.css" />
     <link rel="stylesheet" href="public/libs/selectize/dist/css/selectize.default.css ">
@@ -52,135 +51,180 @@
     </script>
 </head>
 <body ng-app="notinphillyServerApp" ng-controller="mainController">
-    <treasure-overlay-spinner active='main.spinnerActive'>
-        <div id="headerContent" ng-controller="headerController">
-            <div id="mainNav" class="sticky-header padding-y--small">
+<span us-spinner="{radius:30, width:8, length: 16}" spinner-key="mainSpinner"></span>
+<div id="wrapper">
+    <div id="sidebar-wrapper">
+        <ul class="sidebar-nav">
+            <li class="sidebar-brand">
+                <a href="#">
+                    Not in Philly
+                </a>
+            </li>
+            <li>
+                <a ng-href="#" ng-click="goToPage('/search')">Find My Block</a>
+            </li>
+            <li>
+                <a ng-href="#" ng-click="goToPage('/map')">Explore the Map</a>
+            </li>
+            <li>
+                <a ng-href="#">Social</a>
+                <ul>
+                    <li><a ng-href="#" ng-click="goToPage('/social')">Social Feed</a></li>
+                    <li><a ng-href="#" ng-click="goToPage('/calendar')">Calendar</a></li>                                    
+                </ul>
+            </li>
+            <li disable="!header.isLoginEnabled" ng-show="header.isLoginEnabled">
+                <a ng-href="#" ng-click="goToPage('/login')">Sign Up / Log In</a>
+            </li>
+            <li disable="!header.isUserProfileEnabled" ng-show="header.isUserProfileEnabled">
+                <a ng-href="#" ng-click="goToPage('/profile')">My Account</a>
+            </li>
+            <li>
+                <a ng-href="#">About</a>
+                <ul>
+                    <li><a ng-href="#" ng-click="goToPage('/faq')">FAQ</a></li>
+                    <li><a ng-href="#" ng-click="goToPage('/media')">In the media</a></li>                                    
+                </ul>
+            </li>
+            <li>
+                <a href="https://prc.networkforgood.com/projects/22356-not-in-philly">Donate</a>
+            </li>
+        </ul>
+    </div>
+    <div id="page-content-wrapper">
+        <div id="headerContent">
+                <div id="mainNav" class="sticky-header padding-y--small">
+                    <div class="container">
+                        <div class="row visible-xs">
+                            <div class="col-md-2 pull-left">
+                                <a href="#" ng-click="toggleSidebar()" ><i class="fa fa-2x fa-bars burger-menu-icon" aria-hidden="true"></i></a>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-2 header-logo">
+                                <a href="/" class="main-logo">
+                                <img ng-src="/public/img/logo-not-in-philly.png" alt="Logo" class="img-responsive" />
+                                </a>
+                            </div>
+                            <div class="col-sm-10 text-center main-nav ng-cloak hidden-xs">
+                                <ul>
+                                    <li>
+                                        <a ng-href="#" ng-click="goToPage('/search')">Find My Block</a>
+                                    </li>
+                                    <li>
+                                        <a ng-href="#" ng-click="goToPage('/map')">Explore the Map</a>
+                                    </li>
+                                    <li>
+                                        <a ng-href="#">Social</a>
+                                        <ul>
+                                            <li><a ng-href="#" ng-click="goToPage('/social')">Social Feed</a></li>
+                                            <li><a ng-href="#" ng-click="goToPage('/calendar')">Calendar</a></li>                                    
+                                        </ul>
+                                    </li>
+                                    <li disable="!header.isLoginEnabled" ng-show="header.isLoginEnabled">
+                                        <a ng-href="#" ng-click="goToPage('/login')">Sign Up / Log In</a>
+                                    </li>
+                                    <li disable="!header.isUserProfileEnabled" ng-show="header.isUserProfileEnabled">
+                                        <a ng-href="#" ng-click="goToPage('/profile')">My Account</a>
+                                    </li>
+                                    <li>
+                                        <a ng-href="#">About</a>
+                                        <ul>
+                                            <li><a ng-href="#" ng-click="goToPage('/faq')">FAQ</a></li>
+                                            <li><a ng-href="#" ng-click="goToPage('/media')">In the media</a></li>                                    
+                                        </ul>
+                                    </li>
+                                    <li>
+                                        <a href="https://prc.networkforgood.com/projects/22356-not-in-philly">Donate</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="header container-fluid homepage-hero">
+                    <div class="container padding-y--small">
+                        <!-- Hero -->
+                        <div class="row main-hero">
+                        <div class="introduction col-md-8 col-md-offset-2 padding-y--small">
+                            <div class="center-block">
+                            <div class="header-title text-center">
+                                <h2 class="headline-l text-white hidden-xs">Litter? <span class="text-yellow">Not in Philly!</span></h2>
+                                <p class="text-white">Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
+                            </div>
+                            <div class="cta-btns text-center padding-top--small">
+                                <a ng-href="#" ng-click="goToPage('/faq')" class="btn btn--yellow">Learn More</a>
+                                <a ng-href="#" ng-click="goToPage('/search')" class="btn btn--blue text-black">Find My Block</a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--View placeholder set by app.js-->
+            <div id="bodyContent" class="bodyContent container padding-top padding-bottom ng-cloak">
+                <div class="row">
+                    <div class="col-md-12 text-center bg-info site-info-message padding-20 hidden-xs">
+                        <i class="fa fa-2x fa-info-circle text-blue"></i>
+                        <span class="padding-x--small">If you encounter any problems or have any suggestions, please contact us at <strong>notinphilly@gmail.com</strong></span>
+                    </div>
+                </div>      
+                    <div class="row page-content page-content-inner">
+                    <div class="col-md-12">
+                        <div ng-view></div>
+                    </div>
+                </div>
+            </div>
+        <!-- PARTNERS -->
+        <div id="footerContent">
+            <div class="partners container-fluid bg-gray">
+                <div class="container padding-y--large">
+                    <div class="row">
+                    <div class="col-sm-4 margin-bottom">
+                    <h4 class="headline-s text-center">A Project of:</h4>
+                        <div class="col-sm-12">
+                        <a href="http://prc.org" target="_blank" class="partner-logo img-responsive center-block">
+                            <img src="public/img/PRC-LOGO.jpg">
+                        </a>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                    <h4 class="headline-s text-center">Meet our partners:</h4>
+                    <div class="col-xs-6">
+                        <a href="http://codeforphilly.org" target="_blank" class="partner-logo partner-logo--tall">
+                        <img src="public/img/partner-cfp.png" class="tall-logo">
+                        </a>
+                    </div>
+                    <div class="col-xs-6">
+                        <a href="https://www.thinkcompany.com" target="_blank" class="partner-logo partner-logo--tall img-responsive center-block">
+                        <img src="public/img/think-logo.jpg">
+                        </a>
+                    </div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+            <div class="padding-y bg-black-90">
                 <div class="container">
                     <div class="row">
-                        <div class="col-sm-2 header-logo">
-                            <a href="/" class="main-logo">
-                            <img ng-src="/public/img/logo-not-in-philly.png" alt="Logo" class="img-responsive" />
-                            </a>
-                        </div>
-                        <div class="col-sm-10 text-center main-nav hidden-xs">
-                            <ul>
-                                <li>
-                                    <a ng-href="#" ng-click="goToPage('/search')">Find My Block</a>
-                                </li>
-                                <li>
-                                    <a ng-href="#" ng-click="goToPage('/map')">Explore the Map</a>
-                                </li>
-                                <li>
-                                    <a ng-href="#">Social</a>
-                                    <ul>
-                                        <li><a ng-href="#" ng-click="goToPage('/social')">Social Feed</a></li>
-                                        <li><a ng-href="#" ng-click="goToPage('/calendar')">Calendar</a></li>                                    
-                                    </ul>
-                                </li>
-                                <li disable="!header.isLoginEnabled" ng-show="header.isLoginEnabled">
-                                    <a ng-href="#" ng-click="goToPage('/login')">Sign Up / Log In</a>
-                                </li>
-                                <li disable="!header.isUserProfileEnabled" ng-show="header.isUserProfileEnabled">
-                                    <a ng-href="#" ng-click="goToPage('/profile')">My Account</a>
-                                </li>
-                                <li>
-                                    <a ng-href="#">About</a>
-                                    <ul>
-                                        <li><a ng-href="#" ng-click="goToPage('/faq')">FAQ</a></li>
-                                        <li><a ng-href="#" ng-click="goToPage('/media')">In the media</a></li>                                    
-                                    </ul>
-                                </li>
-                                <li>
-                                    <a href="https://prc.networkforgood.com/projects/22356-not-in-philly">Donate</a>
-                                </li>
-                            </ul>
-                        </div>
+                    <div class="footer-logo padding-y--small col-sm-4">
+                        <h3 class="headline-s text-white"><span class="text-yellow">Not</span> In Philly</h3>
                     </div>
-                </div>
-            </div>
-            <div class="header container-fluid homepage-hero">
-                <div class="container padding-y--small">
-                    <!-- Hero -->
-                    <div class="row main-hero">
-                    <div class="introduction col-md-8 col-md-offset-2 padding-y--small">
-                        <div class="center-block">
-                        <div class="header-title text-center">
-                            <h2 class="headline-l text-white hidden-xs">Litter? <span class="text-yellow">Not in Philly!</span></h2>
-                            <p class="text-white">Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
-                        </div>
-                        <div class="cta-btns text-center padding-top--small">
-                            <a ng-href="#" ng-click="goToPage('/faq')" class="btn btn--yellow">Learn More</a>
-                            <a ng-href="#" ng-click="goToPage('/search')" class="btn btn--blue text-black">Find My Block</a>
-                        </div>
-                        </div>
+                    <div class="social-icons padding-y--small col-sm-4">
+                        <a href="https://www.facebook.com/groups/1625723617652503/"><i class="fa fa-2x fa-facebook square-2 rounded-1"></i></a>
+                        <a href="https://www.instagram.com/notinphilly/"><i class="fa fa-2x fa-instagram square-2 rounded-1"></i></a>
+                        <a href="https://twitter.com/NotinPhilly"><i class="fa fa-2x fa-twitter square-2 rounded-1"></i></a>
+                    </div>
+                    <div class="footer-contact padding-y--small col-sm-4">
+                        <a href="mailto:notinphilly@gmail.com" class="footer-contact headline-s text-right">notinphilly@gmail.com</a>
                     </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <!--View placeholder set by app.js-->
-        <div id="bodyContent" class="bodyContent container padding-top padding-bottom">
-            <div class="row">
-                <div class="col-md-12 text-center bg-info site-info-message padding-20 hidden-xs">
-                    <i class="fa fa-2x fa-info-circle text-blue"></i>
-                    <span class="padding-x--small">If you encounter any problems or have any suggestions, please contact us at <strong>notinphilly@gmail.com</strong></span>
-                </div>
-            </div>      
-                <div class="row page-content page-content-inner">
-                <div class="col-md-12">
-                    <div ng-view></div>
-                </div>
-            </div>
-        </div>
-    </treasure-overlay-spinner>
-    <!-- PARTNERS -->
-    <div id="footerContent">
-        <div class="partners container-fluid bg-gray">
-            <div class="container padding-y--large">
-                <div class="row">
-                <div class="col-sm-4 margin-bottom">
-                <h4 class="headline-s text-center">A Project of:</h4>
-                    <div class="col-sm-12">
-                    <a href="http://prc.org" target="_blank" class="partner-logo img-responsive center-block">
-                        <img src="public/img/PRC-LOGO.jpg">
-                    </a>
-                    </div>
-                </div>
-                <div class="col-sm-8">
-                <h4 class="headline-s text-center">Meet our partners:</h4>
-                <div class="col-xs-6">
-                    <a href="http://codeforphilly.org" target="_blank" class="partner-logo partner-logo--tall">
-                    <img src="public/img/partner-cfp.png" class="tall-logo">
-                    </a>
-                </div>
-                <div class="col-xs-6">
-                    <a href="https://www.thinkcompany.com" target="_blank" class="partner-logo partner-logo--tall img-responsive center-block">
-                    <img src="public/img/think-logo.jpg">
-                    </a>
-                </div>
-                </div>
-                </div>
-            </div>
-        </div>
-        <div class="padding-y bg-black-90">
-            <div class="container">
-                <div class="row">
-                <div class="footer-logo padding-y--small col-sm-4">
-                    <h3 class="headline-s text-white"><span class="text-yellow">Not</span> In Philly</h3>
-                </div>
-                <div class="social-icons padding-y--small col-sm-4">
-                    <a href="https://www.facebook.com/groups/1625723617652503/"><i class="fa fa-2x fa-facebook square-2 rounded-1"></i></a>
-                    <a href="https://www.instagram.com/notinphilly/"><i class="fa fa-2x fa-instagram square-2 rounded-1"></i></a>
-                    <a href="https://twitter.com/NotinPhilly"><i class="fa fa-2x fa-twitter square-2 rounded-1"></i></a>
-                </div>
-                <div class="footer-contact padding-y--small col-sm-4">
-                    <a href="mailto:notinphilly@gmail.com" class="footer-contact headline-s text-right">notinphilly@gmail.com</a>
-                </div>
-                </div>
-            </div>
-        </div>
-    </div> 
-
+        </div> 
+    </div>
+</div>
   <!-- JS -->
   <script src="public/libs/jquery/dist/jquery.js"></script>
   <script src="/api/external/google-maps-api/places"></script>
@@ -191,7 +235,6 @@
   <script src="public/libs/angular-animate/angular-animate.js"></script>
   <script src="public/libs/leaflet/dist/leaflet-src.js"></script>
   <script src="public/libs/underscore/underscore.js"></script>
-  <script src="public/libs/angular-treasure-overlay-spinner/src/treasure-overlay-spinner.js"></script>
   <script src="public/libs/angular-sanitize/angular-sanitize.js"></script>
   <script src="public/libs/angular-cookies/angular-cookies.js"></script>
   <script src="public/libs/angular-ui-mask/dist/mask.js"></script>
@@ -200,6 +243,7 @@
   <script src="public/libs/angular-selectize2/dist/angular-selectize.js"></script>
   <script src="public/libs/tinymce/tinymce.js"></script>
   <script src="public/libs/angular-ui-tinymce/src/tinymce.js"></script>
+  <script src="public/libs/angular-spinner/dist/angular-spinner.min.js"></script>
 
   <!-- ANGULAR CUSTOM -->
   <script src="app/app.js"></script>
@@ -211,7 +255,6 @@
   <script src="app/components/settings/settings.js"></script>
   <script src="app/components/streetslist/streetslist.directive.js"></script> 
   <script src="app/components/equalTo/equalTo.directive.js"></script>
-  <script src="app/main/header.controller.js"></script> 
   <script src="app/map/map.controller.js"></script>
   <script src="app/main/main.controller.js"></script>
   <script src="app/search/searchaddress.controller.js"></script>
