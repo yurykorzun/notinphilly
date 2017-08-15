@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  angular.module('notinphillyServerApp').directive('streetsList', ['$rootScope', 'mapService', 'APP_EVENTS', function($rootScope, mapService, APP_EVENTS) {
+  angular.module('notinphillyServerApp').directive('streetsList', ['$rootScope', '$location', 'mapService', 'APP_EVENTS', 'APP_CONSTS', function($rootScope, $location, mapService, APP_EVENTS, APP_CONSTS) {
     return {
       restrict: 'E',
       scope: {
@@ -11,8 +11,7 @@
       controller: ['$scope', function($scope) {
         $scope.chooseStreet = function(streetId) {
           mapService.showStreets($scope.streetsAll);          
-          mapService.selectStreet(streetId);
-          $rootScope.$broadcast(APP_EVENTS.OPEN_EXPLORE);
+          $location.path("map/" + APP_CONSTS.MAPVIEW_STREETS_PATH + "/" + streetId);
         };
       }],
       link: function(scope, element, attributes){

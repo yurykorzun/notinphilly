@@ -15,8 +15,6 @@
     ])
 
     app.constant("APP_EVENTS", {
-        "SPINNER_START": "spinnerStart",
-        "SPINNER_END": "spinnerEnd",
         "LOGIN_SUCCESS": "loginSuccess",
         "LOGIN_FAILED": "loginFailed",
         "LOGOUT": "logout",
@@ -32,7 +30,10 @@
 
   app.constant("APP_CONSTS", {
     "FOUND_STREET": "notinphilly.foundStreet",
-    "ADOPTED_STREET": "notinphilly.adoptedStreet"
+    "ADOPTED_STREET": "notinphilly.adoptedStreet",
+    "MAPVIEW_LOCATION_PATH": "location",        
+    "MAPVIEW_CURRENTUSER_PATH": "currentUser",  
+    "MAPVIEW_STREETS_PATH": "streets",        
   });
 
     app.config(['$httpProvider', '$routeProvider', '$locationProvider', '$logProvider', '$provide', 
@@ -40,16 +41,18 @@
                 $httpProvider.defaults.withCredentials = true;
                 $httpProvider.interceptors.push('LoadingInterceptor');
 
+                var checkAuthentication = function($location, sessionService) {
+                  sessionService.checkLoggedin().then(function() {},
+                      function() {
+                          $location.path("/search");
+                      });
+                };
+
                 $routeProvider
                   .when('/', {
                     templateUrl: 'app/user/userprofile-template.html',
                     resolve:{
-                      "check":function($location, sessionService) {
-                        sessionService.checkLoggedin().then(function() {},
-                            function() {
-                                $location.path("/search");
-                            });
-                      }
+                      "check": checkAuthentication
                   }
                   })
                   .when('/search', {
@@ -61,29 +64,25 @@
                   .when('/map', {
                     templateUrl: 'app/map/map-template.html'
                   })
+                  .when('/map/:mapView', {
+                    templateUrl: 'app/map/map-template.html'
+                  })
+                  .when('/map/:mapView/:id', {
+                    templateUrl: 'app/map/map-template.html'
+                  })
                   .when('/map/location/:lat/:lng', {
                     templateUrl: 'app/map/map-template.html'
                   })
                   .when('/profile', {
                     templateUrl: 'app/user/userprofile-template.html',
                     resolve: {
-                      "check": function($location, sessionService) {
-                        sessionService.checkLoggedin().then(function() {},
-                            function() {
-                                $location.path("/login");
-                            });
-                      }
+                      "check": checkAuthentication
                     }
                   })
                   .when('/profile1', {
                     templateUrl: 'app/user/userprofilenew-template.html',
                     resolve: {
-                      "check": function($location, sessionService) {
-                        sessionService.checkLoggedin().then(function() {},
-                            function() {
-                                $location.path("/login");
-                            });
-                      }
+                      "check": checkAuthentication
                     }
                   })
                   .when('/login', {

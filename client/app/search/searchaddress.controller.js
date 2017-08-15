@@ -33,7 +33,7 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.switchToMap = function() {
-      $location.path("/map/location/" + $scope.searchAddress.location.lat + "/" + $scope.searchAddress.location.lng )
+      $location.path("/map/" + APP_CONSTS.MAPVIEW_LOCATION_PATH + "/" + $scope.searchAddress.location.lat + "/" + $scope.searchAddress.location.lng );
     }
 
     $scope.clearSearch = function() {
@@ -43,7 +43,6 @@ angular.module('notinphillyServerApp')
     };
 
     $scope.findStreet = function() {
-      $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
       $scope.searchAddress.pagedStreets = [];
       var addressDetails = $scope.addressDetails;
       if(addressDetails && addressDetails.location)
@@ -62,7 +61,6 @@ angular.module('notinphillyServerApp')
           {
             $scope.searchAddress.streetsGeoJSON = searchResults;
           });
-          $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
         });
       }
     };

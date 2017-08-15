@@ -16,7 +16,6 @@
 
                 function SetupCurrentUser() {
                     if ($rootScope.currentUser) {
-                        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
                         $scope.userProfile.isAdmin = $rootScope.currentUser.isAdmin;
                         $http.get("api/users/current/").success(function(data, status) {
                             $scope.user = data;
@@ -25,7 +24,7 @@
                             if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
 
                             if ($scope.user.needsCompletion || !$scope.user.hasAgreedToTerms) {
-                                //ShowIncompleteForm($scope.user);
+                                ShowIncompleteForm($scope.user);
                             }
 
                             $http.get("api/users/neighbors/count").success(function(data, status) {
@@ -33,12 +32,9 @@
 
                                 $scope.userProfile.neighborsCount = userCount;
                             });
-
-                            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
                         },
                         function(err) {
                             $scope.errorMessage = 'Something went wrong. Please try again later.';
-                            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
                         });
                         
                     } else {
@@ -80,8 +76,7 @@
                         success(function(data) {
                             $scope.toggleChangePassword();
                         }).error(function(err) {
-                            // Update user error
-                            $scope.errorMessage = err;
+                            $scope.errorMessage = 'Something went wrong. Please try again later.';
                         });
                     }
                 };
@@ -115,13 +110,11 @@
                 };
 
                 $scope.logout = function() {
-                    $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
                     sessionService.logout().then(function(response) {
-                            $rootScope.$broadcast(APP_EVENTS.LOGOUT);
-                            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+                            $location.path("/login");
                         },
                         function(err) {
-                            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
+                            $scope.errorMessage = 'Something went wrong. Please try again later.';
                         });
                 };
 

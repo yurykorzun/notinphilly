@@ -1,7 +1,7 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', '$routeParams', '$compile', '$http', '$rootScope', '$timeout', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
-  function($scope, $routeParams, $compile, $http, $rootScope, $timeout, $cookies, mapService, APP_EVENTS, APP_CONSTS) 
+  .controller('MapController', [ '$scope', '$routeParams', '$compile', '$http', '$rootScope', '$timeout', '$cookies', '$location', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
+  function($scope, $routeParams, $compile, $http, $rootScope, $timeout, $cookies, $location, mapService, APP_EVENTS, APP_CONSTS) 
   {
     $scope.mapTooltip = $("#map-tooltip");
 
@@ -129,13 +129,6 @@ angular.module('notinphillyServerApp')
       });
     });
 
-    $scope.$on(APP_EVENTS.ENTER_NEIGBORHOOD_LEVEL, function(event, leafletEvent){
-
-    });
-    $scope.$on(APP_EVENTS.ENTER_STREET_LEVEL, function(event, leafletEvent){
-
-    });
-
     var mapCallbacks = {
       neighborhoodMouseOverCallback : function(e) {
         var neighborhoodProperties = e.target.feature.properties;
@@ -185,6 +178,24 @@ angular.module('notinphillyServerApp')
     if ($routeParams.lng && $routeParams.lat)
     {
       mapService.showStreetsNear({ lng: parseFloat($routeParams.lng), lat: parseFloat($routeParams.lat) });  
+    }
+    else if ($routeParams.mapView)
+    {
+      switch($routeParams.mapView)
+      {
+        case APP_CONSTS.MAPVIEW_CURRENTUSER_PATH:
+          mapService.showUserStreets();
+          if ($routeParams.id)
+          {
+            mapService.selectStreet($routeParams.id);
+          }
+          break;
+        case APP_CONSTS.MAPVIEW_STREETS_PATH:
+          break;
+        default: 
+          mapService.showNeighborhoodLayers();
+          break;
+      }
     }
     else
     {

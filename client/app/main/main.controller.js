@@ -2,10 +2,6 @@
     angular.module('notinphillyServerApp')
         .controller('mainController', ['$scope', '$rootScope', '$anchorScroll', '$window', '$location', 'sessionService', 'APP_EVENTS', 'APP_CONSTS',
             function($scope, $rootScope, $anchorScroll, $window, $location, sessionService, APP_EVENTS, APP_CONSTS) {
-                $scope.main = {
-                    spinnerActive: false
-                };
-
                 $scope.header = {
                     isUserProfileEnabled: false,
                     isLoginEnabled: false,
@@ -29,12 +25,6 @@
                 });
                 $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
                     $scope.goToPage("/map");
-                });
-                $scope.$on(APP_EVENTS.SPINNER_START, function(event) {
-                    $scope.main.spinnerActive = true;
-                });
-                $scope.$on(APP_EVENTS.SPINNER_END, function(event) {
-                    $scope.main.spinnerActive = false;
                 });
           
                 $scope.downloadFile = function(filePath) {

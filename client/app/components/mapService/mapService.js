@@ -56,7 +56,6 @@
 
       self.showNeighborhoodLayers = function() {
         _deferredMap.promise.then(function(map) {
-          $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
             _mapLayerGroup.clearLayers();
 
@@ -90,8 +89,6 @@
               map.setView(mapCenter, 13, { animate: false });
               map.invalidateSize();
             });
-
-             $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
            });
         });
       };
@@ -387,7 +384,6 @@
       }
 
       var loadStreets = function(neighborhooData, map) {
-        $rootScope.$broadcast(APP_EVENTS.SPINNER_START);
         var deferredSetup = $q.defer();
 
         _deferredMap.promise.then(function(map) {
@@ -403,7 +399,6 @@
             _mapStreetLayer = streetLayer;
             streetLayer.addTo(map);
 
-            $rootScope.$broadcast(APP_EVENTS.SPINNER_END);
             deferredSetup.resolve(streetLayer.getLayers());
           }, function(err) {
             deferredSetup.reject(err);
