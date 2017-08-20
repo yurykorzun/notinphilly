@@ -6,12 +6,27 @@
       restrict: 'E',
       scope: {
         streetsAll: '=',
-        streetsShow: '='
+        streetsShow: '=',
+        redirectToMap: '=',
+        searchLocation: '='       
       },
-      controller: ['$scope', function($scope) {
+      controller: ['$scope', 'mapService', function($scope, mapService) {
         $scope.chooseStreet = function(streetId) {
-          mapService.showStreets($scope.streetsAll);          
-          $location.path("map/" + APP_CONSTS.MAPVIEW_STREETS_PATH + "/" + streetId);
+          if ($scope.redirectToMap)
+          {
+            if ($scope.searchLocation)
+            {
+                $location.path("/map/" + APP_CONSTS.MAPVIEW_LOCATION_PATH + "/" + $scope.searchLocation.lat + "/" + $scope.searchLocation.lng + "/" + streetId);
+            }
+            else
+            {
+                $location.path("map/" + APP_CONSTS.MAPVIEW_CURRENTUSER_PATH + "/" + streetId);  
+            }
+          }
+          else
+          {
+            mapService.selectStreet(streetId);
+          }
         };
       }],
       link: function(scope, element, attributes){

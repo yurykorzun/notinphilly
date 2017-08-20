@@ -109,7 +109,7 @@ exports.sendResetPasswordEmail = function(firstName, lastName, email, newPasswor
  
 };
 
-exports.sendUserNotificationEmail = function(firstName, lastName, email, address) {
+exports.sendUserNotificationEmail = function(email, firstName, lastName, address) {
     promise.all([getEmailTemplate("userSignedUpNotificationHtmlTemplate.html"), 
                 getEmailTemplate("userSignedUpNotificationPlainTemplate.html")])
                 .then(function(templates){
@@ -133,7 +133,39 @@ exports.sendUserNotificationEmail = function(firstName, lastName, email, address
                 });
 };
 
-exports.sendUserConnectionRequest = function(firstName, userRequestedFullName, userRequestedNeighborhood) {
+exports.sendUserRecievedMessage = function(email, firstName, senderFullName, senderNeighborhood) {
+    promise.all([getEmailTemplate("userReceivedMessageHtmlTemplate.html"), 
+                getEmailTemplate("userReceivedMessagePlainTemplate.html")])
+                .then(function(templates){
+                    var htmlTemplate = templates[0];
+                    var plainTemplate = templates[1];
+
+                    senderNeighborhood = senderNeighborhood ? " in " + senderNeighborhood : "";
+
+                    var data = {
+                        from: adminEmail,
+                        to: email,
+                        subject: "Notinphilly.org: " + senderFullName + " sent you a message",
+                        text: plainTemplate({ firstName: firstName, 
+                                                senderFullName: senderFullName, 
+                                                senderNeighborhood: senderNeighborhood 
+                                            }),
+                        html: htmlTemplate({ firstName: firstName, 
+                                                userRequestedFullName: senderFullName,
+                                                senderNeighborhood: senderNeighborhood 
+                                            })
+                    };
+
+                    mailgun.messages().send(data, function(error, body) {
+                        if (error) logger.error("emailService.sendUserRecievedMessage " + error);        
+                    });
+                },
+                function(error) {
+                    if (error) logger.error("emailService.sendUserRecievedMessage " + error);
+                });
+};
+
+exports.sendUserConnectionRequest = function(email, firstName, userRequestedFullName, userRequestedNeighborhood) {
     promise.all([getEmailTemplate("userRequestedConnectionHtmlTemplate.html"), 
                 getEmailTemplate("userRequestedConnectionPlainTemplate.html")])
                 .then(function(templates){
@@ -144,7 +176,7 @@ exports.sendUserConnectionRequest = function(firstName, userRequestedFullName, u
 
                     var data = {
                         from: adminEmail,
-                        to: adminEmail,
+                        to: email,
                         subject: "Notinphilly.org: " + userRequestedFullName + " wants to connect with you",
                         text: plainTemplate({ firstName: firstName, 
                                                 userRequestedFullName: userRequestedFullName, 

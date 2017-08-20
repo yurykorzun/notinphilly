@@ -300,7 +300,6 @@ hr {
     margin-right: 40px;
 }
 
-
 /* Add spacing above Bootstrap rows */
 
 .row-buffer {
@@ -871,14 +870,15 @@ hr {
     background-color: white;
 }
 
-.street-item-block .street-marker-icon {
-    margin-right: 22px;
-    text-align: center!important;
+.street-marker-icon {
+    width: 130px;
+    margin-left:15px;
 }
 
 .view-onstreet-section {
     padding-top: 30px;
     padding-bottom: 30px;
+    margin-right: 5px;
 }
 
 .street-popup-address {
@@ -995,6 +995,7 @@ hr {
 
 .map-legend-icon {
     width:25px;
+    max-height: 35px;
 }
 
 .map-neighborhood-icon
@@ -1066,6 +1067,18 @@ hr {
 }
 
 @media (min-width: 1000px) {
+    .width-md-medium {
+        width: 65%;
+    }
+    
+    .width-md-small {
+        width: 30%;
+    }
+    
+    .width-md-large {
+        width: 85%;
+    }
+    
     .cfp-logo {
         width: 85px;
         padding-bottom: 15px;
@@ -1095,7 +1108,24 @@ hr {
     }
 }
 
-@media (max-height: 900px) {
+@media (max-width: 1000px) {
+    .width-sm-medium {
+        width: 65%;
+    }
+    
+    .width-sm-small {
+        width: 30%;
+    }
+    
+    .width-sm-large {
+        width: 85%;
+    }
+
+    .width-sm-full {
+        width: 100%;
+    }
+}
+@media (max-height: 1000px) {
     .partners {
         display: none;
     }

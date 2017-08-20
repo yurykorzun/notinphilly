@@ -5,11 +5,8 @@
                 $scope.header = {
                     isUserProfileEnabled: false,
                     isLoginEnabled: false,
-                    activeTabIndex: 0,
-                    spinnerActive: false
+                    activeTabIndex: 0
                 };
-
-                $scope.spinnerActive = true;
 
                 $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
                     ShowUserProfile(true);
@@ -56,11 +53,9 @@
                 sessionService.checkLoggedin()
                     .then(function() {
                             $rootScope.$broadcast(APP_EVENTS.LOGIN_SUCCESS);
-                            $scope.main.spinnerActive = false;
                         },
                         function() {
                             $rootScope.$broadcast(APP_EVENTS.LOGOUT);
-                            $scope.main.spinnerActive = false;
                         });
 
                  // pushing footer down

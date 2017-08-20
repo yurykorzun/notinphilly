@@ -37,9 +37,8 @@ exports.getAllGeojson = function(req, res) {
 };
 
 exports.getByLocation = function(req, res, next) {
-  var locatLat = req.body.lat;
-  var locationLng = req.body.lng;ionLat = req.body.lat;
   var locationLng = req.body.lng;
+  var locationLat = req.body.lat;
 
   neighborhoodService.getByLocation(locationLat, locationLng).then(
   function(neighborhood)

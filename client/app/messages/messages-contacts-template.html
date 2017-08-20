@@ -5,16 +5,16 @@
     <div class="row userprofile-error" ng-show="contacts.errorMessage">
         {{ contacts.errorMessage }}
     </div>
-    <div class="row userprofile-contact-item" ng-show="contacts.connectedUsers.length === 0">
-        <div class="text-center">
+    <div class="row margin-bottom" ng-show="contacts.connectedUsers.length === 0 && !contacts.sentConnectionRequests">
+        <div class="text-center margin-bottom--small">
             <a href="" ng-click="requestNeighborsConnections()">Connect</a> with your neighbors
         </div>
         <div class="text-center">
             <h4>or</h6>
         </div>
-        <div class="text-center">
-            <a href="" ng-click="goToMap()">Explore streets</a> and connect with participants
-        </div>
+    </div>
+    <div class="text-center margin-bottom--small" ng-show="contacts.connectedUsers.length === 0">
+        Explore streets and connect with other participants
     </div>
     <div ng-repeat="contact in contacts.connectedUsers">
          <div class="row userprofile-contact-item">

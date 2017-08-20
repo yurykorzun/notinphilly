@@ -1,6 +1,7 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('UserProfileController', ['$scope', '$http', '$rootScope', '$location', '$uibModal', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
+        .controller('UserProfileController', 
+                    ['$scope', '$http', '$rootScope', '$location', '$uibModal', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
             function($scope, $http, $rootScope, $location, $uibModal, placeSearchService, sessionService, mapService, APP_EVENTS, APP_CONSTS) {
                 $scope.userProfile = {
                     isEditing: false,
@@ -89,7 +90,6 @@
                 };
 
                 $scope.showBlock = function() {
-
                     if ($scope.user.addressLocation) {
                         showBlockStreets($scope.user.addressLocation);
                     } else if ($scope.user.fullAddress) {
@@ -170,6 +170,7 @@
 
                 $scope.logout = function() {
                     sessionService.logout().then(function(response) {
+                            $rootScope.$broadcast(APP_EVENTS.LOGOUT);
                             $location.path("/login");  
                         },
                         function(err) {

@@ -496,8 +496,8 @@ exports.sendMessage = function(senderUserId, recipientUserId, subject, messageCo
         
         promise.all([getConnectedUsers(senderUserId), getMutedUsers(recipientUserId)])
                 .then(function(results) {
-                    var connectedUsers = results.length > 1  ? lodash.first(results) : [];
-                    var mutedUsers = results.length > 2 ? results[1] : [];             
+                    var connectedUsers = results.length >= 1  ? lodash.first(results) : [];
+                    var mutedUsers = results.length >= 2 ? results[1] : [];             
                     
                     var connectedUserIndex = lodash.findIndex(connectedUsers, function(user) { return user._id.toString() === recipientUserId.toString(); });
                     var mutedUserIndex = lodash.findIndex(mutedUsers, function(user) { return user._id.toString() === senderUserId.toString(); });                    
@@ -513,17 +513,31 @@ exports.sendMessage = function(senderUserId, recipientUserId, subject, messageCo
                             contents: messageContents,
                             read: false
                         });
+                        
+        
+                        promise.all([UserModel.findById(senderUserId).populate("neighborhood"), 
+                                     UserModel.findById(recipientUserId)])
+                                .then(function(results) {
+                                    var senderUser = lodash.first(results);
+                                    var recipientUser = results[1];       
 
-                        newMessage.save(function(err, savedMessage) {
-                            if (err) {
-                                logger.error("messageService.sendMessage " + err);
-                                reject(err);
-                            } 
-                            else
-                            {
-                                fulfill(savedMessage);
-                            }
-                        });
+                                    newMessage.save(function(err, savedMessage) {
+                                        if (err) {
+                                            logger.error("messageService.sendMessage " + err);
+                                            reject(err);
+                                        } 
+                                        else
+                                        {
+                                            emailService.sendUserRecievedMessage(recipientUser.email, 
+                                                                                recipientUser.firstName, 
+                                                                                senderUser.fullName, 
+                                                                                senderUser.neighborhood ? senderUser.neighborhood.name : undefined);
+                                            
+                                            fulfill(savedMessage);
+                                        }
+                                    });
+                                });
+                       
                     }
                     else
                     {
@@ -657,7 +671,6 @@ var requestConnectionWithUser = function(userId, userIdToConnect)
             else
             {
                 UserModel.findById(userIdToConnect)
-                        .populate("neighborhood")
                         .exec(function(err, userToConnect) 
                         {
                                 if (err) 
@@ -689,11 +702,18 @@ var requestConnectionWithUser = function(userId, userIdToConnect)
                                                 } 
                                                 else
                                                 {
-                                                    UserModel.findById(userId, function(err, user)
+                                                    UserModel.findById(userId)
+                                                            .populate("neighborhood")
+                                                            .exec(function(err, user) 
                                                             {
-                                                                emailService.sendUserConnectionRequest(user.firstName, 
-                                                                                                        savedUser.fullName, 
-                                                                                                        savedUser.neighborhood ? savedUser.neighborhood.name : undefined)
+                                                                user.sentConnectionRequests = true;
+                                                                user.save(function(err, sender) {
+                                                                    emailService.sendUserConnectionRequest(savedUser.email, 
+                                                                        savedUser.firstName, 
+                                                                        sender.fullName, 
+                                                                        sender.neighborhood ? sender.neighborhood.name : undefined);
+                                                                });
+                                                               
                                                             });
 
                                                     fulfill(savedUser);

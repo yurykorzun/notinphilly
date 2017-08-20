@@ -1,16 +1,16 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', '$routeParams', '$compile', '$http', '$rootScope', '$timeout', '$cookies', '$location', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
-  function($scope, $routeParams, $compile, $http, $rootScope, $timeout, $cookies, $location, mapService, APP_EVENTS, APP_CONSTS) 
+  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
+  function($scope, $compile, $http, $rootScope, $cookies, mapService, APP_EVENTS, APP_CONSTS) 
   {
     $scope.mapTooltip = $("#map-tooltip");
 
     var showMapTooltip = function(position, content)
     {
       $scope.mapTooltip
-        .show()
-        .css(position)
-        .find('#tooltipValue').html(content);
+            .show()
+            .css(position)
+            .find('#tooltipValue').html(content);
     }
 
     var hideMapTooltip = function()
@@ -175,34 +175,6 @@ angular.module('notinphillyServerApp')
     };
    
     mapService.setMapCallbacks(mapCallbacks);
-    if ($routeParams.lng && $routeParams.lat)
-    {
-      mapService.showStreetsNear({ lng: parseFloat($routeParams.lng), lat: parseFloat($routeParams.lat) });  
-    }
-    else if ($routeParams.mapView)
-    {
-      switch($routeParams.mapView)
-      {
-        case APP_CONSTS.MAPVIEW_CURRENTUSER_PATH:
-          mapService.showUserStreets();
-          if ($routeParams.id)
-          {
-            mapService.selectStreet($routeParams.id);
-          }
-          break;
-        case APP_CONSTS.MAPVIEW_STREETS_PATH:
-          break;
-        default: 
-          mapService.showNeighborhoodLayers();
-          break;
-      }
-    }
-    else
-    {
-      mapService.showNeighborhoodLayers();
-    }
-    
-    mapService.setFacebookEvents();
 
     $scope.$on('$destroy', function () {
       mapService.removeMap();

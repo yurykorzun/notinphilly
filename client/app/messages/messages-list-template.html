@@ -58,7 +58,7 @@
         <div class="col-md-12">          
             <div ng-repeat="message in sentMessages.pagedMessages" class="row">       
                 <a href="" ng-click="viewMessage(message)" class="userprofile-messages-link">  
-                    <div class="userprofile-messages-item" ng-class="['userprofile-messages-item', { 'userprofile-messages-row-item-unread': !message.read }]">
+                    <div class="userprofile-messages-item" class="userprofile-messages-item">
                         <div class="pull-left col-md-10">
                             <div class="userprofile-messages-name userprofile-messages-row-item">{{ message.from.fullName }}</div>
                             <div class="margin-left userprofile-messages-row-item">{{ message.subject }}</div>

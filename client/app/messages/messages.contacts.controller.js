@@ -5,10 +5,13 @@
                 $scope.contacts = {
                     connectedUsers: [],
                     pendingConnectedUsers: [],
+                    sentConnectionRequests: false,
                     errorMessage: undefined
                 }           
 
                 function LoadContacts() {
+                    $scope.contacts.errorMessage = undefined;
+                    
                     if ($rootScope.currentUser) {
                         $http.get('/api/messages/contacts')
                             .success(function(response) {
@@ -18,6 +21,10 @@
                             }).error(function(err) {
                                 $scope.contacts.errorMessage = "Oops, something went wrong";
                             }); 
+
+                        $http.get("api/users/current/").success(function(data, status) {
+                            $scope.contacts.sentConnectionRequests = data.sentConnectionRequests;
+                        });
                     }
                     else
                     {

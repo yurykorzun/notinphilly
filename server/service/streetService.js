@@ -4,7 +4,7 @@ var mongoose                = require('mongoose');
 var StreetModel             = require('../api/street/street.model');
 var NeighborhoodModel       = require('../api/neighborhood/neighborhood.model');
 var neighborhoodService     = require('./neighborhoodService.js');
-var userService             = require('../service/userService')
+var userService             = require('./userService')
 var logger                  = require('../components/logger');
 
 exports.getAll = function() {
@@ -429,7 +429,7 @@ exports.reconcileAdoptedStreets = function() {
                         {
                             streetAdopterNumbers[adoptedStreetId] = 0;
                         }
-
+                        
                         streetAdopterNumbers[adoptedStreetId]++;
                     }
                 }

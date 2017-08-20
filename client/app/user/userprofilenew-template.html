@@ -1,6 +1,6 @@
 <div class="user-profile col-md-11 col-md-offset-1" ng-controller="UserProfileNewController">
     <div class="row">
-        <div class="col-md-11 userprofile-section">
+        <div class="col-md-11 col-xs-12 userprofile-section">
             <div ng-include src="'app/user/userprofile-userinfo-template.html'"></div>
             <div class="row" ng-show="userProfile.isEditing">
                 <div class="userprofile-editform col-md-12">
@@ -22,27 +22,26 @@
              <div ng-include src="'app/messages/messages-list-template.html'"></div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" ng-show="hasStreets()">
         <div class="col-md-11">
             <div class="row userprofile-header-top">
-                    Your streets
-                    <ul class="list-inline user-profile-actions pull-right">
-                    <li><a href="" ng-click="switchToMap()">View on map <i class="fa fa-map-marker" aria-hidden="true"></i></a></li>
-                </ul>
-            </div>                
-            <div class="row street-item-block">
-                <div ng-include src="'app/user/userprofile-userstreets-template.html'"></div>
+                Your streets
+            </div>              
+            <div class="row">
+                <streets-list streets-show="user.adoptedStreets" redirect-to-map="false" />
             </div>
         </div>
     </div>
-    <div class="row">
+    <div class="row" ng-show="user.fullAddress">
         <div class="col-md-11">
             <div class="row userprofile-header-top">
                 Your block
-            </div>                
+            </div>              
         </div>
         <div class="row">
-            <div ng-include src="'app/user/userprofile-blockmap-template.html'"></div>
+            <div class="col-md-11">
+                <div ng-include src="'app/map/map-template.html'"></div>
+            </div>
         </div>
     </div>
 </div>

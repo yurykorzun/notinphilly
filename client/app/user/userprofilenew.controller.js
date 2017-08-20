@@ -5,13 +5,13 @@
                 $scope.userProfile = {
                     isEditing: false,
                     isAdmin: false,
-                    neighborsCount: 0 
+                    neighborsCount: 0,
+                    upcomingEvents: 0
                 };
                 $scope.passwordChange = {};
                 $scope.user = {
                     adoptedStreets: []
                 };
-                $scope.userStreetsGeoJSON = [];
                 $scope.errorMessage = undefined;
 
                 function SetupCurrentUser() {
@@ -27,11 +27,10 @@
                                 ShowIncompleteForm($scope.user);
                             }
 
-                            $http.get("api/users/neighbors/count").success(function(data, status) {
-                                var userCount = data.userCount;
-
-                                $scope.userProfile.neighborsCount = userCount;
-                            });
+                            GetUpcomingEvents();
+                            GetNeighbordsCount();
+                            SetBlockMap();
+                            UpdateUserStreets();
                         },
                         function(err) {
                             $scope.errorMessage = 'Something went wrong. Please try again later.';
@@ -56,7 +55,54 @@
 
                     });
                 }
+                
+                function GetUpcomingEvents() 
+                {
+                    $http.get("api/events/google").success(function(eventData, status) {
+                        $scope.userProfile.upcomingEvents = eventData.length;
+                    });
+                }
 
+                function GetNeighbordsCount()
+                {
+                    $http.get("api/users/neighbors/count").success(function(data, status) {
+                        var userCount = data.userCount;
+
+                        $scope.userProfile.neighborsCount = userCount;
+                    });
+                }
+
+                function SetBlockMap()
+                {
+                    if ($scope.user.addressLocation) {
+                        mapService.showStreetsNear($scope.user.addressLocation);
+                    } else if ($scope.user.fullAddress) {
+                        placeSearchService.getLocationByText($scope.user.fullAddress)
+                            .then(function(location) {
+                                $scope.user.addressLocation = location;
+                                $scope.update();
+
+                                mapService.showStreetsNear($scope.user.addressLocation);
+                            });
+                    }
+                }
+
+                function UpdateUserStreets() {
+                    mapService.getCurrentUserStreets().then(function(response) {
+                        $scope.user.adoptedStreets = response;
+                    });
+                }
+
+                $scope.hasStreets = function() {
+                    return $scope.user.adoptedStreets.length > 0
+                };
+
+                $scope.navigateToAdmin = function() {
+                    if ($rootScope.currentUser && $rootScope.currentUser.isAdmin) {
+                        $location.path("/admin");
+                    }
+                }
+                
                 $scope.toggleEdit = function() {
                     $scope.userProfile.isEditing = !$scope.userProfile.isEditing;
                     $scope.userProfile.isChangingPassword = false;
@@ -120,6 +166,14 @@
 
                 $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
                     SetupCurrentUser();
+                });
+
+                $scope.$on(APP_EVENTS.STREET_ADOPTED, function(event) {
+                    UpdateUserStreets();
+                });
+
+                $scope.$on(APP_EVENTS.STREET_LEFT, function(event) {
+                    UpdateUserStreets();
                 });
                 
                 SetupCurrentUser();

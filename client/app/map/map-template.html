@@ -1,20 +1,8 @@
-<div ng-controller="MapController" class="padding-top--large padding-bottom--small">
+<div ng-controller="MapController">
     <!--Leaflet map with layers-->
-    <div class="row">
-      <div class="text-center">
-        <h3 class="headline-m">Explore the Map</h3>
-        <p>Double-click/tap to zoom, pinch to zoom in and out, click/tap to view a neighborhood or streets.</p>
-      </div>
-    </div>
-    <div class="row padding-top">
-      <div class="col-xs-12">
-        <leaflet id="cityMap" width="100%"></leaflet>
-      </div>
-    </div>
-    <div class="padding-y--small text-center">
-      <p class="text-disclaimer margin-none">Icons by <a href="http://www.flaticon.com/authors/roundicons" title="Roundicons">Roundicons</a> from <a href="http://www.flaticon.com" title="Flaticon">www.flaticon.com</a> is licensed by <a href="http://creativecommons.org/licenses/by/3.0/" title="Creative Commons BY 3.0" target="_blank">CC BY 3.0</a></p>
-    </div>
-  <div id="map-tooltip" style="display: none;">
-    <p><span id="tooltipValue"></span></p>
-  </div>
+  <leaflet id="cityMap" width="100%"></leaflet>
 </div>
+<div id="map-tooltip" style="display: none;">
+  <p><span id="tooltipValue"></span></p>
+</div>
+

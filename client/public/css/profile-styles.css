@@ -21,6 +21,12 @@
    font-size: 12pt;
    font-weight: bold;
 }
+.userprofile-header-sub {
+    margin: 10px;  
+    text-align: center;
+    font-size: 10pt;
+    font-weight: bold;
+ }
 .userprofile-header-menu {
    background-color:#EEEEEE;
 }
@@ -58,7 +64,7 @@
     margin-top: 5px;
     margin-left: 5px;
     margin-right: 5px;   
-    margin-bottom: 5px; 
+    margin-bottom: 10px; 
 }
 .userprofile-contact-avatar {
     float: left;
@@ -137,4 +143,10 @@
 .userprofile-contact-action-link {
     color: #0597D6;
     font-size: 13pt;
+}
+
+@media (max-height: 900px) {
+    .userprofile-header-summary {
+        margin-left: 0;
+    }
 }

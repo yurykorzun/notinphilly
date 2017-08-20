@@ -90,7 +90,7 @@ exports.reconcileNeighborhoods = function()
                     {
                         exports.setTotalAdoptedStreets(result[0]._id, result[0].total).then(
                         function(result) {
-                            logger.debug(result.code + " " + result.totalAdoptedStreets);            
+                            logger.debug(result.name + " " + result.totalAdoptedStreets);            
                             fulfill(result);
                         },
                         function(error){
