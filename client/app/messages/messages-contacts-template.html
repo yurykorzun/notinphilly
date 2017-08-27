@@ -5,7 +5,7 @@
     <div class="row userprofile-error" ng-show="contacts.errorMessage">
         {{ contacts.errorMessage }}
     </div>
-    <div class="row margin-bottom" ng-show="contacts.connectedUsers.length === 0 && !contacts.sentConnectionRequests">
+    <div class="row margin-bottom" ng-show="contacts.connectedUsers.length === 0 && !contacts.sentConnectionRequests && contacts.neighborsCount > 0">
         <div class="text-center margin-bottom--small">
             <a href="" ng-click="requestNeighborsConnections()">Connect</a> with your neighbors
         </div>
@@ -23,7 +23,7 @@
                 <img ng-if="!contact.profileImageUrl" src="/public/img/user-profile.png" class="userprofile-avatar" alt="User"/>
             </div>
             <div class="userprofile-contact-text">
-                <a href="" ng-click="showCreateMessage(contact)">{{contact.fullName}}</a>
+                <a href="" ng-click="showContact(contact)">{{contact.fullName}}</a>
             </div>
             <div class="userprofile-contact-actions">
                 <div class="userprofile-contact-action">
@@ -48,7 +48,7 @@
                 <img ng-if="!contact.profileImageUrl" src="/public/img/user-profile.png" class="userprofile-avatar" alt="User"/>
             </div>
             <div class="userprofile-contact-text">
-                {{contact.fullName}}
+                <a href="" ng-click="showPendingContact(contact)">{{contact.fullName}}</a>
             </div>
             <div class="userprofile-contact-actions">
                 <div class="userprofile-contact-action">

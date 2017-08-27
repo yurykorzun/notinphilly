@@ -1,7 +1,7 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$cookies', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
-  function($scope, $compile, $http, $rootScope, $cookies, mapService, APP_EVENTS, APP_CONSTS) 
+  .controller('MapController', [ '$scope', '$compile', '$http', '$rootScope', '$cookies',  '$uibModal', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
+  function($scope, $compile, $http, $rootScope, $cookies, $uibModal, mapService, APP_EVENTS, APP_CONSTS) 
   {
     $scope.mapTooltip = $("#map-tooltip");
 
@@ -32,6 +32,7 @@ angular.module('notinphillyServerApp')
           $scope.isShowAdoptedSuccess = false;
           $scope.isShowError = false;
           $scope.isShowLogin = false;
+          $scope.hasParticipants = false;          
         };
 
         var initView = function() {
@@ -42,9 +43,16 @@ angular.module('notinphillyServerApp')
 
           if ($scope.isAuthorized) {
             $scope.isAdoptedByUser = properties.isAdoptedByUser;
+            
+            if ( ($scope.isAdoptedByUser && (properties.totalAdopters-1) > 0) || (!$scope.isAdoptedByUser && properties.totalAdopters > 0) )
+            {
+              $scope.hasParticipants = true;          
+            }
           } else {
             $scope.isAdoptedByUser = false;
           }
+
+          
         };
 
         // Create the popup view when is opened
@@ -78,34 +86,30 @@ angular.module('notinphillyServerApp')
 
         newScope.adoptStreet = function() {
           if ($scope.isAuthorized) {
-            $http.get("api/streets/adopt/" + properties._id).then(function(response) {
-              setUpDefaultView();
-              $scope.isShowAdoptedSuccess = true;
-              mapService.addNeigborhoodStreets(popupLocation);
-     
-              $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
-            },
-            function(err) {
-              setUpDefaultView();
-              $scope.isShowError = true;
-            });
+              mapService.adoptStreet(properties._id).then(function(resonse) {
+                $scope.isShowAdoptedSuccess = true;
+                $rootScope.$broadcast(APP_EVENTS.STREET_ADOPTED);
+              },
+              function(error) { 
+                setUpDefaultView();
+                $scope.isShowError = true;
+              });
           }
           else
           {
             $cookies.putObject(APP_CONSTS.ADOPTED_STREET, {streetId: properties._id});
-            setUpDefaultView();
             $scope.isShowLogin = true;
           }
         };
         
         newScope.leave = function() {
-          $http.get("api/streets/leave/" + properties._id).then(function(response) {
-            mapService.addNeigborhoodStreets(popupLocation);
+          mapService.leaveStreet(properties._id).then(function(resonse) {
             targetPopup._close();
-
             $rootScope.$broadcast(APP_EVENTS.STREET_LEFT);
+
+            initView();
           },
-          function(err) {
+          function(error) { 
             setUpDefaultView();
             $scope.isShowError = true;
           });
@@ -124,6 +128,37 @@ angular.module('notinphillyServerApp')
             $scope.isShowError = true;
           });
         };
+
+        newScope.connectWithUsers = function()
+        {
+          $http.post("api/messages/connections/request/" + properties._id)
+              .then(function(response){
+                var modalInstance = $uibModal.open({
+                  templateUrl: 'app/dialogs/dialog-message.html',
+                  controller: 'DialogMessageController',
+                  resolve: {
+                    messageHeader: function () {
+                        return "Success";
+                    },
+                    messageBody: function () {
+                        return "We sent connection requests to participants in the selected street. If they approve them, you will be able send and recieve messages.";
+                    },
+                    acceptMessage: function () {
+                        return "Ok";
+                    }
+                  },
+                  size: "sm"
+                });
+                modalInstance.result.then(function() {
+                });
+
+                targetPopup._close();
+              },
+              function(err){
+                setUpDefaultView();
+                $scope.isShowError = true;
+              });
+        }
         
         $compile(popupEvent.popup._contentNode)(newScope);
       });

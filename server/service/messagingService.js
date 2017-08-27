@@ -14,8 +14,8 @@ exports.getReceivedAll = function(recipientUserId) {
 
         MessageModel.find({"to": mongoose.Types.ObjectId(recipientUserId)})
             .sort({'createdAt': 'desc'})
-            .populate('from')
-            .populate('to')
+            .populate('from', '_id email firstName lastName adoptedStreets fullName' )
+            .populate('to', '_id email firstName lastName adoptedStreets fullName' )
             .exec(function (err, messages) {
                 if (err) {
                     logger.error("messageService.getReceivedAll " + err);
@@ -32,7 +32,7 @@ exports.getReceivedAllPaged = function(recipientUserId, skip, limit) {
 
         MessageModel.count({"to": mongoose.Types.ObjectId(recipientUserId)}, function(err, count) {
             if (err) {
-                logger.error("messageService.getAllPaged " + err);
+                logger.error("messageService.getReceivedAllPaged " + err);
                 reject("Failed retrieving messages");
             }
             else
@@ -43,8 +43,8 @@ exports.getReceivedAllPaged = function(recipientUserId, skip, limit) {
                 if (limit) query = query.limit(limit);
 
                 query.sort({'createdAt': 'desc'})
-                    .populate('from')
-                    .populate('to')
+                    .populate('from', '_id email firstName lastName adoptedStreets fullName' )
+                    .populate('to', '_id email firstName lastName adoptedStreets fullName' )
                     .exec(function (err, messages) {
                         if (err) {
                             logger.error("messageService.getReceivedAllPaged " + err);
@@ -82,8 +82,8 @@ exports.getSentAllPaged = function(senderUserId, skip, limit) {
                 if (limit) query = query.limit(limit);
 
                 query.sort({'createdAt': 'desc'})
-                    .populate('from')
-                    .populate('to')
+                    .populate('from', '_id email firstName lastName adoptedStreets fullName' )
+                    .populate('to', '_id email firstName lastName adoptedStreets fullName' )
                     .exec(function (err, messages) {
                         if (err) {
                             logger.error("messageService.getSentAllPaged " + err);
@@ -129,9 +129,11 @@ exports.getAllUserContacts = function(userId) {
         userId = mongoose.Types.ObjectId(userId);
 
         UserModel.findById(userId)
-                    .populate("pendingConnectedUsers")
-                    .populate("connectedUsers")
-                    .populate("mutedUsers")                    
+                    .populate("pendingConnectedUsers", '_id email firstName lastName adoptedStreets fullName' )
+                    .populate("connectedUsers", '_id email firstName lastName adoptedStreets fullName' )
+                    .populate("connectedUsers", '_id email firstName lastName adoptedStreets fullName' )                   
+                    .populate("mutedUsers")    
+                    .select('-salt -hashedPassword -_v -authToken -__v -fullAddress -addressLocation -apartmentNumber -streetNumber -streetName')                
                     .exec(function (err, user) {
                         if (err) {
                             logger.error("messageService.getAllUserContacts " + err);
@@ -182,8 +184,8 @@ exports.getReceivedAllUnread = function(recipientUserId) {
          
         MessageModel.find({"to": mongoose.Types.ObjectId(recipientUserId), "read": false})
             .sort({'createdAt': 'desc'})
-            .populate('from')
-            .populate('to')
+            .populate('from', '_id email firstName lastName adoptedStreets fullName' ) 
+            .populate('to', '_id email firstName lastName adoptedStreets fullName' ) 
             .exec(function (err, messages) {
                 if (err) {
                     logger.error("messageService.getReceivedAllUnread " + err);
@@ -265,8 +267,8 @@ exports.getReceivedByUserId = function(recipientUserId, senderUserId) {
 
         MessageModel.find({"to": mongoose.Types.ObjectId(recipientUserId), "from": mongoose.Types.ObjectId(senderUserId), "read": false})
             .sort({'createdAt': 'desc'})
-            .populate('from')
-            .populate('to')
+            .populate('from', '_id email firstName lastName adoptedStreets fullName' ) 
+            .populate('to', '_id email firstName lastName adoptedStreets fullName' ) 
             .exec(function (err, messages) {
                 if (err) {
                     logger.error("messageService.getReceivedByUserId " + err);
@@ -363,6 +365,26 @@ exports.requestConnectionsWithNearUsers = function(userId)
         });
     });
 }
+
+exports.requestConnectionWithUsersByStreetId = function(userId, streetId)
+{
+    return new Promise(function(fulfill, reject) {
+        return userService.getUsersByStreetId(streetId)
+                            .then(function(users) {
+                                for (var i = 0; i < users.length; i++)
+                                {
+                                    requestConnectionWithUser(userId, users[i]._id);
+                                }
+                                
+                                fulfill(users);
+                            },
+                            function(error) {
+                                logger.error("messageService.requestConnectionWithUsersByStreetId failed requesting connections " + error);
+                                reject("Failed to request connections");
+                            });
+    });
+}
+
 
 exports.approveUserConnection = function(userId, pendingUserId)
 {   

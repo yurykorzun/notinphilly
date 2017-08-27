@@ -4,7 +4,10 @@
       var self = this;
       var _deferredMap = $q.defer();
       var _mapLayerGroup = L.layerGroup();
+      var _mapMarkerGroup = L.layerGroup();      
       var _mapStreetLayer = undefined; 
+      var _mapInstance = undefined;
+      var _lastCalledFunction = undefined;
       
       var _mapCallbacks = {
         neighborhoodMouseOverCallback : undefined,
@@ -16,16 +19,17 @@
       };
       var _mapControls = [];
 
-      self.setMap = function(mapInstance) {
+      self.setMap = function(mapInstance) {       
+        _mapInstance = mapInstance;
         _deferredMap.resolve(mapInstance);
       };
 
       self.removeMap = function()
       {
-        _deferredMap.promise.then(function(map) {
-          map.remove();
-          _deferredMap = $q.defer();
-        });
+        _lastCalledFunction = undefined;        
+        if (_mapInstance) _mapInstance.remove();
+        _mapInstance = undefined;
+        _deferredMap = $q.defer();
       }
 
       self.getMap = function() {
@@ -55,6 +59,10 @@
       }
 
       self.showNeighborhoodLayers = function() {
+        _lastCalledFunction = function() {
+          self.showNeighborhoodLayers();
+        };
+
         _deferredMap.promise.then(function(map) {
           $http.get("api/neighborhoods/getAllGeojson/").success(function(data, status) {
             setMapLayer(map);
@@ -92,13 +100,194 @@
         });
       };
 
-      self.addNeigborhoodStreets = function(location) {
+      self.showNeigborhoodStreets = function(location) {
+        _lastCalledFunction = function() {
+          self.showNeigborhoodStreets(location);
+         };
+        
         $http.post('api/neighborhoods/byloc', location).success(function(neighborhooData, status) {
           _deferredMap.promise.then(function(map) {
             loadStreets(neighborhooData, map);
+
+            createStreetControls(map, false, neighborhooData);
           });
         });
       };
+
+      self.showNeigborhoodStreetsByLocation = function() {
+        _lastCalledFunction = function() {
+          self.showNeigborhoodStreetsByLocation();
+        };
+
+        _deferredMap.promise.then(function(map) {
+          var mapCenterLocation = map.getCenter();
+          $http.post('api/neighborhoods/byloc', mapCenterLocation).success(function(neighborhooData, status) {
+            _deferredMap.promise.then(function(map) {
+              loadStreets(neighborhooData, map);
+
+              createStreetControls(map, false, neighborhooData);
+            });
+          });
+        });
+      };
+
+      self.showNeigborhoodStreetsById = function(neighborhoodId) {
+        _lastCalledFunction = function() {
+          self.showNeigborhoodStreetsById(neighborhoodId);
+        };
+
+        _deferredMap.promise.then(function(map) {
+          setMapLayer(map);
+
+          map.closePopup();
+
+          $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(streets, status) {
+            setStreetViewSrc(streets);
+            var streetLayer = createStreetLayer(streets);
+            addAdoptedStreetMarkers(streets);
+
+            _mapLayerGroup.addLayer(streetLayer);
+            _mapStreetLayer = streetLayer;
+
+            var layerBounds = _mapStreetLayer.getBounds();
+            var streetCenter = layerBounds.getCenter();
+
+            createStreetControls(map, false);
+            
+            map.setView(streetCenter, 17, { animate: false });
+          }, function(err) {
+            
+          });
+        });
+      };
+
+      self.showAllStreets = function() {
+        $http.get("api/streets/getAllGeojson").success(function(streetData, status) {
+          _deferredMap.promise.then(function(map) {
+              setMapLayer(map);
+              createStreetControls(map, false);
+
+              var streetLayer = createStreetLayer(streetData);
+
+              _mapLayerGroup.addLayer(streetLayer);
+              _mapStreetLayer = streetLayer;
+            });
+        });
+      };
+
+      self.showUserStreets = function()
+      {
+        _lastCalledFunction = function() {
+          self.showUserStreets();
+        };
+
+        var deferredStreets = $q.defer();
+
+        _deferredMap.promise.then(function(map) {
+          $http.get('api/streets/currentGeoJSON').then(function(result) {
+            var foundStreets = result.data;
+            foundStreets = setStreetViewSrc(foundStreets);
+
+            showStreets(map, foundStreets);
+            createLocationControls(map, true);
+            
+            deferredStreets.resolve(foundStreets);
+          }, 
+          function(err) {
+            deferredStreets.reject(err);
+          }); 
+        });
+
+        return deferredStreets.promise;       
+      }
+
+      self.showCurrentUserStreetsNear = function() {
+        _lastCalledFunction = function() {
+          self.showCurrentUserStreetsNear();
+        };
+
+        var deferredStreets = $q.defer();
+        
+        _deferredMap.promise.then(function(map) {
+          $http.get('api/streets/currentLocationGeoJSON').then(function(result) {
+            var foundStreets = result.data.streets;
+            foundStreets = setStreetViewSrc(foundStreets);
+
+            showStreets(map, foundStreets, result.data.location);
+            map.invalidateSize();
+
+            createLocationControls(map, true);
+
+            deferredStreets.resolve(foundStreets);
+          }, function(err) {
+            deferredStreets.reject(err);
+          });
+        });
+
+        return deferredStreets.promise;
+      }
+
+      self.showStreets = function(streets, addressLocation) {
+        _lastCalledFunction = function() {
+          self.showStreets(streets, addressLocation);
+        };
+
+        var deferredStreets = $q.defer();
+        
+        streets = setStreetViewSrc(streets);
+
+        _deferredMap.promise.then(function(map) {
+          showStreets(map, streets, addressLocation);
+
+          createLocationControls(map, true);
+          
+          deferredStreets.resolve(foundStreets);
+        });
+
+        return deferredStreets.promise;
+      }
+
+      self.showStreetsNear = function(location) {
+        _lastCalledFunction = function() {
+          self.showStreetsNear(location);
+        };
+
+        var deferredStreets = $q.defer();
+        
+        _deferredMap.promise.then(function(map) {
+          $http.post('api/streets/byLocationGeoJSON', location).then(function(result) {
+            var foundStreets = result.data;
+            foundStreets = setStreetViewSrc(foundStreets);
+
+            showStreets(map, foundStreets, location);
+            createLocationControls(map, true);
+
+            map.invalidateSize();
+            
+            deferredStreets.resolve(foundStreets);
+          }, function(err) {
+            deferredStreets.reject(err);
+          });
+        });
+
+        return deferredStreets.promise;
+      }
+
+      self.getCurrentUserStreets = function()
+      {
+        var deferredStreets = $q.defer();
+
+        $http.get("api/streets/current/").success(function(result, status) {
+          var foundStreets = result;
+          foundStreets = setStreetViewSrc(foundStreets);
+
+          deferredStreets.resolve(foundStreets);
+        }, function(err) {
+            deferredStreets.reject(err);
+        });
+
+        return deferredStreets.promise;
+      }
 
       self.setCalendarEvents = function() {
           _deferredMap.promise.then(function(map) {
@@ -134,57 +323,6 @@
           openStreetLayerPopup(streetCenter, properties);
         });
       };
-      
-      self.addAllStreets = function() {
-        $http.get("api/streets/getAllGeojson").success(function(streetData, status) {
-          _deferredMap.promise.then(function(map) {
-              setMapLayer(map);
-              createStreetControls(map, false);
-
-              var streetLayer = createStreetLayer(streetData);
-
-              _mapLayerGroup.addLayer(streetLayer);
-              _mapStreetLayer = streetLayer;
-            });
-        });
-      };
-
-      self.showUserStreets = function()
-      {
-        var deferredStreets = $q.defer();
-
-        _deferredMap.promise.then(function(map) {
-          $http.get('api/streets/currentGeoJSON').then(function(result) {
-            var foundStreets = result.data;
-            foundStreets = setStreetViewSrc(foundStreets);
-
-            showStreets(map, foundStreets);
-
-            deferredStreets.resolve(foundStreets);
-          }, 
-          function(err) {
-            deferredStreets.reject(err);
-          }); 
-        });
-
-        return deferredStreets.promise;       
-      }
-
-      self.getCurrentUserStreets = function()
-      {
-        var deferredStreets = $q.defer();
-
-        $http.get("api/streets/current/").success(function(result, status) {
-          var foundStreets = result;
-          foundStreets = setStreetViewSrc(foundStreets);
-
-          deferredStreets.resolve(foundStreets);
-        }, function(err) {
-            deferredStreets.reject(err);
-        });
-
-        return deferredStreets.promise;
-      }
 
       self.getCurrentUserStreetsGeoJSON = function()
       {
@@ -203,6 +341,10 @@
       }
 
       self.findStreetsNear = function(location) {
+        _lastCalledFunction = function() {
+          self.findStreetsNear();
+        };
+
         var deferredStreets = $q.defer();
 
         $http.post('api/streets/byLocation', location).then(function(result) {
@@ -218,6 +360,10 @@
       }
 
       self.findStreetsNearGeoJSON = function(location) {
+        _lastCalledFunction = function() {
+          self.findStreetsNearGeoJSON(location);
+        };
+
         var deferredStreets = $q.defer();
 
         $http.post('api/streets/byLocationGeoJSON', location).then(function(result) {
@@ -227,40 +373,6 @@
           deferredStreets.resolve(result.data);
         }, function(err) {
           deferredStreets.reject(err);
-        });
-
-        return deferredStreets.promise;
-      }
-
-      self.showStreetsNear = function(location) {
-        var deferredStreets = $q.defer();
-        
-        _deferredMap.promise.then(function(map) {
-          $http.post('api/streets/byLocationGeoJSON', location).then(function(result) {
-            var foundStreets = result.data;
-            foundStreets = setStreetViewSrc(foundStreets);
-
-            showStreets(map, foundStreets, location);
-            map.invalidateSize();
-
-            deferredStreets.resolve(foundStreets);
-          }, function(err) {
-            deferredStreets.reject(err);
-          });
-        });
-
-        return deferredStreets.promise;
-      }
-
-      self.showStreets = function(streets, addressLocation) {
-        var deferredStreets = $q.defer();
-        
-        streets = setStreetViewSrc(streets);
-
-        _deferredMap.promise.then(function(map) {
-          showStreets(map, streets, addressLocation);
-
-          deferredStreets.resolve(foundStreets);
         });
 
         return deferredStreets.promise;
@@ -309,6 +421,40 @@
         });
       }
 
+      self.adoptStreet = function(streetId) {
+        var deferredStreets = $q.defer();
+
+        $http.get("api/streets/adopt/" + streetId).then(function(response) {
+          _deferredMap.promise.then(function(map) {
+            reloadLastCalled();
+
+            deferredStreets.resolve(response);
+          });
+        }, 
+        function(error) {
+          deferredStreets.resolve(error);
+        });
+
+        return deferredStreets.promise;        
+      }
+
+      self.leaveStreet = function(streetId) {
+        var deferredStreets = $q.defer();
+        
+        $http.get("api/streets/leave/" + streetId).then(function(response) {
+          _deferredMap.promise.then(function(map) {
+            reloadLastCalled();
+            
+            deferredStreets.resolve(response);
+          });
+        }, 
+        function(error) {
+          deferredStreets.resolve(error);
+        });
+
+        return deferredStreets.promise;        
+      }
+
       self.zoomIn = function(zoomDelta) {
         _deferredMap.promise.then(function(map) {
           map.zoomIn(zoomDelta);
@@ -332,7 +478,12 @@
         {
           map.addLayer(_mapLayerGroup);
         }
+        if (!map.hasLayer(_mapMarkerGroup))
+        {
+          map.addLayer(_mapMarkerGroup);
+        }
         _mapLayerGroup.clearLayers();
+        _mapMarkerGroup.clearLayers();        
       }
 
       var getMapCenter = function() {
@@ -357,7 +508,6 @@
         setMapLayer(map);
 
         map.closePopup();
-        createStreetControls(map, true);
 
         var LeafIcon = L.Icon.extend({
           options: {
@@ -367,6 +517,8 @@
           }
         });
 
+        addAllStreetMarkers(streets);
+        
         var streetLayer = createStreetLayer(streets);
         _mapStreetLayer = streetLayer;
         _mapLayerGroup.addLayer(streetLayer);
@@ -385,19 +537,69 @@
           map.fitBounds(layerBounds);
         }
 
-        var markerIcon = new LeafIcon({iconUrl: 'public/img/map_marker.png'});
+        map.invalidateSize();
+      }
+
+      var addAdoptedStreetMarkers = function(streets, add)
+      {
+        _mapMarkerGroup.clearLayers();
         for (var i = 0; i < streets.length; i++)
         {
           var street = streets[i];
+  
+          if (street.properties.isAdopted)
+          {
+            markerIcon = L.ExtraMarkers.icon({
+              prefix: 'fa',
+              shape: 'circle',
+              icon: 'fa-number',
+              number: street.properties.totalAdopters,
+              markerColor: street.properties.isAdoptedByUser ? 'blue' : 'green',
+            });
+
+            var streetMarker = L.marker(street.streetCenter, {icon: markerIcon});
+            streetMarker.street = street;
+            streetMarker.on({
+              click: function(e) { _mapCallbacks.pinClickCallback(e); }
+            });
+            _mapMarkerGroup.addLayer(streetMarker);
+          }
+        }
+      }
+
+      var addAllStreetMarkers = function(streets)
+      {
+        _mapMarkerGroup.clearLayers();
+        for (var i = 0; i < streets.length; i++)
+        {
+          var street = streets[i];
+
+          var markerIcon = L.ExtraMarkers.icon({
+            prefix: 'fa',
+            shape: 'circle',
+            iconColor: '#DCDCDC',
+            icon: 'fa-circle',
+            markerColor: 'white',
+          });
+  
+          if (street.properties.isAdopted)
+          {
+            markerIcon = L.ExtraMarkers.icon({
+              prefix: 'fa',
+              shape: 'circle',
+              icon: 'fa-number',
+              number: street.properties.totalAdopters,
+              markerColor: street.properties.isAdoptedByUser ? 'blue' : 'green',
+            });
+          }
+``
           var streetMarker = L.marker(street.streetCenter, {icon: markerIcon});
           streetMarker.street = street;
           streetMarker.on({
             click: function(e) { _mapCallbacks.pinClickCallback(e); }
           });
-          _mapLayerGroup.addLayer(streetMarker);
+          _mapMarkerGroup.addLayer(streetMarker);
         }
-
-        map.invalidateSize();
       }
 
       var loadStreets = function(neighborhooData, map) {
@@ -407,10 +609,11 @@
           setMapLayer(map);
 
           map.closePopup();
-          createStreetControls(map, false, neighborhooData);
 
-          $http.get("api/streets/byparentgeo/" + neighborhooData._id).success(function(data, status) {
-            var streetLayer = createStreetLayer(data);
+          $http.get("api/streets/byparentgeo/" + neighborhooData._id).success(function(streets, status) {
+            setStreetViewSrc(streets);
+            var streetLayer = createStreetLayer(streets);
+            addAdoptedStreetMarkers(streets);
 
             _mapLayerGroup.addLayer(streetLayer);
             _mapStreetLayer = streetLayer;
@@ -427,7 +630,8 @@
       var createNeighborhoodControls = function(mapInstance, neighborhooData) 
       {
         clearMapControls(mapInstance);
-        createNeighborhoodTip(mapInstance);
+        createNeighborhoodTip(mapInstance);     
+        createNavigateToBlockControl(mapInstance);         
         createZoomControls(mapInstance);
         createNeighborhoodLegend(mapInstance);
       }
@@ -435,7 +639,8 @@
       var createStreetControls = function(mapInstance, isAddressSearch, neighborhooData) 
       {
         clearMapControls(mapInstance);
-        createNavigationControls(mapInstance);
+        createNavigateToNeighborhoodsControl(mapInstance);
+        createNavigateToBlockControl(mapInstance);
         createZoomControls(mapInstance);
         createStreetLegend(mapInstance, isAddressSearch);     
 
@@ -443,6 +648,19 @@
         {
           createNeighborhoodDetails(mapInstance, neighborhooData);
         }
+      }
+
+      var createLocationControls = function(mapInstance, isAddressSearch) 
+      {
+        clearMapControls(mapInstance);
+        createNavigateToStreetsControl(mapInstance);
+        createZoomControls(mapInstance);
+        createStreetLegend(mapInstance, isAddressSearch);     
+      }
+
+      var reloadLastCalled = function()
+      {
+        if (_lastCalledFunction) _lastCalledFunction();
       }
 
       var clearMapControls = function(mapInstance) {
@@ -455,7 +673,7 @@
         _mapControls = [];
       }
 
-      var createNavigationControls = function(mapInstance) {
+      var createNavigateToNeighborhoodsControl = function(mapInstance) {
         var viewNeigborhoodsControl = L.Control.extend({
             options: {
               position: 'topleft'
@@ -474,6 +692,50 @@
           viewNeigborhoodsControl = new viewNeigborhoodsControl();
           mapInstance.addControl(viewNeigborhoodsControl);
           _mapControls.push(viewNeigborhoodsControl);
+      }
+
+      var createNavigateToStreetsControl = function(mapInstance) {
+        var viewNeigborhoodsControl = L.Control.extend({
+          options: {
+            position: 'topleft'
+          },
+          onAdd: function (map) {
+            var container = L.DomUtil.create('div', 'map-control');
+            container.innerHTML = '<a class="map-control-text"><i class="fa fa-map-o"></i> View Neighborhood Streets</a>';
+
+            container.onclick = function(){
+              self.showNeigborhoodStreetsByLocation();
+            }
+            return container;
+          }
+        });
+
+        viewNeigborhoodsControl = new viewNeigborhoodsControl();
+        mapInstance.addControl(viewNeigborhoodsControl);
+        _mapControls.push(viewNeigborhoodsControl);
+      }
+
+      var createNavigateToBlockControl = function(mapInstance) {
+        if (!$rootScope.currentUser) return;
+        
+        var viewNeigborhoodsControl = L.Control.extend({
+          options: {
+            position: 'topleft'
+          },
+          onAdd: function (map) {
+            var container = L.DomUtil.create('div', 'map-control');
+            container.innerHTML = '<a class="map-control-text"><i class="fa fa-map-o"></i> View your Block</a>';
+
+            container.onclick = function(){
+              self.showCurrentUserStreetsNear();
+            }
+            return container;
+          }
+        });
+
+        viewNeigborhoodsControl = new viewNeigborhoodsControl();
+        mapInstance.addControl(viewNeigborhoodsControl);
+        _mapControls.push(viewNeigborhoodsControl);
       }
 
       var createNeighborhoodDetails = function(mapInstance, neighborhooData) {
@@ -534,7 +796,7 @@
           _mapControls.push(neighborhoodLegend);
       }
 
-      var createStreetLegend = function(mapInstance, isAddressSearch)
+      var createStreetLegend = function(mapInstance, isAddressLocation)
       {
         var streetLegend = L.Control.extend({
             options: {
@@ -543,13 +805,16 @@
             onAdd: function (map) {
               var container = L.DomUtil.create('div', 'map-legend hidden-xs');
                 container.innerHTML = '<div>' 
-                                      + ( isAddressSearch ? 
-                                        '<div><img class="map-legend-icon" src="/public/img/home.png"/> Found address</div>'
-                                        + '<div><img class="map-legend-icon" src="/public/img/map_marker.png"/> Nearby street</div>'  : "" )
+                                      + ( isAddressLocation ? 
+                                        '<p><img class="map-legend-icon" src="/public/img/home.png"/> Address</p>'  : "" )
 
-                                    + '<b>Street:</b>'
-                                    + '<div><img class="map-legend-icon" src="/public/img/participating-street.png"/> Has participants</div>' 
-                                    + '<div><img class="map-legend-icon" src="/public/img/future-street.png"/> No participants</div>' 
+                                    + '<b>Streets:</b>'
+                                    + '<p><img class="map-legend-icon" src="/public/img/participating-street.png"/> Has participants</p>' 
+                                    + '<p><img class="map-legend-icon" src="/public/img/future-street.png"/> No participants</p>' 
+                                    + '<b>Pins (total participants):</b>'
+                                    + ( isAddressLocation ? '<p><img class="map-legend-icon" src="/public/img/map_marker_white.png"/> No participants</p>' : '')
+                                    + '<p><img class="map-legend-icon" src="/public/img/map_marker_blue.png"/> Your street</p>' 
+                                    + '<p><img class="map-legend-icon" src="/public/img/map_marker_green.png"/> Other participants</p>' 
                                     + '</div>' ;
               return container;
             }
@@ -595,7 +860,7 @@
           var streetCenter = layerBounds.getCenter();
 
           street["streetCenter"] = streetCenter;
-          street["streetMapPreview"] = "/api/external/mapbox-staticmap/" + streetCenter.lng + "/" + streetCenter.lat;
+          street["streetMapPreview"] = "/api/external/mapbox-staticmap/" + streetCenter.lng + "/" + streetCenter.lat + "/" + street.totalAdopters;
         }
 
         return streets;
@@ -611,11 +876,6 @@
               mouseout: function(e) { _mapCallbacks.streetMouseOutCallback(e); },
               click: function(e) { _mapCallbacks.streetClickCallback(e); }
             });
-          },
-          style: {
-            color: '#484848',
-            weight: 15,
-            opacity: 0.2
           }
         });
 
@@ -630,11 +890,8 @@
             var layerBounds = e.target.getBounds();
 
             var nhoodCenter = layerBounds.getCenter();
-            nhoodCenter.lng = nhoodCenter.lng - 0.001;
-            map.setView( nhoodCenter, 16, { animate: true });
-            map.invalidateSize();
-
-            loadStreets(properties, map);
+            
+            self.showNeigborhoodStreetsById(properties._id);
           });
         }
       };
@@ -668,6 +925,14 @@
             color: '#26A053',
             weight: 15,
             opacity: 0.4
+          };
+        }
+        else
+        {
+          return {
+            color: '#484848',
+            weight: 15,
+            opacity: 0.2
           };
         }
       };
@@ -757,6 +1022,7 @@
         _deferredMap.promise.then(function(map) {
           clearMapControls(map);
           createNeighborhoodTip(map);
+          createNavigateToBlockControl(map); 
           createZoomControls(map);
           createNeighborhoodLegend(map);
         });

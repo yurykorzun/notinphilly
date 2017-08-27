@@ -1,12 +1,14 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('UserProfileNewController', ['$scope', '$http', '$rootScope', '$location', '$uibModal', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS',
-            function($scope, $http, $rootScope, $location, $uibModal, placeSearchService, sessionService, mapService, APP_EVENTS) {
+        .controller('UserProfileNewController', ['$scope', '$http', '$rootScope', '$location', '$uibModal', '$anchorScroll', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS',
+            function($scope, $http, $rootScope, $location, $uibModal, $anchorScroll, placeSearchService, sessionService, mapService, APP_EVENTS) {
                 $scope.userProfile = {
                     isEditing: false,
                     isAdmin: false,
                     neighborsCount: 0,
-                    upcomingEvents: 0
+                    upcomingEvents: 0,
+                    addressDetails: undefined,
+                    addressOptions: { country: 'us'}
                 };
                 $scope.passwordChange = {};
                 $scope.user = {
@@ -63,6 +65,35 @@
                     });
                 }
 
+                $scope.requestNeighborsConnections = function() {
+                    var modalInstance = $uibModal.open({
+                        templateUrl: 'app/dialogs/dialog-confirm.html',
+                        controller: 'DialogConfirmController',
+                        size: 'sm',
+                        resolve: {
+                            messageHeader: function () {
+                                return "Confirm";
+                            },
+                            messageBody: function () {
+                                return "Do you want to connect with your neighbors? We will send requests to all participants in your block.";
+                            },
+                            acceptMessage: function () {
+                                return "Let's do it!";
+                            }
+                        }
+                      });
+
+                      modalInstance.result.then(function() {
+                                                $http.post('api/messages/connections/request/near')
+                                                .success(function(response) {
+                                                    $scope.errorMessage = undefined;
+                                                }).error(function(err) {
+                                                    $scope.errorMessage = "Oops, something went wrong";
+                                                }); 
+                                            });
+                 
+                }
+
                 function GetNeighbordsCount()
                 {
                     $http.get("api/users/neighbors/count").success(function(data, status) {
@@ -75,20 +106,16 @@
                 function SetBlockMap()
                 {
                     if ($scope.user.addressLocation) {
-                        mapService.showStreetsNear($scope.user.addressLocation);
-                    } else if ($scope.user.fullAddress) {
-                        placeSearchService.getLocationByText($scope.user.fullAddress)
-                            .then(function(location) {
-                                $scope.user.addressLocation = location;
-                                $scope.update();
-
-                                mapService.showStreetsNear($scope.user.addressLocation);
-                            });
+                        mapService.showCurrentUserStreetsNear();
+                    }
+                    else
+                    {
+                        mapService.showNeighborhoodLayers();
                     }
                 }
 
                 function UpdateUserStreets() {
-                    mapService.getCurrentUserStreets().then(function(response) {
+                    return mapService.getCurrentUserStreets().then(function(response) {
                         $scope.user.adoptedStreets = response;
                     });
                 }
@@ -103,6 +130,17 @@
                     }
                 }
                 
+                $scope.chooseStreet = function(streetId) {
+                    mapService.selectStreet(streetId);;
+                    $anchorScroll('mapContent');
+                }
+
+                $scope.leaveStreet = function(streetId) {
+                    mapService.leaveStreet(streetId).then(function() {
+                        UpdateUserStreets();
+                    });
+                }
+
                 $scope.toggleEdit = function() {
                     $scope.userProfile.isEditing = !$scope.userProfile.isEditing;
                     $scope.userProfile.isChangingPassword = false;
@@ -131,8 +169,8 @@
                     $scope.errorMessage = undefined;
 
                     if ($scope.user) {
-                        if ($scope.addressDetails) {
-                            var address = $scope.addressDetails;
+                        if ($scope.userProfile.addressDetails) {
+                            var address = $scope.userProfile.addressDetails;
 
                             $scope.user.zip = address.postalCode;
                             $scope.user.city = address.city;
@@ -144,14 +182,14 @@
                         }
 
                         $http.put('/api/users/', $scope.user).
-                        success(function(data) {
-                            SetupCurrentUser();
-                            // Collapse edit form after updating user
-                            $scope.userProfile.isEditing = false;
-                        }).error(function(err) {
-                            // Update user error
-                            $scope.errorMessage = err;
-                        });
+                                success(function(data) {
+                                    SetupCurrentUser();
+                                    // Collapse edit form after updating user
+                                    $scope.userProfile.isEditing = false;
+                                }).error(function(err) {
+                                    // Update user error
+                                    $scope.errorMessage = err;
+                                });
                     }
                 };
 

@@ -365,6 +365,33 @@ exports.requestConnectionsWithNearUsers = function(req, res, next) {
     }
 };
 
+exports.requestConnectionWithUsersByStreetId = function(req, res, next) {
+    if (req.user) {
+        var userId = req.user._id;
+        var streetId = req.params.streetId;
+
+        if (!userId) throw new Error('User id is missing');
+        if (!streetId) throw new Error('street id is missing');   
+
+        messageService.requestConnectionWithUsersByStreetId(userId, streetId)
+                        .then(function(result) {
+                            res.status(200).json(result);
+                        },
+                        function(error) {
+                            logger.error("messagesController.requestConnectionWithUsersByStreetId " + error);
+                            res.status(500).send("Connection request failed");
+                        })
+                        .catch(function(error) {
+                            logger.error("messagesController.requestConnectionWithUsersByStreetId " + error);
+                            res.status(500).send("Connection request failed");
+                        });
+    }
+    else 
+    {
+        res.status(401).send('Unauthorized');
+    }
+};
+
 exports.approveUserConnection = function(req, res, next) {
     if (req.user) {
         var userId = req.user._id;

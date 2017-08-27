@@ -17,6 +17,7 @@
     "angular-selectize2": "^3.0.1",
     "angular-ui-tinymce": "^0.0.19",
     "leaflet": "^1.2.0",
-    "angular-spinner": "^1.0.1"
+    "angular-spinner": "^1.0.1",
+    "Leaflet.ExtraMarkers": "git://github.com/coryasilva/Leaflet.ExtraMarkers.git#f2fba0a"
   }
 }

@@ -34,7 +34,7 @@
         <div class="row">
             <div ng-class="['col-xs-6', 'form-group', { 'has-error': signinForm.fullAddress.$invalid && !signinForm.fullAddress.$pristine }]">
                 <label for="fullAddress" class="control-label">Address<span aria-hidden="true">*</span><span class="sr-only">required</span></label>
-                <input name="fullAddress" search-autocomplete ng-model="user.fullAddress" details="addressDetails" options="addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required="" />
+                <input name="fullAddress" search-autocomplete ng-model="user.fullAddress" details="userProfile.addressDetails" options="userProfile.addressOptions" class="form-control input-sm" placeholder="Enter your street address..." type="text" required="" />
                 <p ng-show="editForm.fullAddress.$invalid && !editForm.fullAddress.$pristine" class="help-block">Address is required.</p>
             </div>
             <div class="col-xs-6 form-group">
@@ -55,8 +55,8 @@
                         <button type="button" class="btn btn-default pull-left" ng-click="toggleChangePassword()">Change Password</button>
                 </div>
                 <div class="col-xs-8 col-md-7">
-                    <button type="button" class="btn btn-default btn-cancel pull-right" ng-click="toggleEdit()">Cancel</button>
-                    <button type="submit" class="btn btn-primary pull-right" ng-disabled="!editForm.$dirty || editForm.$invalid" ng-click="update()">Update profile</button>
+                    <button type="button" class="btn btn-accept btn-cancel pull-right" ng-click="toggleEdit()">Cancel</button>
+                    <button type="submit" class="btn btn-accept pull-right" ng-disabled="!editForm.$dirty || editForm.$invalid" ng-click="update()">Update profile</button>
                 </div>
             </div>
         </div>

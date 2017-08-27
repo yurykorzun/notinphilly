@@ -20,10 +20,11 @@
                 </div>
 
                 <div ng-show="!userProfile.isEditing">
-                    <div ng-show="user.email" class="margin-bottom--small"><i class="fa fa-envelope" aria-hidden="true"></i> {{user.email}}</div>
-                    <div ng-show="user.address" class="margin-bottom--small"><i class="fa fa-map-pin" aria-hidden="true"></i> {{user.address}}</div>
-                    <div ng-show="user.aptNumber" class="margin-bottom--small"><i class="fa fa-building" aria-hidden="true"></i> Apt. {{user.aptNumber}}</div>
-                    <div class="margin-bottom--small"><i class="fa fa-users" aria-hidden="true"></i> Participating neighbors {{userProfile.neighborsCount}}</div>  
+                    <div ng-show="user.email" class="margin-bottom"><i class="fa fa-envelope" aria-hidden="true"></i> {{user.email}}</div>
+                    <div ng-show="user.neighborhood" class="margin-bottom--small"><b>Neighborhood:</b> {{user.neighborhood.name}}</div>
+                    <div ng-show="user.address" class="margin-bottom--small"><b>Address:</b> {{user.address}}</div>
+                    <div ng-show="user.aptNumber" class="margin-bottom--small"><b>Appartment:</b> {{user.aptNumber}}</div>
+                    <div class="margin-bottom--small"><b>Participating neighbors:</b> {{userProfile.neighborsCount}} <a href="" ng-show="userProfile.neighborsCount > 0" ng-click="requestNeighborsConnections()">(Send connection requests)</a></div>  
                     <div class="margin-bottom--small"><a href="/calendar"><i class="fa fa-calendar" aria-hidden="true"></i> View upcoming events {{userProfile.upcomingEvents > 0 ? "(" + userProfile.upcomingEvents + ")" : "" }}</a></div>
                 </div>
             </address>

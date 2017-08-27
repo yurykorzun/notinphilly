@@ -20,6 +20,7 @@ router.post('/send', authService.isAuthenticated, controller.sendMessage);
 router.post('/send/multiple', authService.isAuthenticated, controller.sendMessages);
 router.post('/connections/request', authService.isAuthenticated, controller.requestConnectionWithUser);
 router.post('/connections/request/near', authService.isAuthenticated, controller.requestConnectionsWithNearUsers);
+router.post('/connections/request/:streetId', authService.isAuthenticated, controller.requestConnectionWithUsersByStreetId);
 router.post('/connections/approve', authService.isAuthenticated, controller.approveUserConnection);
 router.post('/connections/cancel', authService.isAuthenticated, controller.cancelUserConnection);
 router.post('/connections/mute', authService.isAuthenticated, controller.muteUser);

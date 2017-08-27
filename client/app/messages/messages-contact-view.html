@@ -1,0 +1,41 @@
+<div>
+<div class="modal-header">
+	Contact
+</div>
+</div>
+<div class="modal-body">
+<div class="bg-danger" ng-show="errorMessage">
+	{{errorMessage}}
+</div>
+<div class="row">
+	<div class="col-md-11">
+		<div class="margin-x">
+			<div class="userprofile-contact-avatar margin-x">
+				<img ng-if="contact.profileImageUrl" src="{{contact.profileImageUrl}}" class="userprofile-avatar" alt="User"/>
+				<img ng-if="!contact.profileImageUrl" src="/public/img/user-profile.png" class="userprofile-avatar" alt="User"/>
+			</div>
+			<div>
+				<div class="userprofile-contact-text">
+					{{contact.fullName}}
+				</div>
+				<div>
+					<div class="userprofile-contact-action">
+						<a class="userprofile-contact-action-link" title="Send message" href="" ng-click="showCreateMessage(contact)"><i class="fa fa-envelope" aria-hidden="true"></i> Send message</a>
+					</div>
+					<div class="userprofile-contact-action">
+						<a class="userprofile-contact-action-link" title="Remove" href="" ng-click="removeContact(contact)"><i class="fa fa-remove" aria-hidden="true"></i> Remove</a>
+					</div>     
+					<div class="userprofile-contact-action">
+						<a class="userprofile-contact-action-link" title="Mute" href=""  ng-click="muteContact(contact)"><i class="fa fa-ban" aria-hidden="true"></i> Mute</a>
+					</div>        
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" type="button" ng-click="close()">Close</button> 
+</div>
+
+	  

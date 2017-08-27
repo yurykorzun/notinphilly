@@ -1,21 +1,17 @@
-<div class="street-item-block" ng-repeat="street in streetsShow">
-  <div class="row">
-    <div class="street-marker-icon pull-left">
+<div class="street-item-container clearfix" ng-repeat="street in streetsShow">
+    <div class="street-item-map">
       <a href="" ng-click="chooseStreet(street.id)">
         <img ng-src="{{ street.streetMapPreview }}" />
       </a>
     </div>
-    <div class="pull-left">
-      <div class="padding-y--small">
+    <div class="street-item-description">
         <h4>{{street.name}}</h4>
         <h6>Zip: <span ng-repeat="zipcode in street.zipCodes"> {{zipcode.zipcode}}</span></h6>
         <h6>Participants: {{street.totalAdopters}}</h6>
-      </div>
     </div>
-    <div class="col-md-2 col-xs-10 view-onstreet-section pull-right">
+    <div class="street-item-view margin-20">
         <a class="btn bth-sm btn-success btn-block" href="" ng-click="chooseStreet(street.id)">
           View
         </a>
     </div>
-  </div>
 </div>

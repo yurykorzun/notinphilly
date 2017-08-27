@@ -13,8 +13,10 @@ router.get('/byparentgeo/:nid', controller.getByNeighborhoodGeojson);
 router.get('/adopt/:sid', authService.isAuthenticated, controller.adopt);
 router.get('/leave/:sid', authService.isAuthenticated, controller.leave);
 router.get('/reconcile/', authService.isAdmin, controller.reconcileAdoptedStreets);
+router.get('/currentLocationGeoJSON', authService.isAuthenticated, controller.getGeoJSONCurrentUserAndByLocation);
+router.get('/:sid', controller.get);
+
 router.post('/byLocation/', controller.getByLocation);
 router.post('/byLocationGeoJSON/', controller.getGeoJSONByLocation);
-router.get('/:sid', controller.get);
 
 module.exports = router;

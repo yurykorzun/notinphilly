@@ -13,20 +13,27 @@
         <h4 ng-show="totalAdopters == 0">Be the first one to participate in cleaning up this street!</h4>
         <h4 ng-show="totalAdopters > 0">Join others in cleaning up this street!</h4>
 
-        <button type='button' class='btn btn-success' ng-click='adoptStreet()'>Count me in!</button>
+        <div ng-show="hasParticipants" class="margin-bottom--small">
+          <button type='button' class='btn btn--blue' ng-click='connectWithUsers()'>Connect with participants</button>
+        </div>
+        <button type='button' class='btn btn-accept' ng-click='adoptStreet()'>Count me in!</button>
         <button type='button' class='btn btn-danger' ng-click='close()'>No, thanks</button>
       </div>
     </div>
     <div ng-show="isAuthorized && isAdoptedSuccessfully">
       <h3>Thank you!</h3>
       <div class="street-popup-buttons">
-        <button type='button' class='btn btn-success' ng-click='close()'>You're welcome!</button>
+        <button type='button' class='btn btn-accept' ng-click='close()'>You're welcome!</button>
       </div>
     </div>
     <div ng-show="isAuthorized && isAdoptedByUser">
       <h4>You are participating in taking care of this street.</h4>
+
+      <div ng-show="hasParticipants" class="margin-bottom--small">
+        <button type='button' class='btn btn-accept' ng-click='connectWithUsers()'>Connect with participants</button>
+      </div>
       <div class="street-popup-buttons">
-        <button type='button' class='btn btn-success' ng-click='checkin()' ng-disabled="true">Check In!</button>
+        <button type='button' class='btn btn-accept' ng-click='close()'>Got it!</button>
         <button type='button' class='btn btn-danger' ng-click='leave()'>Leave street</button>
       </div>
     </div>
@@ -34,7 +41,7 @@
   <div ng-show="isShowError">
     <h4>Sorry, something went wrong. Please try again later or contact notinphilly@gmail.com.</h4>
     <div class="street-popup-buttons">
-      <button type='button' class='btn btn-success' ng-click='close()'>Close</button>
+      <button type='button' class='btn btn-accept' ng-click='close()'>Close</button>
     </div>
   </div>
   <div ng-show="isShowLogin">

@@ -20,7 +20,7 @@ exports.getUserById = function(userId, populate) {
             var query = UserModel.findById(userId);
             if (populate)
             {
-                query = query.populate('state').populate('adoptedStreets');
+                query = query.populate('state').populate('adoptedStreets').populate('neighborhood');
             }
             
             query
@@ -142,6 +142,24 @@ exports.getAllPagedSorted = function(sortColumn, sortDirection, skip, limit) {
     });
 }
 
+exports.getUsersByStreetId = function(streetId) {
+    return new Promise(function(fulfill, reject) {
+        UserModel.find({ "adoptedStreets" : { "$elemMatch": { '$eq': streetId } }})
+                .select('_id email firstName lastName adoptedStreets fullName')
+                .exec(function(err, users) {
+                        if (err)
+                        {
+                            logger.error("userService.getUsersByStreetId " + err);
+                            reject(err);
+                        }
+                        else
+                        {
+                            fulfill(users);
+                        }
+                    });
+    });
+}
+
 exports.findNearUser = function(userId)
 {
     return new Promise(function(fulfill, reject) {
@@ -183,7 +201,9 @@ exports.findNearUser = function(userId)
                                                         },
                                                         { "_id": { "$ne": mongoose.Types.ObjectId(user._id) } }
                                                     ]
-                                            }, 
+                                            })
+                                     .select('_id email firstName lastName adoptedStreets fullName')
+                                     .exec(
                             function(err, users) {
                                 if (err)
                                 {

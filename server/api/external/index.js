@@ -20,10 +20,13 @@ router.get('/google-streetview-api/:lat/:lng/', function(req, res, next) {
     request(url).pipe(res);
 });
 
-router.get('/mapbox-staticmap/:lat/:lng/', function(req, res, next) {
+router.get('/mapbox-staticmap/:lat/:lng/:totalAdopters', function(req, res, next) {
     var lat = req.params.lat;
     var lng = req.params.lng;
-    var url = "https://api.mapbox.com/styles/v1/" + settings.MAP_BOX_USER + "/" + settings.MAP_BOX_MAP_ID + "/static/" + lat + "," + lng + ",15/120x95?logo=false&access_token=" + settings.MAP_BOX_API_KEY;
+    var totalAdopters = req.params.totalAdopters;
+    var marker = totalAdopters > 0 ? "pin-s-" + totalAdopters + "+32cd32" : "pin-s";
+
+    var url = "https://api.mapbox.com/styles/v1/" + settings.MAP_BOX_USER + "/" + settings.MAP_BOX_MAP_ID + "/static/" + marker + "(" + lat + "," + lng +")/" + lat + "," + lng + ",15/120x95?logo=false&access_token=" + settings.MAP_BOX_API_KEY;
 
     res.setHeader('content-type', 'text/javascript');
     request(url).pipe(res);

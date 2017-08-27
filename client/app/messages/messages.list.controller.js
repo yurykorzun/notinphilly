@@ -1,7 +1,7 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('MessagesListController', ['$scope', '$http', '$rootScope', '$uibModal',
-            function($scope, $http, $rootScope, $uibModal) {
+        .controller('MessagesListController', ['$scope', '$http', '$rootScope', '$uibModal', 'APP_EVENTS',
+            function($scope, $http, $rootScope, $uibModal, APP_EVENTS) {
                 $scope.errorMessage = undefined;
                 $scope.activeTabIndex = 0;
 
@@ -84,6 +84,14 @@
                     }
                 }
 
+                $scope.$on(APP_EVENTS.MESSAGE_SENT, function(event) {
+                    getMessages();
+                });
+                
+                $scope.$on(APP_EVENTS.MESSAGE_REMOVED, function(event) {
+                    getMessages();
+                });
+
                 $scope.isTabOpen = function(tabIndex) {
                     return $scope.activeTabIndex === tabIndex;
                 }
@@ -146,7 +154,6 @@
                                             size: "lg"
                                         });
                     modalInstance.result.then(function() {
-                        getMessages();
                     });
                 }
 
@@ -168,9 +175,20 @@
 
                  $scope.deleteMessage = function(message) {
                     var modalInstance = $uibModal.open({
-                        templateUrl: 'app/messages/dialogs/messages-confirm.html',
-                        controller: 'MessageConfirmController',
-                        size: 'sm'
+                        templateUrl: 'app/dialogs/dialog-confirm.html',
+                        controller: 'DialogConfirmController',
+                        size: 'sm',
+                        resolve: {
+                            messageHeader: function () {
+                                return "Confirm";
+                            },
+                            messageBody: function () {
+                                return "Do you want to delete a message?";
+                            },
+                            acceptMessage: function () {
+                                return "I am sure";
+                            }
+                        }
                       });
                    
                       modalInstance.result.then(function () {

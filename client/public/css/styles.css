@@ -268,6 +268,10 @@ hr {
     margin-left: 20px;
 }
 
+.margin-right--small {
+    margin-right: 10px;
+}
+
 /* Margins for just the vertical or horizontal axes */
 
 .margin-y {
@@ -299,6 +303,7 @@ hr {
     margin-left: 40px;
     margin-right: 40px;
 }
+
 
 /* Add spacing above Bootstrap rows */
 
@@ -355,6 +360,19 @@ hr {
 
 .btn--sm {
     font-size: 12px;
+}
+
+.btn-accept {
+    background-image: -webkit-linear-gradient(top, #69C1E7 0%, #3FB0E1 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#69C1E7), to(#3FB0E1));
+    background-image: linear-gradient(to bottom, #69C1E7 0%, #3FB0E1 100%);
+    background-repeat: repeat-x;
+}
+.btn-accept:hover {
+    background-image: -webkit-linear-gradient(top, #69C1E7 0%, #0597D6 100%);
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#69C1E7), to(#0597D6));
+    background-image: linear-gradient(to bottom, #69C1E7 0%, #0597D6 100%);
+    background-repeat: repeat-x;
 }
 
 .md-max-width {
@@ -863,22 +881,11 @@ hr {
     margin: 20px 10px;
 }
 
-.street-item-block {
+.street-item-container {
     border: 1px solid #E6E6E6;
     margin-bottom: 15px;
     border-color: #80cde5;
-    background-color: white;
-}
-
-.street-marker-icon {
-    width: 130px;
-    margin-left:15px;
-}
-
-.view-onstreet-section {
-    padding-top: 30px;
-    padding-bottom: 30px;
-    margin-right: 5px;
+    background-color: #fff;
 }
 
 .street-popup-address {
@@ -1106,6 +1113,25 @@ hr {
     .footer-contact {
         text-align: right;
     }
+
+    .street-item-map {
+        margin-left: 5px;
+        float: left;
+        width: 130px;
+    }
+    
+    .street-item-description {
+        margin-left:10px;
+        float: left;
+        margin-top:10px;        
+    }
+    
+    .street-item-view {
+        float: right; 
+        width: 15%;
+        margin-left: 10px;
+    }
+    
 }
 
 @media (max-width: 1000px) {
@@ -1124,8 +1150,21 @@ hr {
     .width-sm-full {
         width: 100%;
     }
-}
-@media (max-height: 1000px) {
+
+    .street-item-map {
+        display: inline-block;
+    }
+    
+    .street-item-description {
+        margin-left: 5px;
+        margin-top: 10px;
+        display: inline-block;        
+    }
+    
+    .street-item-view {
+        display: block;
+    }
+
     .partners {
         display: none;
     }

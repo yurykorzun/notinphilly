@@ -1,0 +1,29 @@
+<div class="street-item-container clearfix" ng-repeat="street in user.adoptedStreets">
+	<div class="street-item-map">
+		<a href="" ng-click="chooseStreet(street.id)">
+		<img ng-src="{{ street.streetMapPreview }}" />
+		</a>
+	</div>
+	<div class="street-item-description">
+		<h4>{{street.name}}</h4>
+		<h6>Zip: <span ng-repeat="zipcode in street.zipCodes"> {{zipcode.zipcode}}</span></h6>
+		<h6>Participants: {{street.totalAdopters}}</h6>
+	</div>
+	<div class="street-item-view margin-y margin-x--small">
+		<a class="btn bth-sm btn-danger btn-block" href="" ng-click="leaveStreet(street.id)">
+				Leave
+		</a>
+	</div>
+	<div class="street-item-view margin-y margin-x--small">
+		<a class="btn bth-sm btn-accept btn-block" href="" ng-click="chooseStreet(street.id)">
+			View
+		</a>
+	</div>
+</div>
+<div class="street-item-container clearfix" ng-show="!user.adoptedStreets || user.adoptedStreets.length === 0">
+	<div class="margin-20">
+		<div class="position-center">
+			You haven't selected any streets. Please choose a street in your block and start participating!
+		</div>
+	</div>
+</div>

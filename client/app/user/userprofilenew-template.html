@@ -22,13 +22,13 @@
              <div ng-include src="'app/messages/messages-list-template.html'"></div>
         </div>
     </div>
-    <div class="row" ng-show="hasStreets()">
+    <div class="row">
         <div class="col-md-11">
             <div class="row userprofile-header-top">
                 Your streets
             </div>              
             <div class="row">
-                <streets-list streets-show="user.adoptedStreets" redirect-to-map="false" />
+                <div ng-include src="'app/user/userprofile-adoptedstreets-template.html'"></div>
             </div>
         </div>
     </div>
@@ -38,7 +38,7 @@
                 Your block
             </div>              
         </div>
-        <div class="row">
+        <div id="mapContent" class="row">
             <div class="col-md-11">
                 <div ng-include src="'app/map/map-template.html'"></div>
             </div>

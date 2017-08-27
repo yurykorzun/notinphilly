@@ -25,7 +25,12 @@
         "ENTER_NEIGBORHOOD_LEVEL": "enterNeigborhoodLevel",
         "ENTER_STREET_LEVEL": "enterStreetLevel",
         "STREET_ADOPTED": "streetAdopted",
-        "STREET_LEFT": "streetLeft"
+        "STREET_LEFT": "streetLeft",
+        "MESSAGE_SENT": "messageSent",
+        "MESSAGE_REMOVED": "messageRemoved",
+        "CONTACT_APPROVED": "contactApproved",        
+        "CONTACT_REJECTED": "contactRejected",        
+        "CONTACT_REMOVED": "contactRejected"
     });
 
   app.constant("APP_CONSTS", {
@@ -113,7 +118,7 @@
 
           $routeProvider
             .when('/', {
-              templateUrl: 'app/user/userprofile-template.html',
+              templateUrl: 'app/user/userprofilenew-template.html',
               resolve:{
                 "check": checkAuthentication
             }
@@ -122,10 +127,7 @@
               templateUrl: 'app/search/searchaddress-template.html'
             })
             .when('/map', {
-              templateUrl: 'app/map/map-template.html'
-            })
-            .when('/map', {
-              templateUrl: 'app/map/map-template.html',
+              templateUrl: 'app/map/explore-map-template.html',
               controller: 'ExploreMapController',
               resolve: {
                 resolveParams: function( ) {
@@ -137,7 +139,7 @@
               }}
             })
             .when('/map/' + APP_CONSTS.MAPVIEW_CURRENTUSER_PATH + '/', {
-              templateUrl: 'app/map/map-template.html',
+              templateUrl: 'app/map/explore-map-template.html',
               controller: 'ExploreMapController',
               resolve: {
                 resolveParams: function( ) {
@@ -149,7 +151,7 @@
               }}
             })
             .when('/map/' + APP_CONSTS.MAPVIEW_CURRENTUSER_PATH + '/:streetId', {
-              templateUrl: 'app/map/map-template.html',
+              templateUrl: 'app/map/explore-map-template.html',
               controller: 'ExploreMapController',
               resolve: {
                 resolveParams: function( ) {
@@ -161,7 +163,7 @@
               }}
             })
             .when('/map/' + APP_CONSTS.MAPVIEW_LOCATION_PATH + '/:lat/:lng', {
-              templateUrl: 'app/map/map-template.html',
+              templateUrl: 'app/map/explore-map-template.html',
               controller: 'ExploreMapController',
               resolve: {
                 resolveParams: function( ) {
@@ -173,7 +175,7 @@
               }}
             })
             .when('/map/' + APP_CONSTS.MAPVIEW_LOCATION_PATH + '/:lat/:lng/:streetId', {
-              templateUrl: 'app/map/map-template.html',
+              templateUrl: 'app/map/explore-map-template.html',
               controller: 'ExploreMapController',
               resolve: {
                 resolveParams: function( ) {
@@ -185,7 +187,7 @@
               }}
             })
             .when('/profile', {
-              templateUrl: 'app/user/userprofile-template.html',
+              templateUrl: 'app/user/userprofilenew-template.html',
               resolve: {
                 "check": function($location, sessionService) {
                   sessionService.checkLoggedin().then(function() {},
@@ -196,7 +198,7 @@
               }
             })
             .when('/profile1', {
-              templateUrl: 'app/user/userprofilenew-template.html',
+              templateUrl: 'app/user/userprofile-template.html',
               resolve: {
                 "check": function($location, sessionService) {
                   sessionService.checkLoggedin().then(function() {},

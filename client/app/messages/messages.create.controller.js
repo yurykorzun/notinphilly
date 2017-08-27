@@ -1,7 +1,7 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('MessageCreateController', ['$scope', '$http', '$rootScope', '$uibModalInstance',
-            function($scope, $http, $rootScope, $uibModalInstance) {
+        .controller('MessageCreateController', ['$scope', '$http', '$rootScope', '$uibModalInstance', 'APP_EVENTS',
+            function($scope, $http, $rootScope, $uibModalInstance, APP_EVENTS) {
                 $scope.recipients = $scope.$resolve.contacts;
                 $scope.recipientConfig = {
                         valueField: '_id',
@@ -26,6 +26,8 @@
                             contents: $scope.message.contents
                         })
                         .success(function(data) {
+                            $rootScope.$broadcast(APP_EVENTS.MESSAGE_SENT);                                                                
+                            
                             $uibModalInstance.close();
                         }).error(function(err) {
                             $scope.errorMessage = "Oops, something went wrong";

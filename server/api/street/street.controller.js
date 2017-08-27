@@ -207,9 +207,7 @@ exports.getGeoJSONByLocation = function(req, res, next) {
     locationLat = parseFloat(locationLat);
     locationLng = parseFloat(locationLng);
 
-    var user = {};
-    //Get user info
-    if (typeof req.user !== 'undefined') {
+    if (req.user !== undefined) {
       userService.getUserById(req.user._id, true).then(function(user) {
         streetService.getGeoJSONByLocation(locationLat, locationLng, user).then(function (streets)
         {
@@ -249,6 +247,39 @@ exports.getGeoJSONByLocation = function(req, res, next) {
         }); 
     }
 };
+
+exports.getGeoJSONCurrentUserAndByLocation = function(req, res, next) {
+  var userId = req.user._id;
+
+  if (!userId) throw new Error('Required userId needs to be set');
+
+  userService.getUserById(req.user._id, true).then(function(user) {
+    streetService.getGeoJSONByUserAndLocation(user).then(function (streets)
+    {
+      res.status(200).json({ 
+        streets: streets, 
+        location: user.addressLocation 
+      });
+    },
+    function(error){
+      logger.error("streetController.getGeoJSONCurrentUserAndByLocation " + error);              
+      res.status(500).json("Streets retrieval failed");          
+    })
+    .catch(function(error) {
+      logger.error("streetController.getGeoJSONCurrentUserAndByLocation " + error);                      
+      res.status(500).json("Streets retrieval failed");
+    });
+  },
+  function (error) {
+    logger.error("streetController.getGeoJSONCurrentUserAndByLocation " + error);                      
+    res.status(500).json("Streets retrieval failed");
+  })
+  .catch(function(error) {
+    logger.error("streetController.getGeoJSONCurrentUserAndByLocation " + error);                      
+    res.status(500).json("Streets retrieval failed");
+  });
+
+}
 
 exports.getAllGeojson = function(req, res, next) {
     if (typeof req.user !== 'undefined') {

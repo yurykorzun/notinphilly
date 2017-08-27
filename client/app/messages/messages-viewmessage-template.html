@@ -1,6 +1,5 @@
 <div>
   <div class="modal-header">
-      Message
   </div>
 </div>
 <div class="modal-body">
@@ -9,22 +8,24 @@
   </div>
   <div class="row">
      <div class="col-md-12">
-      <p>From: {{ message.from.fullName }}</p>
+      <p><b>From:</b> {{ message.from.fullName }}</p>
     </div>
     <div class="col-md-12">
-      <p>To: {{ message.to.fullName }}</p>
+      <p><b>To:</b> {{ message.to.fullName }}</p>
     </div>
     <div class="col-md-12">
-      <p>Subject: {{ message.subject }}</p>
+      <p><b>Subject:</b> {{ message.subject }}</p>
     </div>
     <div class="col-md-12">
-      <p ng-bind-html="message.contents"></p>
+      <div class="userprofile-messages-contents">
+        <span ng-bind-html="message.contents"></span>      
+      </div>
     </div>
   </div>
 </div>
 <div class="modal-footer">
-   <button class="btn btn-primary" type="submit" ng-click="respond()">Respond</button>
-   <button class="btn btn-primary" type="button" ng-click="close()">Close</button>
+   <button class="btn btn-accept" type="submit" ng-click="respond()">Respond</button>
+   <button class="btn btn-accept" type="button" ng-click="close()">Close</button>
    <button class="btn btn-danger" type="button" ng-click="delete()">Delete</button>   
 </div>
 

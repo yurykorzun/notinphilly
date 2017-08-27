@@ -94,10 +94,13 @@ userSchema
     .get(function() {
         var userInfo = {
             '_id': this._id,
-            'fullname': this.firstName + ' ' + this.lastName,
+            'fullName':  (this.firstName ? this.firstName + " " : "") + (this.lastName ? this.lastName : ""),
             'email': this.email,
             'roles': this.roles,
-            'isAdmin': this.roles.length > 0 && this.roles.indexOf(1) > -1
+            'adoptedStreets': this.adoptedStreets,
+            'neighborhood': this.neighborhood, 
+            'fullAddress': this.fullAddress,                        
+            'isAdmin': this.roles ? (this.roles.length > 0 && this.roles.indexOf(1) > -1) : false
         };
         return userInfo;
     });
@@ -124,7 +127,7 @@ userSchema
 userSchema
     .virtual('isAdmin')
     .get(function() {
-        return this.roles.length > 0 && this.roles.indexOf(1) > -1;
+        return this.roles ? (this.roles.length > 0 && this.roles.indexOf(1) > -1) : false;
     });
 
 /*userSchema.path('email').validate(function(value, respond) {

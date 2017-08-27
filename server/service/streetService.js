@@ -32,81 +32,27 @@ exports.getById = function(id) {
 };
 
 exports.getByUserId = function(userId) {
-    return new Promise(function (fulfill, reject){
-        userService.getUserById(userId, true).then(
-        function(user)
-        {
-            StreetModel        
-            .find({'_id': { $in: user.adoptedStreets}})
-            .populate('neighborhoods')
-            .populate('zipCodes')    
-            .sort({zipCode:1, streetName: 1})
-            .exec(function(err, streets) {
-                if (err) {
-                    logger.error("streetService.getByUserId " + err);
-                    reject("Failed retrieving streets " + err);
-                } 
-                else
-                {
-                    setIsAdopted(streets, user).then(function(streets)
-                    {
-                        fulfill(streets);
-                    },
-                    function(error) {
-                        logger.error("streetService.getByUserId " + error);
-                        reject(error);
-                    });
-                } 
-            });
-        },
-        function(error)
-        {
-            logger.error("streetService.getByUserId " + error);
-            reject("Failed retrieving user " + err);
-        });
-        
-    });
+    return getByUserId(userId);
 };
 
 exports.getGeoJSONByUserId = function(userId) {
-    return new Promise(function (fulfill, reject){
-        userService.getUserById(userId, true).then(
-        function(user)
-        {
-            StreetModel
-            .find({'_id': { $in: user.adoptedStreets}})
-            .populate('zipCodes') 
-            .sort({zipCode:1, streetName: 1})
-            .exec(function(err, streets) {
-                if (err) {
-                    logger.error("streetService.getGeoJSONByUserId " + err);
-                    reject("Failed retrieving streets " + err);
-                } 
-                else
+    return new Promise(function (fulfill, reject) {
+        getByUserId(userId).then(
+                function(streets)
                 {
-                    setIsAdopted(streets, user).then(function(streets)
-                    {
-                        convertToGeoJSON(streets).then(function(streets){
-                            fulfill(streets);
-                        },
-                        function(error) {
-                            logger.error("streetService.getGeoJSONByUserId " + error);
-                            reject(error);
-                        })
+                    convertToGeoJSON(streets).then(function(streets){
+                        fulfill(streets);
                     },
                     function(error) {
                         logger.error("streetService.getGeoJSONByUserId " + error);
                         reject(error);
-                    });
-                } 
-            });
-        },
-        function(error)
-        {
-            logger.error("streetService.getGeoJSONByUserId " + error);
-            reject("Failed retrieving user " + err);
-        });
-        
+                    })
+                },
+                function(error)
+                {
+                    logger.error("streetService.getGeoJSONByUserId " + error);
+                    reject("Failed retrieving user " + err);
+                });
     });
 };
 
@@ -135,24 +81,7 @@ exports.getAllGeoJSON = function(user) {
                 reject("Failed retrieving streets " + err);
             } 
             else {
-                if (user)
-                {
-                    setIsAdopted(streets, user).then(function(streets)
-                    {
-                        convertToGeoJSON(streets).then(function(streets){
-                            fulfill(streets);
-                        },
-                        function(error) {
-                            logger.error("streetService.getAllGeoJSON " + error);
-                            reject(error);
-                        })
-                    },
-                    function(error) {
-                        logger.error("streetService.getAllGeoJSON " + error);
-                        reject(error);
-                    });
-                }
-                else
+                setIsAdopted(streets, user).then(function(streets)
                 {
                     convertToGeoJSON(streets).then(function(streets){
                         fulfill(streets);
@@ -161,7 +90,11 @@ exports.getAllGeoJSON = function(user) {
                         logger.error("streetService.getAllGeoJSON " + error);
                         reject(error);
                     })
-                }
+                },
+                function(error) {
+                    logger.error("streetService.getAllGeoJSON " + error);
+                    reject(error);
+                });
             } 
         });
     });
@@ -179,119 +112,100 @@ exports.getGeoJSONByNeighborhoodId = function(neighborhoodId, user) {
                 reject("Failed retrieving streets " + err);
             } 
             else {
-                if (user)
-                {
-                    setIsAdopted(streets, user).then(function(streets)
-                    {
-                        convertToGeoJSON(streets).then(function(streets){
-                            fulfill(streets);
-                        },
-                        function(error) {
-                            logger.error("streetService.getGeoJSONByNeighborhoodId " + error);
-                            reject(error);
-                        })
-                    },
-                    function(error) {
-                        logger.error("streetService.getGeoJSONByNeighborhoodId " + error);
-                        reject(error);
-                    });
-                }
-                else
+                setIsAdopted(streets, user).then(function(streets)
                 {
                     convertToGeoJSON(streets).then(function(streets){
                         fulfill(streets);
                     },
                     function(error) {
-                        logger.error("streetService.getGeoJSONByNeighborhoodId " + error);                        
+                        logger.error("streetService.getGeoJSONByNeighborhoodId " + error);
                         reject(error);
                     })
-                }
+                },
+                function(error) {
+                    logger.error("streetService.getGeoJSONByNeighborhoodId " + error);
+                    reject(error);
+                });
             } 
         });
     });
 };
 
+exports.getByUserAndLocation = function(locationLat, locationLng, user) {
+    return new Promise(function (fulfill, reject){
+        promise.all([getByLocation(locationLat, locationLng, user), getByUserId(user._id)]).then(function (results) {
+            var locationStreets = results[0];
+            var userStreets = results[0];
+            
+            var mergedStreets = lodash.unionWith(locationStreets, userStreets, function(street1, street2) {
+                return street1._id == street2._id;
+            });
+
+            fulfill(mergedStreets);
+        },
+        function(error) {
+            logger.error("streetService.getByUserAndLocation " + error);
+            reject(error);
+        });
+
+    },
+    function(error) {
+        logger.error("streetService.getByUserAndLocation " + error);
+        reject(error);
+    });
+}
+
+exports.getGeoJSONByUserAndLocation = function(user) {
+    return new Promise(function (fulfill, reject){
+        promise.all([getByLocation(user.addressLocation.lat, user.addressLocation.lng, user), getByUserId(user._id)]).then(function (results) {
+            var locationStreets = results[0];
+            var userStreets = results[1];
+            
+            var mergedStreets = lodash.unionWith(locationStreets, userStreets, function(street1, street2) {
+                return street1._id == street2._id;
+            });
+
+            convertToGeoJSON(mergedStreets).then(function(result){
+                fulfill(result);
+            },
+            function(error) {
+                logger.error("streetService.getGeoJSONByUserId " + error);
+                reject(error);
+            })
+        },
+        function(error) {
+            logger.error("streetService.getByUserAndLocation " + error);
+            reject(error);
+        });
+
+    },
+    function(error) {
+        logger.error("streetService.getByUserAndLocation " + error);
+        reject(error);
+    });
+}
 
 exports.getByLocation = function(locationLat, locationLng, user) {
-    return new Promise(function (fulfill, reject){
-          StreetModel.find({ 'geometry':
-            { 
-                '$near': {
-                '$minDistance': 0,
-                '$maxDistance': 90,
-                '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
-                }
-            }})
-            .populate('neighborhoods')
-            .populate('zipCodes')      
-            .exec(function(err, streets) {
-                if (err) {
-                    logger.error("streetService.getByLocation " + err);
-                    reject(err);
-                } 
-                else if (user)
-                {
-                    setIsAdopted(streets, user).then(function(streets)
-                    {  
-                        fulfill(streets);
-                    },
-                    function(error) {
-                        logger.error("streetService.getByLocation " + error);
-                        reject(error);
-                    });
-                }
-                else
-                {
-                    fulfill(streets);
-                }
-            });
-    });
+    return getByLocation(locationLat, locationLng, user);
 };
 
 exports.getGeoJSONByLocation = function(locationLat, locationLng, user) {
     return new Promise(function (fulfill, reject){
-          StreetModel.find({ 'geometry':
-            { 
-                '$near': {
-                '$minDistance': 0,
-                '$maxDistance': 90,
-                '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
-                }
-            }})
-            .populate('zipCodes')      
-            .exec(function(err, streets) {
-                if (err) {
-                    logger.error("streetService.getGeoJSONByLocation " + err);
-                    reject(err);
-                } 
-                else if (user)
-                {
-                    setIsAdopted(streets, user).then(function(streets)
-                    {
-                        convertToGeoJSON(streets).then(function(streets){
-                            fulfill(streets);
-                        },
-                        function(error) {
-                            logger.error("streetService.getGeoJSONByLocation " + error);
-                            reject(error);
-                        })
+        return getByLocation(locationLat, locationLng, user)
+                    .then(function(streets) {
+                        convertToGeoJSON(streets)
+                            .then(function(result){
+                                fulfill(result);
+                            },
+                            function(error) {
+                                logger.error("streetService.getGeoJSONByLocation " + error);
+                                reject(error);
+                            })
                     },
                     function(error) {
                         logger.error("streetService.getGeoJSONByLocation " + error);
                         reject(error);
                     });
-                }
-                else
-                {
-                    convertToGeoJSON(streets).then(function(streets){
-                        fulfill(streets);
-                    },
-                    function(error) {
-                        logger.error("streetService.getByLocation " + error);
-                        reject(error);
-                    })
-                }
-            });
     });
 };
 
@@ -316,20 +230,14 @@ exports.getByLocationPaged = function(locationLat, locationLng, page, take, user
                 logger.error("streetService.getByLocationPaged " + err);
                 reject(err);
             } 
-            else if (user)
-            {
-                setIsAdopted(streets, user).then(function(streets)
-                {
-                    fulfill({ streets: streets, total: streets.length, page: page, take: take  });
-                },
-                function(error) {
-                    logger.error("streetService.getByLocationPaged " + error);
-                });
-            }
-            else
+
+            setIsAdopted(streets, user).then(function(streets)
             {
                 fulfill({ streets: streets, total: streets.length, page: page, take: take  });
-            }
+            },
+            function(error) {
+                logger.error("streetService.getByLocationPaged " + error);
+            });
         });
     });
 }
@@ -480,6 +388,74 @@ exports.decrementAdopters = function(streetIds) {
      return decrementAdopters();
 }
 
+var getByUserId = function(userId) {
+    return new Promise(function (fulfill, reject){
+        userService.getUserById(userId, true).then(
+            function(user)
+            {
+                StreetModel        
+                .find({'_id': { $in: user.adoptedStreets}})
+                .populate('neighborhoods')
+                .populate('zipCodes')    
+                .sort({zipCode:1, streetName: 1})
+                .exec(function(err, streets) {
+                    if (err) {
+                        logger.error("streetService.getByUserId " + err);
+                        reject("Failed retrieving streets " + err);
+                    } 
+                    else
+                    {
+                        setIsAdopted(streets, user).then(function(streets)
+                        {
+                            fulfill(streets);
+                        },
+                        function(error) {
+                            logger.error("streetService.getByUserId " + error);
+                            reject(error);
+                        });
+                    } 
+                });
+            },
+            function(error)
+            {
+                logger.error("streetService.getByUserId " + error);
+                reject("Failed retrieving user " + err);
+            });
+    });
+}
+
+var getByLocation = function(locationLat, locationLng, user) {
+    return new Promise(function (fulfill, reject){
+        StreetModel.find({ 'geometry':
+          { 
+              '$near': {
+              '$minDistance': 0,
+              '$maxDistance': 90,
+              '$geometry': { type: "Point",  coordinates: [locationLng, locationLat] }
+              }
+          }})
+          .populate('neighborhoods')
+          .populate('zipCodes')      
+          .exec(function(err, streets) {
+              if (err) {
+                  logger.error("streetService.getByLocation " + err);
+                  reject(err);
+              } 
+              else
+              {
+                  setIsAdopted(streets, user).then(function(streets)
+                  {  
+                      fulfill(streets);
+                  },
+                  function(error) {
+                      logger.error("streetService.getByLocation " + error);
+                      reject(error);
+                  });
+              }
+          });
+  });
+}
+
 var incrementAdopters = function(streetIds)
 {
      return new Promise(function (fulfill, reject){
@@ -622,7 +598,7 @@ var setIsAdopted = function(streets, user)
      return new Promise(function (fulfill, reject){
         var updatedStreets = lodash.map(streets, function(item){
             item.isAdoptedByUser = isStreetAdoptedByUser(user, item);
-
+            item.totalOtherAdopters = item.totalAdopters > 0 ? item.totalAdopters-1 : item.totalAdopters 
             return item;
         });
 

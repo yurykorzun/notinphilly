@@ -14,6 +14,7 @@ var StreetSchema = new Schema({
   totalAdopters: { type : Number, default: 0 },
   active: { type : Boolean, default: false },
   isAdoptedByUser: { type : Boolean, default: false },
+  totalOtherAdopters: { type : Number, default: 0 },  
   geometry:{}
 },
 { collection: 'streets' });
@@ -21,7 +22,7 @@ var StreetSchema = new Schema({
 StreetSchema
     .virtual('isAdopted')
     .get(function() {
-        var isAdopted = this.totalAdopters.totalAdopters > 0;
+        var isAdopted = this.totalAdopters > 0;
         return isAdopted;
     });
 

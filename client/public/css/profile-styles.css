@@ -38,6 +38,7 @@
     height: 58px;
     display: block;
     border-radius: 50%;
+    margin-right: 15px;
 }
 .userprofile-name {
     display: inline-block;
@@ -126,6 +127,13 @@
 {
     color: #0000;
     font-size: 14pt;
+}
+.userprofile-messages-contents
+{
+    background-color: #FBFCFC;
+    border:solid 1px #000;;
+    padding: 5px;
+    font-size: 12pt;
 }
 .userprofile-editform {
     padding: 15px 15px 15px;
