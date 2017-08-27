@@ -12,7 +12,13 @@
       settingsService.getMapSettings().then(function(settings) {
           scope.mapId =  attributes.id;
           $(element).attr("id", scope.mapId);
-  
+
+          if ($("#" +  scope.mapId).length === 0)
+          {
+            mapService.removeMap();
+            return;
+          }
+
           var map = L.map(scope.mapId, {
                             center: [settings.center.lng, settings.center.lat],
                             zoom: 12,
