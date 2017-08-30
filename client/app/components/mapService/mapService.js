@@ -303,7 +303,14 @@
                   var eventLocation = event.location;
                   var eventDate = new Date(event.start.dateTime);
                   
-                  var marker = L.marker([eventLocation.latitude, eventLocation.longitude]).addTo(map);
+                  var markerIcon = L.ExtraMarkers.icon({
+                    prefix: 'fa',
+                    shape: 'circle',
+                    icon: 'fa-calendar',
+                    markerColor: "red",
+                  });
+      
+                  var marker = L.marker([eventLocation.latitude, eventLocation.longitude], {icon: markerIcon }).addTo(map);
                   marker.bindPopup("<b>"+ event.summary + "</b><p>" + eventLocation.formattedAddress + "</p><p>" + eventDate.toDateString() + "</p><p><a href='" + event.htmlLink + "' target='_blank'>View more</a></p>");
                 }
               }
@@ -786,7 +793,7 @@
                                     + '<div><img class="map-legend-icon" src="/public/img/participating-neighborhood.png"/> Has participants</div>' 
                                     + '<div><img class="map-legend-icon" src="/public/img/future-neighborhood.png"/> No participants</div>' 
                                     + '<div><img class="map-legend-icon" src="/public/img/checked.png"/> Receiving cleanup tools</div>' 
-                                    + '<div><img class="map-legend-icon" src="/public/libs/leaflet/dist/images/marker-icon.png"/> Upcoming events</div>'
+                                    + '<div><img class="map-legend-icon" src="/public/img/map_marker_calendar.png"/> Upcoming events</div>'
                                     + '</div>' ;
               return container;
             }

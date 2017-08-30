@@ -123,6 +123,13 @@
                 "check": checkAuthentication
             }
             })
+            .when('/admin', {
+              templateUrl: 'app/admin/admin-template.html',
+              controller: 'AdminController',
+              resolve:{
+                "check": checkAuthentication
+            }
+            })
             .when('/search', {
               templateUrl: 'app/search/searchaddress-template.html'
             })
@@ -232,6 +239,9 @@
             })
             .when('/faq', {
               templateUrl: 'app/info/faq-template.html'
+            })
+            .when('/resources', {
+              templateUrl: 'app/info/resources-template.html'
             })
             .otherwise({
               redirectTo: '/'

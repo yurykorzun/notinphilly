@@ -11,8 +11,9 @@ module.exports = function(app) {
     var connectionString = serverSettings.DB_CONNECTION_STRING;
 
     var dbOptions = {
-      keepAlive: true,
-      useMongoClient: true
+      useMongoClient: true,
+      keepAlive: 300000, 
+      connectTimeoutMS: 30000
     };
     mongoose.plugin(merge);
     mongoose.Promise = promise;

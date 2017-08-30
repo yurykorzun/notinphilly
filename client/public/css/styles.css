@@ -1064,6 +1064,7 @@ hr {
 @media (min-width: 760px) {
     .header-logo {
         margin: 0;
+        margin-bottom: 50px;
     }
     .main-nav {
         margin-top: 10px;

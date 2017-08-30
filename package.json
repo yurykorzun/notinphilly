@@ -22,7 +22,7 @@
     "mailgun-js": "^0.7.12",
     "method-override": "~2.0.2",
     "moment": "^2.18.1",
-    "mongoose": "^4.7.5",
+    "mongoose": "^4.11.8",
     "mongoose-auto-increment": "^5.0.1",
     "mongoose-merge-plugin": "0.0.5",
     "mongoose-timestamp": "^0.6.0",
