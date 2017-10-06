@@ -1,7 +1,7 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('mainController', ['$scope', '$rootScope', '$anchorScroll', '$window', '$location', 'sessionService', 'APP_EVENTS', 'APP_CONSTS',
-            function($scope, $rootScope, $anchorScroll, $window, $location, sessionService, APP_EVENTS, APP_CONSTS) {
+        .controller('mainController', ['$scope', '$rootScope', '$anchorScroll', '$window', '$state', 'sessionService', 'APP_EVENTS', 'APP_CONSTS',
+            function($scope, $rootScope, $anchorScroll, $window, $state, sessionService, APP_EVENTS, APP_CONSTS) {
                 $scope.header = {
                     isUserProfileEnabled: false,
                     isLoginEnabled: false,
@@ -18,10 +18,10 @@
                     ShowLoginForm(true);
                 });
                 $scope.$on(APP_EVENTS.OPEN_SEARCH, function(event) {
-                    $scope.goToPage("/search");
+                    $scope.goToPage(APP_CONSTS.STATE_SEARCH);
                 });
                 $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
-                    $scope.goToPage("/map");
+                    $scope.goToPage(APP_CONSTS.STATE_MAP);
                 });
           
                 $scope.downloadFile = function(filePath) {
@@ -43,7 +43,7 @@
                 }
 
                 $scope.goToPage = function(path) {
-                    $location.path(path);
+                    $state.go(path);
                     $("#wrapper").removeClass("toggled");
                     
                     //$anchorScroll.yOffset = 80;

@@ -1,6 +1,6 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('SignupController', [ '$scope', '$location', '$http', '$cookies', '$uibModalInstance', 'placeSearchService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $location, $http, $cookies, $uibModalInstance, placeSearchService, APP_EVENTS, APP_CONSTS) {
+    .controller('SignupController', [ '$scope', '$state', '$http', '$cookies', '$uibModalInstance', 'placeSearchService', 'APP_EVENTS', 'APP_CONSTS', function($scope, $state, $http, $cookies, $uibModalInstance, placeSearchService, APP_EVENTS, APP_CONSTS) {
       $scope.addressOptions = { country: 'us'};
       $scope.User = {};
       $scope.addressDetails = undefined;
@@ -38,7 +38,7 @@
                         $scope.isRegisterFailed = false;
                         $scope.isRegisterSuccess = true;
                         
-                        $location.path('/');
+                        $state.go(APP_CONSTS.STATE_DEFAULT);
                     }).error(function(err) {
                         $scope.errorMessage = err ? err : "Something went wrong, please try again later. ";
                         $scope.isRegisterFailed = true;

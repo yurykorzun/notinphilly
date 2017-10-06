@@ -1,8 +1,8 @@
 (function() {
     angular.module('notinphillyServerApp')
         .controller('UserProfileController', 
-                    ['$scope', '$http', '$rootScope', '$location', '$uibModal', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
-            function($scope, $http, $rootScope, $location, $uibModal, placeSearchService, sessionService, mapService, APP_EVENTS, APP_CONSTS) {
+                    ['$scope', '$http', '$rootScope', '$state', '$uibModal', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
+            function($scope, $http, $rootScope, $state, $uibModal, placeSearchService, sessionService, mapService, APP_EVENTS, APP_CONSTS) {
                 $scope.userProfile = {
                     isEditing: false,
                     isAdmin: false
@@ -34,7 +34,7 @@
                             });
                     } else {
                         $scope.errorMessage = "You are not authorized to view or edit the user profile";                        
-                        $location.path("/login");
+                        $state.go(APP_CONSTS.STATE_LOGIN);
                     }
                 }
 
@@ -82,7 +82,7 @@
                 });
 
                 $scope.locateStreet = function(streetId) {
-                    $location.path("map/" + APP_CONSTS.MAPVIEW_CURRENTUSER_PATH + "/" + streetId);
+                    $state.path(APP_CONSTS.STATE_MAP_CURRENT_STREET, { streetId: streetId });
                 };
 
                 $scope.hasStreets = function() {
@@ -104,16 +104,16 @@
                 };
 
                 var showBlockStreets = function(addressLocation) {
-                    $location.path("/map/" + APP_CONSTS.MAPVIEW_LOCATION_PATH + "/" + addressLocation.lat + "/" + addressLocation.lng );                    
+                    $state.path(APP_CONSTS.STATE_MAP_LOCATION, { lat: addressLocation.lat, lng: addressLocation.lng });                 
                 }
 
                 $scope.switchToMap = function() {
-                    $location.path("map/" + APP_CONSTS.MAPVIEW_CURRENTUSER_PATH + "/");
+                    $state.path(APP_CONSTS.STATE_MAP_CURRENT);                 
                 };
 
                 $scope.navigateToAdmin = function() {
                     if ($rootScope.currentUser && $rootScope.currentUser.isAdmin) {
-                        $location.path("/admin");
+                        $state.path(APP_CONSTS.STATE_ADMIN);                 
                     }
                 }
 
@@ -171,7 +171,7 @@
                 $scope.logout = function() {
                     sessionService.logout().then(function(response) {
                             $rootScope.$broadcast(APP_EVENTS.LOGOUT);
-                            $location.path("/login");  
+                            $state.go(APP_CONSTS.STATE_LOGIN);
                         },
                         function(err) {
                             $scope.errorMessage = "You are not authorized to view or edit the user profile";   

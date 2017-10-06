@@ -1,7 +1,7 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('UserProfileNewController', ['$scope', '$http', '$rootScope', '$location', '$uibModal', '$anchorScroll', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS',
-            function($scope, $http, $rootScope, $location, $uibModal, $anchorScroll, placeSearchService, sessionService, mapService, APP_EVENTS) {
+        .controller('UserProfileNewController', ['$scope', '$http', '$rootScope', '$state', '$uibModal', '$anchorScroll', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS',
+            function($scope, $http, $rootScope, $state, $uibModal, $anchorScroll, placeSearchService, sessionService, mapService, APP_EVENTS) {
                 $scope.userProfile = {
                     isEditing: false,
                     isAdmin: false,
@@ -126,7 +126,7 @@
 
                 $scope.navigateToAdmin = function() {
                     if ($rootScope.currentUser && $rootScope.currentUser.isAdmin) {
-                        $location.path("/admin");
+                        $state.go(APP_CONSTS.STATE_ADMIN);                        
                     }
                 }
                 
@@ -195,7 +195,7 @@
 
                 $scope.logout = function() {
                     sessionService.logout().then(function(response) {
-                            $location.path("/login");
+                            $state.go(STATE_LOGIN);
                         },
                         function(err) {
                             $scope.errorMessage = 'Something went wrong. Please try again later.';
