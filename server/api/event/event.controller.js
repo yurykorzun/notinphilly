@@ -35,7 +35,7 @@ exports.getGoogleEvents = function(req, res, next) {
                 geocoder.batchGeocode(locations, function (err, geoLocations) {
                     if (err) {
                         logger.error(err);
-                        res.status(500).send('failed retrieving events');
+                        res.status(500).send('failed retrieving locations');
                     }
                     else
                     {
