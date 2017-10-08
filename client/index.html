@@ -74,22 +74,22 @@
                     <li><a ui-sref="{{APP_CONSTS.STATE_CALENDAR}}">Calendar</a></li>                                    
                 </ul>
             </li>
-            <li disable="!header.isLoginEnabled" ng-show="header.isLoginEnabled">
-                <a ng-href="#" ng-click="goToPage('/login')">Sign Up / Log In</a>
+            <li ng-show="header.isLoginEnabled">
+                <a ui-sref="{{APP_CONSTS.STATE_LOGIN}}">Sign Up / Log In</a>
             </li>
-            <li disable="!header.isUserProfileEnabled" ng-show="header.isUserProfileEnabled">
-                <a ng-href="#" ng-click="goToPage('/profile')">My Account</a>
+            <li ng-show="header.isUserProfileEnabled">
+                <a ui-sref="{{APP_CONSTS.STATE_PROFILE}}">My Account</a>
             </li>
             <li>
                 <a ng-href="#">About</a>
                 <ul>
-                    <li><a ng-href="#" ng-click="goToPage('/faq')">FAQ</a></li>
-                    <li><a ng-href="#" ng-click="goToPage('/resources')">Resources</a></li>                                                                 
-                    <li><a ng-href="#" ng-click="goToPage('/media')">In the media</a></li>  
+                    <li><a ui-sref="{{APP_CONSTS.STATE_FAQ}}">FAQ</a></li>
+                    <li><a ui-sref="{{APP_CONSTS.STATE_RESOURCES}}">Resources</a></li>                                                                 
+                    <li><a ui-sref="{{APP_CONSTS.STATE_MEDIA}}">In the media</a></li>  
                 </ul>
             </li>
             <li>
-                <a href="https://prc.networkforgood.com/projects/22356-not-in-philly">Donate</a>
+                <a href="https://prc.networkforgood.com/projects/22356-not-in-philly" target="_blank">Donate</a>
             </li>
         </ul>
     </div>
@@ -119,26 +119,26 @@
                                     <li>
                                         <a ng-href="#">Social</a>
                                         <ul>
-                                            <li><a ui-sref="main.social">Social Feed</a></li>
-                                            <li><a ui-sref="main.calendar">Calendar</a></li>                                    
+                                            <li><a ui-sref="{{APP_CONSTS.STATE_SOCIAL}}">Social Feed</a></li>
+                                            <li><a ui-sref="{{APP_CONSTS.STATE_CALENDAR}}">Calendar</a></li>                                    
                                         </ul>
                                     </li>
                                     <li disable="!header.isLoginEnabled" ng-show="header.isLoginEnabled">
-                                        <a ui-sref="main.login">Sign Up / Log In</a>
+                                        <a ui-sref="{{APP_CONSTS.STATE_LOGIN}}">Sign Up / Log In</a>
                                     </li>
                                     <li disable="!header.isUserProfileEnabled" ng-show="header.isUserProfileEnabled">
-                                        <a ui-sref="main.profile">My Account</a>
+                                        <a ui-sref="{{APP_CONSTS.STATE_PROFILE}}">My Account</a>
                                     </li>
                                     <li>
                                         <a ng-href="#">About</a>
                                         <ul>
-                                            <li><a ui-sref="main.faq">FAQ</a></li>
-                                            <li><a ui-sref="main.resources">Resources</a></li> 
-                                            <li><a ui-sref="main.media">In the media</a></li>                                    
+                                            <li><a ui-sref="{{APP_CONSTS.STATE_FAQ}}">FAQ</a></li>
+                                            <li><a ui-sref="{{APP_CONSTS.STATE_RESOURCES}}">Resources</a></li> 
+                                            <li><a ui-sref="{{APP_CONSTS.STATE_MEDIA}}">In the media</a></li>                                    
                                         </ul>
                                     </li>
                                     <li>
-                                        <a href="https://prc.networkforgood.com/projects/22356-not-in-philly">Donate</a>
+                                        <a href="https://prc.networkforgood.com/projects/22356-not-in-philly" target="_blank">Donate</a>
                                     </li>
                                 </ul>
                             </div>
@@ -165,20 +165,8 @@
                     </div>
                 </div>
             </div>
-            <!--View placeholder set by app.js-->
-            <div id="bodyContent" class="bodyContent container padding-top padding-bottom ng-cloak">
-                <div class="row">
-                    <div class="col-md-12 text-center bg-info site-info-message padding-20 hidden-xs">
-                        <i class="fa fa-2x fa-info-circle text-blue"></i>
-                        <span class="padding-x--small">Check out our <a href="/resources">Resources page</a> and <a href="/calendar">upcoming events</a></span>
-                    </div>
-                </div>      
-                    <div class="row page-content page-content-inner">
-                    <div class="col-md-12">
-                        <div ng-view></div>
-                    </div>
-                </div>
-            </div>
+        <!--View placeholder set by app.js-->
+        <div ui-view></div>
         <!-- PARTNERS -->
         <div id="footerContent">
             <div class="partners container-fluid bg-gray">

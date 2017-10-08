@@ -1,7 +1,7 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('UserProfileNewController', ['$scope', '$http', '$rootScope', '$state', '$uibModal', '$anchorScroll', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS',
-            function($scope, $http, $rootScope, $state, $uibModal, $anchorScroll, placeSearchService, sessionService, mapService, APP_EVENTS) {
+        .controller('UserProfileNewController', ['$scope', '$http', '$rootScope', '$state', '$uibModal', '$anchorScroll', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
+            function($scope, $http, $rootScope, $state, $uibModal, $anchorScroll, placeSearchService, sessionService, mapService, APP_EVENTS, APP_CONSTS) {
                 $scope.userProfile = {
                     isEditing: false,
                     isAdmin: false,

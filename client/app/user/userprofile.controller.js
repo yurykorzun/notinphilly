@@ -113,7 +113,7 @@
 
                 $scope.navigateToAdmin = function() {
                     if ($rootScope.currentUser && $rootScope.currentUser.isAdmin) {
-                        $state.path(APP_CONSTS.STATE_ADMIN);                 
+                        $state.go(APP_CONSTS.STATE_ADMIN);                 
                     }
                 }
 

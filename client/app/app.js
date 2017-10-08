@@ -114,27 +114,6 @@
           $httpProvider.defaults.withCredentials = true;
           $httpProvider.interceptors.push('LoadingInterceptor');
 
-          var redirectNotAuthToSearch = function($state, sessionService) {
-            sessionService.checkLoggedin().then(function() {},
-                                                function() {
-                                                  $state.target("main.search");
-                                                });
-          };
-
-          var redirectNotAuthToLogin = function($state, sessionService) {
-            sessionService.checkLoggedin().then(function() {},
-                                                function() {
-                                                  $state.target("main.login");
-                                                });
-          };
-
-          var redirectAuthToProfile = function($state, sessionService) {
-            sessionService.checkLoggedin().then(function() {
-                                                  $state.target("main.profile");
-                                                },
-                                                function() {});
-          };
-
           $stateProvider.state('main', {
             abstract: true,
             templateUrl: 'app/main/main-parent-template.html'
@@ -147,48 +126,68 @@
 
           $stateProvider.state('main.default', {
             url: '/',
-            templateUrl: 'app/user/userprofilenew-template.html',
-            onEnter: redirectNotAuthToSearch
-          });
+            templateProvider:  ['$templateFactory', 'sessionService', function ($templateFactory, sessionService) {
+              return sessionService.checkLoggedin().then(function() {
+                                                    return $templateFactory.fromUrl('app/user/userprofilenew-template.html');
+                                                  },
+                                                  function() {
 
-          $stateProvider.state(APP_CONSTS.STATE_PROFILE, {
+                                                    return $templateFactory.fromUrl('app/search/searchaddress-template.html');
+                                                  });
+            }]
+          })
+          .state(APP_CONSTS.STATE_PROFILE, {
               url: '/profile',
-              templateUrl: 'app/user/userprofilenew-template.html',
-              onEnter: redirectNotAuthToLogin
-            });
-
-          $stateProvider.state(APP_CONSTS.STATE_LOGIN, {
+              templateProvider:  ['$templateFactory', 'sessionService', function ($templateFactory, sessionService) {
+                return sessionService.checkLoggedin().then(function() {
+                                                      return $templateFactory.fromUrl('app/user/userprofilenew-template.html');
+                                                    },
+                                                    function() {
+                                                      return $templateFactory.fromUrl('app/user/login-template.html');
+                                                    });
+              }]
+          })
+          .state(APP_CONSTS.STATE_LOGIN, {
               url: '/login',
-              templateUrl: 'app/user/login-template.html',
-              onEnter: redirectAuthToProfile
-            });
-
-          $stateProvider.state(APP_CONSTS.STATE_ADMIN, {
+              templateProvider:  ['$templateFactory', 'sessionService', function ($templateFactory, sessionService) {
+                return sessionService.checkLoggedin().then(function() {
+                                                      return $templateFactory.fromUrl('app/user/userprofilenew-template.html');
+                                                    },
+                                                    function() {
+                                                      return  $templateFactory.fromUrl('app/user/login-template.html');
+                                                    });
+              }]
+          })
+          .state(APP_CONSTS.STATE_ADMIN, {
               controller: 'AdminController',
               url: '/admin',
-              templateUrl: 'app/admin/admin-template.html'
-            });
-
-          $stateProvider.state(APP_CONSTS.STATE_SEARCH, {
+              templateProvider:  ['$templateFactory', 'sessionService', function ($templateFactory, sessionService) {
+                if (sessionService.isAdmin())
+                {
+                  return $templateFactory.fromUrl('app/admin/admin-template.html');
+                }
+                else
+                {
+                  return '<div>Unauthorized</div>';                  
+                }
+              }]
+          })
+          .state(APP_CONSTS.STATE_SEARCH, {
               url: '/search',
               templateUrl: 'app/search/searchaddress-template.html'
-            });
-          
-          $stateProvider.state(APP_CONSTS.STATE_MAP, {
+          })
+          .state(APP_CONSTS.STATE_MAP, {
               url: '/map',
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
               resolve: {
-                resolveParams: function( ) {
+                mapView: function() {
                   return {
-                    mapView: function( ) {
-                      return APP_CONSTS.MAPVIEW_DEFAULT_PATH;
-                    }
+                    current: APP_CONSTS.MAPVIEW_DEFAULT_PATH
                   };
               }}
-            });
-
-        $stateProvider.state(APP_CONSTS.STATE_MAP_CURRENT, {
+          })
+          .state(APP_CONSTS.STATE_MAP_CURRENT, {
               url: '/map/' + APP_CONSTS.MAPVIEW_CURRENTUSER_PATH + '/',
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
@@ -200,9 +199,8 @@
                     }
                   };
               }}
-            });
-
-        $stateProvider.state(APP_CONSTS.STATE_MAP_CURRENT_STREET, {
+          })
+          .state(APP_CONSTS.STATE_MAP_CURRENT_STREET, {
               url: '/map/' + APP_CONSTS.MAPVIEW_CURRENTUSER_PATH + '/:streetId',
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
@@ -214,9 +212,8 @@
                     }
                   };
               }}
-            });
-
-        $stateProvider.state(APP_CONSTS.STATE_MAP_LOCATION, {
+        })
+        .state(APP_CONSTS.STATE_MAP_LOCATION, {
               url: '/map/' + APP_CONSTS.MAPVIEW_LOCATION_PATH + '/:lat/:lng',
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
@@ -228,9 +225,8 @@
                     }
                   };
               }}
-            });
-
-        $stateProvider.state(APP_CONSTS.STATE_MAP_LOCATION_STREET, {
+            })
+        .state(APP_CONSTS.STATE_MAP_LOCATION_STREET, {
               url: '/map/' + APP_CONSTS.MAPVIEW_LOCATION_PATH + '/:lat/:lng/:streetId',
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
@@ -242,29 +238,24 @@
                     }
                   };
               }}
-            });
-
-        $stateProvider.state(APP_CONSTS.STATE_CALENDAR, {
+            })
+        .state(APP_CONSTS.STATE_CALENDAR, {
               url: '/calendar',
               templateUrl: 'app/social/calendar-template.html'
-            });
-          
-        $stateProvider.state(APP_CONSTS.STATE_SOCIAL, {
+            })
+        .state(APP_CONSTS.STATE_SOCIAL, {
               url: '/social',
               templateUrl: 'app/social/social-template.html'
-            });
-
-        $stateProvider.state(APP_CONSTS.STATE_MEDIA, {
+            })
+        .state(APP_CONSTS.STATE_MEDIA, {
               url: '/media',
               templateUrl: 'app/info/media-template.html'
-            });
-
-        $stateProvider.state(APP_CONSTS.STATE_FAQ, {
+            })
+        .state(APP_CONSTS.STATE_FAQ, {
               url: '/faq',
               templateUrl: 'app/info/faq-template.html'
-            });
-
-        $stateProvider.state(APP_CONSTS.STATE_RESOURCES, {
+            })
+        .state(APP_CONSTS.STATE_RESOURCES, {
               url: '/resources',
               templateUrl: 'app/info/resources-template.html'
             });
