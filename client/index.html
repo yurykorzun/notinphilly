@@ -165,7 +165,20 @@
                     </div>
                 </div>
             </div>
-        <div ng-view></div>
+            <!--View placeholder set by app.js-->
+            <div id="bodyContent" class="bodyContent container padding-top padding-bottom ng-cloak">
+                <div class="row">
+                    <div class="col-md-12 text-center bg-info site-info-message padding-20 hidden-xs">
+                        <i class="fa fa-2x fa-info-circle text-blue"></i>
+                        <span class="padding-x--small">Check out our <a href="/resources">Resources page</a> and <a href="/calendar">upcoming events</a></span>
+                    </div>
+                </div>      
+                    <div class="row page-content page-content-inner">
+                    <div class="col-md-12">
+                        <div ng-view></div>
+                    </div>
+                </div>
+            </div>
         <!-- PARTNERS -->
         <div id="footerContent">
             <div class="partners container-fluid bg-gray">
