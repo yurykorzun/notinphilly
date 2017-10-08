@@ -16,8 +16,6 @@ exports.getGoogleEvents = function(req, res, next) {
     var yesterday = new Date();
     yesterday.setDate(yesterday.getDate()-1);
 
-    console.log(JSON.stringify(apiSettings));
-
     calendar.events.list({ auth: apiSettings.GOOGLE_API_KEY, calendarId: apiSettings.GOOGLE_CALENDAR_ID, maxResults: 50, timeMin: yesterday.toISOString() }, function(error, response) {
         if (error) {
             logger.error(error);
