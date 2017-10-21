@@ -1,7 +1,7 @@
 (function () {
 	angular.module('notinphillyServerApp')
-	  .controller('ExploreMapController', [ '$scope', '$routeParams', '$rootScope', 'mapView', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
-	  function($scope, $routeParams, $rootScope, mapView, mapService, APP_EVENTS, APP_CONSTS) 
+	  .controller('ExploreMapController', [ '$scope', '$stateParams', '$rootScope', 'mapView', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
+	  function($scope, $stateParams, $rootScope, mapView, mapService, APP_EVENTS, APP_CONSTS) 
 	  {
 			switch(mapView.current)
 			{
@@ -9,17 +9,15 @@
 					mapService.showNeighborhoodLayers();
 				break;
 				case APP_CONSTS.MAPVIEW_LOCATION_PATH:
-					var streetId = $routeParams.streetId;
-					mapService.showStreetsNear({ lng: parseFloat($routeParams.lng), lat: parseFloat($routeParams.lat) })
+					mapService.showStreetsNear({ lng: parseFloat($stateParams.lng), lat: parseFloat($stateParams.lat) })
 								.then(function(result) {
-								if (streetId) mapService.selectStreet($routeParams.streetId);
+									if ($stateParams.streetId) mapService.selectStreet($stateParams.streetId);
 								});  
 				break;
-				case APP_CONSTS.MAPVIEW_CURRENTUSER_PATH:
-					var streetId = $routeParams.streetId;      
+				case APP_CONSTS.MAPVIEW_CURRENTUSER_PATH:     
 					mapService.showUserStreets()
 								.then(function(result) {
-								if (streetId) mapService.selectStreet($routeParams.streetId);
+									if ($stateParams.streetId) mapService.selectStreet($stateParams.streetId);
 								}); 
 				break;
 				case APP_CONSTS.MAPVIEW_STREETS_PATH:

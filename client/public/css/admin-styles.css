@@ -2,6 +2,14 @@
   margin: 10px 10px 10px 10px;
 }
 
+.grid-actions {
+  margin: 5px;
+}
+
+.grid-action {
+  margin-left: 5px;
+  display: inline-block;
+}
 .active-tab {
   font-weight: bold;
   background-color: #cccccc;

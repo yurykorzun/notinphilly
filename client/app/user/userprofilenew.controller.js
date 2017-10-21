@@ -1,7 +1,21 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('UserProfileNewController', ['$scope', '$http', '$rootScope', '$state', '$uibModal', '$anchorScroll', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
+        .controller('UserProfileNewController', ['$scope', '$http', '$rootScope', '$state', '$uibModal', '$anchorScroll','placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
             function($scope, $http, $rootScope, $state, $uibModal, $anchorScroll, placeSearchService, sessionService, mapService, APP_EVENTS, APP_CONSTS) {
+                sessionService.checkLoggedin().then(function() {
+                    SetupCurrentUser();
+                },
+                function() {
+                    if ($state.current.name === APP_CONSTS.STATE_DEFAULT)
+                    {
+                        $state.go(APP_CONSTS.STATE_SEARCH);
+                    }
+                    else
+                    {
+                        $state.go(APP_CONSTS.STATE_LOGIN);
+                    }
+                });
+
                 $scope.userProfile = {
                     isEditing: false,
                     isAdmin: false,
@@ -195,7 +209,8 @@
 
                 $scope.logout = function() {
                     sessionService.logout().then(function(response) {
-                            $state.go(STATE_LOGIN);
+                            $rootScope.$broadcast(APP_EVENTS.LOGOUT);
+                            $state.go(APP_CONSTS.STATE_LOGIN);
                         },
                         function(err) {
                             $scope.errorMessage = 'Something went wrong. Please try again later.';
@@ -213,8 +228,6 @@
                 $scope.$on(APP_EVENTS.STREET_LEFT, function(event) {
                     UpdateUserStreets();
                 });
-                
-                SetupCurrentUser();
             }
         ]);
 })();

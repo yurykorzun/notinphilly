@@ -33,7 +33,7 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.switchToMap = function() {
-      $state.go(APP_CONSTS.STATE_MAP_LOCATION, { lat: $scope.searchAddress.location.lat, lng: $scope.searchAddress.location.lat});
+      $state.go(APP_CONSTS.STATE_MAP_LOCATION, { lat: $scope.searchAddress.location.lat, lng: $scope.searchAddress.location.lng});
     }
 
     $scope.clearSearch = function() {

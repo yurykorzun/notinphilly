@@ -116,60 +116,46 @@
 
           $stateProvider.state('main', {
             abstract: true,
+            controller: 'mainController',
             templateUrl: 'app/main/main-parent-template.html'
           });
 
           $stateProvider.state('admin', {
             abstract: true,
+            controller: 'mainController',            
             templateUrl: 'app/admin/admin-parent-template.html'
           });
 
-          $stateProvider.state('main.default', {
+          $stateProvider.state(APP_CONSTS.STATE_DEFAULT, {
             url: '/',
-            templateProvider:  ['$templateFactory', 'sessionService', function ($templateFactory, sessionService) {
-              return sessionService.checkLoggedin().then(function() {
-                                                    return $templateFactory.fromUrl('app/user/userprofilenew-template.html');
-                                                  },
-                                                  function() {
-
-                                                    return $templateFactory.fromUrl('app/search/searchaddress-template.html');
-                                                  });
-            }]
+            templateUrl: 'app/user/userprofilenew-template.html'
           })
+
           .state(APP_CONSTS.STATE_PROFILE, {
               url: '/profile',
-              templateProvider:  ['$templateFactory', 'sessionService', function ($templateFactory, sessionService) {
-                return sessionService.checkLoggedin().then(function() {
-                                                      return $templateFactory.fromUrl('app/user/userprofilenew-template.html');
-                                                    },
-                                                    function() {
-                                                      return $templateFactory.fromUrl('app/user/login-template.html');
-                                                    });
-              }]
+              templateUrl: 'app/user/userprofilenew-template.html'
           })
           .state(APP_CONSTS.STATE_LOGIN, {
               url: '/login',
-              templateProvider:  ['$templateFactory', 'sessionService', function ($templateFactory, sessionService) {
-                return sessionService.checkLoggedin().then(function() {
-                                                      return $templateFactory.fromUrl('app/user/userprofilenew-template.html');
-                                                    },
-                                                    function() {
-                                                      return  $templateFactory.fromUrl('app/user/login-template.html');
-                                                    });
-              }]
+              templateUrl: 'app/user/login-template.html'
           })
           .state(APP_CONSTS.STATE_ADMIN, {
               controller: 'AdminController',
               url: '/admin',
               templateProvider:  ['$templateFactory', 'sessionService', function ($templateFactory, sessionService) {
-                if (sessionService.isAdmin())
-                {
-                  return $templateFactory.fromUrl('app/admin/admin-template.html');
-                }
-                else
-                {
-                  return '<div>Unauthorized</div>';                  
-                }
+                return sessionService.checkLoggedin().then(function() {
+                  if (sessionService.isAdmin())
+                  {
+                    return $templateFactory.fromUrl('app/admin/admin-template.html');
+                  }
+                  else
+                  {
+                    return '<div class="position-center"><h3>Unauthorized</h3></div>';                  
+                  }
+                },
+                function() {
+                  return '<div class="position-center"><h3>Unauthorized</h3></div>'; 
+                });
               }]
           })
           .state(APP_CONSTS.STATE_SEARCH, {
@@ -192,11 +178,9 @@
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
               resolve: {
-                resolveParams: function( ) {
+                mapView: function() {
                   return {
-                    mapView: function( ) {
-                      return APP_CONSTS.MAPVIEW_CURRENTUSER_PATH;
-                    }
+                    current: APP_CONSTS.MAPVIEW_CURRENTUSER_PATH
                   };
               }}
           })
@@ -205,11 +189,9 @@
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
               resolve: {
-                resolveParams: function( ) {
+                mapView: function() {
                   return {
-                    mapView: function( ) {
-                      return APP_CONSTS.MAPVIEW_CURRENTUSER_PATH;
-                    }
+                    current: APP_CONSTS.MAPVIEW_CURRENTUSER_PATH
                   };
               }}
         })
@@ -218,11 +200,9 @@
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
               resolve: {
-                resolveParams: function( ) {
+                mapView: function() {
                   return {
-                    mapView: function( ) {
-                      return APP_CONSTS.MAPVIEW_LOCATION_PATH;
-                    }
+                    current: APP_CONSTS.MAPVIEW_LOCATION_PATH
                   };
               }}
             })
@@ -231,11 +211,9 @@
               controller: 'ExploreMapController',
               templateUrl: 'app/map/explore-map-template.html',
               resolve: {
-                resolveParams: function( ) {
+                mapView: function() {
                   return {
-                    mapView: function( ) {
-                      return APP_CONSTS.MAPVIEW_LOCATION_PATH;
-                    }
+                    current: APP_CONSTS.MAPVIEW_LOCATION_PATH
                   };
               }}
             })
