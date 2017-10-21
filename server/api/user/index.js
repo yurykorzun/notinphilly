@@ -13,6 +13,7 @@ router.get('/confirm/:activationId', controller.activate);
 router.get('/exportcsv', authService.isAdmin, controller.exportUsersCSV);
 router.get('/:id', authService.isAdmin, controller.get);
 
+router.post('/getPagedFiltered', authService.isAdmin, controller.getAllPagedFiltered);
 router.post('/changePassword/', authService.isAuthenticated, controller.changePassword);
 router.post('/resetPassword/', controller.resetPassword);
 router.post('/', controller.create);

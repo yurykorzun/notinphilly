@@ -6,9 +6,17 @@
   margin: 5px;
 }
 
+.grid-action-large {
+  width: 200px;
+}
+
+.grid-action-mid {
+  width: 100px;
+}
 .grid-action {
   margin-left: 5px;
   display: inline-block;
+  vertical-align: middle;
 }
 .active-tab {
   font-weight: bold;
