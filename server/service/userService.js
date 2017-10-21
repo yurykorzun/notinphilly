@@ -147,7 +147,6 @@ exports.getAllPagedSortedFiltered = function(pagingParams, filterParams) {
     return new Promise(function(fulfill, reject) {
         var findQuery = [];
 
-        console.log(filterParams);
         if (filterParams)
         {
             if (filterParams.receivedGrabbers !== undefined)
@@ -184,7 +183,6 @@ exports.getAllPagedSortedFiltered = function(pagingParams, filterParams) {
             findQuery = {};
         }
 
-        console.log(findQuery);
         UserModel.count(findQuery, function(err, count) {
             var query = UserModel.find(findQuery);
 
