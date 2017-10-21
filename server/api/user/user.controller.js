@@ -69,6 +69,41 @@ exports.getAllPaged = function(req, res) {
         });
 };
 
+exports.getAllPagedFiltered = function(req, res) {
+    var paging = req.body.paging;
+    var filters = req.body.filters;
+    
+    var limit = parseInt(paging.pageSize);
+    var itemsToSkip = (paging.page - 1) * limit;
+
+    if (filters.receivedGrabbers !== undefined)
+    {
+        filters.receivedGrabber = Boolean(parseInt(filters.receivedGrabbers));
+    }
+    if (filters.adoptedStreets !== undefined)
+    {
+        filters.adoptedStreets = Boolean(parseInt(filters.adoptedStreets));
+    }
+
+    userService.getAllPagedSortedFiltered({
+        sortColumn: paging.sortColumn,
+        sortDirection: paging.sortDirection,
+        limit: limit,
+        itemsToSkip: itemsToSkip
+    }, filters).then(
+        function(result) {
+            res.status(200).json(result);
+        },
+        function(error) {
+            logger.error("usercontroller.getAllPagedFiltered " + error);                        
+            res.status(500).send("Users retrieval failed");
+        })
+        .catch(function(error) {
+            logger.error("usercontroller.getAllPagedFiltered " + error);                        
+            res.status(500).send("Users retrieval failed");
+        });
+};
+
 exports.findNeighborsCount = function(req, res) {
     var userId = req.user._id;
 

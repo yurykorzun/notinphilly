@@ -1,0 +1,43 @@
+<div class="container-fluid homepage-hero">
+	<div class="row">
+		<div class="col-sm-10 text-center main-nav ng-cloak hidden-xs">
+			<ul>
+				<li>
+					<a ui-sref="{{APP_CONSTS.STATE_SEARCH}}">Find My Block</a>
+				</li>
+				<li>
+					<a ui-sref="{{APP_CONSTS.STATE_MAP}}">Explore the Map</a>
+				</li>
+				<li>
+					<a ng-href="#">Social</a>
+					<ul>
+						<li><a ui-sref="{{APP_CONSTS.STATE_SOCIAL}}">Social Feed</a></li>
+						<li><a ui-sref="{{APP_CONSTS.STATE_CALENDAR}}">Calendar</a></li>                                    
+					</ul>
+				</li>
+				<li disable="!header.isLoginEnabled" ng-show="header.isLoginEnabled">
+					<a ui-sref="{{APP_CONSTS.STATE_LOGIN}}">Sign Up / Log In</a>
+				</li>
+				<li disable="!header.isUserProfileEnabled" ng-show="header.isUserProfileEnabled">
+					<a ui-sref="{{APP_CONSTS.STATE_PROFILE}}">My Account</a>
+				</li>
+				<li>
+					<a ng-href="#">About</a>
+					<ul>
+						<li><a ui-sref="{{APP_CONSTS.STATE_FAQ}}">FAQ</a></li>
+						<li><a ui-sref="{{APP_CONSTS.STATE_RESOURCES}}">Resources</a></li> 
+						<li><a ui-sref="{{APP_CONSTS.STATE_MEDIA}}">In the media</a></li>                                    
+					</ul>
+				</li>
+				<li>
+					<a href="https://prc.networkforgood.com/projects/22356-not-in-philly" target="_blank">Donate</a>
+				</li>
+			</ul>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-11">
+		<div ui-view></div>	
+	</div>
+</div>

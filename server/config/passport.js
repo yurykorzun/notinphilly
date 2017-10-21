@@ -62,6 +62,7 @@ module.exports = function(app) {
         }
     ));
     
+
     passport.use(new FacebookStrategy({
         clientID: apiSettings.FACEBOOK_APP_ID,
         clientSecret: apiSettings.FACEBOOK_SECRET,

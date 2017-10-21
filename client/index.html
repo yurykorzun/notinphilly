@@ -51,134 +51,12 @@
 
     </script>
 </head>
-<body ng-app="notinphillyServerApp" ng-controller="mainController">
+<body ng-app="notinphillyServerApp">
 <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="mainSpinner"></span>
 <div id="wrapper" ng-cloak>
-    <div id="sidebar-wrapper">
-        <ul class="sidebar-nav">
-            <li class="sidebar-brand">
-                <a href="#">
-                    Not in Philly
-                </a>
-            </li>
-            <li>
-                <a ng-href="#" ng-click="goToPage('/search')">Find My Block</a>
-            </li>
-            <li>
-                <a ng-href="#" ng-click="goToPage('/map')">Explore the Map</a>
-            </li>
-            <li>
-                <a ng-href="#">Social</a>
-                <ul>
-                    <li><a ng-href="#" ng-click="goToPage('/social')">Social Feed</a></li>
-                    <li><a ng-href="#" ng-click="goToPage('/calendar')">Calendar</a></li>                                    
-                </ul>
-            </li>
-            <li disable="!header.isLoginEnabled" ng-show="header.isLoginEnabled">
-                <a ng-href="#" ng-click="goToPage('/login')">Sign Up / Log In</a>
-            </li>
-            <li disable="!header.isUserProfileEnabled" ng-show="header.isUserProfileEnabled">
-                <a ng-href="#" ng-click="goToPage('/profile')">My Account</a>
-            </li>
-            <li>
-                <a ng-href="#">About</a>
-                <ul>
-                    <li><a ng-href="#" ng-click="goToPage('/faq')">FAQ</a></li>
-                    <li><a ng-href="#" ng-click="goToPage('/resources')">Resources</a></li>                                                                 
-                    <li><a ng-href="#" ng-click="goToPage('/media')">In the media</a></li>  
-                </ul>
-            </li>
-            <li>
-                <a href="https://prc.networkforgood.com/projects/22356-not-in-philly" target="_blank">Donate</a>
-            </li>
-        </ul>
-    </div>
     <div id="page-content-wrapper">
-        <div id="headerContent">
-                <div id="mainNav" class="sticky-header padding-y--small">
-                    <div class="container">
-                        <div class="row visible-xs">
-                            <div class="col-md-2 pull-left">
-                                <a href="#" ng-click="toggleSidebar()" ><i class="fa fa-2x fa-bars burger-menu-icon" aria-hidden="true"></i></a>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-2 header-logo">
-                                <a href="/" class="main-logo">
-                                <img ng-src="/public/img/logo-not-in-philly.png" alt="Logo" class="img-responsive" />
-                                </a>
-                            </div>
-                            <div class="col-sm-10 text-center main-nav ng-cloak hidden-xs">
-                                <ul>
-                                    <li>
-                                        <a ng-href="#" ng-click="goToPage('/search')">Find My Block</a>
-                                    </li>
-                                    <li>
-                                        <a ng-href="#" ng-click="goToPage('/map')">Explore the Map</a>
-                                    </li>
-                                    <li>
-                                        <a ng-href="#">Social</a>
-                                        <ul>
-                                            <li><a ng-href="#" ng-click="goToPage('/social')">Social Feed</a></li>
-                                            <li><a ng-href="#" ng-click="goToPage('/calendar')">Calendar</a></li>                                    
-                                        </ul>
-                                    </li>
-                                    <li disable="!header.isLoginEnabled" ng-show="header.isLoginEnabled">
-                                        <a ng-href="#" ng-click="goToPage('/login')">Sign Up / Log In</a>
-                                    </li>
-                                    <li disable="!header.isUserProfileEnabled" ng-show="header.isUserProfileEnabled">
-                                        <a ng-href="#" ng-click="goToPage('/profile')">My Account</a>
-                                    </li>
-                                    <li>
-                                        <a ng-href="#">About</a>
-                                        <ul>
-                                            <li><a ng-href="#" ng-click="goToPage('/faq')">FAQ</a></li>
-                                            <li><a ng-href="#" ng-click="goToPage('/resources')">Resources</a></li> 
-                                            <li><a ng-href="#" ng-click="goToPage('/media')">In the media</a></li>                                    
-                                        </ul>
-                                    </li>
-                                    <li>
-                                        <a href="https://prc.networkforgood.com/projects/22356-not-in-philly" target="_blank">Donate</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="header container-fluid homepage-hero">
-                    <div class="container padding-y--small">
-                        <!-- Hero -->
-                        <div class="row main-hero">
-                        <div class="introduction col-md-8 col-md-offset-2 padding-y--small">
-                            <div class="center-block">
-                            <div class="header-title text-center">
-                                <h2 class="headline-l text-white hidden-xs">Litter? <span class="text-yellow">Not in Philly!</span></h2>
-                                <p class="text-white">Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
-                            </div>
-                            <div class="cta-btns text-center padding-top--small">
-                                <a ng-href="#" ng-click="goToPage('/faq')" class="btn btn--yellow">Learn More</a>
-                                <a ng-href="#" ng-click="goToPage('/search')" class="btn btn--blue text-black">Find My Block</a>
-                            </div>
-                            </div>
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!--View placeholder set by app.js-->
-            <div id="bodyContent" class="bodyContent container padding-top padding-bottom ng-cloak">
-                <div class="row">
-                    <div class="col-md-12 text-center bg-info site-info-message padding-20 hidden-xs">
-                        <i class="fa fa-2x fa-info-circle text-blue"></i>
-                        <span class="padding-x--small">Check out our <a href="/resources">Resources page</a> and <a href="/calendar">upcoming events</a></span>
-                    </div>
-                </div>      
-                    <div class="row page-content page-content-inner">
-                    <div class="col-md-12">
-                        <div ng-view></div>
-                    </div>
-                </div>
-            </div>
+        <!--View placeholder set by app.js-->
+        <div ui-view></div>
         <!-- PARTNERS -->
         <div id="footerContent">
             <div class="partners container-fluid bg-gray">
@@ -232,7 +110,7 @@
   <script src="public/libs/jquery/dist/jquery.min.js"></script>
   <script src="/api/external/google-maps-api/places"></script>
   <script src="public/libs/angular/angular.min.js"></script>
-  <script src="public/libs/angular-route/angular-route.js"></script>
+  <script src="public/libs/angular-ui-router/release/angular-ui-router.min.js"></script>
   <script src="public/libs/bootstrap/dist/js/bootstrap.js"></script>
   <script src="public/libs/angular-bootstrap/ui-bootstrap-tpls.js"></script>
   <script src="public/libs/angular-animate/angular-animate.min.js"></script>
@@ -265,7 +143,6 @@
   <script src="app/search/searchaddress.controller.js"></script>
   <script src="app/user/login.controller.js"></script>
   <script src="app/user/userprofile.controller.js"></script>
-  <script src="app/user/userprofilenew.controller.js"></script>  
   <script src="app/messages/messages.contact.view.controller.js"></script>      
   <script src="app/messages/messages.contact.pending.view.controller.js"></script>      
   <script src="app/messages/messages.list.controller.js"></script>

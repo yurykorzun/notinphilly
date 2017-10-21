@@ -1,8 +1,12 @@
 (function () {
   angular.module('notinphillyServerApp')
     .controller('LoginController', 
-                  ['$scope', '$http', '$rootScope', '$location', '$uibModal', '$cookies', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', 
-          function($scope, $http, $rootScope, $location, $uibModal, $cookies, sessionService, APP_EVENTS, APP_CONSTS) {
+                  ['$scope', '$http', '$rootScope', '$state', '$uibModal', '$cookies', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', 
+          function($scope, $http, $rootScope, $state, $uibModal, $cookies, sessionService, APP_EVENTS, APP_CONSTS) {
+            sessionService.checkLoggedin().then(function() {
+              $state.go(APP_CONSTS.STATE_PROFILE);
+            });
+            
             var adoptStreetFromCache = function() {
                 var cachedStreet = $cookies.getObject(APP_CONSTS.ADOPTED_STREET);
                 if (cachedStreet)
@@ -20,7 +24,7 @@
                                     .then(function(response){
                                         adoptStreetFromCache();
                                         $rootScope.$broadcast(APP_EVENTS.LOGIN_SUCCESS);
-                                        $location.path("/profile");
+                                        $state.go(APP_CONSTS.STATE_PROFILE);
                                         $scope.authError = false;
                                       },
                                       function(err) {

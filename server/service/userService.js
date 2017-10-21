@@ -109,7 +109,7 @@ exports.getAllPagedSorted = function(sortColumn, sortDirection, skip, limit) {
             if (skip) query = query.skip(skip);
             if (limit) query = query.limit(limit);
 
-            var query = query.skip(skip).limit(limit)
+            var query = query
                 .populate('state')
                 .populate('adoptedStreets')   
                 .populate('neighborhood')           
@@ -132,6 +132,86 @@ exports.getAllPagedSorted = function(sortColumn, sortDirection, skip, limit) {
             query.exec(function(err, users) {
                 if (err) {
                     logger.error("userService.getAllPagedSorted " + err);
+                    reject(err);
+                } 
+
+                var data = { users: users, count: count };
+                fulfill(data);
+            });
+        });
+    });
+}
+
+
+exports.getAllPagedSortedFiltered = function(pagingParams, filterParams) {
+    return new Promise(function(fulfill, reject) {
+        var findQuery = [];
+
+        if (filterParams)
+        {
+            if (filterParams.receivedGrabbers !== undefined)
+            {
+                findQuery.push({grabberDelivered : filterParams.receivedGrabbers});
+            }
+
+            if (filterParams.adoptedStreets !== undefined)
+            {
+                if (filterParams.adoptedStreets)
+                {
+                    adoptedStreetsParam = { '$where' : 'this.adoptedStreets.length>1' };
+                }
+                else
+                {
+                    adoptedStreetsParam = { '$where' : 'this.adoptedStreets.length === 0' };
+                }
+
+                findQuery.push(adoptedStreetsParam);
+            }
+
+            if (filterParams.neighborhood !== undefined)
+            {
+                findQuery.push({neighborhood : mongoose.Types.ObjectId(filterParams.neighborhood)});
+            }
+        }
+
+        if(findQuery.length > 0)
+        {
+            findQuery = { '$and': findQuery};
+        }
+        else
+        {
+            findQuery = {};
+        }
+
+        UserModel.count(findQuery, function(err, count) {
+            var query = UserModel.find(findQuery);
+
+            if (pagingParams.skip) query = query.skip(pagingParams.skip);
+            if (pagingParams.limit) query = query.limit(pagingParams.limit);
+
+            var query = query
+                .populate('state')
+                .populate('adoptedStreets')   
+                .populate('neighborhood')           
+                .select('-salt -hashedPassword -_v -authToken -__v');
+
+            if (pagingParams.sortColumn && pagingParams.sortDirection) {
+                if (pagingParams.sortColumn == "address") query = query.sort({
+                    streetNumber: pagingParams.sortDirection,
+                    streetName: pagingParams.sortDirection,
+                    city: pagingParams.sortDirection,
+                    state: pagingParams.sortDirection,
+                    zip: pagingParams.sortDirection,
+                    apartmentNumber: pagingParams.sortDirection
+                });
+                else query = query.sort([
+                    [pagingParams.sortColumn, pagingParams.sortDirection === 'asc' ? 1 : -1]
+                ]);
+            }
+
+            query.exec(function(err, users) {
+                if (err) {
+                    logger.error("userService.getAllPagedSortedFiltered " + err);
                     reject(err);
                 } 
 

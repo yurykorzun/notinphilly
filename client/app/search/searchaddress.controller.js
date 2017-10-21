@@ -1,7 +1,7 @@
 (function () {
 angular.module('notinphillyServerApp')
-  .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$cookies', '$location', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
-  function($scope, $http, $rootScope, $cookies, $location, mapService, APP_EVENTS, APP_CONSTS) {
+  .controller('searchAddressController', [ '$scope', '$http', '$rootScope', '$cookies', '$state', 'mapService', 'APP_EVENTS', 'APP_CONSTS', 
+  function($scope, $http, $rootScope, $cookies, $state, mapService, APP_EVENTS, APP_CONSTS) {
     $scope.searchAddress = {
       streets: [],
       streetsGeoJSON: [],      
@@ -33,7 +33,7 @@ angular.module('notinphillyServerApp')
     });
 
     $scope.switchToMap = function() {
-      $location.path("/map/" + APP_CONSTS.MAPVIEW_LOCATION_PATH + "/" + $scope.searchAddress.location.lat + "/" + $scope.searchAddress.location.lng );
+      $state.go(APP_CONSTS.STATE_MAP_LOCATION, { lat: $scope.searchAddress.location.lat, lng: $scope.searchAddress.location.lng});
     }
 
     $scope.clearSearch = function() {

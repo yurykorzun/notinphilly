@@ -1,7 +1,7 @@
 (function () {
   angular.module('notinphillyServerApp')
-    .controller('SignupIncompleteController', [ '$scope', '$http', '$rootScope', '$location', '$cookies', '$uibModalInstance', 'placeSearchService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', 
-                                            function($scope, $http, $rootScope, $location, $cookies, $uibModalInstance, placeSearchService, sessionService, APP_EVENTS, APP_CONSTS) {
+    .controller('SignupIncompleteController', [ '$scope', '$http', '$rootScope', '$state', '$cookies', '$uibModalInstance', 'placeSearchService', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', 
+                                            function($scope, $http, $rootScope, $state, $cookies, $uibModalInstance, placeSearchService, sessionService, APP_EVENTS, APP_CONSTS) {
       $scope.User = $scope.$resolve.user;
       $scope.addressDetails = undefined;
 
@@ -42,8 +42,8 @@
                         $scope.isUpdateSuccess = true;
 
                         if (foundStreet) $cookies.remove(APP_CONSTS.FOUND_STREET);
-
-                        $location.path('/');
+                        
+                        $state.go(APP_CONSTS.STATE_DEFAULT);
                     }).error(function(err) {
                         $scope.errorMessage = err ? err : "Something went wrong, please try again later. ";
                         $scope.isUpdateFailed = true;
