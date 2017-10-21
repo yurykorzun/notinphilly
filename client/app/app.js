@@ -128,12 +128,12 @@
 
           $stateProvider.state(APP_CONSTS.STATE_DEFAULT, {
             url: '/',
-            templateUrl: 'app/user/userprofilenew-template.html'
+            templateUrl: 'app/user/userprofile-template.html'
           })
 
           .state(APP_CONSTS.STATE_PROFILE, {
               url: '/profile',
-              templateUrl: 'app/user/userprofilenew-template.html'
+              templateUrl: 'app/user/userprofile-template.html'
           })
           .state(APP_CONSTS.STATE_LOGIN, {
               url: '/login',

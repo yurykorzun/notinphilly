@@ -1,56 +1,60 @@
 (function() {
     angular.module('notinphillyServerApp')
-        .controller('UserProfileController', 
-                    ['$scope', '$http', '$rootScope', '$state', '$uibModal', 'placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
-            function($scope, $http, $rootScope, $state, $uibModal, placeSearchService, sessionService, mapService, APP_EVENTS, APP_CONSTS) {
+        .controller('UserProfileController', ['$scope', '$http', '$rootScope', '$state', '$uibModal', '$anchorScroll','placeSearchService', 'sessionService', 'mapService', 'APP_EVENTS', 'APP_CONSTS',
+            function($scope, $http, $rootScope, $state, $uibModal, $anchorScroll, placeSearchService, sessionService, mapService, APP_EVENTS, APP_CONSTS) {
+                sessionService.checkLoggedin().then(function() {
+                    SetupCurrentUser();
+                },
+                function() {
+                    if ($state.current.name === APP_CONSTS.STATE_DEFAULT)
+                    {
+                        $state.go(APP_CONSTS.STATE_SEARCH);
+                    }
+                    else
+                    {
+                        $state.go(APP_CONSTS.STATE_LOGIN);
+                    }
+                });
+
                 $scope.userProfile = {
                     isEditing: false,
-                    isAdmin: false
+                    isAdmin: false,
+                    neighborsCount: 0,
+                    upcomingEvents: 0,
+                    addressDetails: undefined,
+                    addressOptions: { country: 'us'}
                 };
                 $scope.passwordChange = {};
                 $scope.user = {
                     adoptedStreets: []
                 };
-                $scope.userStreetsGeoJSON = [];
                 $scope.errorMessage = undefined;
 
                 function SetupCurrentUser() {
                     if ($rootScope.currentUser) {
                         $scope.userProfile.isAdmin = $rootScope.currentUser.isAdmin;
                         $http.get("api/users/current/").success(function(data, status) {
-                                $scope.user = data;
-                                $scope.errorMessage = undefined;
+                            $scope.user = data;
+                            $scope.errorMessage = undefined;
 
-                                if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
+                            if (!$scope.user.fullAddress) $scope.user.fullAddress = $scope.user.address;
 
-                                if ($scope.user.needsCompletion || !$scope.user.hasAgreedToTerms) {
-                                    ShowIncompleteForm($scope.user);
-                                }
+                            if ($scope.user.needsCompletion || !$scope.user.hasAgreedToTerms) {
+                                ShowIncompleteForm($scope.user);
+                            }
 
-                                UpdateUserStreets();
-                            },
-                            function(err) {
-                                $scope.errorMessage = 'Something went wrong. Please try again later.';
-                            });
+                            GetUpcomingEvents();
+                            GetNeighbordsCount();
+                            SetBlockMap();
+                            UpdateUserStreets();
+                        },
+                        function(err) {
+                            $scope.errorMessage = 'Something went wrong. Please try again later.';
+                        });
+                        
                     } else {
-                        $scope.errorMessage = "You are not authorized to view or edit the user profile";                        
-                        $state.go(APP_CONSTS.STATE_LOGIN);
+                        $scope.errorMessage = "You are not authorized to view or edit the user profile";
                     }
-                }
-
-                function UpdateUserStreets() {
-                    mapService.getCurrentUserStreets().then(function(response) {
-                        $scope.user.adoptedStreets = response;
-
-                        SetStreetsGeoJSON();
-                    });
-                }
-
-                function SetStreetsGeoJSON()
-                {
-                    mapService.getCurrentUserStreetsGeoJSON().then(function(response) {
-                        $scope.userStreetsGeoJSON = response;
-                    });
                 }
 
                 function ShowIncompleteForm(user) {
@@ -67,54 +71,88 @@
 
                     });
                 }
+                
+                function GetUpcomingEvents() 
+                {
+                    $http.get("api/events/google").success(function(eventData, status) {
+                        $scope.userProfile.upcomingEvents = eventData.length;
+                    });
+                }
 
-                $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
-                    SetupCurrentUser();
-                });
-                $scope.$on(APP_EVENTS.LOGOUT, function(event) {
+                $scope.requestNeighborsConnections = function() {
+                    var modalInstance = $uibModal.open({
+                        templateUrl: 'app/dialogs/dialog-confirm.html',
+                        controller: 'DialogConfirmController',
+                        size: 'sm',
+                        resolve: {
+                            messageHeader: function () {
+                                return "Confirm";
+                            },
+                            messageBody: function () {
+                                return "Do you want to connect with your neighbors? We will send requests to all participants in your block.";
+                            },
+                            acceptMessage: function () {
+                                return "Let's do it!";
+                            }
+                        }
+                      });
 
-                });
-                $scope.$on(APP_EVENTS.STREET_ADOPTED, function(event) {
-                    UpdateUserStreets();
-                });
-                $scope.$on(APP_EVENTS.STREET_LEFT, function(event) {
-                    UpdateUserStreets();
-                });
+                      modalInstance.result.then(function() {
+                                                $http.post('api/messages/connections/request/near')
+                                                .success(function(response) {
+                                                    $scope.errorMessage = undefined;
+                                                }).error(function(err) {
+                                                    $scope.errorMessage = "Oops, something went wrong";
+                                                }); 
+                                            });
+                 
+                }
 
-                $scope.locateStreet = function(streetId) {
-                    $state.path(APP_CONSTS.STATE_MAP_CURRENT_STREET, { streetId: streetId });
-                };
+                function GetNeighbordsCount()
+                {
+                    $http.get("api/users/neighbors/count").success(function(data, status) {
+                        var userCount = data.userCount;
+
+                        $scope.userProfile.neighborsCount = userCount;
+                    });
+                }
+
+                function SetBlockMap()
+                {
+                    if ($scope.user.addressLocation) {
+                        mapService.showCurrentUserStreetsNear();
+                    }
+                    else
+                    {
+                        mapService.showNeighborhoodLayers();
+                    }
+                }
+
+                function UpdateUserStreets() {
+                    return mapService.getCurrentUserStreets().then(function(response) {
+                        $scope.user.adoptedStreets = response;
+                    });
+                }
 
                 $scope.hasStreets = function() {
                     return $scope.user.adoptedStreets.length > 0
                 };
 
-                $scope.showBlock = function() {
-                    if ($scope.user.addressLocation) {
-                        showBlockStreets($scope.user.addressLocation);
-                    } else if ($scope.user.fullAddress) {
-                        placeSearchService.getLocationByText($scope.user.fullAddress)
-                            .then(function(location) {
-                                $scope.user.addressLocation = location;
-                                $scope.update();
-
-                                showBlockStreets(location);
-                            });
-                    }
-                };
-
-                var showBlockStreets = function(addressLocation) {
-                    $state.path(APP_CONSTS.STATE_MAP_LOCATION, { lat: addressLocation.lat, lng: addressLocation.lng });                 
-                }
-
-                $scope.switchToMap = function() {
-                    $state.path(APP_CONSTS.STATE_MAP_CURRENT);                 
-                };
-
                 $scope.navigateToAdmin = function() {
                     if ($rootScope.currentUser && $rootScope.currentUser.isAdmin) {
-                        $state.go(APP_CONSTS.STATE_ADMIN);                 
+                        $state.go(APP_CONSTS.STATE_ADMIN);                        
                     }
+                }
+                
+                $scope.chooseStreet = function(streetId) {
+                    mapService.selectStreet(streetId);;
+                    $anchorScroll('mapContent');
+                }
+
+                $scope.leaveStreet = function(streetId) {
+                    mapService.leaveStreet(streetId).then(function() {
+                        UpdateUserStreets();
+                    });
                 }
 
                 $scope.toggleEdit = function() {
@@ -136,7 +174,7 @@
                         success(function(data) {
                             $scope.toggleChangePassword();
                         }).error(function(err) {
-                            $scope.errorMessage = "You are not authorized to view or edit the user profile";   
+                            $scope.errorMessage = 'Something went wrong. Please try again later.';
                         });
                     }
                 };
@@ -145,8 +183,8 @@
                     $scope.errorMessage = undefined;
 
                     if ($scope.user) {
-                        if ($scope.addressDetails) {
-                            var address = $scope.addressDetails;
+                        if ($scope.userProfile.addressDetails) {
+                            var address = $scope.userProfile.addressDetails;
 
                             $scope.user.zip = address.postalCode;
                             $scope.user.city = address.city;
@@ -158,13 +196,14 @@
                         }
 
                         $http.put('/api/users/', $scope.user).
-                        success(function(data) {
-                            SetupCurrentUser();
-                            // Collapse edit form after updating user
-                            $scope.userProfile.isEditing = false;
-                        }).error(function(err) {
-                            $scope.errorMessage = "You are not authorized to view or edit the user profile";   
-                        });
+                                success(function(data) {
+                                    SetupCurrentUser();
+                                    // Collapse edit form after updating user
+                                    $scope.userProfile.isEditing = false;
+                                }).error(function(err) {
+                                    // Update user error
+                                    $scope.errorMessage = err;
+                                });
                     }
                 };
 
@@ -174,11 +213,21 @@
                             $state.go(APP_CONSTS.STATE_LOGIN);
                         },
                         function(err) {
-                            $scope.errorMessage = "You are not authorized to view or edit the user profile";   
+                            $scope.errorMessage = 'Something went wrong. Please try again later.';
                         });
                 };
 
-                SetupCurrentUser();
+                $scope.$on(APP_EVENTS.LOGIN_SUCCESS, function(event) {
+                    SetupCurrentUser();
+                });
+
+                $scope.$on(APP_EVENTS.STREET_ADOPTED, function(event) {
+                    UpdateUserStreets();
+                });
+
+                $scope.$on(APP_EVENTS.STREET_LEFT, function(event) {
+                    UpdateUserStreets();
+                });
             }
         ]);
 })();
