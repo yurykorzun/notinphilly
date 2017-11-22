@@ -6,30 +6,30 @@
 			</a>
 		</li>
 		<li>
-			<a ui-sref="{{APP_CONSTS.STATE_SEARCH}}">Find My Block</a>
+			<a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_SEARCH}}">Find My Block</a>
 		</li>
 		<li>
-			<a ui-sref="{{APP_CONSTS.STATE_MAP}}">Explore the Map</a>
+			<a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_MAP}}">Explore the Map</a>
 		</li>
 		<li>
 			<a ng-href="#">Social</a>
 			<ul>
-				<li><a ui-sref="{{APP_CONSTS.STATE_SOCIAL}}">Social Feed</a></li>
-				<li><a ui-sref="{{APP_CONSTS.STATE_CALENDAR}}">Calendar</a></li>                                    
+				<li><a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_SOCIAL}}">Social Feed</a></li>
+				<li><a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_CALENDAR}}">Calendar</a></li>                                    
 			</ul>
 		</li>
 		<li ng-show="header.isLoginEnabled">
-			<a ui-sref="{{APP_CONSTS.STATE_LOGIN}}">Sign Up / Log In</a>
+			<a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_LOGIN}}">Sign Up / Log In</a>
 		</li>
 		<li ng-show="header.isUserProfileEnabled">
-			<a ui-sref="{{APP_CONSTS.STATE_PROFILE}}">My Account</a>
+			<a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_PROFILE}}">My Account</a>
 		</li>
 		<li>
 			<a ng-href="#">About</a>
 			<ul>
-				<li><a ui-sref="{{APP_CONSTS.STATE_FAQ}}">FAQ</a></li>
-				<li><a ui-sref="{{APP_CONSTS.STATE_RESOURCES}}">Resources</a></li>                                                                 
-				<li><a ui-sref="{{APP_CONSTS.STATE_MEDIA}}">In the media</a></li>  
+				<li><a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_FAQ}}">FAQ</a></li>
+				<li><a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_RESOURCES}}">Resources</a></li>                                                                 
+				<li><a ng-click="toggleSidebar()" ui-sref="{{APP_CONSTS.STATE_MEDIA}}">In the media</a></li>  
 			</ul>
 		</li>
 		<li>
@@ -99,8 +99,8 @@
 					<p class="text-white">Like you, we realize that Philly has a litter problem. As citizens, we have what it takes to make a real difference. Join us and find out how you can contribute!</p>
 				</div>
 				<div class="cta-btns text-center padding-top--small">
-					<a ng-href="#" ng-click="goToPage('/faq')" class="btn btn--yellow">Learn More</a>
-					<a ng-href="#" ng-click="goToPage('/search')" class="btn btn--blue text-black">Find My Block</a>
+					<a ui-sref="{{APP_CONSTS.STATE_FAQ}}" class="btn btn--yellow">Learn More</a>
+					<a ui-sref="{{APP_CONSTS.STATE_SEARCH}}" class="btn btn--blue text-black">Find My Block</a>
 				</div>
 				</div>
 			</div>
