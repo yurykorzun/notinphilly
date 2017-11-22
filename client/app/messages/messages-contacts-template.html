@@ -16,6 +16,9 @@
     <div class="text-center margin-bottom--small" ng-show="contacts.connectedUsers.length === 0">
         Explore streets and connect with other participants
     </div>
+    <div class="text-center margin-bottom--small" ng-show="contacts.pendingSentRequests > 0">
+        Requests waiting other members response: <b>{{contacts.pendingSentRequests}}</b>
+    </div>
     <div ng-repeat="contact in contacts.connectedUsers">
          <div class="row userprofile-contact-item">
             <div class="userprofile-contact-avatar">

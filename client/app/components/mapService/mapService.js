@@ -788,7 +788,7 @@
               position: 'topleft'
             },
             onAdd: function (map) {
-              var container = L.DomUtil.create('div', 'map-legend hidden-xs');
+              var container = L.DomUtil.create('div', 'map-legend');
               container.innerHTML = '<div><b>Neighborhood:</b>'
                                     + '<div><img class="map-legend-icon" src="/public/img/participating-neighborhood.png"/> Has participants</div>' 
                                     + '<div><img class="map-legend-icon" src="/public/img/future-neighborhood.png"/> No participants</div>' 
@@ -810,7 +810,7 @@
               position: 'topleft'
             },
             onAdd: function (map) {
-              var container = L.DomUtil.create('div', 'map-legend hidden-xs');
+              var container = L.DomUtil.create('div', 'map-legend');
                 container.innerHTML = '<div>' 
                                       + ( isAddressLocation ? 
                                         '<p><img class="map-legend-icon" src="/public/img/home.png"/> Address</p>'  : "" )

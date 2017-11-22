@@ -141,13 +141,23 @@ exports.getAllUserContacts = function(userId) {
                         }
                         else
                         {
-                            var response = {
-                                connectedUsers: user.connectedUsers,
-                                pendingUsers: user.pendingConnectedUsers,
-                                mutedUsers: user.mutedUsers
-                            };
-                            
-                            fulfill(response);
+                            UserModel.count({pendingConnectedUsers: {'$elemMatch': { '$eq' : userId }}},  function(err, count) {
+                                if (err) {
+                                    logger.error("messageService.getAllUserContacts " + err);
+                                    reject("Failed retrieving contacts");                            
+                                }
+                                else
+                                {
+                                    var response = {
+                                        connectedUsers: user.connectedUsers,
+                                        pendingUsers: user.pendingConnectedUsers,
+                                        mutedUsers: user.mutedUsers,
+                                        pendingSentRequests: count
+                                    };
+                                    
+                                    fulfill(response);
+                                }
+                            });
                         }
                     });
     });
@@ -677,6 +687,8 @@ exports.unmuteUser = function(userId, unmuteUserId) {
 
 var requestConnectionWithUser = function(userId, userIdToConnect)
 {
+    if (userId.toString() === userIdToConnect.toString()) return;
+
     return new Promise(function(fulfill, reject) {
         if (!userId) reject("user id is missing");
         if (!userIdToConnect) reject("user Id to connect is missing"); 

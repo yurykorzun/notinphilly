@@ -7,6 +7,7 @@
                     pendingConnectedUsers: [],
                     sentConnectionRequests: false,
                     neighborsCount: 0,
+                    
                     errorMessage: undefined
                 }           
 
@@ -18,6 +19,7 @@
                             .success(function(response) {
                                 $scope.contacts.connectedUsers = response.connectedUsers;
                                 $scope.contacts.pendingConnectedUsers = response.pendingUsers;
+                                $scope.contacts.pendingSentRequests = response.pendingSentRequests;                                
                                 $scope.contacts.errorMessage = undefined;
                             }).error(function(err) {
                                 $scope.contacts.errorMessage = "Oops, something went wrong";
