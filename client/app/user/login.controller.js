@@ -3,9 +3,12 @@
     .controller('LoginController', 
                   ['$scope', '$http', '$rootScope', '$state', '$uibModal', '$cookies', 'sessionService', 'APP_EVENTS', 'APP_CONSTS', 
           function($scope, $http, $rootScope, $state, $uibModal, $cookies, sessionService, APP_EVENTS, APP_CONSTS) {
-            sessionService.checkLoggedin().then(function() {
-              $state.go(APP_CONSTS.STATE_PROFILE);
-            });
+            if ($state.current.name === APP_CONSTS.STATE_LOGIN)
+            {
+              sessionService.checkLoggedin().then(function() {
+                $state.go(APP_CONSTS.STATE_PROFILE);
+              });
+            }
             
             var adoptStreetFromCache = function() {
                 var cachedStreet = $cookies.getObject(APP_CONSTS.ADOPTED_STREET);
