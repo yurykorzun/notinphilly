@@ -74,7 +74,7 @@ exports.getAllPagedFiltered = function(req, res) {
     var filters = req.body.filters;
     
     var limit = parseInt(paging.pageSize);
-    var itemsToSkip = (paging.page - 1) * limit;
+    var itemsToSkip = (paging.pageNumber - 1) * limit;
 
     if (filters.receivedGrabbers !== undefined)
     {
@@ -89,7 +89,7 @@ exports.getAllPagedFiltered = function(req, res) {
         sortColumn: paging.sortColumn,
         sortDirection: paging.sortDirection,
         limit: limit,
-        itemsToSkip: itemsToSkip
+        skip: itemsToSkip
     }, filters).then(
         function(result) {
             res.status(200).json(result);
