@@ -10,6 +10,7 @@ router.get('/current/', authService.isAuthenticated, controller.currentUserStree
 router.get('/currentGeoJSON', authService.isAuthenticated, controller.currentUserStreetsGeoJSON);
 router.get('/byparent/:nid', controller.getByNeighborhood);
 router.get('/byparentgeo/:nid', controller.getByNeighborhoodGeojson);
+router.get('/byzipcodegeo/:zid', controller.getByZipcodeGeojson);
 router.get('/adopt/:sid', authService.isAuthenticated, controller.adopt);
 router.get('/leave/:sid', authService.isAuthenticated, controller.leave);
 router.get('/reconcile/', authService.isAdmin, controller.reconcileAdoptedStreets);

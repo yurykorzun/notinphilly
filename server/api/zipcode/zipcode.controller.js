@@ -1,5 +1,7 @@
+var lodash              = require('lodash');
 var mongoose            = require('mongoose');
 var ZipcodeModel        = require('./zipcode.model');
+var zipcodeService      = require('../../service/zipcodeService');
 var logger              = require('../../components/logger');
 
 var Schema = mongoose.Schema;
@@ -18,29 +20,17 @@ exports.index = function(req, res, next) {
 };
 
 exports.getAllGeojson = function(req, res) {
-     ZipcodeModel.find({}, function(err, zipcodes) {
-        if (err) {
-            logger.error("zipcode.getAllGeojson " + err);
-            next(err);
-        }
-        else
-        {
-            var geoJSON = lodash.reduce(zipcodes, function(geoJSON, item){
-                if(!geoJSON) geoJSON = [];
-
-                var feature = {
-                    "type" : "Feature",
-                    "geometry": item["geometry"]
-                };
-
-                item["geometry"] = undefined;
-                feature.properties = item;
-                geoJSON.push(feature);
-
-                return geoJSON;
-            });
-            
-            res.status(200).json(geoJSON);
-        }
-     });
+    zipcodeService.getAllGeoJSON().then(function(geoJSON)
+    {
+       res.status(200).json(geoJSON);
+    },
+    function(error)
+    {
+      logger.error("zipcodeController.getAllGeojson " + error);    
+      res.status(500).send(error);
+    })
+    .catch(function(error) {
+        logger.error("zipcodeController.getAllGeojson " + error);    
+        res.status(500).send(error);
+    });
 };

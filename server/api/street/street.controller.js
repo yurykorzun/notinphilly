@@ -361,6 +361,52 @@ exports.getByNeighborhoodGeojson = function(req, res, next) {
     }
 };
 
+exports.getByZipcodeGeojson = function(req, res, next) {
+  var zipCodeId = req.params.zid;
+
+  if (typeof req.user !== 'undefined') {
+    userService.getUserById(req.user._id, true).then(function(user) {
+      streetService.getGeoJSONByZipcodeId(zipCodeId, user).then(
+      function (streets)
+      {
+        res.status(200).json(streets);
+      },
+      function(error){
+        logger.error("streetController.getByZipcodeGeojson " + error);                                                                    
+        res.status(500).json("Streets retrieval by zipcode failed");          
+      })
+      .catch(function(error) {
+        logger.error("streetController.getByZipcodeGeojson " + error);    
+        res.status(500).json("User retrieval failed");   
+      });
+    },
+    function (error) {
+      logger.error("streetController.getByZipcodeGeojson " + error);    
+      res.status(500).json("User retrieval failed");
+    })
+    .catch(function(error) {
+      logger.error("streetController.getByZipcodeGeojson " + error);    
+      res.status(500).json("User retrieval failed");   
+    });
+  }
+  else 
+  {
+    streetService.getGeoJSONByZipcodeId(zipCodeId).then(
+    function (streets)
+    {
+      res.status(200).json(streets);
+    },
+    function(error){
+      logger.error("streetController.getByZipcodeGeojson " + error);            
+      res.status(500).json("Streets retrieval by zipcode failed");          
+    })
+    .catch(function(error) {
+      logger.error("streetController.getByZipcodeGeojson " + error);            
+      res.status(500).json("Streets retrieval by zipcode failed"); 
+    });
+  }
+};
+
 exports.reconcileAdoptedStreets = function(req, res, next) {
   streetService.reconcileAdoptedStreets().then(
     function(result) {

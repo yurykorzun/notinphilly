@@ -131,6 +131,37 @@ exports.getGeoJSONByNeighborhoodId = function(neighborhoodId, user) {
     });
 };
 
+exports.getGeoJSONByZipcodeId = function(zipCodeId, user) {
+    return new Promise(function (fulfill, reject){
+        StreetModel
+        .find({zipCodes: { "$elemMatch": { "$eq":mongoose.Types.ObjectId(zipCodeId) } }})
+        .populate('neighborhoods')
+        .populate('zipCodes')      
+        .exec(function(err, streets) {
+            if (err) {
+                logger.error("streetService.getGeoJSONByZipcodeId " + error);
+                reject("Failed retrieving streets " + err);
+            } 
+            else {
+                setIsAdopted(streets, user).then(function(streets)
+                {
+                    convertToGeoJSON(streets).then(function(streets){
+                        fulfill(streets);
+                    },
+                    function(error) {
+                        logger.error("streetService.getGeoJSONByZipcodeId " + error);
+                        reject(error);
+                    })
+                },
+                function(error) {
+                    logger.error("streetService.getGeoJSONByZipcodeId " + error);
+                    reject(error);
+                });
+            } 
+        });
+    });
+};
+
 exports.getByUserAndLocation = function(locationLat, locationLng, user) {
     return new Promise(function (fulfill, reject){
         promise.all([getByLocation(locationLat, locationLng, user), getByUserId(user._id)]).then(function (results) {

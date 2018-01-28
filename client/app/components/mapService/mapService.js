@@ -100,6 +100,46 @@
         });
       };
 
+      self.showZipcodeLayers = function() {
+        _lastCalledFunction = function() {
+          self.showZipcodeLayers();
+        };
+
+        _deferredMap.promise.then(function(map) {
+          $http.get("api/zipcodes/getAllGeojson/").success(function(data, status) {
+            setMapLayer(map);
+
+            map.closePopup();
+            createNeighborhoodControls(map);
+
+            var geoJsonLayer = L.geoJson(data, {
+              onEachFeature: function (feature, layer){
+                layer.setStyle(setNeighborhoodColor(feature));
+                layer.on({
+                  mouseover: function(e) { highlightNeighborhood(e); _mapCallbacks.neighborhoodMouseOverCallback(e);  },
+                  mouseout: function(e) { resetHighlightNeighborhood(e); _mapCallbacks.neighborhoodMouseOutCallback(e); },
+                  click: function(e) { onZipcodeLayerClick(e); _mapCallbacks.neighborhoodMouseClickCallback(e); },
+                });
+              },
+              style: {
+                color: '#9A9B9C',
+                weight: 2,
+                fillOpacity: 0.4,
+                fillColor: '#484848'
+              }
+            });
+
+            _mapLayerGroup.addLayer(geoJsonLayer);
+            _mapStreetLayer = undefined;
+
+            var mapCenter = getMapCenter().then(function(mapCenter){
+              map.setView(mapCenter, 13, { animate: false });
+              map.invalidateSize();
+            });
+          });
+        });
+      };
+
       self.showNeigborhoodStreets = function(location) {
         _lastCalledFunction = function() {
           self.showNeigborhoodStreets(location);
@@ -142,6 +182,36 @@
           map.closePopup();
 
           $http.get("api/streets/byparentgeo/" + neighborhoodId).success(function(streets, status) {
+            setStreetViewSrc(streets);
+            var streetLayer = createStreetLayer(streets);
+            addAdoptedStreetMarkers(streets);
+
+            _mapLayerGroup.addLayer(streetLayer);
+            _mapStreetLayer = streetLayer;
+
+            var layerBounds = _mapStreetLayer.getBounds();
+            var streetCenter = layerBounds.getCenter();
+
+            createStreetControls(map, false);
+            
+            map.setView(streetCenter, 17, { animate: false });
+          }, function(err) {
+            
+          });
+        });
+      };
+
+      self.showZipcodeStreetsById = function(zipcodeId) {
+        _lastCalledFunction = function() {
+          self.showZipcodeStreetsById(zipcodeId);
+        };
+
+        _deferredMap.promise.then(function(map) {
+          setMapLayer(map);
+
+          map.closePopup();
+
+          $http.get("api/streets/byzipcodegeo/" + zipcodeId).success(function(streets, status) {
             setStreetViewSrc(streets);
             var streetLayer = createStreetLayer(streets);
             addAdoptedStreetMarkers(streets);
@@ -899,6 +969,20 @@
             var nhoodCenter = layerBounds.getCenter();
             
             self.showNeigborhoodStreetsById(properties._id);
+          });
+        }
+      };
+
+      var onZipcodeLayerClick = function(e) {
+        if (e.target.feature) {
+          _deferredMap.promise.then(function(map) {
+            var triggeredFeature = e.target.feature;
+            var properties = triggeredFeature.properties;
+            var layerBounds = e.target.getBounds();
+
+            var layerCenter = layerBounds.getCenter();
+            
+            self.showZipcodeStreetsById(properties._id);
           });
         }
       };

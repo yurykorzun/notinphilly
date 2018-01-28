@@ -8,6 +8,9 @@
 				case APP_CONSTS.MAPVIEW_DEFAULT_PATH:
 					mapService.showNeighborhoodLayers();
 				break;
+				case APP_CONSTS.MAPVIEW_ZIPCODES_PATH:
+					mapService.showZipcodeLayers();
+				break;
 				case APP_CONSTS.MAPVIEW_LOCATION_PATH:
 					mapService.showStreetsNear({ lng: parseFloat($stateParams.lng), lat: parseFloat($stateParams.lat) })
 								.then(function(result) {

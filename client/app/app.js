@@ -41,6 +41,7 @@
     "STATE_LOGIN": "main.login",
     "STATE_ADMIN": "admin.dashboard",
     "STATE_MAP": "main.map",
+    "STATE_MAP_ZIPCODE": "main.zipcode",    
     "STATE_MAP_CURRENT": "main.mapcurrent",
     "STATE_MAP_CURRENT_STREET": "main.mapcurrentstreet",
     "STATE_MAP_LOCATION": "main.maplocation",
@@ -52,7 +53,8 @@
     "STATE_FAQ": "main.faq",
     "STATE_RESOURCES": "main.resources",
     "MAPVIEW_RESOLVE": "mapView",   
-    "MAPVIEW_DEFAULT_PATH": "default",         
+    "MAPVIEW_DEFAULT_PATH": "default",
+    "MAPVIEW_ZIPCODES_PATH": "zipcodes",        
     "MAPVIEW_LOCATION_PATH": "location",        
     "MAPVIEW_CURRENTUSER_PATH": "currentUser",  
     "MAPVIEW_STREETS_PATH": "streets",      
@@ -172,6 +174,17 @@
                     current: APP_CONSTS.MAPVIEW_DEFAULT_PATH
                   };
               }}
+          })
+          .state(APP_CONSTS.STATE_MAP_ZIPCODE, {
+            url: '/map/zipcodes',
+            controller: 'ExploreMapController',
+            templateUrl: 'app/map/explore-map-template.html',
+            resolve: {
+              mapView: function() {
+                return {
+                  current: APP_CONSTS.MAPVIEW_ZIPCODES_PATH
+                };
+            }}
           })
           .state(APP_CONSTS.STATE_MAP_CURRENT, {
               url: '/map/' + APP_CONSTS.MAPVIEW_CURRENTUSER_PATH + '/',

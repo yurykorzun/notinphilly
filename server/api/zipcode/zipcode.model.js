@@ -19,4 +19,7 @@ ZipCodeSchema.virtual('id').get(function() {
   return this._id.toString();
 });
 
+ZipCodeSchema.set('toObject', { virtuals: true });
+ZipCodeSchema.set('toJSON', { virtuals: true });
+
 module.exports = mongoose.model('ZipCode', ZipCodeSchema);
