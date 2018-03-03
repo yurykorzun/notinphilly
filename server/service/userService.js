@@ -370,7 +370,7 @@ exports.findNearUserCount = function(userId)
 
 exports.create = function(user, isActiveUser, isEmailRequired) {
     return new Promise(function(fulfill, reject) {
-        UserModel.findOne({ email: user.email }, function(err, existingUser) {
+        UserModel.findOne({ email: user.email.toLowerCase() }, function(err, existingUser) {
             if (err){
                 logger.error("userService.create " + err);
                 reject(err);
