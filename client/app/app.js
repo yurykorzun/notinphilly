@@ -104,8 +104,12 @@
       };
   }]);
 
-  app.run(['$rootScope', 'APP_CONSTS', function ($rootScope, APP_CONSTS) {
+  app.run(['$rootScope', '$transitions', '$window', 'APP_CONSTS', function ($rootScope, $transitions, $window, APP_CONSTS) {
       $rootScope.APP_CONSTS = APP_CONSTS;
+
+      $transitions.onStart( {}, function(trans) {
+        var toState = trans.to();
+      });
     }
   ]);
 

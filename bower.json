@@ -18,6 +18,6 @@
     "leaflet": "^1.2.0",
     "angular-spinner": "^1.0.1",
     "Leaflet.ExtraMarkers": "git://github.com/coryasilva/Leaflet.ExtraMarkers.git#f2fba0a",
-    "angular-ui-router": "^1.0.7"
+    "angular-ui-router": "^1.0.15"
   }
 }

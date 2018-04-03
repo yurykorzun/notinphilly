@@ -23,6 +23,11 @@ module.exports = function(app) {
     app.use('/api/facebook', require('./api/facebook'));    
     app.use('/api/external', require('./api/external'));
 
+    app.use('/donate', function(req, res, next) {
+        res.set('location', 'https://prc.networkforgood.com/projects/22356-not-in-philly');
+        res.status(301).send();
+    });
+
     // All other routes should redirect to the index.html
     app.route('/*').get(function(req, res) {
         var pathToIndex = path.resolve(app.get('clientPath') + '/index.html');
