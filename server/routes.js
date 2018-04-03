@@ -28,6 +28,12 @@ module.exports = function(app) {
         res.status(301).send();
     });
 
+    app.use('/sponsorship', function(req, res, next) {
+        res.set('location', '/public/downloads/sponsorship.pdf');
+        res.setHeader('content-type', 'application/pdf');
+        res.status(301).send();
+    });
+
     // All other routes should redirect to the index.html
     app.route('/*').get(function(req, res) {
         var pathToIndex = path.resolve(app.get('clientPath') + '/index.html');
