@@ -23,14 +23,14 @@
                 $scope.$on(APP_EVENTS.OPEN_EXPLORE, function(event) {
                     $scope.goToPage(APP_CONSTS.STATE_MAP);
                 });
-          
+
                 $scope.downloadFile = function(filePath) {
                     $window.location.href = filePath;
                 }
 
                 function ShowUserProfile(isActive) {
                     $scope.header.isUserProfileEnabled = true;
-                    $scope.header.isLoginEnabled = false;                    
+                    $scope.header.isLoginEnabled = false;
                 }
 
                 function ShowLoginForm(isActive) {
@@ -45,7 +45,7 @@
                 $scope.goToPage = function(path) {
                     $state.go(path);
                     $("#wrapper").removeClass("toggled");
-                    
+
                     //$anchorScroll.yOffset = 80;
                     //$anchorScroll('bodyContent');
                 }
@@ -62,17 +62,17 @@
                 function autoHeight() {
                     $('#bodyContent').css('min-height', 0);
                     $('#bodyContent').css('min-height', (
-                        $(document).height() 
-                        - $('#headerContent').height() 
+                        $(document).height()
+                        - $('#headerContent').height()
                         - $('#footerContent').height()
                     ));
                 }
-                
+
                 // onDocumentReady function bind
                 $(document).ready(function() {
                     autoHeight();
                 });
-                
+
                 // onResize bind of the function
                 $(window).resize(function() {
                     autoHeight();
