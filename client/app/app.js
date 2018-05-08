@@ -21,15 +21,15 @@
         "OPEN_SEARCH": "openSearch",
         "OPEN_EXPLORE": "openExplore",
         "OPEN_LOGIN": "openLogin",
-        "OPEN_PROFILE": "openProfile",        
+        "OPEN_PROFILE": "openProfile",
         "ENTER_NEIGBORHOOD_LEVEL": "enterNeigborhoodLevel",
         "ENTER_STREET_LEVEL": "enterStreetLevel",
         "STREET_ADOPTED": "streetAdopted",
         "STREET_LEFT": "streetLeft",
         "MESSAGE_SENT": "messageSent",
         "MESSAGE_REMOVED": "messageRemoved",
-        "CONTACT_APPROVED": "contactApproved",        
-        "CONTACT_REJECTED": "contactRejected",        
+        "CONTACT_APPROVED": "contactApproved",
+        "CONTACT_REJECTED": "contactRejected",
         "CONTACT_REMOVED": "contactRejected"
     });
 
@@ -47,28 +47,29 @@
     "STATE_MAP_LOCATION_STREET": "main.maplocationstreet",
     "STATE_SEARCH": "main.search",
     "STATE_SOCIAL": "main.social",
+    "STATE_SPONSORS": "main.sponsors",
     "STATE_CALENDAR": "main.calendar",
     "STATE_MEDIA": "main.media",
     "STATE_FAQ": "main.faq",
     "STATE_RESOURCES": "main.resources",
-    "MAPVIEW_RESOLVE": "mapView",   
-    "MAPVIEW_DEFAULT_PATH": "default",         
-    "MAPVIEW_LOCATION_PATH": "location",        
-    "MAPVIEW_CURRENTUSER_PATH": "currentUser",  
-    "MAPVIEW_STREETS_PATH": "streets",      
+    "MAPVIEW_RESOLVE": "mapView",
+    "MAPVIEW_DEFAULT_PATH": "default",
+    "MAPVIEW_LOCATION_PATH": "location",
+    "MAPVIEW_CURRENTUSER_PATH": "currentUser",
+    "MAPVIEW_STREETS_PATH": "streets",
   });
 
  app.service('LoadingInterceptor', ['$q', '$rootScope', 'usSpinnerService',
   function ($q, $rootScope, usSpinnerService) {
       'use strict';
-   
+
       var xhrCreations = 0;
       var xhrResolutions = 0;
-   
+
       function isLoading() {
           return xhrResolutions < xhrCreations;
       }
-   
+
       function updateStatus() {
           if (isLoading())
           {
@@ -79,7 +80,7 @@
             usSpinnerService.stop('mainSpinner');
           }
       }
-   
+
       return {
           request: function (config) {
               xhrCreations++;
@@ -126,7 +127,7 @@
 
           $stateProvider.state('admin', {
             abstract: true,
-            controller: 'mainController',            
+            controller: 'mainController',
             templateUrl: 'app/admin/admin-parent-template.html'
           });
 
@@ -154,11 +155,11 @@
                   }
                   else
                   {
-                    return '<div class="position-center"><h3>Unauthorized</h3></div>';                  
+                    return '<div class="position-center"><h3>Unauthorized</h3></div>';
                   }
                 },
                 function() {
-                  return '<div class="position-center"><h3>Unauthorized</h3></div>'; 
+                  return '<div class="position-center"><h3>Unauthorized</h3></div>';
                 });
               }]
           })
@@ -240,6 +241,10 @@
         .state(APP_CONSTS.STATE_RESOURCES, {
               url: '/resources',
               templateUrl: 'app/info/resources-template.html'
+            })
+        .state(APP_CONSTS.STATE_SPONSORS, {
+              url: '/sponsors',
+              templateUrl: 'app/info/sponsors-template.html'
             });
 
         $urlRouterProvider.otherwise('/');

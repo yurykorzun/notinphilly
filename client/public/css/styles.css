@@ -8,7 +8,7 @@
 ------------------ */
 
 html {
-    font-family: "Open Sans", Helvetica, Geneva, sans-serif;    
+    font-family: "Open Sans", Helvetica, Geneva, sans-serif;
     height: 100%;
     box-sizing: border-box;
 }
@@ -385,7 +385,7 @@ hr {
     display: table;
 }
 
-.spinner:before { 
+.spinner:before {
     background-color: rgba(255, 252, 252, 0.60);
     border-radius: 6px;
     top: 0;
@@ -607,7 +607,7 @@ hr {
 /* Sub Menus */
 .main-nav li li {
     padding-left: 10px;
-    padding-right: 10px;    
+    padding-right: 10px;
 }
 
 /* Sub Menus */
@@ -706,6 +706,65 @@ hr {
     min-height: 100px;
 }
 
+/* -- SPONSORS Section ----------- */
+@media (min-width: 768px) {
+    .sponsor-summary {
+        display: flex;
+    }
+
+    .sponsor-summary__neighborhood-sponsor,
+    .sponsor-summary__neighborhood-champion {
+        width: 50%;
+    }
+}
+
+.sponsor-summary__neighborhood-sponsor,
+.sponsor-summary__neighborhood-champion {
+    width: 100%;
+    text-align: center;
+}
+
+.sponsor-summary__heading {
+    color: #18a0dc;
+    text-transform: uppercase;
+}
+
+.sponsor-summary__badge {
+    width: 100px;
+}
+
+@media (min-width: 768px) {
+    .sponsor-summary__badge {
+        width: 150px;
+    }
+}
+
+.sponsor-summary__house-img {
+    width: 75%;
+}
+
+.sponsor-summary__list {
+    list-style: none;
+    padding-left: 0;
+}
+
+.sponsor-summary__list--icon {
+    width: 60px;
+    height: 60px;
+    padding-right: 20px;
+}
+
+.sponsor-summary__list--logo::before {
+    background-image: url("../img/Website.svg");
+}
+
+.sponsor__donate {
+    text-align: center;
+}
+
+.sponsor__donate a {
+    font-size: 1.5em;
+}
 
 /* FOOTER ######################## */
 .footer-logo {
@@ -1051,7 +1110,7 @@ hr {
         width: auto;
         max-height: 65px;
     }
-    
+
     .page-content
     {
         padding: 8px;
@@ -1078,15 +1137,15 @@ hr {
     .width-md-medium {
         width: 65%;
     }
-    
+
     .width-md-small {
         width: 30%;
     }
-    
+
     .width-md-large {
         width: 85%;
     }
-    
+
     .cfp-logo {
         width: 85px;
         padding-bottom: 15px;
@@ -1120,30 +1179,30 @@ hr {
         float: left;
         width: 130px;
     }
-    
+
     .street-item-description {
         margin-left:10px;
         float: left;
-        margin-top:10px;        
+        margin-top:10px;
     }
-    
+
     .street-item-view {
-        float: right; 
+        float: right;
         width: 15%;
         margin-left: 10px;
     }
-    
+
 }
 
 @media (max-width: 1000px) {
     .width-sm-medium {
         width: 65%;
     }
-    
+
     .width-sm-small {
         width: 30%;
     }
-    
+
     .width-sm-large {
         width: 85%;
     }
@@ -1155,13 +1214,13 @@ hr {
     .street-item-map {
         display: inline-block;
     }
-    
+
     .street-item-description {
         margin-left: 5px;
         margin-top: 10px;
-        display: inline-block;        
+        display: inline-block;
     }
-    
+
     .street-item-view {
         display: block;
     }
