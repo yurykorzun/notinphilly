@@ -1,3 +1,4 @@
 {
-    "directory": "client/public/libs"
+    "directory": "client/public/libs",
+    "registry": "https://registry.bower.io"
 }
