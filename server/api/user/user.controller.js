@@ -159,7 +159,7 @@ exports.exportUsersCSV = function(req, res) {
                     "neighborhood": user.neighborhood ? user.neighborhood.name : undefined,
                     "zip": user.zip,
                     "email": user.email,
-                    "businessName": user.businessName,
+                    "referralSource": user.referralSource,
                     "phoneNumber": user.phoneNumber,
                     "createdAt": user.createdAt,
                     "isDistributer": user.isDistributer,

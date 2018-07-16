@@ -96,7 +96,7 @@ angular.module('notinphillyServerApp')
       { name: 'neighborhood.name',  displayName: 'Neighborhood',  width:80 },
       { name: 'zip', displayName: 'ZipCode',  enableSorting: true, width:80 },
       { name: 'email', displayName: 'Email', enableSorting: true, width:250 },
-      { name: 'businessName', displayName: 'Organization', enableSorting: false, width:120 },
+      { name: 'referralSource', displayName: 'Referral', enableSorting: false, width:120 },
       { name: 'phoneNumber', displayName: 'Phone', enableSorting: false, width:100 },
       { name: 'createdAt', displayName: 'Created', enableSorting: true, type: 'date', width:110 },
       { name: 'isDistributer', displayName: 'Distributer?',  enableSorting: false, width:100 },

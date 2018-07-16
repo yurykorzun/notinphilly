@@ -4,7 +4,16 @@
                                             function($scope, $http, $rootScope, $state, $cookies, $uibModalInstance, placeSearchService, sessionService, APP_EVENTS, APP_CONSTS) {
       $scope.User = $scope.$resolve.user;
       $scope.addressDetails = undefined;
-
+      
+      $scope.referralSources = [{value: "Friend"}, {value: "Community"}, {value: "Magazine/Newspaper"}, {value: "Event"}, {value: "Google"}, {value: "Social media"}];
+      $scope.referralSourceConfig = {
+        valueField: 'value',
+        labelField: 'value',
+        placeholder: 'How did you hear about us? (select or add)',
+        create: true,
+        maxItems: 1
+      };
+      
       var foundStreet = $cookies.getObject(APP_CONSTS.FOUND_STREET);
       if (foundStreet && foundStreet.placeId)
       {

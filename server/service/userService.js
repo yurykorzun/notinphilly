@@ -656,6 +656,7 @@ var createNewUser = function(userData, isActiveUser, stateId, neighborhoodId)
                                 businessName: userData.businessName,
                                 fullAddress: userData.fullAddress,
                                 addressLocation: userData.addressLocation,
+                                referralSource: userData.referralSource,
                                 addressGeo: {
                                     "type" : "Point",
                                     "coordinates" : [ 

@@ -46,8 +46,7 @@
             </div>
             <div class="row">
                 <div class="col-xs-12 form-group">
-                    <label for="businessName" class="control-label">Business/Organization</label>
-                    <input name="businessName" ng-model="User.businessName" class="form-control input-sm" placeholder="Organization Name" type="text">
+                    <selectize config='referralSourceConfig' options='referralSources' ng-model="User.referralSource"></selectize>
                 </div>
             </div>
             <div class="row">

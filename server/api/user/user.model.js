@@ -53,6 +53,7 @@ var userSchema = new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User'
     }],
+    referralSource: { type: String, default: '' },
     sentConnectionRequests: { type: Boolean, default: false },
     hashedPassword: { type: String, default: '' },
     activationHash: String,
