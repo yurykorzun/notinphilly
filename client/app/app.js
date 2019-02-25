@@ -52,6 +52,7 @@
     "STATE_MEDIA": "main.media",
     "STATE_FAQ": "main.faq",
     "STATE_RESOURCES": "main.resources",
+	"STATE_PRIVACY": "privacy",
     "MAPVIEW_RESOLVE": "mapView",
     "MAPVIEW_DEFAULT_PATH": "default",
     "MAPVIEW_LOCATION_PATH": "location",
@@ -245,6 +246,10 @@
         .state(APP_CONSTS.STATE_SPONSORS, {
               url: '/sponsors',
               templateUrl: 'app/info/sponsors-template.html'
+            })
+		.state(APP_CONSTS.STATE_PRIVACY, {
+              url: '/privacy',
+              templateUrl: 'app/info/privacy-template.html'
             });
 
         $urlRouterProvider.otherwise('/');

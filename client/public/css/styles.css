@@ -983,6 +983,12 @@ hr {
     padding: 10px 15px;
 }
 
+.info-page {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .faq {
     width: 90%;
     margin-left: auto;
