@@ -27,7 +27,7 @@
     "mongoose-merge-plugin": "0.0.5",
     "mongoose-timestamp": "^0.6.0",
     "node-geocoder": "^3.21.1",
-    "passport": "^0.4.0",
+    "passport": "^0.4.1",
     "passport-facebook": "^3.0.0",
     "passport-local": "^1.0.0",
     "promise": "^7.3.1",
