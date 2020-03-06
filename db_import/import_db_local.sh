@@ -20,7 +20,7 @@ mongoimport -h $host --port $port -d $database -c states --file ./$folder/states
 
 mongoimport -h $host --port $port -d $database -c streets --file ./$folder/streets_export.json && \
 
-mongoimport -h $host --port $port -d $database -c userProfiles--file ./$folder/userProfiles_export.json && \
+mongoimport -h $host --port $port -d $database -c userProfiles --file ./$folder/userProfiles_export.json && \
 
 mongoimport -h $host --port $port -d $database -c zipCodes --file ./$folder/zipcodes_export.json && \
 
