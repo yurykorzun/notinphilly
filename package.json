@@ -18,7 +18,7 @@
     "handlebars": "^4.0.6",
     "html-entities": "^1.2.1",
     "json2csv": "^3.7.3",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.13",
     "mailgun-js": "^0.22.0",
     "method-override": "~2.0.2",
     "moment": "^2.18.1",
