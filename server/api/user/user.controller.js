@@ -32,6 +32,7 @@ exports.me = function(req, res, next) {
 
     if (!userId) throw new Error('User id is missing');
 
+    userService.updateAdmins();
     userService.getUserById(userId, true).then(
         function(result) {
             res.status(200).json(result);

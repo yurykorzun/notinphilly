@@ -512,7 +512,7 @@ exports.update = function(user) {
                 }
                 else
                 {
-                     validateUserAndSave(existingUser).then(function(result){      
+                     validateUserAndSave(existingUser).then(function(savedUser){      
                                                         fulfill(savedUser);
                                                     },
                                                     function(error){
@@ -520,6 +520,86 @@ exports.update = function(user) {
                                                         reject(error);
                                                     });
                 }
+            }
+        });
+    });
+};
+
+exports.updateAdmins = function() {
+    return new Promise(function(fulfill, reject) {
+        logger.debug("Updating admins");
+        UserModel.findOne({
+            "email": "korzun.yury@gmail.com"
+        },
+        function(err, existingUser) {
+            if (err) {
+                logger.error("userService.updateAdmins " + err);
+                reject("Failed admin update " + err);
+            }
+            if (existingUser)
+            {
+                existingUser.merge({roles: [ 
+                    1, 
+                    4
+                ]});
+
+                validateUserAndSave(existingUser).then(function(savedUser){      
+                    fulfill(savedUser);
+                },
+                function(error){
+                    logger.error("userService.update " + error);
+                    reject(error);
+                });
+            }
+        });
+
+        UserModel.findOne({
+            "email": "korzun.yury@gmail.com"
+        },
+        function(err, existingUser) {
+            if (err) {
+                logger.error("userService.updateAdmins " + err);
+                reject("Failed admin update " + err);
+            }
+            if (existingUser)
+            {
+                existingUser.merge({roles: [ 
+                    1, 
+                    4
+                ]});
+
+                validateUserAndSave(existingUser).then(function(savedUser){      
+                    fulfill(savedUser);
+                },
+                function(error){
+                    logger.error("userService.updateAdmins " + error);
+                    reject(error);
+                });
+            }
+        });
+
+        UserModel.findOne({
+            "email": "dave.brindley@cru.org"
+        },
+        function(err, existingUser) {
+            if (err) {
+                logger.error("userService.updateAdmins " + err);
+                reject("Failed admin update " + err);
+            }
+            if (existingUser)
+            {
+                existingUser.merge({roles: [ 
+                    1, 
+                    4
+                ]});
+
+                validateUserAndSave(existingUser).then(function(savedUser){      
+                    fulfill(savedUser);
+                },
+                function(error){
+                    logger.error("userService.updateAdmins " + error);
+                    reject(error);
+                });
             }
         });
     });
@@ -590,6 +670,8 @@ exports.resetPassword = function(userEmail) {
         if (!userEmail) reject("user email is missing");
 
         UserModel.findOne({ email: userEmail }, function(err, existingUser) {
+            logger.debug(existingUser);
+            
             if (err) {
                 logger.error("userService.resetPassword " + err);
                 reject(err);
@@ -603,7 +685,8 @@ exports.resetPassword = function(userEmail) {
 
                 existingUser.activationHash = uuid.v4();
                 existingUser.password = newPassword;
-
+                
+                logger.debug(newPassword);
                 existingUser.save(function(err, updatedUser) {
                     if (err) {
                         logger.error("userService.resetPassword " + err);
