@@ -11,7 +11,6 @@ router.get('/neighbors/', authService.isAuthenticated, controller.findNeighbors)
 router.get('/neighbors/count', authService.isAuthenticated, controller.findNeighborsCount);
 router.get('/confirm/:activationId', controller.activate);
 router.get('/exportcsv', authService.isAdmin, controller.exportUsersCSV);
-router.get('/exportcsv_secret_temp1', authService.isAuthenticated, controller.exportUsersCSV);
 router.get('/:id', authService.isAdmin, controller.get);
 
 router.post('/getPagedFiltered', authService.isAdmin, controller.getAllPagedFiltered);
