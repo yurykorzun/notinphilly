@@ -20,7 +20,7 @@
     "json2csv": "^3.7.3",
     "lodash": "^4.17.4",
     "mailgun-js": "^0.22.0",
-    "method-override": "~2.0.2",
+    "method-override": "~2.3.10",
     "moment": "^2.18.1",
     "mongoose": "^4.13.7",
     "mongoose-auto-increment": "^5.0.1",
