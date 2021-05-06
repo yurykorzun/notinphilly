@@ -15,7 +15,7 @@
     "fb": "^2.0.0",
     "generate-password": "^1.2.0",
     "googleapis": "^19.0.0",
-    "handlebars": "^4.0.6",
+    "handlebars": "^4.7.7",
     "html-entities": "^1.2.1",
     "json2csv": "^3.7.3",
     "lodash": "^4.17.4",
